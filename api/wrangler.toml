@@ -1,0 +1,15 @@
+# API du formulaire de contact M&S Design — Cloudflare Workers
+# Déploiement : npx wrangler deploy   (voir README.md)
+name = "msdesign-contact"
+main = "contact-worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://michprk.github.io,https://www.msdesign.be,https://msdesign.be"
+STUDIO_EMAIL = "mck.honorable@gmail.com"
+FROM_EMAIL = "M&S Design <site@msdesign.be>"
+
+# Limite anti-spam par adresse IP (facultatif) : créer un espace KV puis décommenter
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<identifiant de l'espace KV>"

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /msdesign.be/partials/
+Disallow: /msdesign.be/scripts/
+Disallow: /msdesign.be/api/
+
+Sitemap: https://michprk.github.io/msdesign.be/sitemap.xml
