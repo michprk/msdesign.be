@@ -14,13 +14,11 @@ Une page produit à la manière d’Apple, chic et aérée :
 - beaucoup d’air, des sections centrées, des tuiles douces ;
 - un fond gris clair, une encre noire, des cartes blanches ; l’olive pour le logo et les boutons.
 
-**Le héros**, comme une page d’agence éditoriale : un très grand titre noir sur fond gris clair,
-« Des sites qui vous ramènent des clients. », et au milieu le « & » du logo **en volume**
-(`assets/js/amp3d.js`, Three.js, aucun fichier 3D) : le tracé du logo est extrudé, arrondi,
-légèrement tordu, habillé d’un motif organique orange et lilas brillant comme une céramique.
-Il arrive en tournant, flotte, suit la souris et tourne en défilant. À droite, une phrase pour
-dire à qui l’on s’adresse ; en bas, « Demander un devis gratuit » et « Voir les projets ».
-Sans 3D (animations réduites, WebGL absent), l’image fixe `amp-3d-*.webp` reste.
+**Le héros**, comme une planche de présentation de projet : fond vert forêt, feuilles tropicales
+dessinées au trait (`hero-leaves.svg`, qui se dessine à l’ouverture), « Design UI / UX » à la
+verticale, un site sur MacBook et iPhone au centre (`hero-devices-*.webp`, rendu par l’outil
+`#herodevices`), puis le titre centré « Des sites qui vous ramènent des clients. », une ligne
+d’explication et les deux boutons.
 
 **Projets.** Une rangée de cartes (une barre de titre blanche, puis l’image) qui défile au doigt
 ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premium flouté, et
@@ -73,10 +71,8 @@ cgu.html                  mentions légales, conditions d’utilisation et de pr
 confidentialite.html      RGPD + cookies
 404.html                  page introuvable, qui propose la bonne section
 partials/                 blocs communs (head, en-tête, pied de page, cookies, icônes)
-assets/js/amp3d.js        le « & » du logo en volume (héros)
 assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
-assets/js/hero3d.js       charge le & en 3D seulement si possible (sinon image fixe)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh
 ```

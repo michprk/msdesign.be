@@ -31,12 +31,11 @@
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=afd2890d03">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=e951a7d7e5">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=afd2890d03" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=afd2890d03" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=e951a7d7e5" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=e951a7d7e5" defer></script>
 <!--/include-->
-<script type="module" src="/msdesign.be/assets/js/hero3d.js?v=afd2890d03"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -126,19 +125,20 @@
 
 <main id="main">
 
-<!-- Héros : le titre, et le « & » du logo en volume qui flotte au milieu -->
+<!-- Héros : une planche de présentation — fond vert forêt, feuilles au trait, un projet sur MacBook et iPhone, le titre dessous -->
 <section class="hero" id="top" data-hero aria-labelledby="hero-title">
-  <div class="hero__stage" data-stage aria-hidden="true"></div>
-  <img class="hero__still" src="/msdesign.be/assets/img/amp-3d-1200.webp" srcset="/msdesign.be/assets/img/amp-3d-600.webp 600w, /msdesign.be/assets/img/amp-3d-1200.webp 1200w" sizes="(max-width: 700px) 64vw, 40vw" width="1200" height="1200" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
-  <div class="wrap hero__grid">
-    <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Des sites</span> <span class="hl">qui vous</span> <span class="hl">ramènent</span> <span class="hl">des clients.</span></h1>
+  <img class="hero__leaves" src="/msdesign.be/assets/img/hero-leaves.svg" alt="" aria-hidden="true" width="1600" height="900">
+  <p class="hero__side" aria-hidden="true">Design UI / UX</p>
+  <div class="wrap hero__inner">
+    <figure class="hero__devices" data-hero-in>
+      <img src="/msdesign.be/assets/img/hero-devices-1600.webp" srcset="/msdesign.be/assets/img/hero-devices-900.webp 900w, /msdesign.be/assets/img/hero-devices-1600.webp 1370w" sizes="(max-width: 700px) 100vw, 860px" width="1370" height="844" alt="Le site Greentage, un projet conceptuel du studio, sur un MacBook et un iPhone." fetchpriority="high" decoding="async">
+      <figcaption><a href="/msdesign.be/etudes/greentage.html">À l’écran&nbsp;: Greentage, projet conceptuel</a></figcaption>
+    </figure>
+    <h1 class="hero__title" id="hero-title" data-hero-in>Des sites qui vous ramènent des clients.</h1>
+    <p class="hero__sub" data-hero-in>Studio de design web · Bruxelles · prix fixe, en ligne en 21&nbsp;jours</p>
     <div class="hero__actions" data-hero-in>
-      <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis gratuit</a>
-      <a class="link" href="/msdesign.be/#etudes">Voir les projets<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
-    </div>
-    <div class="hero__aside" data-hero-in>
-      <p>Des sites web sur mesure pour les indépendants, commerces et petites entreprises à Bruxelles. Un design soigné, une expérience mobile fluide et un prix fixé avant le début du projet.</p>
-      <p class="hero__meta">En ligne en 21&nbsp;jours · réponse sous 24&nbsp;h</p>
+      <a class="btn btn--light btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis gratuit</a>
+      <a class="link link--light" href="/msdesign.be/#etudes">Voir les projets<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
     </div>
   </div>
 </section>

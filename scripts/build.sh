@@ -10,14 +10,14 @@
 #    empreinte SHA-256 pour la politique de sécurité (CSP), dans les pages,
 #    dans _headers (Netlify / Cloudflare) et dans .htaccess (Apache) ;
 # 3. met à jour le numéro de version des fichiers (?v=…) pour vider les caches,
-#    y compris les imports des modules 3D (hero3d.js, mac3d.js).
+#    (les pages ne chargent plus de module 3D : le héros est une image).
 # ==========================================================================
 set -euo pipefail
 cd "$(dirname "$0")/.."
 BOOT=$(cat assets/js/boot.js)
 case "$BOOT" in *"<"*) echo "boot.js ne doit contenir aucun caractère « < »" >&2; exit 1 ;; esac
 HASH=$(printf '%s' "$BOOT" | openssl dgst -sha256 -binary | openssl base64 -A)
-VER=$( { cat assets/css/main.css assets/js/app.js assets/js/amp.js assets/vendor/lenis.min.js; sed -E 's/\?v=[A-Za-z0-9_]+//g' assets/js/hero3d.js assets/js/amp3d.js; } | openssl dgst -md5 | awk '{print substr($NF,1,10)}')
+VER=$( { cat assets/css/main.css assets/js/app.js assets/js/amp.js assets/vendor/lenis.min.js; } | openssl dgst -md5 | awk '{print substr($NF,1,10)}')
 # API des formulaires (Cloudflare Workers) et mesure d’audience (Google Analytics 4, après accord)
 CSP="default-src 'self'; script-src 'self' 'sha256-$HASH' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
 CSP_HEADER="$CSP; frame-ancestors 'none'; upgrade-insecure-requests"
@@ -33,9 +33,8 @@ for f in *.html etudes/*.html; do
   ' "$f"
   echo "  $f"
 done
-perl -pi -e 's{\?v=[A-Za-z0-9_]+}{?v=$ENV{VER}}g' assets/js/hero3d.js assets/js/amp3d.js
 perl -pi -e 's{^(\s*Content-Security-Policy: ).*$}{$1$ENV{CSP_HEADER}}' _headers
 perl -pi -e 's{(Header always set Content-Security-Policy ")[^"]*(")}{$1$ENV{CSP_HEADER}$2}' .htaccess
-echo "  hero3d.js, amp3d.js, _headers, .htaccess"
+echo "  _headers, .htaccess"
 echo "CSP : sha256-$HASH"
 echo "Version : $VER"
