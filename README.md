@@ -1,92 +1,90 @@
-# M&S Design — agence de design web à Bruxelles
+# M&S Design — studio de design web à Bruxelles
 
-Site de l’agence M&S Design (ouverture prévue en 2027). Maquette en ligne :
-**https://michprk.github.io/msdesign.be/** (non indexée tant que l’agence n’est pas ouverte).
+Site du studio M&S Design (ouverture prévue en 2027). Maquette en ligne :
+**https://michprk.github.io/msdesign.be/**. Elle n’est pas indexée tant que le studio n’est pas
+ouvert.
 
 ## L’idée
 
-**Le héros** : comme une photo de produit prise dans l’atelier. Un MacBook argent est posé sur une
-table en chêne, devant une verrière floue ouverte sur un jardin, avec un nuancier, une tasse et un
-carnet. Le décor est **entièrement modélisé et peint dans le code** (Three.js, aucune photo ni
-fichier 3D) :
+Une page produit à la manière d’Apple, chic et aérée :
 
-- coque en aluminium microbillé avec de vrais reflets ;
-- clavier **AZERTY belge** rétroéclairé, où la touche **« & »**, notre logo, brille en olive ;
-- pavé tactile, grilles des haut-parleurs, ports, charnière, dalle à encoche ;
-- **&** poli miroir sur le capot.
+- **Inria Serif** pour tout ce qui se lit (titres en Light, textes en Regular) ;
+- **Instrument Sans** pour ce qui se clique (menus, boutons, formulaires) ;
+- beaucoup d’air, des sections centrées, des tuiles douces ;
+- une palette olive, écru et encre.
 
-1. À l’arrivée, le capot se soulève : un doigt l’entrouvre, puis il s’ouvre en douceur.
-2. L’écran s’allume (& blanc, barre de progression), puis le bureau apparaît, et Safari s’ouvre
-   sur msdesign.be.
-3. Le curseur du Mac montre les onglets tout seul.
-4. Ensuite, **la souris du visiteur devient le curseur du Mac**. Survoler un onglet (Services,
-   Réalisations, Méthode, Tarifs, Contact) ou une icône du Dock affiche l’aperçu de cette partie
-   du site sur l’écran. **Un clic fait plonger la caméra dans l’écran**, et le vrai site prend le
-   relais à la bonne section.
-5. Au doigt ou au clavier, une barre d’onglets en bas du héros fait la même chose.
+**Le héros.** Le titre est centré en haut : « Un site qui vous apporte des clients. ». Dessous, un
+MacBook argent est posé sur une table en chêne, sur un fond de studio clair. Le décor est
+**modélisé dans le code** (Three.js, aucune photo, aucun fichier 3D) :
 
-- Pendant la visite, l’ouverture ne se rejoue pas. « Revoir l’ouverture du Mac » est dans le pied
-  de page.
-- `?intro=1` force l’ouverture et `?intro=0` la saute.
-- Sans WebGL, ou avec les animations réduites, une image fixe du Mac ouvert prend le relais
-  (`assets/img/mac-poster-*.webp`).
+- aluminium avec de vrais reflets ;
+- clavier AZERTY belge rétroéclairé, avec la touche « & », notre logo, en olive ;
+- « & » poli sur le capot.
 
-## Pensé pour la conversion (B2B)
+Le déroulé :
 
-- Promesse en 3 secondes : « Des sites qui vous ramènent *des clients.* ».
-- Un seul bouton principal, **Demander un devis**, partout : en-tête, héros, tarifs, pied de page,
-  barre mobile.
-- Réassurance immédiate : réponse sous 24 h, prix fixe, en ligne en 3 semaines. Puis les
-  engagements : propriété du site, interlocuteur unique, RGPD inclus, retouches comprises.
-- **Tarifs transparents** : Essentiel 500 €, Signature 750 € (recommandée), Premium 2 200 € HTVA,
-  et Entretien & hébergement 15 €/mois.
-- Formulaire de devis avec **acompte et solde calculés en direct** selon la formule choisie.
-- **Réalisations** : cinq concepts réels (Rose Noire, Hani Kanaftchian, Studio 124, Greentage,
-  Poppymood), cliquables, chacun marqué « Concept 2026 ».
+1. Le capot s’ouvre, l’écran s’allume (& puis bureau), et Safari affiche le site.
+2. Le curseur du Mac montre les onglets tout seul.
+3. Ensuite, la souris du visiteur devient le curseur du Mac. Survoler un onglet (Études de cas,
+   Services, Méthode, Tarifs, Contact) ou une icône du Dock affiche l’aperçu sur l’écran.
+4. Un clic fait plonger la caméra dans l’écran, et le site arrive à la bonne section.
+5. Au doigt ou au clavier, une barre d’onglets fait la même chose.
 
-## Direction artistique
+Paramètres d’adresse : `?intro=1` rejoue l’ouverture, `?intro=0` la saute.
 
-| Rôle | Couleur |
-|---|---|
-| Écru | `#f4f0e6` |
-| Papier | `#fbf9f3` |
-| Sable | `#e9e3d4` |
-| Encre | `#1d1f17` |
-| Olive (texte) | `#5c6a35` |
-| Olive profond (boutons, sections sombres) | `#2e3a20` |
-| Sauge (accent sur fond sombre) | `#c9d09c` |
+## Pensé pour la conversion
 
-Typographies :
+- Un bouton principal, **Demander un devis**, partout : en-tête, héros, tarifs, études de cas,
+  pied de page et **barre d’action mobile** (appeler + devis).
+- **Promesse de délai** : en ligne 21 jours après la maquette validée, ou 10 % remboursés par
+  semaine de retard. Elle est détaillée dans `cgu.html#delais`.
+- **Études de cas** : une page de liste et trois pages détaillées, avec fil d’Ariane, faits clés,
+  point de départ, réalisation, captures, résultat, étude suivante et appel à l’action.
+- **Tarifs fixes** : 500 €, 750 € et 2 200 € HTVA, plus l’entretien à 15 €/mois.
+- **FAQ** de 5 questions, avec liens internes vers la promesse, les tarifs, les conditions et
+  les études.
+- **Liens internes** partout : services vers études de cas et tarifs, FAQ, études entre elles,
+  pied de page en plan du site.
+- **Page de remerciement** (`merci.html`) après l’envoi du formulaire.
+  - Elle reprend le prénom de la personne (stockage de session, jamais dans l’adresse).
+  - Elle annonce les étapes suivantes et propose les études de cas.
 
-- **Instrument Sans** pour les titres et le texte ;
-- **Instrument Serif** en italique pour les accents et le « & » ;
-- **Inria Serif** pour les petites étiquettes.
+## Les études de cas (fictives pendant la démonstration)
 
-Le style s’inspire de la référence fournie (Seed) : produit posé sur une table près d’une fenêtre,
-titre sobre à gauche, bouton vert profond.
+Les clients sont inventés et signalés comme tels dans les mentions légales et le pied de page :
+
+- **Atelier Ombelle**, architecture d’intérieur ;
+- **Brachet Avocats**, droit des affaires ;
+- **Cave Sauvage**, caviste.
+
+Leurs sites (maquettes dessinées, chacune avec sa propre typographie) et leurs photos de produits
+sont rendus dans le code par l’outil `../_msdesign-src/` :
+
+- `stilllife.js` : les natures mortes (échantillons, bouteilles, bureau) ;
+- `clients.js` : les pages des trois sites ;
+- `assets-tool.html#still,clients,devices,poster,og` : les images finales en WebP, dont le
+  MacBook qui affiche chaque site.
+
+**À remplacer par de vrais projets avant l’ouverture**, ainsi que les chiffres des résultats.
 
 ## Fichiers
 
 ```
-index.html            accueil (héros MacBook + toutes les sections)
-cgu.html              mentions légales, conditions d’utilisation et de prestation
-confidentialite.html  RGPD + cookies
-404.html              « Cette page s’est égarée » (boîte de dialogue façon macOS), retrouve la bonne section
-partials/             blocs communs (head, en-tête, pied de page, cookies, icônes)
-assets/js/mac3d.js    le MacBook, la table, les objets, la lumière, l’ouverture et la plongée
-assets/js/screen.js   l’écran du Mac : démarrage, bureau, Safari à onglets, Dock (canvas 2D)
-assets/js/scenery.js  le studio flou et le chêne (utilisé par l’outil d’images, pas en ligne)
-assets/js/hero3d.js   charge la 3D seulement si possible (sinon image fixe)
-assets/js/app.js      héros, voile de transition, formulaire, cookies, compteurs, FAQ, 404…
-assets/js/sound.js    souffle et accord synthétisés (Web Audio), très discrets
-assets/js/boot.js     script en ligne du <head> (HTTPS, préférences, ouverture)
-api/                  réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
-scripts/              build.sh, check-links.sh, export-hostinger.sh
+index.html                héros MacBook, promesse, études de cas, services, méthode, tarifs, FAQ, contact
+etudes/                   études de cas : index.html + une page par client
+merci.html                page de remerciement après le formulaire
+cgu.html                  mentions légales, conditions d’utilisation et de prestation (dont la promesse de délai)
+confidentialite.html      RGPD + cookies
+404.html                  page introuvable, qui propose la bonne section
+partials/                 blocs communs (head, en-tête, pied de page, cookies, icônes)
+assets/js/mac3d.js        le MacBook, la table, la lumière, l’ouverture et la plongée dans l’écran
+assets/js/screen.js       l’écran du Mac : démarrage, bureau, Safari à onglets, Dock
+assets/js/amp.js          le « & » du logo, vectorisé
+assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
+assets/js/hero3d.js       charge la 3D seulement si possible (sinon image fixe)
+api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
+scripts/                  build.sh, check-links.sh, export-hostinger.sh
 ```
-
-Les images (studio flou, chêne, captures des projets, icônes, `og.jpg`, image fixe du Mac) sont
-produites par `../_msdesign-src/assets-tool.html`. Lancez le serveur `_msdesign-src/serve.ps1`, puis
-ouvrez `http://localhost:8105/_msdesign-src/assets-tool.html#room,wood,shots,icons,poster,og`.
 
 ## Après chaque modification
 
@@ -101,45 +99,30 @@ bash scripts/check-links.sh  # aucun lien ni fichier cassé (--web pour les lien
 bash scripts/export-hostinger.sh   # → dist/msdesign-hostinger.zip, à extraire dans public_html
 ```
 
-Le zip :
-
-- retire le « noindex » et la mention « maquette de démonstration » ;
-- branche le formulaire sur `api/contact.php` ;
-- active les redirections courantes (`/tarifs`, `/contact`…).
-
-**À compléter avant l’ouverture** (signalé en jaune dans les pages légales) :
+**À compléter avant l’ouverture** (en jaune dans les pages légales) :
 
 - forme juridique, adresse du siège, numéro BCE, régime TVA ;
-- accord des commerces pour montrer leurs concepts dans les réalisations ;
+- vrais projets à la place des études de cas fictives ;
 - identifiant Google Analytics (`data-ga`), si souhaité.
 
 ## Checklist en place
 
-- **HTTPS forcé** : script de tête, `.htaccess` et HSTS. Politique de sécurité stricte (CSP sans
-  `unsafe-inline`), anti-iframe, `security.txt`.
-- **Bandeau cookies** conforme : refuser aussi simple qu’accepter, préférences modifiables,
-  choix redemandé après 6 mois. Il n’apparaît qu’au premier défilement, pour ne pas gâcher
-  l’ouverture. Google Analytics 4 n’est chargé qu’après accord.
+- **HTTPS et sécurité** : HTTPS forcé, HSTS, politique de sécurité stricte (CSP sans
+  `unsafe-inline`), `security.txt`.
+- **Cookies** : bandeau conforme, qui n’apparaît qu’au premier défilement. Refuser est aussi
+  simple qu’accepter. Google Analytics n’est chargé qu’après accord.
 - **SEO** :
-  - balises title et description ;
-  - données structurées (ProfessionalService, offres, FAQ) ;
-  - Open Graph et `og.jpg` 1200×630 ;
-  - `sitemap.xml` avec images, `robots.txt`, balise canonical.
-- **Icônes** : favicon SVG (le & vectorisé), ICO et PNG, icône iOS, icônes Android (dont
-  « maskable »), manifeste.
-- **Images** : WebP compressées, `srcset`, chargement différé, dimensions fixées, textes
-  alternatifs descriptifs.
-- **Vitesse** : polices et scripts hébergés sur le site. Three.js n’est chargé qu’avec WebGL. La
-  3D ne se dessine que lorsque quelque chose bouge, et plus du tout hors de l’écran.
-- **Contraste & accessibilité** :
-  - textes AA, focus visibles, lien d’évitement ;
-  - onglets du Mac utilisables au clavier ;
-  - bouton « Réduire les animations », lien « Couper le son ».
-- **Formulaire validé** dans le navigateur et sur le serveur.
-  - Anti-spam : champ piège, délai minimal, 1 envoi par minute, 5 demandes par 10 min et par IP
-    côté serveur.
-  - Correction des fautes de frappe dans les e-mails.
-  - Sans API, un e-mail prérempli prend le relais.
-- **Page 404 personnalisée**, avec suggestions de section et redirections.
-- **Responsive** : téléphone, tablette, ordinateur (le Mac se place dans l’espace libre à côté du
-  texte).
+  - title et description sur chaque page ;
+  - données structurées (ProfessionalService, offres, FAQ, Article, BreadcrumbList) ;
+  - Open Graph et `og.jpg` ;
+  - `sitemap.xml` avec images, `robots.txt`, canonical.
+- **Icônes** : favicon SVG, ICO et PNG, icônes iOS et Android, manifeste.
+- **Images** : WebP compressées, `srcset`, chargement différé, textes alternatifs descriptifs.
+- **Vitesse** : polices et scripts hébergés sur le site. La 3D ne se dessine que lorsque quelque
+  chose bouge.
+- **Accessibilité** : contrastes AA, focus visibles, onglets du Mac utilisables au clavier,
+  « Réduire les animations », « Couper le son ».
+- **Formulaire** : validé dans le navigateur et sur le serveur, anti-spam, correction des fautes
+  de frappe dans les e-mails, puis page de remerciement.
+- **Navigation** : fil d’Ariane sur toutes les pages intérieures, page 404 personnalisée,
+  responsive du téléphone au grand écran.

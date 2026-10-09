@@ -17,12 +17,12 @@ cd "$(dirname "$0")/.."
 BOOT=$(cat assets/js/boot.js)
 case "$BOOT" in *"<"*) echo "boot.js ne doit contenir aucun caractère « < »" >&2; exit 1 ;; esac
 HASH=$(printf '%s' "$BOOT" | openssl dgst -sha256 -binary | openssl base64 -A)
-VER=$( { cat assets/css/main.css assets/js/app.js assets/js/sound.js assets/js/screen.js assets/vendor/lenis.min.js; sed -E 's/\?v=[A-Za-z0-9_]+//g' assets/js/hero3d.js assets/js/mac3d.js; } | openssl dgst -md5 | awk '{print substr($NF,1,10)}')
+VER=$( { cat assets/css/main.css assets/js/app.js assets/js/sound.js assets/js/amp.js assets/vendor/lenis.min.js; sed -E 's/\?v=[A-Za-z0-9_]+//g' assets/js/hero3d.js assets/js/mac3d.js assets/js/screen.js; } | openssl dgst -md5 | awk '{print substr($NF,1,10)}')
 # API des formulaires (Cloudflare Workers) et mesure d’audience (Google Analytics 4, après accord)
 CSP="default-src 'self'; script-src 'self' 'sha256-$HASH' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
 CSP_HEADER="$CSP; frame-ancestors 'none'; upgrade-insecure-requests"
 export BOOT CSP CSP_HEADER VER
-for f in *.html; do
+for f in *.html etudes/*.html; do
   perl -0pi -e '
     sub part { my $n = shift; local $/; open(my $fh, "<:raw", "partials/$n.html") or die "partials/$n.html introuvable\n"; my $c = <$fh>; close $fh; $c =~ s/\s+\z/\n/; return $c; }
     s{<!--#include ([a-z-]+)-->.*?<!--/include-->}{"<!--#include $1-->\n" . part($1) . "<!--/include-->"}gse;
@@ -33,7 +33,7 @@ for f in *.html; do
   ' "$f"
   echo "  $f"
 done
-perl -pi -e 's{\?v=[A-Za-z0-9_]+}{?v=$ENV{VER}}g' assets/js/hero3d.js assets/js/mac3d.js
+perl -pi -e 's{\?v=[A-Za-z0-9_]+}{?v=$ENV{VER}}g' assets/js/hero3d.js assets/js/mac3d.js assets/js/screen.js
 perl -pi -e 's{^(\s*Content-Security-Policy: ).*$}{$1$ENV{CSP_HEADER}}' _headers
 perl -pi -e 's{(Header always set Content-Security-Policy ")[^"]*(")}{$1$ENV{CSP_HEADER}$2}' .htaccess
 echo "  hero3d.js, mac3d.js, _headers, .htaccess"

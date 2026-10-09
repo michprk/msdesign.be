@@ -19,7 +19,7 @@
 <!--#include head-->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-h8x+1TI3lhiN1wviDJ1tzIy+riaVHR7tPj81RF4qpeY=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#f4f0e6">
+<meta name="theme-color" content="#fbfaf6">
 <meta name="color-scheme" content="light">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
@@ -27,12 +27,13 @@
 <link rel="apple-touch-icon" href="/msdesign.be/apple-touch-icon.png">
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/msdesign.be/assets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=9950175b8a">
+<link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=d1c9c220b3">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=9950175b8a" defer></script>
-<script src="/msdesign.be/assets/js/sound.js?v=9950175b8a" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=9950175b8a" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=d1c9c220b3" defer></script>
+<script src="/msdesign.be/assets/js/sound.js?v=d1c9c220b3" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=d1c9c220b3" defer></script>
 <!--/include-->
 </head>
 <body>
@@ -40,20 +41,20 @@
 <a class="skip" href="#main">Aller au contenu</a>
 <header class="hdr" data-header>
   <div class="hdr__inner">
-    <a class="logo" href="/msdesign.be/" data-page-link="index" aria-label="M&amp;S Design, agence de design web à Bruxelles — accueil">
-      <span class="logo__mark" aria-hidden="true">M<em>&amp;</em>S</span>
+    <a class="logo" href="/msdesign.be/" data-page-link="index" aria-label="M&amp;S Design, studio de design web à Bruxelles — accueil">
+      <span class="logo__mark" aria-hidden="true">M<svg class="logo__amp" viewBox="0 0 468 665"><use href="#amp"/></svg>S</span>
       <span class="logo__word" aria-hidden="true">Design</span>
     </a>
     <nav class="hdr__nav" aria-label="Navigation principale">
+      <a href="/msdesign.be/etudes/" data-page-link="etudes" data-nav="etudes">Études de cas</a>
       <a href="/msdesign.be/#services" data-nav="services">Services</a>
-      <a href="/msdesign.be/#realisations" data-nav="realisations">Réalisations</a>
       <a href="/msdesign.be/#methode" data-nav="methode">Méthode</a>
       <a href="/msdesign.be/#tarifs" data-nav="tarifs">Tarifs</a>
       <a href="/msdesign.be/#faq" data-nav="faq">FAQ</a>
     </nav>
     <div class="hdr__end">
       <a class="hdr__tel" href="tel:+32486611159" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>0486&nbsp;61&nbsp;11&nbsp;59</span></a>
-      <a class="btn btn--olive btn--sm" href="/msdesign.be/#contact" data-track="cta_header">Demander un devis</a>
+      <a class="btn btn--sm" href="/msdesign.be/#contact" data-track="cta_header">Devis gratuit</a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
         <span class="burger__bars" aria-hidden="true"><span></span><span></span></span>
         <span class="sr-only">Ouvrir le menu</span>
@@ -63,17 +64,17 @@
 </header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu data-lenis-prevent>
   <nav class="menu__nav" aria-label="Menu principal">
-    <a href="/msdesign.be/#services"><span>01</span>Services</a>
-    <a href="/msdesign.be/#realisations"><span>02</span>Réalisations</a>
-    <a href="/msdesign.be/#methode"><span>03</span>Méthode</a>
-    <a href="/msdesign.be/#tarifs"><span>04</span>Tarifs</a>
-    <a href="/msdesign.be/#faq"><span>05</span>Questions</a>
-    <a href="/msdesign.be/#contact"><span>06</span>Contact</a>
+    <a href="/msdesign.be/etudes/">Études de cas</a>
+    <a href="/msdesign.be/#services">Services</a>
+    <a href="/msdesign.be/#methode">Méthode</a>
+    <a href="/msdesign.be/#tarifs">Tarifs</a>
+    <a href="/msdesign.be/#faq">Questions</a>
+    <a href="/msdesign.be/#contact">Contact</a>
   </nav>
   <div class="menu__foot">
-    <a class="btn btn--sage" href="/msdesign.be/#contact" data-track="cta_menu">Demander un devis gratuit<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
-    <a class="btn btn--line-light" href="tel:+32486611159" data-track="phone_click"><svg class="btn__icon" aria-hidden="true"><use href="#i-phone"/></svg>+32&nbsp;486&nbsp;61&nbsp;11&nbsp;59</a>
-    <p>Bruxelles · rendez-vous chez vous ou en visio<br>Réponse sous 24&nbsp;h ouvrées</p>
+    <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_menu">Demander un devis gratuit</a>
+    <a class="btn btn--line btn--lg" href="tel:+32486611159" data-track="phone_click">Appeler le 0486&nbsp;61&nbsp;11&nbsp;59</a>
+    <p>Bruxelles · chez vous ou en visio · réponse sous 24&nbsp;h ouvrées</p>
   </div>
 </div>
 <!--/include-->
@@ -81,8 +82,9 @@
 <main id="main" class="page">
   <div class="wrap">
     <article class="legal">
-      <p class="eyebrow">Données personnelles</p>
-      <h1>Confidentialité <em>&amp; cookies.</em></h1>
+      <nav class="crumbs" aria-label="Fil d’Ariane"><ol><li><a href="/msdesign.be/">Accueil</a></li><li aria-current="page">Confidentialité</li></ol></nav>
+      <p class="label">Données personnelles</p>
+      <h1>Confidentialité <h1>Confidentialité <em>&amp; cookies.</em></h1>amp; cookies</h1>
       <p class="updated">Dernière mise à jour : 9 octobre 2026</p>
       <p>Ce site présente M&amp;S Design, agence de design web à Bruxelles. Il collecte le minimum de données nécessaire pour répondre à vos demandes, sans publicité ni revente. Cette page explique quelles données sont traitées, pourquoi, combien de temps, et comment exercer vos droits conformément au Règlement général sur la protection des données (RGPD, règlement UE 2016/679) et à la loi belge du 30 juillet 2018.</p>
 
@@ -151,7 +153,7 @@
       <p>Refuser est aussi simple qu’accepter. Vous pouvez changer d’avis à tout moment&nbsp;: <button class="link-btn" type="button" data-cookie-open>gérer mes cookies</button>. Le retrait de votre accord efface les cookies de mesure d’audience.</p>
 
       <h2 id="clients">6. Données des sites de nos clients</h2>
-      <p>Lorsque nous réalisons ou entretenons le site d’un client, ce client reste responsable du traitement des données de ses propres visiteurs&nbsp;; M&amp;S Design agit alors comme sous-traitant, selon ses instructions, et un accord de sous-traitance (article&nbsp;28 du RGPD) est joint au contrat. Les sites présentés dans nos réalisations sont des concepts de refonte réalisés pour des commerces bruxellois&nbsp;; leurs propres politiques de confidentialité s’appliquent sur leurs pages.</p>
+      <p>Lorsque nous réalisons ou entretenons le site d’un client, ce client reste responsable du traitement des données de ses propres visiteurs&nbsp;; M&amp;S Design agit alors comme sous-traitant, selon ses instructions, et un accord de sous-traitance (article&nbsp;28 du RGPD) est joint au contrat.</p>
 
       <h2 id="droits">7. Vos droits</h2>
       <p>Vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation, d’opposition et de portabilité de vos données, ainsi que du droit de retirer votre consentement à tout moment. Écrivez à <a href="mailto:mck.honorable@gmail.com">mck.honorable@gmail.com</a>&nbsp;: une réponse vous est apportée dans un délai d’un mois.</p>
@@ -166,40 +168,46 @@
 <!--#include footer-->
 <footer class="ftr">
   <div class="wrap">
-    <div class="ftr__top">
-      <a class="ftr__brand" href="/msdesign.be/" aria-label="M&amp;S Design — accueil">
-        <span class="ftr__mark" aria-hidden="true">M<em>&amp;</em>S</span>
-        <span class="ftr__word" aria-hidden="true">Design<small>Agence web · Bruxelles</small></span>
-      </a>
-      <p class="ftr__claim">Des sites qui vous ramènent<br><em>des clients.</em></p>
-    </div>
+    <p class="ftr__lead">Un projet en tête&nbsp;? <a href="/msdesign.be/#contact" data-track="cta_footer">Parlons-en</a>, l’appel découverte est gratuit.</p>
     <div class="ftr__grid">
-      <div class="ftr__col">
-        <h2 class="ftr__title">L’agence</h2>
-        <p>Design et développement de sites sur mesure pour les entreprises et les commerces de Bruxelles.</p>
-        <p class="ftr__small">Rendez-vous chez vous ou en visio, partout en Belgique.<br>Du lundi au vendredi, 9&nbsp;h – 18&nbsp;h.</p>
+      <div>
+        <h2 class="ftr__title">Le studio</h2>
+        <ul class="ftr__list">
+          <li><a href="/msdesign.be/#promesse">Notre promesse de délai</a></li>
+          <li><a href="/msdesign.be/#methode">Méthode</a></li>
+          <li><a href="/msdesign.be/#faq">Questions fréquentes</a></li>
+          <li><a href="/msdesign.be/#contact">Contact</a></li>
+        </ul>
       </div>
-      <div class="ftr__col">
+      <div>
+        <h2 class="ftr__title">Études de cas</h2>
+        <ul class="ftr__list">
+          <li><a href="/msdesign.be/etudes/atelier-ombelle.html">Atelier Ombelle</a></li>
+          <li><a href="/msdesign.be/etudes/brachet-avocats.html">Brachet Avocats</a></li>
+          <li><a href="/msdesign.be/etudes/cave-sauvage.html">Cave Sauvage</a></li>
+          <li><a href="/msdesign.be/etudes/">Toutes les études</a></li>
+        </ul>
+      </div>
+      <div>
         <h2 class="ftr__title">Services</h2>
         <ul class="ftr__list">
-          <li><a href="/msdesign.be/#services">Site vitrine sur mesure</a></li>
+          <li><a href="/msdesign.be/#services">Sites sur mesure</a></li>
           <li><a href="/msdesign.be/#services">Identité visuelle</a></li>
           <li><a href="/msdesign.be/#services">Référencement local</a></li>
-          <li><a href="/msdesign.be/#tarifs">Entretien &amp; hébergement</a></li>
-          <li><a href="/msdesign.be/#realisations">Réalisations</a></li>
+          <li><a href="/msdesign.be/#tarifs">Tarifs &amp; entretien</a></li>
         </ul>
       </div>
-      <div class="ftr__col">
-        <h2 class="ftr__title">Contact</h2>
+      <div>
+        <h2 class="ftr__title">Nous joindre</h2>
         <ul class="ftr__list">
-          <li><a href="tel:+32486611159" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg>+32&nbsp;486&nbsp;61&nbsp;11&nbsp;59</a></li>
-          <li><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click"><svg aria-hidden="true"><use href="#i-chat"/></svg>WhatsApp</a></li>
-          <li><a href="mailto:mck.honorable@gmail.com" data-track="email_click"><svg aria-hidden="true"><use href="#i-mail"/></svg>mck.honorable@gmail.com</a></li>
+          <li><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
+          <li><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click">WhatsApp</a></li>
+          <li><a href="mailto:mck.honorable@gmail.com" data-track="email_click">mck.honorable@gmail.com</a></li>
+          <li>Bruxelles · lun – ven, 9 h – 18 h</li>
         </ul>
-        <a class="btn btn--sage btn--sm ftr__cta" href="/msdesign.be/#contact" data-track="cta_footer">Demander un devis</a>
       </div>
-      <div class="ftr__col">
-        <h2 class="ftr__title">Le site</h2>
+      <div>
+        <h2 class="ftr__title">Informations</h2>
         <ul class="ftr__list">
           <li><a href="/msdesign.be/confidentialite.html" data-page-link="confidentialite" aria-current="page">Confidentialité (RGPD)</a></li>
           <li><a href="/msdesign.be/cgu.html" data-page-link="cgu">Conditions &amp; mentions légales</a></li>
@@ -212,24 +220,24 @@
     </div>
     <div class="ftr__bottom">
       <p>© <span data-year>2026</span> M&amp;S Design · Bruxelles · BCE&nbsp;: en cours d’immatriculation</p>
-      <p class="demo-note">Maquette de démonstration — ouverture de l’agence prévue en 2027.</p>
+      <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027, études de cas fictives.</p>
     </div>
   </div>
 </footer>
 <div class="dock" data-dock>
-  <a class="dock__call" href="tel:+32486611159" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>Appeler</span></a>
-  <a class="btn btn--olive dock__cta" href="/msdesign.be/#contact" data-track="cta_dock">Demander un devis</a>
+  <a class="dock__call" href="tel:+32486611159" data-track="phone_click" aria-label="Appeler le 0486 61 11 59"><svg aria-hidden="true"><use href="#i-phone"/></svg></a>
+  <a class="btn dock__cta" href="/msdesign.be/#contact" data-track="cta_dock">Demander un devis gratuit</a>
 </div>
 <!--/include-->
 <!--#include cookie-->
 <div class="cookie" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-text" hidden data-cookie>
   <div data-cookie-main>
-    <p class="cookie__title" id="cookie-title"><span class="cookie__amp" aria-hidden="true">&amp;</span>Un mot sur les cookies.</p>
-    <p class="cookie__text" id="cookie-text">Aucun cookie publicitaire. Avec votre accord seulement, nous mesurons l’audience de façon anonyme pour améliorer le site. <a href="/msdesign.be/confidentialite.html#cookies">En savoir plus</a></p>
+    <p class="cookie__title" id="cookie-title">Cookies</p>
+    <p class="cookie__text" id="cookie-text">Aucun cookie publicitaire. Avec votre accord seulement, nous mesurons l’audience de façon anonyme. <a href="/msdesign.be/confidentialite.html#cookies">En savoir plus</a></p>
     <div class="cookie__actions">
-      <button class="btn btn--sm btn--line-light" type="button" data-consent="refuse">Tout refuser</button>
-      <button class="btn btn--sm btn--ghost" type="button" data-consent="customize" aria-expanded="false">Personnaliser</button>
-      <button class="btn btn--sm btn--line-light" type="button" data-consent="accept">Tout accepter</button>
+      <button class="btn btn--sm btn--line" type="button" data-consent="refuse">Refuser</button>
+      <button class="btn btn--sm btn--line" type="button" data-consent="customize" aria-expanded="false">Choisir</button>
+      <button class="btn btn--sm" type="button" data-consent="accept">Accepter</button>
     </div>
   </div>
   <div data-cookie-prefs hidden>
@@ -243,14 +251,15 @@
       <label class="switch"><input type="checkbox" role="switch" aria-labelledby="c-analytics-label" aria-describedby="c-analytics-text" data-consent-analytics><span></span></label>
     </div>
     <div class="cookie__actions">
-      <button class="btn btn--sm btn--line-light" type="button" data-consent="refuse">Tout refuser</button>
-      <button class="btn btn--sm btn--sage" type="button" data-consent="save">Enregistrer</button>
+      <button class="btn btn--sm btn--line" type="button" data-consent="refuse">Tout refuser</button>
+      <button class="btn btn--sm" type="button" data-consent="save">Enregistrer</button>
     </div>
   </div>
 </div>
 <!--/include-->
 <!--#include sprite-->
 <svg class="sprite" aria-hidden="true" focusable="false">
+<symbol id="amp" viewBox="0 0 468 665"><path fill="currentColor" fill-rule="evenodd" d="M283.6 0.3L298.6 0.2L321.6 2.1L338.6 5.9L350.6 9.9L372.6 20.0L383.6 27.2L395.6 37.6L400.7 45.3L402.8 53.3L402.9 61.3L377.9 192.3L374.6 203.3L372.8 206.3L369.6 208.7L364.6 209.8L357.6 207.4L354.2 202.3L352.8 194.3L348.9 138.3L344.8 111.3L341.9 98.3L337.9 85.3L330.9 69.3L323.8 59.3L316.6 52.1L309.6 47.0L293.6 40.9L282.6 39.1L267.6 39.0L252.6 41.1L238.6 45.0L223.6 52.0L212.6 59.1L198.6 71.3L185.5 87.3L176.4 102.3L167.2 125.3L163.2 142.3L161.2 161.3L161.4 182.3L165.1 206.3L168.2 216.3L173.2 227.3L181.2 239.3L189.6 248.0L204.6 247.0L228.6 246.9L242.6 249.0L251.6 252.0L258.3 256.3L262.0 260.3L263.8 264.3L264.4 270.3L262.9 278.3L260.6 282.0L256.6 285.8L250.6 288.8L237.6 291.4L225.6 291.5L216.6 290.6L202.6 286.8L191.6 281.8L178.6 273.8L163.6 278.9L152.6 284.0L129.6 298.0L118.6 307.0L108.4 317.3L94.3 336.3L86.5 350.3L80.3 364.3L72.2 390.3L66.4 425.3L65.1 442.3L65.2 480.3L69.3 515.3L73.4 533.3L79.3 551.3L85.3 565.3L95.3 582.3L109.6 600.2L120.6 610.6L130.6 617.7L143.6 624.8L155.6 629.7L170.6 633.8L184.6 635.8L210.6 636.0L234.6 632.7L252.6 627.6L272.6 618.8L290.6 607.7L305.6 595.7L319.8 581.3L332.9 564.3L342.9 547.3L351.9 526.3L357.8 504.3L360.5 481.3L360.5 462.3L357.9 444.3L351.6 428.3L343.6 417.7L332.6 409.0L323.6 405.1L311.6 401.9L302.6 400.8L282.6 401.2L270.6 403.1L261.6 406.2L251.6 412.0L244.2 419.3L240.2 426.3L238.4 436.3L239.1 443.3L242.4 450.3L247.6 454.7L257.6 458.8L275.6 464.0L289.1 471.3L292.9 475.3L295.9 481.3L297.9 496.3L297.0 504.3L293.9 512.3L286.3 521.3L279.6 525.8L268.6 529.6L255.6 531.0L246.6 530.5L235.5 527.3L224.6 520.8L213.4 508.3L206.4 493.3L203.2 479.3L202.4 464.3L203.3 451.3L205.2 441.3L210.1 427.3L220.3 410.3L234.6 394.9L251.6 382.9L268.6 375.0L293.6 368.1L318.6 366.0L334.6 366.9L392.6 375.6L405.6 376.0L420.6 374.6L430.6 370.7L434.6 366.3L436.3 359.3L435.8 354.3L431.9 347.3L424.6 342.9L396.6 332.4L381.6 323.7L377.3 319.3L374.3 314.3L372.2 307.3L371.7 299.3L372.2 292.3L374.1 286.3L377.4 280.3L382.9 274.3L388.6 270.1L395.6 267.0L403.6 265.0L419.6 264.8L430.6 266.9L441.6 272.0L450.6 279.7L458.9 291.3L464.0 303.3L466.9 316.3L467.9 334.3L465.9 353.3L461.7 367.3L456.8 377.3L450.0 387.3L438.6 398.8L430.6 404.5L420.6 409.5L407.6 413.6L397.6 415.0L381.7 415.3L384.8 428.3L387.0 444.3L387.9 464.3L386.8 486.3L384.0 506.3L380.8 520.3L373.9 541.3L367.8 555.3L353.9 579.3L340.9 596.3L329.6 608.5L313.6 622.5L299.6 632.6L278.6 644.5L264.6 650.7L239.6 658.7L211.6 663.7L183.6 665.0L155.6 663.7L132.6 659.6L107.6 651.6L86.6 641.5L68.6 629.5L50.6 613.8L35.4 596.3L23.1 577.3L13.2 556.3L5.5 531.3L1.3 507.3L0.0 480.3L1.2 454.3L3.3 439.3L7.3 420.3L16.4 392.3L31.4 361.3L39.4 348.3L53.2 329.3L75.6 305.2L89.6 293.1L104.6 282.0L128.6 267.9L160.7 254.3L149.3 236.3L140.5 214.3L135.4 189.3L134.1 166.3L135.3 143.3L140.2 118.3L149.3 93.3L160.2 73.3L174.4 54.3L187.1 41.3L195.6 34.0L212.6 22.1L230.6 12.8L249.6 6.0L261.6 3.0L283.6 0.3Z"/></symbol>
 <symbol id="i-linkedin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V17M8 7.3v.2M11.5 17v-6.5M11.5 13.2c0-1.6 1-2.8 2.5-2.8s2.5 1 2.5 2.8V17" stroke-linecap="round"/></symbol>
 <symbol id="i-arrow-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
 <symbol id="i-arrow-ur" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></symbol>

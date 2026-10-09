@@ -30,7 +30,7 @@ check_file() {
   fi
 }
 
-for page in *.html; do
+for page in *.html etudes/*.html; do
   while IFS= read -r url; do
     [ -z "$url" ] && continue
     case "$url" in

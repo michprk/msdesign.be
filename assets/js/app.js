@@ -128,7 +128,7 @@
   }
   const header = $('[data-header]');
   const hdrH = () => (header ? header.offsetHeight : 0);
-  const targetY = (el) => (el.id === 'top' ? 0 : el.getBoundingClientRect().top + window.scrollY - (el.classList.contains('sec') || el.id === 'manifeste' ? 0 : hdrH()) + 1);
+  const targetY = (el) => (el.id === 'top' ? 0 : el.getBoundingClientRect().top + window.scrollY - (el.classList.contains('sec') ? 0 : hdrH()) + 1);
 
   /* ---------- En-tête : voilé dès qu’on quitte le haut de page ---------- */
   const hero = $('[data-hero]');
@@ -203,7 +203,16 @@
     if (!a) return;
     const r = hero.getBoundingClientRect();
     hint.style.setProperty('--hx', (a.x - r.left).toFixed(0) + 'px');
-    hint.style.setProperty('--hy', Math.max(a.y - r.top, hdrH() + 70).toFixed(0) + 'px');
+    hint.style.setProperty('--hy', Math.min(a.y - r.top, r.height - 64).toFixed(0) + 'px');
+  }
+  // Le portable se pose dans l’espace libre sous le texte du héros
+  function placeMac() {
+    const stage = $('[data-stage]');
+    const copy = $('[data-hero-copy]');
+    if (!stage || !copy || !hero) return;
+    const bottom = copy.offsetTop + copy.offsetHeight + 18;
+    stage.dataset.top = (bottom / hero.clientHeight).toFixed(3);
+    if (mac) mac.resize();
   }
   function showHint() {
     if (!hint || hintDone || zooming) return;
@@ -225,16 +234,24 @@
 
   safe('mac', () => {
     if (!hero) return;
+    placeMac();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeMac);
     window.addEventListener('ms:mac-ready', (e) => {
       mac = e.detail && e.detail.api;
       if (!mac) return;
+      placeMac();
       if (d.classList.contains('intro-on')) setTimeout(() => mac.open(), 420);
       else mac.skip();
       try { sessionStorage.setItem(KEY + 'intro', 'seen'); } catch (err) { /* navigation privée */ }
     });
     window.addEventListener('ms:mac-demo-end', () => setTimeout(showHint, 300));
     window.addEventListener('ms:mac-hover', () => setTimeout(hideHint, 900));
-    const replace = () => requestAnimationFrame(() => { if (hint && hint.classList.contains('is-on')) placeHint(); });
+    let lastW = window.innerWidth;
+    const replace = () => requestAnimationFrame(() => {
+      // (sur mobile, la barre d’adresse change la hauteur en défilant : on ne recadre que si la largeur change)
+      if (window.innerWidth !== lastW || window.scrollY < 10) { lastW = window.innerWidth; placeMac(); }
+      if (hint && hint.classList.contains('is-on')) placeHint();
+    });
     if ('ResizeObserver' in window) new ResizeObserver(replace).observe(hero);
     window.addEventListener('resize', replace);
     window.addEventListener('scroll', () => { if (window.scrollY > 80) hideHint(); }, { passive: true });
@@ -252,8 +269,9 @@
       const id = e.detail && e.detail.target;
       const section = document.getElementById(id);
       if (!section || !veil) { finish(); return; }
-      const bg = getComputedStyle(id === 'manifeste' ? hero : section).backgroundColor;
-      veil.style.setProperty('--veil', id === 'manifeste' ? '#efe9db' : bg);
+      let bg = getComputedStyle(section).backgroundColor;
+      if (!bg || bg === 'transparent' || /rgba\(0, 0, 0, 0\)/.test(bg)) bg = getComputedStyle(document.body).backgroundColor;
+      veil.style.setProperty('--veil', bg);
       veil.classList.remove('is-out');
       veil.classList.add('is-on');
       setTimeout(() => {
@@ -510,15 +528,17 @@
       const subject = 'Devis ' + (PROJETS[data.projet] || '') + ' — ' + data.name + (data.societe ? ' (' + data.societe + ')' : '');
       return 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(summary(data));
     }
+    // Page de remerciement : le prénom passe par le stockage de session, jamais par l’adresse
     function success(data, viaMail) {
-      const first = data.name.split(' ')[0].replace(/[<>&"]/g, '');
-      setStatus('ok', '<strong>Merci' + (first ? ', ' + first : '') + '&nbsp;!</strong> ' + (viaMail
-        ? 'Votre messagerie s’est ouverte avec la demande prête à envoyer à ' + EMAIL + '. Nous vous répondons sous 24&nbsp;h ouvrées.'
-        : 'Votre demande est bien partie. Nous vous répondons sous 24&nbsp;h ouvrées avec une proposition claire.'));
-      try { localStorage.setItem(KEY + 'last_submit', String(Date.now())); } catch (e) { /* rien */ }
+      const first = data.name.split(' ')[0].replace(/[<>&"]/g, '').slice(0, 40);
+      try {
+        localStorage.setItem(KEY + 'last_submit', String(Date.now()));
+        sessionStorage.setItem(KEY + 'merci', JSON.stringify({ name: first, via: viaMail ? 'mail' : 'api' }));
+      } catch (e) { /* navigation privée */ }
       const p = PLANS[data.formule];
       track('generate_lead', { form_type: 'devis', projet: data.projet, value: p ? p.price : 0, currency: 'EUR', method: viaMail ? 'mailto' : 'api' });
-      if (!viaMail) { form.reset(); estimate(); }
+      if (!viaMail) form.reset();
+      setTimeout(() => { window.location.href = form.getAttribute('action') || ((d.dataset.base || '') + '/merci.html'); }, viaMail ? 900 : 0);
     }
 
     form.addEventListener('submit', async (e) => {
@@ -603,8 +623,10 @@
       if (contact) io.observe(contact);
       if (footer) io.observe(footer);
     }
+    // sur l’accueil, après le bouton du héros ; ailleurs, dès qu’on commence à lire
     function update() {
-      const after = window.scrollY > (hero ? hero.offsetHeight * 0.7 : 300);
+      if (PAGE === 'merci') return;
+      const after = window.scrollY > (hero ? hero.offsetHeight * 0.55 : 160);
       dock.classList.toggle('is-on', after && !near);
     }
     update();
@@ -624,6 +646,18 @@
     });
   });
 
+  /* ---------- Page de remerciement : prénom et suite selon l’envoi ---------- */
+  safe('merci', () => {
+    if (PAGE !== 'merci') return;
+    let info = null;
+    try { info = JSON.parse(sessionStorage.getItem(KEY + 'merci') || 'null'); } catch (e) { info = null; }
+    const name = $('[data-merci-name]');
+    if (name && info && info.name) name.textContent = ', ' + info.name;
+    const mail = $('[data-merci-mail]');
+    if (mail) mail.hidden = !(info && info.via === 'mail');
+    track('thank_you_view', { via: info ? info.via : 'direct' });
+  });
+
   /* ---------- Page 404 : retrouver la bonne partie du site ---------- */
   safe('404', () => {
     if (PAGE !== '404') return;
@@ -634,8 +668,12 @@
     if (code) code.textContent = location.host + location.pathname;
     const guesses = [
       [/service|site|vitrine|identit|logo|seo|referencement|hebergement|entretien/, '/#services', 'Nos services'],
-      [/realisation|portfolio|projet|reference|client|work/, '/#realisations', 'Nos réalisations'],
-      [/methode|process|etape|delai/, '/#methode', 'Notre méthode'],
+      [/ombelle|interieur/, '/etudes/atelier-ombelle.html', 'L’étude de cas Atelier Ombelle'],
+      [/brachet|avocat/, '/etudes/brachet-avocats.html', 'L’étude de cas Brachet Avocats'],
+      [/cave|vin/, '/etudes/cave-sauvage.html', 'L’étude de cas Cave Sauvage'],
+      [/etude|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos études de cas'],
+      [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],
+      [/methode|process|etape/, '/#methode', 'Notre méthode'],
       [/tarif|prix|offre|formule|devis-gratuit|pricing/, '/#tarifs', 'Les tarifs'],
       [/faq|question|aide/, '/#faq', 'Les questions fréquentes'],
       [/contact|devis|rendez-vous|rdv/, '/#contact', 'Le formulaire de contact'],

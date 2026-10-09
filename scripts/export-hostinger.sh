@@ -22,7 +22,7 @@ ZIP="dist/msdesign-hostinger.zip"
 bash scripts/build.sh > /dev/null
 rm -rf dist
 mkdir -p "$OUT/api"
-cp -r ./*.html robots.txt sitemap.xml site.webmanifest favicon.svg favicon.ico favicon-32.png \
+cp -r ./*.html etudes robots.txt sitemap.xml site.webmanifest favicon.svg favicon.ico favicon-32.png \
       apple-touch-icon.png icon-192.png icon-512.png icon-maskable-512.png og.jpg .htaccess .well-known assets licenses "$OUT"/
 cp api/contact.php api/.htaccess "$OUT/api/"
 rm -f "$OUT/assets/js/boot.js"

@@ -6,9 +6,30 @@
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/mac-poster-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/projet-rosenoire-1200.webp</image:loc></image:image>
-    <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/projet-kanaftchian-1200.webp</image:loc></image:image>
-    <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/projet-studio124-1200.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://michprk.github.io/msdesign.be/etudes/</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://michprk.github.io/msdesign.be/etudes/atelier-ombelle.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/cas-ombelle-mac-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://michprk.github.io/msdesign.be/etudes/brachet-avocats.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/cas-brachet-mac-1600.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://michprk.github.io/msdesign.be/etudes/cave-sauvage.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://michprk.github.io/msdesign.be/assets/img/cas-cave-mac-1600.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://michprk.github.io/msdesign.be/confidentialite.html</loc>

@@ -8,12 +8,12 @@
    et enregistrées en WebP (assets/img/studio-*.webp, chene-*.webp).
    ========================================================================== */
 
-function rng(seed) {
+export function rng(seed) {
   let s = seed >>> 0;
   return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
 }
 
-function makeNoise(seed) {
+export function makeNoise(seed) {
   const r = rng(seed);
   const p = Array.from({ length: 256 }, (_, i) => i);
   for (let i = 255; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [p[i], p[j]] = [p[j], p[i]]; }

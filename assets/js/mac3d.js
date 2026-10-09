@@ -14,8 +14,8 @@
    go(id)  : la caméra plonge dans l’écran jusqu’à ce que l’onglet remplisse
              la fenêtre, puis « ms:mac-go » laisse le site prendre le relais.
    ========================================================================== */
-import * as THREE from '../vendor/three.module.min.js?v=9950175b8a';
-import { createScreen, CW, CH, CONTENT, TABS } from './screen.js?v=9950175b8a';
+import * as THREE from '../vendor/three.module.min.js?v=d1c9c220b3';
+import { createScreen, ampersand, CW, CH, CONTENT, TABS } from './screen.js?v=d1c9c220b3';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -172,8 +172,9 @@ function waitFonts(ms) {
   const loads = Promise.all([
     document.fonts.load('500 40px "Instrument Sans"'),
     document.fonts.load('600 40px "Instrument Sans"'),
-    document.fonts.load('italic 40px "Instrument Serif"'),
-    document.fonts.load('14px "Inria Serif"')
+    document.fonts.load('300 40px "Inria Serif"'),
+    document.fonts.load('italic 300 40px "Inria Serif"'),
+    document.fonts.load('400 40px "Inria Serif"')
   ]).catch(() => {});
   return Promise.race([loads, new Promise((r) => setTimeout(r, ms))]);
 }
@@ -295,9 +296,8 @@ function keyboardTextures(keys) {
       const font = (px, weight) => (weight || 400) + ' ' + Math.round(px * S) + 'px "Helvetica Neue", Arial, sans-serif';
       if (k.kind === 'amp') {
         x.fillStyle = glow ? '#c9e07a' : '#a9bd62';
-        x.font = 'italic ' + Math.round(0.95 * S) + 'px "Instrument Serif", Georgia, serif';
+        ampersand(x, X + kw / 2, Y + kd * 0.76, 0.72 * S, glow ? '#c9e07a' : '#a9bd62');
         x.textAlign = 'center';
-        x.fillText('&', X + kw / 2, Y + kd * 0.74);
         x.font = font(0.27);
         x.fillStyle = ink;
         x.fillText('1', X + kw * 0.78, Y + kd * 0.3);
@@ -409,11 +409,7 @@ function glyphTexture() {
   return canvasTex(512, 512, (x, w, h) => {
     x.fillStyle = '#000';
     x.fillRect(0, 0, w, h);
-    x.fillStyle = '#fff';
-    x.font = 'italic 470px "Instrument Serif", Georgia, serif';
-    x.textAlign = 'center';
-    x.textBaseline = 'alphabetic';
-    x.fillText('&', w / 2, h * 0.79);
+    ampersand(x, w / 2, h * 0.86, 400, '#fff');
   }, false);
 }
 
@@ -560,7 +556,7 @@ function swatchCard(name, colors, n) {
       x.font = '600 15px "Instrument Sans", Arial, sans-serif';
       x.fillText('M&S ' + String(n * 4 + i + 1).padStart(2, '0') + '-' + (100 + i * 37), 16, 146 + i * 150);
     });
-    x.font = 'italic 34px "Instrument Serif", Georgia, serif';
+    x.font = 'italic 300 34px "Inria Serif", Georgia, serif';
     x.fillStyle = '#1d1f17';
     x.fillText(name, 16, 660);
     x.font = '600 12px "Instrument Sans", Arial, sans-serif';
@@ -628,10 +624,7 @@ function buildProps() {
       x.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)';
       x.fillRect(Math.random() * w, Math.random() * h, Math.random() > 0.5 ? 6 : 1, Math.random() > 0.5 ? 1 : 6);
     }
-    x.fillStyle = 'rgba(0,0,0,.18)';
-    x.font = 'italic 64px "Instrument Serif", Georgia, serif';
-    x.textAlign = 'center';
-    x.fillText('&', w / 2, h * 0.36);
+    ampersand(x, w / 2, h * 0.4, 52, 'rgba(0,0,0,.18)');
   });
   const pages = new THREE.MeshStandardMaterial({ color: 0xefe8d6, roughness: 0.9 });
   const cover = new THREE.MeshStandardMaterial({ map: linen, roughness: 0.85 });
@@ -773,28 +766,23 @@ export async function createMac3D(container, options) {
   /* ----- Cadrage ----- */
   let VW = 1, VH = 1;
   const TARGET_Y = 8.5;
-  const REST = { az: -0.3, el: 0.235 };
-  const START = { az: -0.16, el: 0.55 };
-  const view = { sx: 0.66, sy: 0.57, dist: 100 };
+  const REST = { az: -0.17, el: 0.2 };
+  const START = { az: -0.07, el: 0.62 };
+  const view = { sx: 0.5, sy: 0.7, dist: 100 };
   const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
   const tanH = () => Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
 
   function frame() {
     const aspect = VW / VH;
-    const portrait = aspect < 0.9;
     const s = container.dataset;
-    let sx, sy, fw, fh;
-    if (portrait || VW <= 700) { sx = 0.5; sy = 0.735; fw = 0.88; fh = 0.32; }
-    else {
-      // le Mac occupe l’espace libre à droite du texte (même calcul que la CSS du héros)
-      const pad = clamp(VW * 0.045, 20, 64);
-      const safe = (pad + Math.min(590, VW * 0.46) + 24) / VW;
-      const zone = 0.975 - safe;
-      fw = Math.min(0.5, zone * 0.94);
-      sx = safe + zone / 2 + 0.01;
-      sy = 0.58;
-      fh = 0.62;
-    }
+    // comme une page produit : le texte centré en haut, le portable centré dessous,
+    // dans l’espace libre sous le texte (data-top, fraction de la hauteur, posée par app.js)
+    const narrow = aspect < 0.9 || VW <= 700;
+    const top = clamp(Number(s.top || (narrow ? 0.5 : 0.44)), 0.2, 0.75);
+    const zone = (narrow ? 0.9 : 0.99) - top;
+    let sx = 0.5, sy = top + zone * 0.53;
+    let fw = narrow ? 0.9 : Math.min(0.6, 0.36 + zone * 0.4);
+    const fh = zone * 0.88;
     if (s.sx) sx = Number(s.sx);
     if (s.sy) sy = Number(s.sy);
     if (s.fw) fw = Number(s.fw);
@@ -975,22 +963,26 @@ export async function createMac3D(container, options) {
     const tabIndex = TABS.findIndex((t) => t.target === id);
     if (tabIndex >= 0 && screen.state.tab !== tabIndex) { screen.state.tab = tabIndex; redrawScreen(); }
     cursor.visible = false;
-    zoom = { t0: now(), dur: mobile ? 950 : 1150, to: screenPose(), target: id };
+    const z = zoom = { t0: now(), dur: mobile ? 950 : 1150, to: screenPose(), target: id };
     mode = 'zoom';
     window.dispatchEvent(new CustomEvent('ms:mac-zoom', { detail: { target: id } }));
     start();
+    // filet de sécurité : si l’onglet ne dessine plus (arrière-plan), la navigation a lieu quand même
+    setTimeout(() => {
+      if (zoom !== z || z.done) return;
+      z.done = true;
+      window.dispatchEvent(new CustomEvent('ms:mac-go', { detail: { target: id } }));
+    }, z.dur + 700);
     return true;
   }
-  // Position (en pixels de la fenêtre) du haut de la barre d'onglets : pour placer l'invitation
+  // Position (en pixels de la fenêtre) du bord avant du portable : pour placer l'invitation dessous
   function anchor() {
     if (mode === 'closed') return null;
     applyCamera();
     mac.updateMatrixWorld(true);
-    const t = screen.centerOf('tab', 2);
-    const u = (CONTENT.x + CONTENT.w / 2) / CW, v = 1 - 72 / CH;
-    const p = new THREE.Vector3((u - 0.5) * DISP_W, -0.018, DISP_C + (v - 0.5) * DISP_H).applyMatrix4(lid.matrixWorld).project(camera);
+    const p = new THREE.Vector3(0, 0, D / 2 + 1.5).applyMatrix4(mac.matrixWorld).project(camera);
     const r = canvas.getBoundingClientRect();
-    return { x: r.left + (p.x * 0.5 + 0.5) * r.width, y: r.top + (-p.y * 0.5 + 0.5) * r.height, tab: t };
+    return { x: r.left + (p.x * 0.5 + 0.5) * r.width, y: r.top + (-p.y * 0.5 + 0.5) * r.height };
   }
   function home() {
     zoom = null;
@@ -1163,3 +1155,6 @@ export async function createMac3D(container, options) {
     }
   };
 }
+
+// Outils partagés avec les natures mortes des études de cas (_msdesign-src/stilllife.js)
+export { THREE, rrect, crease, flatSlab, canvasTex, rr, loadImage, roomEnvironment, softShadow, tableMaterial, waitFonts };
