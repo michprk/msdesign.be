@@ -8,7 +8,7 @@
    Le module ne fait que dessiner et dire « qu’y a-t-il sous ce point » :
    la 3D (mac3d.js) s’occupe du reste.
    ========================================================================== */
-import { AMP } from './amp.js?v=d1c9c220b3';
+import { AMP } from './amp.js?v=ff0a18bf6e';
 
 export const CW = 2048;
 export const CH = 1330;
@@ -264,56 +264,67 @@ function miniHeader(x) {
   ['Études de cas', 'Services', 'Méthode', 'Tarifs', 'FAQ'].forEach((l) => { ox += text(x, l, ox, 34, '400 14px ' + SANS, C.ink2) + 36; });
   pill(x, 1262, 13, 130, 30, C.deep, '#fbfaf6', 'Devis gratuit', 13);
 }
+// Titres en Instrument Sans ; petites phrases (étiquettes, sous-titres) en Inria Serif, comme le site
+const H = (px) => '500 ' + px + 'px ' + SANS;
+const SMALL = (px) => '400 ' + px + 'px ' + SERIF;
+const ITALIC = '"Instrument Serif", Georgia, serif';
 function head(x, label, title, lead, dark, y) {
   const Y = y || 150;
-  text(x, label, PAGE_W / 2, Y, '500 16px ' + SANS, dark ? C.sage : C.olive, '0px', 'center');
+  text(x, label, PAGE_W / 2, Y, SMALL(18), dark ? C.sage : C.olive, '0px', 'center');
   const lines = title.split('\n');
-  lines.forEach((l, i) => text(x, l, PAGE_W / 2, Y + 72 + i * 66, '300 62px ' + SERIF, dark ? '#f3f0e8' : C.ink, '-1px', 'center'));
-  if (lead) para(x, lead, PAGE_W / 2, Y + 72 + lines.length * 66 + 6, 760, 30, '400 20px ' + SERIF, dark ? 'rgba(243,240,232,.72)' : C.mute, 'center');
+  lines.forEach((l, i) => text(x, l, PAGE_W / 2, Y + 70 + i * 64, H(58), dark ? '#f3f0e8' : C.ink, '-2px', 'center'));
+  if (lead) para(x, lead, PAGE_W / 2, Y + 70 + lines.length * 64 + 4, 760, 30, SMALL(20), dark ? 'rgba(243,240,232,.72)' : C.mute, 'center');
+}
+// L’étude « Premium » : l’image floutée et ses points d’interrogation
+function mystery(x, im, X, Y, w, h, r) {
+  cover(x, im, X, Y, w, h, r, 0.5);
+  x.save();
+  rr(x, X, Y, w, h, r);
+  x.clip();
+  x.fillStyle = 'rgba(16,18,13,.35)';
+  x.fillRect(X, Y, w, h);
+  text(x, '? ? ?', X + w / 2, Y + h / 2 + h * 0.1, 'italic ' + Math.round(h * 0.36) + 'px ' + ITALIC, 'rgba(243,240,232,.92)', '0px', 'center');
+  x.restore();
 }
 
 function pageAccueil(x, img) {
-  const g = x.createRadialGradient(PAGE_W / 2, 200, 0, PAGE_W / 2, 200, 900);
-  g.addColorStop(0, '#fdfcf9');
-  g.addColorStop(1, '#ebe6da');
+  const g = x.createLinearGradient(0, 0, PAGE_W, 760);
+  g.addColorStop(0, '#f4f0e6');
+  g.addColorStop(0.55, '#e4dccb');
+  g.addColorStop(1, '#c9bea6');
   x.fillStyle = g;
   x.fillRect(0, 0, PAGE_W, 760);
-  text(x, 'Studio de design web · Bruxelles', PAGE_W / 2, 150, '500 16px ' + SANS, C.olive, '0px', 'center');
-  text(x, 'Un site qui vous apporte', PAGE_W / 2, 232, '300 74px ' + SERIF, C.ink, '-1.5px', 'center');
-  text(x, 'des clients.', PAGE_W / 2, 310, '300 74px ' + SERIF, C.ink, '-1.5px', 'center');
-  para(x, 'Conçu sur mesure, rapide et élégant. En ligne en 21 jours, c’est promis.', PAGE_W / 2, 366, 700, 30, '400 21px ' + SERIF, C.mute, 'center');
-  pill(x, 520, 408, 190, 48, C.deep, '#fbfaf6', 'Demander un devis', 16);
-  text(x, 'Voir les études de cas  ›', 742, 438, '500 16px ' + SANS, C.olive);
-  [img.ombelle, img.brachet, img.cave].forEach((im, i) => {
-    x.save();
-    x.shadowColor = 'rgba(30,30,20,.18)';
-    x.shadowBlur = 30;
-    x.shadowOffsetY = 14;
-    rr(x, 170 + i * 374, 506, 350, 219, 12);
-    x.fillStyle = '#fff';
-    x.fill();
-    x.restore();
-    cover(x, im, 170 + i * 374, 506, 350, 219, 12);
-  });
+  x.fillStyle = C.olive;
+  x.fillRect(96, 160, 26, 1.5);
+  text(x, 'AGENCE DE DESIGN WEB · BRUXELLES', 136, 166, SMALL(14), C.olive, '3px');
+  ['Des sites qui', 'vous ramènent'].forEach((l, i) => text(x, l, 92, 262 + i * 78, H(80), C.ink, '-3.4px'));
+  text(x, 'des clients.', 92, 418, 'italic 92px ' + ITALIC, C.olive, '-1px');
+  para(x, 'Des sites sur mesure, élégants et ultra-rapides, pensés pour transformer chaque visite en demande de devis.', 94, 478, 560, 30, '400 19px ' + SANS, C.ink2);
+  pill(x, 94, 562, 252, 52, '#5c6a35', '#f4f0e6', 'Demander un devis gratuit', 16);
+  text(x, 'Voir les études de cas  →', 374, 594, '600 16px ' + SANS, C.ink);
+  ['Réponse sous 24 h', 'Prix fixe', 'En ligne en 21 jours'].reduce((ox, l) => ox + text(x, '✓ ' + l, ox, 664, SMALL(15), C.ink2) + 26, 94);
+  x.save();
+  x.shadowColor = 'rgba(30,30,20,.28)';
+  x.shadowBlur = 40;
+  x.shadowOffsetY = 18;
+  rr(x, 760, 150, 590, 369, 14); x.fillStyle = '#fff'; x.fill();
+  rr(x, 700, 430, 360, 225, 14); x.fill();
+  x.restore();
+  cover(x, img.greentage, 760, 150, 590, 369, 14);
+  mystery(x, img.mystere, 700, 430, 360, 225, 14);
 }
 function pageEtudes(x, img) {
   x.fillStyle = C.bg;
   x.fillRect(0, 0, PAGE_W, 760);
-  head(x, 'Études de cas', 'Des sites qui travaillent\npour de vrais métiers.', null, false, 136);
-  rr(x, 96, 330, 1248, 300, 28);
-  x.fillStyle = C.tint;
-  x.fill();
-  cover(x, img.ombelle, 640, 360, 640, 400, 14);
-  text(x, 'Atelier Ombelle', 150, 420, '300 40px ' + SERIF, C.ink);
-  para(x, 'Architecture d’intérieur, Ixelles. Matériauthèque en ligne et prise de rendez-vous.', 150, 462, 420, 28, '400 18px ' + SERIF, C.mute);
-  text(x, 'Lire l’étude de cas  ›', 150, 560, '500 16px ' + SANS, C.olive);
-  [[img.brachet, 'Brachet Avocats'], [img.cave, 'Cave Sauvage']].forEach(([im, n], i) => {
-    rr(x, 96 + i * 636, 654, 612, 200, 28);
-    x.fillStyle = C.tint;
-    x.fill();
-    text(x, n, 140 + i * 636, 712, '300 32px ' + SERIF, C.ink);
-    cover(x, im, 380 + i * 636, 690, 300, 190, 10);
-  });
+  head(x, 'Études de cas', 'Deux sites, deux formules.', 'Greentage en Signature. Le suivant, en Premium, se dévoile sur rendez-vous.', false, 124);
+  rr(x, 96, 340, 612, 420, 28); x.fillStyle = C.tint; x.fill();
+  rr(x, 732, 340, 612, 420, 28); x.fillStyle = C.night; x.fill();
+  text(x, 'Signature · 750 €', 140, 396, SMALL(17), C.olive);
+  text(x, 'Greentage', 140, 446, H(40), C.ink, '-1.2px');
+  text(x, 'Premium · 2 200 €', 776, 396, SMALL(17), C.sage);
+  text(x, 'Projet confidentiel', 776, 446, H(40), '#f3f0e8', '-1.2px');
+  cover(x, img.greentage, 140, 480, 524, 250, 12, 0);
+  mystery(x, img.mystere, 776, 480, 524, 250, 12);
 }
 function pageServices(x) {
   x.fillStyle = C.tint;
@@ -325,8 +336,8 @@ function pageServices(x) {
     rr(x, X, Y, 500, 184, 26);
     x.fillStyle = '#fff';
     x.fill();
-    text(x, a, X + 40, Y + 68, '300 34px ' + SERIF, C.ink);
-    para(x, b, X + 40, Y + 108, 400, 27, '400 18px ' + SERIF, C.mute);
+    text(x, a, X + 40, Y + 66, H(30), C.ink, '-0.8px');
+    para(x, b, X + 40, Y + 106, 400, 26, '400 17px ' + SANS, C.mute);
     text(x, 'En savoir plus  ›', X + 40, Y + 158, '500 15px ' + SANS, C.olive);
   });
 }
@@ -340,8 +351,8 @@ function pageMethode(x) {
     const X = 200 + i * 346;
     x.beginPath(); x.arc(X, 453, 9, 0, Math.PI * 2); x.fillStyle = i === 3 ? C.olive : '#fff'; x.fill();
     x.strokeStyle = C.olive; x.lineWidth = 2; x.stroke();
-    text(x, a, X, 520, '500 16px ' + SANS, C.olive, '0px', 'center');
-    text(x, b, X, 562, '300 28px ' + SERIF, C.ink, '0px', 'center');
+    text(x, a, X, 520, SMALL(17), C.olive, '0px', 'center');
+    text(x, b, X, 560, H(25), C.ink, '-0.6px', 'center');
   });
 }
 function pageTarifs(x) {
@@ -353,10 +364,10 @@ function pageTarifs(x) {
     rr(x, X, Y, 370, 420, 28);
     x.fillStyle = '#fff';
     x.fill();
-    if (i === 1) text(x, 'Notre conseil', X + 185, Y + 52, '500 15px ' + SANS, C.olive, '0px', 'center');
-    text(x, a, X + 185, Y + 108, '300 40px ' + SERIF, C.ink, '0px', 'center');
-    text(x, c, X + 185, Y + 146, '400 18px ' + SERIF, C.mute, '0px', 'center');
-    text(x, b, X + 185, Y + 250, '300 64px ' + SERIF, C.ink, '-1px', 'center');
+    if (i === 1) text(x, 'Notre conseil', X + 185, Y + 52, SMALL(16), C.olive, '0px', 'center');
+    text(x, a, X + 185, Y + 106, H(34), C.ink, '-1px', 'center');
+    text(x, c, X + 185, Y + 144, SMALL(18), C.mute, '0px', 'center');
+    text(x, b, X + 185, Y + 250, H(60), C.ink, '-2.4px', 'center');
     text(x, 'HTVA', X + 185, Y + 282, '500 13px ' + SANS, C.mute, '1px', 'center');
     pill(x, X + 95, Y + 330, 180, 46, i === 1 ? C.deep : null, i === 1 ? '#fbfaf6' : C.deep, 'Choisir', 15, i === 1 ? null : C.deep);
   });

@@ -30,15 +30,15 @@
 <link rel="apple-touch-icon" href="/msdesign.be/apple-touch-icon.png">
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/msdesign.be/assets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=d1c9c220b3">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=ff0a18bf6e">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=d1c9c220b3" defer></script>
-<script src="/msdesign.be/assets/js/sound.js?v=d1c9c220b3" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=d1c9c220b3" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=ff0a18bf6e" defer></script>
+<script src="/msdesign.be/assets/js/sound.js?v=ff0a18bf6e" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=ff0a18bf6e" defer></script>
 <!--/include-->
-<script type="module" src="/msdesign.be/assets/js/hero3d.js?v=d1c9c220b3"></script>
+<script type="module" src="/msdesign.be/assets/js/hero3d.js?v=ff0a18bf6e"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -128,22 +128,31 @@
 
 <main id="main">
 
-<!-- Héros : le texte centré, le MacBook s’ouvre dessous ; chaque onglet de son écran ouvre une partie du site -->
+<!-- Héros : la promesse à gauche ; le MacBook s’ouvre à droite, chaque onglet de son écran ouvre une partie du site -->
 <section class="hero" id="top" data-hero aria-labelledby="hero-title">
+  <div class="hero__bg" aria-hidden="true"></div>
   <div class="hero__stage" data-stage aria-hidden="true"></div>
-  <img class="hero__poster" src="/msdesign.be/assets/img/mac-poster-1600.webp" srcset="/msdesign.be/assets/img/mac-poster-900.webp 900w, /msdesign.be/assets/img/mac-poster-1600.webp 1600w" sizes="100vw" alt="" width="1600" height="1000" aria-hidden="true" loading="lazy" decoding="async">
-  <div class="hero__copy" data-hero-copy>
-    <p class="label" data-hero-in>Studio de design web · Bruxelles</p>
-    <h1 class="display" id="hero-title" data-hero-in>Un site qui vous apporte des&nbsp;clients.</h1>
-    <p class="lead" data-hero-in>Conçu sur mesure, rapide et élégant. En ligne en 21&nbsp;jours, c’est écrit dans le devis.</p>
-    <div class="hero__actions" data-hero-in>
-      <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis</a>
-      <a class="more" href="/msdesign.be/etudes/">Voir les études de cas</a>
+  <img class="hero__poster" src="/msdesign.be/assets/img/mac-poster-1600.webp" srcset="/msdesign.be/assets/img/mac-poster-900.webp 900w, /msdesign.be/assets/img/mac-poster-1600.webp 1600w" sizes="100vw" alt="" width="1600" height="1000" aria-hidden="true" decoding="async">
+  <div class="hero__wash" aria-hidden="true"></div>
+  <div class="wrap hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow hero__eyebrow" data-hero-in>Agence de design web · Bruxelles</p>
+      <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Des sites qui</span> <span class="hl">vous ramènent</span> <span class="hl"><em>des clients.</em></span></h1>
+      <p class="hero__lede" data-hero-in>Des sites sur mesure, élégants et ultra-rapides, pensés pour transformer chaque visite en demande de devis.<span class="hero__more"> Pour les entreprises et les commerces qui veulent être choisis.</span></p>
+      <div class="hero__actions" data-hero-in>
+        <a class="btn btn--olive btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis gratuit<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+        <a class="link hero__second" href="/msdesign.be/#etudes">Voir nos réalisations<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+      </div>
+      <ul class="hero__proof" data-hero-in>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg>Réponse sous 24&nbsp;h</li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg>Prix fixe, annoncé avant de commencer</li>
+        <li><svg aria-hidden="true"><use href="#i-check"/></svg>En ligne en 21&nbsp;jours, garanti</li>
+      </ul>
     </div>
   </div>
-  <p class="hero__hint" data-mac-hint aria-hidden="true"><svg aria-hidden="true"><use href="#i-cursor"/></svg><span class="hint-fine">Survolez les onglets du Mac, cliquez pour entrer</span><span class="hint-touch">Touchez un onglet du Mac</span></p>
+  <p class="hero__hint" data-mac-hint aria-hidden="true"><svg aria-hidden="true"><use href="#i-cursor"/></svg><span class="hint-fine">Chaque onglet du Mac ouvre une partie du site</span><span class="hint-touch">Touchez un onglet du Mac</span></p>
   <nav class="hero__tabs" aria-label="Ouvrir une partie du site depuis le MacBook" data-mac-tabs>
-    <button type="button" data-mac-go="etudes">Études</button>
+    <button type="button" data-mac-go="etudes">Études de cas</button>
     <button type="button" data-mac-go="services">Services</button>
     <button type="button" data-mac-go="methode">Méthode</button>
     <button type="button" data-mac-go="tarifs">Tarifs</button>
@@ -168,41 +177,39 @@
   </div>
 </section>
 
-<!-- Études de cas -->
+<!-- Études de cas : Greentage (Signature) et le prochain site Premium, gardé secret -->
 <section class="sec" id="etudes" aria-labelledby="etudes-title">
   <div class="wrap">
     <div class="sec-head">
       <p class="label" data-reveal>Études de cas</p>
-      <h2 class="h2" id="etudes-title" data-reveal>Des sites qui travaillent pour de vrais&nbsp;métiers.</h2>
-      <p class="lead" data-reveal>Une architecte d’intérieur, un cabinet d’avocats, une cave à vins&nbsp;: trois façons de transformer un site en rendez-vous.</p>
+      <h2 class="h2" id="etudes-title" data-reveal>Deux sites, deux&nbsp;formules.</h2>
+      <p class="lead" data-reveal>Greentage montre ce que permet la formule Signature. Le suivant, en Premium, reste secret jusqu’à sa mise en ligne.</p>
     </div>
     <div class="cases">
-      <a class="case case--wide" href="/msdesign.be/etudes/atelier-ombelle.html" data-reveal>
+      <a class="case" href="/msdesign.be/etudes/greentage.html" data-reveal>
         <div class="case__body">
-          <p class="case__sector">Architecture d’intérieur · Ixelles</p>
-          <h3 class="case__name">Atelier Ombelle</h3>
-          <p class="case__text">Un site aussi soigné que leurs chantiers&nbsp;: projets, matériauthèque et prise de rendez-vous en ligne.</p>
+          <p class="case__sector">Plantes, fleurs &amp; vintage · Cinquantenaire</p>
+          <h3 class="case__name">Greentage</h3>
+          <p class="case__text">Une jungle vintage rue du Noyer&nbsp;: un site chaleureux pour commander un bouquet, préparer sa visite et profiter des conseils de la maison.</p>
+          <p class="case__price">Formule Signature <strong>750&nbsp;€</strong> HTVA</p>
           <span class="more">Lire l’étude de cas</span>
         </div>
-        <div class="case__img"><img src="/msdesign.be/assets/img/cas-ombelle-mac-1600.webp" srcset="/msdesign.be/assets/img/cas-ombelle-mac-800.webp 800w, /msdesign.be/assets/img/cas-ombelle-mac-1600.webp 1600w" sizes="(max-width: 1080px) 92vw, 60vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Le site de l’Atelier Ombelle affiché sur un MacBook : « Des intérieurs qui vieillissent bien » et une photo d’échantillons de matières."></div>
+        <div class="case__img"><img src="/msdesign.be/assets/img/cas-greentage-mac-800.webp" srcset="/msdesign.be/assets/img/cas-greentage-mac-800.webp 800w, /msdesign.be/assets/img/cas-greentage-mac-1600.webp 1600w" sizes="(max-width: 640px) 92vw, 45vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Le site de Greentage sur un MacBook : « Une jungle vintage à deux pas du Cinquantenaire » sur une photo de plantes."></div>
       </a>
-      <a class="case" href="/msdesign.be/etudes/brachet-avocats.html" data-reveal>
+      <a class="case case--secret" href="/msdesign.be/#contact" data-plan="premium" data-track="case_premium" data-reveal>
         <div class="case__body">
-          <p class="case__sector">Cabinet d’avocats · avenue Louise</p>
-          <h3 class="case__name">Brachet Avocats</h3>
-          <p class="case__text">Le droit des affaires expliqué clairement, en trois langues, avec des honoraires affichés.</p>
-          <span class="more">Lire l’étude de cas</span>
+          <p class="case__sector">Formule Premium · en préparation</p>
+          <h3 class="case__name">Notre prochain site</h3>
+          <p class="case__text">Multilingue, boutique en ligne, animations sur mesure. Il se dévoile au printemps&nbsp;2027, ou en avant-première lors d’un rendez-vous.</p>
+          <p class="case__price">Formule Premium <strong>2&nbsp;200&nbsp;€</strong> HTVA</p>
+          <span class="more">Le découvrir en rendez-vous</span>
         </div>
-        <div class="case__img"><img src="/msdesign.be/assets/img/cas-brachet-mac-800.webp" srcset="/msdesign.be/assets/img/cas-brachet-mac-800.webp 800w, /msdesign.be/assets/img/cas-brachet-mac-1600.webp 1600w" sizes="(max-width: 640px) 92vw, 45vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Le site de Brachet Avocats sur un MacBook : « Le droit des affaires, expliqué clairement »."></div>
-      </a>
-      <a class="case" href="/msdesign.be/etudes/cave-sauvage.html" data-reveal>
-        <div class="case__body">
-          <p class="case__sector">Caviste &amp; bar à vins · Saint-Gilles</p>
-          <h3 class="case__name">Cave Sauvage</h3>
-          <p class="case__text">Une cave de quartier qui vend aussi aux entreprises&nbsp;: coffrets sur devis et commandes en ligne.</p>
-          <span class="more">Lire l’étude de cas</span>
+        <div class="secret" aria-hidden="true">
+          <img src="/msdesign.be/assets/img/site-mystere-720.webp" srcset="/msdesign.be/assets/img/site-mystere-720.webp 720w, /msdesign.be/assets/img/site-mystere-1440.webp 1440w" sizes="(max-width: 640px) 92vw, 45vw" width="1440" height="900" loading="lazy" decoding="async" alt="">
+          <p class="secret__q"><span>?</span><span>?</span><span>?</span></p>
+          <span class="secret__shine"></span>
+          <p class="secret__tag"><svg aria-hidden="true"><use href="#i-key"/></svg>Dévoilement au printemps 2027</p>
         </div>
-        <div class="case__img"><img src="/msdesign.be/assets/img/cas-cave-mac-800.webp" srcset="/msdesign.be/assets/img/cas-cave-mac-800.webp 800w, /msdesign.be/assets/img/cas-cave-mac-1600.webp 1600w" sizes="(max-width: 640px) 92vw, 45vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Le site de Cave Sauvage sur un MacBook : « Vins vivants, choisis un par un » et trois bouteilles."></div>
       </a>
     </div>
     <p class="cases__more"><a class="more" href="/msdesign.be/etudes/">Toutes les études de cas</a></p>
@@ -222,19 +229,19 @@
         <h3 class="h3">Sites sur mesure</h3>
         <p>Dessinés et codés à la main pour votre métier&nbsp;: pas de modèle, pas de thème partagé avec vos concurrents.</p>
         <ul class="tile__list"><li>Design et développement</li><li>Pensé pour le mobile d’abord</li><li>Formulaire de devis</li><li>Pages légales et cookies</li></ul>
-        <p class="tile__links"><a class="more" href="/msdesign.be/etudes/atelier-ombelle.html">Un exemple&nbsp;: Atelier Ombelle</a><a class="more" href="/msdesign.be/#tarifs">Dès 500&nbsp;€</a></p>
+        <p class="tile__links"><a class="more" href="/msdesign.be/etudes/greentage.html">Un exemple&nbsp;: Greentage</a><a class="more" href="/msdesign.be/#tarifs">Dès 500&nbsp;€</a></p>
       </article>
       <article class="tile" data-reveal>
         <h3 class="h3">Identité visuelle</h3>
         <p>Un logo, des couleurs et des typographies qui tiennent partout&nbsp;: site, cartes de visite, enseigne et réseaux.</p>
         <ul class="tile__list"><li>Logo et variantes</li><li>Couleurs et typographies</li><li>Cartes, papeterie, réseaux</li><li>Guide de marque</li></ul>
-        <p class="tile__links"><a class="more" href="/msdesign.be/etudes/brachet-avocats.html">Un exemple&nbsp;: Brachet Avocats</a><a class="more" href="/msdesign.be/#tarifs">Inclus en Premium</a></p>
+        <p class="tile__links"><a class="more" href="/msdesign.be/etudes/#premium">Notre prochain site Premium</a><a class="more" href="/msdesign.be/#tarifs">Inclus en Premium</a></p>
       </article>
       <article class="tile" data-reveal>
         <h3 class="h3">Référencement local</h3>
         <p>Être trouvé à Bruxelles quand on vous cherche&nbsp;: fiche Google soignée, données structurées, pages rapides.</p>
         <ul class="tile__list"><li>Fiche Google Business</li><li>SEO technique</li><li>Vitesse et Core Web Vitals</li><li>Suivi des appels et demandes</li></ul>
-        <p class="tile__links"><a class="more" href="/msdesign.be/etudes/cave-sauvage.html">Un exemple&nbsp;: Cave Sauvage</a><a class="more" href="/msdesign.be/#tarifs">Inclus dès Signature</a></p>
+        <p class="tile__links"><a class="more" href="/msdesign.be/etudes/greentage.html#resultat">Le cas Greentage</a><a class="more" href="/msdesign.be/#tarifs">Inclus dès Signature</a></p>
       </article>
       <article class="tile" data-reveal>
         <h3 class="h3">Entretien &amp; hébergement</h3>
@@ -324,7 +331,7 @@
       <details data-reveal><summary>Combien coûte un site&nbsp;?</summary><div class="faq__a"><p>500&nbsp;€ HTVA pour un site d’une page, 750&nbsp;€ pour un site complet jusqu’à six pages, 2&nbsp;200&nbsp;€ pour un site en trois langues avec réservation ou boutique. Le prix est fixé avant de commencer et ne bouge plus. <a href="/msdesign.be/#tarifs">Voir les formules</a>.</p></div></details>
       <details data-reveal><summary>Est-ce que mon site m’appartient&nbsp;?</summary><div class="faq__a"><p>Oui. Le nom de domaine est enregistré à votre nom, et le code, les textes et les images créés pour vous vous appartiennent dès le paiement du solde. Vous pouvez changer de prestataire quand vous le souhaitez. <a href="/msdesign.be/cgu.html#livrables">Nos conditions</a>.</p></div></details>
       <details data-reveal><summary>Pourrai-je modifier mon site&nbsp;?</summary><div class="faq__a"><p>L’entretien comprend jusqu’à 30&nbsp;minutes de modifications par mois&nbsp;: un horaire, un prix, une photo, il suffit d’un e-mail ou d’un message, et c’est fait sous 48&nbsp;h. Au-delà, le tarif est annoncé avant toute intervention.</p></div></details>
-      <details data-reveal><summary>Pourquoi ne pas utiliser Wix ou WordPress&nbsp;?</summary><div class="faq__a"><p>Un site codé à la main est plus rapide, plus sûr et vraiment unique&nbsp;: aucun thème partagé avec vos concurrents, aucune extension à mettre à jour, et un meilleur référencement grâce à la vitesse. <a href="/msdesign.be/etudes/cave-sauvage.html">L’exemple de Cave Sauvage</a> le montre.</p></div></details>
+      <details data-reveal><summary>Pourquoi ne pas utiliser Wix ou WordPress&nbsp;?</summary><div class="faq__a"><p>Un site codé à la main est plus rapide, plus sûr et vraiment unique&nbsp;: aucun thème partagé avec vos concurrents, aucune extension à mettre à jour, et un meilleur référencement grâce à la vitesse. <a href="/msdesign.be/etudes/greentage.html">Le site de Greentage</a> le montre.</p></div></details>
     </div>
   </div>
 </section>
@@ -435,9 +442,8 @@
       <div>
         <h2 class="ftr__title">Études de cas</h2>
         <ul class="ftr__list">
-          <li><a href="/msdesign.be/etudes/atelier-ombelle.html">Atelier Ombelle</a></li>
-          <li><a href="/msdesign.be/etudes/brachet-avocats.html">Brachet Avocats</a></li>
-          <li><a href="/msdesign.be/etudes/cave-sauvage.html">Cave Sauvage</a></li>
+          <li><a href="/msdesign.be/etudes/greentage.html">Greentage</a></li>
+          <li><a href="/msdesign.be/etudes/#premium">Notre prochain site Premium</a></li>
           <li><a href="/msdesign.be/etudes/">Toutes les études</a></li>
         </ul>
       </div>
@@ -473,7 +479,7 @@
     </div>
     <div class="ftr__bottom">
       <p>© <span data-year>2026</span> M&amp;S Design · Bruxelles · BCE&nbsp;: en cours d’immatriculation</p>
-      <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027, études de cas fictives.</p>
+      <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027. Le site Greentage est une maquette proposée au commerce.</p>
     </div>
   </div>
 </footer>

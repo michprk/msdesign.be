@@ -24,11 +24,11 @@ if (stage) {
   if (d.classList.contains('reduced') || !webgl()) fallback();
   else {
     const small = Math.min(window.innerWidth, window.innerHeight) < 700;
-    const shot = (n) => base + '/assets/img/site-' + n + '-accueil-' + (small ? 720 : 1440) + '.webp';
-    import('./mac3d.js?v=d1c9c220b3').then(async ({ createMac3D }) => {
+    const shot = (n) => base + '/assets/img/site-' + n + '-' + (small ? 720 : 1440) + '.webp';
+    import('./mac3d.js?v=ff0a18bf6e').then(async ({ createMac3D }) => {
       const api = await createMac3D(stage, {
         woodSrc: base + '/assets/img/chene-' + (small ? 1024 : 2048) + '.webp',
-        shots: { ombelle: shot('ombelle'), brachet: shot('brachet'), cave: shot('cave') }
+        shots: { greentage: shot('greentage-accueil'), mystere: shot('mystere') }
       });
       // le premier rendu a déjà eu lieu : le capot fermé apparaît en fondu, puis s’ouvre
       window.__msMac = api;

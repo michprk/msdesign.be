@@ -8,14 +8,16 @@ ouvert.
 
 Une page produit à la manière d’Apple, chic et aérée :
 
-- **Inria Serif** pour tout ce qui se lit (titres en Light, textes en Regular) ;
-- **Instrument Sans** pour ce qui se clique (menus, boutons, formulaires) ;
+- **Instrument Sans** pour les titres et les textes ;
+- **Inria Serif** pour les petites phrases : étiquettes, sous-titres, légendes, notes ;
+- l’italique d’**Instrument Serif** pour l’accent du héros (« des clients. ») ;
 - beaucoup d’air, des sections centrées, des tuiles douces ;
 - une palette olive, écru et encre.
 
-**Le héros.** Le titre est centré en haut : « Un site qui vous apporte des clients. ». Dessous, un
-MacBook argent est posé sur une table en chêne, sur un fond de studio clair. Le décor est
-**modélisé dans le code** (Three.js, aucune photo, aucun fichier 3D) :
+**Le héros.** La promesse est à gauche : « Des sites qui vous ramènent des clients. ». À droite,
+un MacBook argent est posé sur une table en chêne, devant une photo floutée de studio (peinte
+dans le code par `assets/js/scenery.js`). Le décor est **modélisé dans le code** (Three.js,
+aucune photo, aucun fichier 3D) :
 
 - aluminium avec de vrais reflets ;
 - clavier AZERTY belge rétroéclairé, avec la touche « & », notre logo, en olive ;
@@ -38,8 +40,8 @@ Paramètres d’adresse : `?intro=1` rejoue l’ouverture, `?intro=0` la saute.
   pied de page et **barre d’action mobile** (appeler + devis).
 - **Promesse de délai** : en ligne 21 jours après la maquette validée, ou 10 % remboursés par
   semaine de retard. Elle est détaillée dans `cgu.html#delais`.
-- **Études de cas** : une page de liste et trois pages détaillées, avec fil d’Ariane, faits clés,
-  point de départ, réalisation, captures, résultat, étude suivante et appel à l’action.
+- **Études de cas** : une page de liste et l’étude Greentage, avec fil d’Ariane, faits clés,
+  point de départ, réalisation, captures, état du projet, étude suivante et appel à l’action.
 - **Tarifs fixes** : 500 €, 750 € et 2 200 € HTVA, plus l’entretien à 15 €/mois.
 - **FAQ** de 5 questions, avec liens internes vers la promesse, les tarifs, les conditions et
   les études.
@@ -49,23 +51,25 @@ Paramètres d’adresse : `?intro=1` rejoue l’ouverture, `?intro=0` la saute.
   - Elle reprend le prénom de la personne (stockage de session, jamais dans l’adresse).
   - Elle annonce les étapes suivantes et propose les études de cas.
 
-## Les études de cas (fictives pendant la démonstration)
+## Les études de cas
 
-Les clients sont inventés et signalés comme tels dans les mentions légales et le pied de page :
+Deux sites, deux formules :
 
-- **Atelier Ombelle**, architecture d’intérieur ;
-- **Brachet Avocats**, droit des affaires ;
-- **Cave Sauvage**, caviste.
+- **Greentage** (`etudes/greentage.html`), plantes, fleurs et vintage rue du Noyer : la
+  maquette proposée au commerce, en formule **Signature à 750 €**. Captures du vrai site de
+  démonstration (`michprk.github.io/greentage.be`), photos de son Instagram.
+- **Notre prochain site**, en formule **Premium à 2 200 €** : gardé secret. Sa carte montre une
+  capture floutée, trois points d’interrogation, un reflet qui passe et l’étiquette
+  « Dévoilement au printemps 2027 ». Le clic ouvre le formulaire avec la formule Premium choisie.
 
-Leurs sites (maquettes dessinées, chacune avec sa propre typographie) et leurs photos de produits
-sont rendus dans le code par l’outil `../_msdesign-src/` :
+Les images sont produites par l’outil `../_msdesign-src/assets-tool.html` :
 
-- `stilllife.js` : les natures mortes (échantillons, bouteilles, bureau) ;
-- `clients.js` : les pages des trois sites ;
-- `assets-tool.html#still,clients,devices,poster,og` : les images finales en WebP, dont le
-  MacBook qui affiche chaque site.
+- `#greentage` : les captures de Greentage en WebP ;
+- `#mystery` : la page Premium dessinée puis floutée ;
+- `#devices,poster,og` : le MacBook qui affiche Greentage, l’image de repli du héros et l’image
+  de partage.
 
-**À remplacer par de vrais projets avant l’ouverture**, ainsi que les chiffres des résultats.
+**Avant l’ouverture** : obtenir l’accord de Greentage pour la montrer publiquement.
 
 ## Fichiers
 
@@ -102,7 +106,7 @@ bash scripts/export-hostinger.sh   # → dist/msdesign-hostinger.zip, à extrair
 **À compléter avant l’ouverture** (en jaune dans les pages légales) :
 
 - forme juridique, adresse du siège, numéro BCE, régime TVA ;
-- vrais projets à la place des études de cas fictives ;
+- accord de Greentage pour son étude de cas, et le site Premium une fois prêt ;
 - identifiant Google Analytics (`data-ga`), si souhaité.
 
 ## Checklist en place

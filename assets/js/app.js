@@ -203,16 +203,7 @@
     if (!a) return;
     const r = hero.getBoundingClientRect();
     hint.style.setProperty('--hx', (a.x - r.left).toFixed(0) + 'px');
-    hint.style.setProperty('--hy', Math.min(a.y - r.top, r.height - 64).toFixed(0) + 'px');
-  }
-  // Le portable se pose dans l’espace libre sous le texte du héros
-  function placeMac() {
-    const stage = $('[data-stage]');
-    const copy = $('[data-hero-copy]');
-    if (!stage || !copy || !hero) return;
-    const bottom = copy.offsetTop + copy.offsetHeight + 18;
-    stage.dataset.top = (bottom / hero.clientHeight).toFixed(3);
-    if (mac) mac.resize();
+    hint.style.setProperty('--hy', Math.max(a.y - r.top, hdrH() + 70).toFixed(0) + 'px');
   }
   function showHint() {
     if (!hint || hintDone || zooming) return;
@@ -234,24 +225,16 @@
 
   safe('mac', () => {
     if (!hero) return;
-    placeMac();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeMac);
     window.addEventListener('ms:mac-ready', (e) => {
       mac = e.detail && e.detail.api;
       if (!mac) return;
-      placeMac();
       if (d.classList.contains('intro-on')) setTimeout(() => mac.open(), 420);
       else mac.skip();
       try { sessionStorage.setItem(KEY + 'intro', 'seen'); } catch (err) { /* navigation privée */ }
     });
     window.addEventListener('ms:mac-demo-end', () => setTimeout(showHint, 300));
     window.addEventListener('ms:mac-hover', () => setTimeout(hideHint, 900));
-    let lastW = window.innerWidth;
-    const replace = () => requestAnimationFrame(() => {
-      // (sur mobile, la barre d’adresse change la hauteur en défilant : on ne recadre que si la largeur change)
-      if (window.innerWidth !== lastW || window.scrollY < 10) { lastW = window.innerWidth; placeMac(); }
-      if (hint && hint.classList.contains('is-on')) placeHint();
-    });
+    const replace = () => requestAnimationFrame(() => { if (hint && hint.classList.contains('is-on')) placeHint(); });
     if ('ResizeObserver' in window) new ResizeObserver(replace).observe(hero);
     window.addEventListener('resize', replace);
     window.addEventListener('scroll', () => { if (window.scrollY > 80) hideHint(); }, { passive: true });
@@ -300,7 +283,7 @@
     if (fine && !reduced) {
       const bg = $('.hero__bg', hero);
       let raf = 0, px = 0, py = 0;
-      window.addEventListener('pointermove', (e) => {
+      if (bg) window.addEventListener('pointermove', (e) => {
         if (window.scrollY > window.innerHeight) return;
         px = (e.clientX / window.innerWidth - 0.5) * -14;
         py = (e.clientY / window.innerHeight - 0.5) * -8;
@@ -327,6 +310,8 @@
     document.addEventListener('click', (e) => {
       const a = e.target.closest('a[href*="#"]');
       if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      // la formule choisie suit le visiteur jusqu’au formulaire, même depuis une autre page
+      if (a.dataset.plan) { try { sessionStorage.setItem(KEY + 'plan', a.dataset.plan); } catch (err) { /* navigation privée */ } }
       const url = new URL(a.getAttribute('href'), location.href);
       if (url.pathname.replace(/index\.html$/, '') !== location.pathname.replace(/index\.html$/, '') || !url.hash) return;
       const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
@@ -446,6 +431,11 @@
       const r = form.querySelector('input[name="projet"][value="vitrine"]');
       if (r && !radio('projet')) r.checked = true;
     };
+    try {
+      const plan = sessionStorage.getItem(KEY + 'plan');
+      sessionStorage.removeItem(KEY + 'plan');
+      if (plan && location.hash === '#contact') formApi.preset(plan);
+    } catch (e) { /* navigation privée */ }
 
     /* ----- Validation ----- */
     const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-z]{2,}$/i;
@@ -668,9 +658,8 @@
     if (code) code.textContent = location.host + location.pathname;
     const guesses = [
       [/service|site|vitrine|identit|logo|seo|referencement|hebergement|entretien/, '/#services', 'Nos services'],
-      [/ombelle|interieur/, '/etudes/atelier-ombelle.html', 'L’étude de cas Atelier Ombelle'],
-      [/brachet|avocat/, '/etudes/brachet-avocats.html', 'L’étude de cas Brachet Avocats'],
-      [/cave|vin/, '/etudes/cave-sauvage.html', 'L’étude de cas Cave Sauvage'],
+      [/greentage|plante|fleur|vintage/, '/etudes/greentage.html', 'L’étude de cas Greentage'],
+      [/premium|mystere|secret|bientot/, '/etudes/#premium', 'Notre prochain site Premium'],
       [/etude|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos études de cas'],
       [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],
       [/methode|process|etape/, '/#methode', 'Notre méthode'],
