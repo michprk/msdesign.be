@@ -191,246 +191,36 @@
   });
 
   /* ==========================================================================
-     Le MacBook du héros
+     Le héros et les projets
      ========================================================================== */
-  let mac = null;
-  const veil = $('[data-veil]');
-  const hint = $('[data-mac-hint]');
-  let zooming = false;
-  let hintDone = false;
-  let lockUntil = 0;                 // après une transition, l’élan de la molette est ignoré
-  const bgOf = (el) => {
-    let bg = getComputedStyle(el).backgroundColor;
-    if (!bg || bg === 'transparent' || /rgba\(0, 0, 0, 0\)/.test(bg)) bg = getComputedStyle(document.body).backgroundColor;
-    return bg;
-  };
-
-  // à la première visite, on commence sur le Mac : la promesse arrive pendant qu’il s’ouvre
+  // le titre apparaît tout de suite, ligne par ligne
   safe('hero-in', () => {
     if (!hero) return;
-    const show = () => d.classList.add('hero-in');
-    if (reduced || !d.classList.contains('intro-on')) { requestAnimationFrame(() => setTimeout(show, 60)); return; }
-    window.addEventListener('ms:mac-ready', () => setTimeout(show, 1650), { once: true });
-    setTimeout(show, 3600);
-    const poll = setInterval(() => { if (d.classList.contains('no-3d')) { clearInterval(poll); show(); } }, 200);
-    setTimeout(() => clearInterval(poll), 4000);
+    requestAnimationFrame(() => setTimeout(() => d.classList.add('hero-in'), reduced ? 0 : 80));
   });
 
-  function placeHint() {
-    if (!hint || !mac || !mac.anchor) return;
-    const a = mac.anchor();
-    if (!a) return;
-    const r = hero.getBoundingClientRect();
-    hint.style.setProperty('--hx', (a.x - r.left).toFixed(0) + 'px');
-    hint.style.setProperty('--hy', Math.max(a.y - r.top, hdrH() + 70).toFixed(0) + 'px');
-  }
-  function showHint() {
-    if (!hint || hintDone || zooming) return;
-    placeHint();
-    hint.classList.add('is-on');
-  }
-  function hideHint() {
-    if (!hint) return;
-    hintDone = true;
-    hint.classList.remove('is-on');
-  }
-
-  function goSection(id, viaMac) {
-    const target = document.getElementById(id);
-    if (!target) return;
-    if (viaMac && mac && !reduced && window.scrollY < 40 && mac.go(id)) return;
-    scrollToY(targetY(target), 1.4);
-  }
-
-  safe('mac', () => {
-    if (!hero) return;
-    window.addEventListener('ms:mac-ready', (e) => {
-      mac = e.detail && e.detail.api;
-      if (!mac) return;
-      // l’écran du Mac affiche la vraie première section du site
-      if (mac.refreshHome) {
-        mac.refreshHome();
-        if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => mac.refreshHome());
-        let t = 0;
-        window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { if (!zooming) mac.refreshHome(); }, 250); });
-      }
-      if (d.classList.contains('intro-on')) setTimeout(() => mac.open(), 420);
-      else mac.skip();
-      try { sessionStorage.setItem(KEY + 'intro', 'seen'); } catch (err) { /* navigation privée */ }
-    });
-    window.addEventListener('ms:mac-demo-end', () => setTimeout(showHint, 300));
-    window.addEventListener('ms:mac-hover', () => setTimeout(hideHint, 900));
-    const replace = () => requestAnimationFrame(() => { if (hint && hint.classList.contains('is-on')) placeHint(); });
-    if ('ResizeObserver' in window) new ResizeObserver(replace).observe(hero);
-    window.addEventListener('resize', replace);
-    window.addEventListener('scroll', () => { if (window.scrollY > 80) hideHint(); }, { passive: true });
-
-    // la caméra plonge dans l’écran…
-    window.addEventListener('ms:mac-zoom', (e) => {
-      zooming = true;
-      hideHint();
-      d.classList.add('is-zooming');
-      if (lenis) lenis.stop();
-      track('mac_tab', { target: e.detail && e.detail.target });
-    });
-    // … et le site sort de l’écran : l’image de la fin de la plongée reste figée sous un voile,
-    // le site se place dessous, puis le voile s’efface (la page et l’écran coïncident)
-    const still = document.createElement('canvas');
-    if (veil) veil.appendChild(still);
-    function freeze() {
-      if (!mac || !mac.freeze) return false;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      still.width = Math.round(d.clientWidth * dpr);
-      still.height = Math.round(d.clientHeight * dpr);
-      try { return mac.freeze(still.getContext('2d'), still.width, still.height); } catch (err) { return false; }
-    }
-    window.addEventListener('ms:mac-go', (e) => {
-      const id = e.detail && e.detail.target;
-      const section = document.getElementById(id);
-      if (!section || !veil) { finish(); return; }
-      veil.style.setProperty('--veil', bgOf(section));
-      veil.classList.remove('is-out', 'has-frame');
-      if (freeze()) {
-        veil.classList.add('is-frozen', 'is-on', 'has-frame');
-        land();
-      } else {
-        veil.classList.add('is-on');
-        setTimeout(land, 230);
-      }
-      function land() {
-        if (lenis) lenis.start();
-        jumpToY(targetY(section));
-        history.replaceState(null, '', '#' + id);
-        finish();
-        lockUntil = performance.now() + 900;
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          veil.classList.add('is-out');
-          veil.classList.remove('is-on', 'is-frozen');
-          setTimeout(() => veil.classList.remove('has-frame'), 900);
-          const h = $('h2', section);
-          if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
-        }));
-      }
-      function finish() {
-        if (mac) mac.home();
-        d.classList.remove('is-zooming');
-        zooming = false;
-      }
-    });
-
-    /* ----- Le site s’ouvre depuis le Mac ----------
-       Tout en haut, un geste vers le bas plonge dans l’écran (le site en sort) ;
-       en remontant au début du site, on rentre dans le Mac (la caméra recule). */
-    const first = document.getElementById('promesse');
-    const firstTop = () => (first ? targetY(first) : Infinity);
-    let emerging = false, lastEvt = 0, lastDir = 0, lastUp = 0;
-    const macOn = () => mac && !reduced && mac.mode !== 'closed' && !d.classList.contains('menu-open');
-    function dive() { hideHint(); if (!mac.go('promesse')) scrollToY(firstTop(), 1.2); }
-    function emerge() {
-      if (!macOn() || zooming || emerging || !mac.emerge) return;
-      emerging = true;
-      hideHint();
-      if (lenis) lenis.stop();
-      d.classList.add('is-zooming', 'is-emerging');
-      const run = () => {
-        jumpToY(0);
-        mac.emerge();
-        history.replaceState(null, '', location.pathname + location.search);
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          d.classList.remove('is-emerging');
-          veil.classList.add('is-out');
-          veil.classList.remove('is-on', 'is-frozen');
-        }));
-      };
-      // l’écran montre déjà la même page au pixel près : on y entre sans voile
-      if (mac.exact || !veil) run();
-      else {
-        veil.style.setProperty('--veil', bgOf(first));
-        veil.classList.remove('is-out', 'is-frozen', 'has-frame');
-        veil.classList.add('is-on');
-        setTimeout(run, 220);
-      }
-    }
-    window.addEventListener('ms:mac-emerged', () => {
-      emerging = false;
-      lockUntil = performance.now() + 700;
-      if (lenis) lenis.start();
-      d.classList.remove('is-zooming', 'is-emerging');
-    });
-    // un geste : vers le bas en haut de page = plonger ; vers le haut au début du site = remonter
-    function gesture(dir, fresh) {
-      const y = window.scrollY;
-      if (dir < 0) lastUp = performance.now();
-      if (zooming || emerging || performance.now() < lockUntil) return y < firstTop() + 8;
-      if (!macOn()) return false;
-      const top = firstTop();
-      if (dir > 0 && y < 4) { if (fresh) dive(); return true; }
-      if (dir > 0 && y < top - 4) { if (fresh) scrollToY(top, 1.1); return true; }
-      if (dir < 0 && y > 4 && y <= top + 4) { emerge(); return true; }
-      return false;
-    }
-    heroInput.wheel = (dx, dy, ev) => {
-      if (ev.ctrlKey || Math.abs(dx) > Math.abs(dy) || !dy) return false;
-      const dir = dy > 0 ? 1 : -1;
-      const t = performance.now();
-      const fresh = t - lastEvt > 220 || dir !== lastDir;
-      lastEvt = t;
-      lastDir = dir;
-      return gesture(dir, fresh);
-    };
-    let touchAcc = 0, touchUsed = false;
-    heroInput.touch = (dx, dy, ev) => {
-      if (ev.type === 'touchstart') { touchAcc = 0; touchUsed = false; return false; }
-      if (ev.type !== 'touchmove' || Math.abs(dx) > Math.abs(dy)) return false;
-      if (dy < 0) lastUp = performance.now();
-      if (touchUsed) return true;
-      if (!macOn() || window.scrollY >= 4 || zooming || emerging) return false;
-      touchAcc += dy;
-      if (touchAcc < 0) { touchAcc = 0; return false; }
-      if (touchAcc > 26) { touchUsed = true; dive(); }
-      return true;
-    };
-    // en remontant (doigt, molette déjà lancée), passer le début du site ramène dans le Mac
-    window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (y > 4 && y < firstTop() - 4 && performance.now() - lastUp < 350 && !zooming && !emerging && performance.now() > lockUntil) emerge();
-    }, { passive: true });
-    // au clavier : ↓, Page suivante ou Espace en haut de page ; ↑ ou Page précédente au début du site
-    document.addEventListener('keydown', (e) => {
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !macOn()) return;
-      const tag = (e.target && e.target.tagName) || '';
-      if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(tag) || (e.target && e.target.isContentEditable)) return;
-      const down = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
-      const up = e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey);
-      if (!down && !up) return;
-      if (gesture(down ? 1 : -1, true)) e.preventDefault();
-    });
-
-    // onglets en boutons (doigt, clavier, et repli sans 3D)
-    $$('[data-mac-go]').forEach((b) => b.addEventListener('click', () => { hideHint(); goSection(b.dataset.macGo, true); }));
-
-    // l’arrière-plan suit doucement la souris (profondeur)
-    if (fine && !reduced) {
-      const bg = $('.hero__bg', hero);
-      let raf = 0, px = 0, py = 0;
-      if (bg) window.addEventListener('pointermove', (e) => {
-        if (window.scrollY > window.innerHeight) return;
-        px = (e.clientX / window.innerWidth - 0.5) * -14;
-        py = (e.clientY / window.innerHeight - 0.5) * -8;
-        if (!raf) raf = requestAnimationFrame(() => { raf = 0; bg.style.setProperty('--px', px.toFixed(1) + 'px'); bg.style.setProperty('--py', py.toFixed(1) + 'px'); });
-      }, { passive: true });
-    }
-
-    // revoir l’ouverture
-    $$('[data-intro-replay]').forEach((b) => {
-      if (reduced) { b.hidden = true; return; }
-      b.addEventListener('click', () => {
-        jumpToY(0);
-        if (!mac) return;
-        hintDone = false;
-        mac.reset();
-        setTimeout(() => mac.open(), 500);
+  // la rangée de projets se fait glisser à la souris (au doigt et au pavé tactile, elle défile seule)
+  safe('drag', () => {
+    $$('[data-drag]').forEach((row) => {
+      let x0 = 0, s0 = 0, down = false, moved = false;
+      row.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        down = true; moved = false; x0 = e.clientX; s0 = row.scrollLeft;
       });
+      window.addEventListener('pointermove', (e) => {
+        if (!down) return;
+        const dx = e.clientX - x0;
+        if (!moved && Math.abs(dx) > 5) { moved = true; row.classList.add('is-dragging'); }
+        if (moved) row.scrollLeft = s0 - dx;
+      });
+      window.addEventListener('pointerup', () => {
+        if (!down) return;
+        down = false;
+        row.classList.remove('is-dragging');
+      });
+      // un glissé n’ouvre pas la carte sur laquelle il s’arrête
+      row.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+      row.addEventListener('dragstart', (e) => e.preventDefault());
     });
   });
 
@@ -448,7 +238,6 @@
       if (!target) return;
       e.preventDefault();
       if (a.dataset.plan && formApi.preset) formApi.preset(a.dataset.plan);
-      if (target.id !== 'top' && window.scrollY < 40 && mac && !reduced && !zooming && mac.mode !== 'closed' && hero && hero.contains(a) && mac.go(target.id)) return;
       history.replaceState(null, '', url.hash);
       scrollToY(targetY(target), 1.4);
       if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form input[name="projet"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1400);

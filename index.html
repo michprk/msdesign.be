@@ -30,15 +30,13 @@
 <link rel="apple-touch-icon" href="/msdesign.be/apple-touch-icon.png">
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/msdesign.be/assets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=4ae891781b">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=afd2890d03">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=4ae891781b" defer></script>
-<script src="/msdesign.be/assets/js/sound.js?v=4ae891781b" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=4ae891781b" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=afd2890d03" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=afd2890d03" defer></script>
 <!--/include-->
-<script type="module" src="/msdesign.be/assets/js/hero3d.js?v=4ae891781b"></script>
+<script type="module" src="/msdesign.be/assets/js/hero3d.js?v=afd2890d03"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -128,46 +126,56 @@
 
 <main id="main">
 
-<!-- Héros : la promesse à gauche ; le MacBook s’ouvre à droite, chaque onglet de son écran ouvre une partie du site -->
+<!-- Héros : le titre, et le « & » du logo en volume qui flotte au milieu -->
 <section class="hero" id="top" data-hero aria-labelledby="hero-title">
-  <div class="hero__bg" aria-hidden="true"></div>
   <div class="hero__stage" data-stage aria-hidden="true"></div>
-  <img class="hero__poster" src="/msdesign.be/assets/img/mac-poster-1600.webp" srcset="/msdesign.be/assets/img/mac-poster-900.webp 900w, /msdesign.be/assets/img/mac-poster-1600.webp 1600w" sizes="100vw" alt="" width="1600" height="1000" aria-hidden="true" decoding="async">
-  <div class="hero__wash" aria-hidden="true"></div>
-  <div class="wrap hero__inner">
-    <div class="hero__copy">
-      <p class="eyebrow hero__eyebrow" data-hero-in>Agence de design web · Bruxelles</p>
-      <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Des sites qui</span> <span class="hl">vous ramènent</span> <span class="hl"><em>des clients.</em></span></h1>
-      <p class="hero__lede" data-hero-in>Des sites web sur mesure pour les indépendants, commerces et petites entreprises à Bruxelles.<span class="hero__more"> Un design soigné, une expérience mobile fluide et un prix fixé avant le début du projet.</span></p>
-      <div class="hero__actions" data-hero-in>
-        <a class="btn btn--olive btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis gratuit<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
-        <a class="link hero__second" href="/msdesign.be/#etudes">Voir nos réalisations<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
-      </div>
-      <ul class="hero__proof" data-hero-in>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg>Réponse sous 24&nbsp;h</li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg>Prix fixe, annoncé avant de commencer</li>
-        <li><svg aria-hidden="true"><use href="#i-check"/></svg>Délai écrit dans le devis</li>
-      </ul>
+  <img class="hero__still" src="/msdesign.be/assets/img/amp-3d-1200.webp" srcset="/msdesign.be/assets/img/amp-3d-600.webp 600w, /msdesign.be/assets/img/amp-3d-1200.webp 1200w" sizes="(max-width: 700px) 64vw, 40vw" width="1200" height="1200" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
+  <div class="wrap hero__grid">
+    <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Des sites</span> <span class="hl">qui vous</span> <span class="hl">ramènent</span> <span class="hl">des clients.</span></h1>
+    <div class="hero__actions" data-hero-in>
+      <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis gratuit</a>
+      <a class="link" href="/msdesign.be/#etudes">Voir les projets<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+    </div>
+    <div class="hero__aside" data-hero-in>
+      <p>Des sites web sur mesure pour les indépendants, commerces et petites entreprises à Bruxelles. Un design soigné, une expérience mobile fluide et un prix fixé avant le début du projet.</p>
+      <p class="hero__meta">En ligne en 21&nbsp;jours · réponse sous 24&nbsp;h</p>
     </div>
   </div>
-  <p class="hero__hint" data-mac-hint aria-hidden="true"><svg aria-hidden="true"><use href="#i-cursor"/></svg><span class="hint-fine">Chaque onglet du Mac ouvre une partie du site</span><span class="hint-touch">Touchez un onglet du Mac</span></p>
-  <p class="hero__scroll" aria-hidden="true">Défilez pour ouvrir le site</p>
-  <nav class="hero__tabs" aria-label="Ouvrir une partie du site depuis le MacBook" data-mac-tabs>
-    <button type="button" data-mac-go="etudes">Études de cas</button>
-    <button type="button" data-mac-go="services">Services</button>
-    <button type="button" data-mac-go="methode">Méthode</button>
-    <button type="button" data-mac-go="tarifs">Tarifs</button>
-    <button type="button" data-mac-go="contact">Contact</button>
-  </nav>
 </section>
-<div class="veil" data-veil aria-hidden="true"></div>
+
+<!-- Projets : chaque carte, une barre de titre et une image -->
+<section class="sec projects" id="etudes" aria-labelledby="etudes-title">
+  <div class="wrap">
+    <h2 class="projects__title" id="etudes-title" data-reveal>Projets.</h2>
+  </div>
+  <div class="projects__row" data-drag>
+    <a class="project" href="/msdesign.be/etudes/greentage.html" data-reveal>
+      <p class="project__bar"><strong>Greentage.</strong><span>/2026</span><em>Projet conceptuel</em></p>
+      <div class="project__img"><img src="/msdesign.be/assets/img/projet-greentage-1200.webp" srcset="/msdesign.be/assets/img/projet-greentage-600.webp 600w, /msdesign.be/assets/img/projet-greentage-1200.webp 1200w" sizes="(max-width: 700px) 84vw, 44vw" width="1200" height="900" loading="lazy" decoding="async" alt="Greentage : des plantes devant des miroirs dorés, le nom de la boutique en blanc par-dessus."></div>
+    </a>
+    <a class="project project--secret" href="/msdesign.be/#contact" data-plan="premium" data-track="case_premium" data-reveal>
+      <p class="project__bar"><strong>Projet Premium.</strong><span>/2027</span><em>En conception</em></p>
+      <div class="project__img"><img src="/msdesign.be/assets/img/site-mystere-720.webp" srcset="/msdesign.be/assets/img/site-mystere-720.webp 720w, /msdesign.be/assets/img/site-mystere-1440.webp 1440w" sizes="(max-width: 700px) 84vw, 44vw" width="1440" height="900" loading="lazy" decoding="async" alt=""><p class="secret__q" aria-hidden="true"><span></span><span></span><span></span></p><span class="secret__shine" aria-hidden="true"></span></div>
+    </a>
+    <a class="project" href="/msdesign.be/#contact" data-track="case_yours" data-reveal>
+      <p class="project__bar"><strong>Votre projet.</strong><span>/2027</span><em>Sur rendez-vous</em></p>
+      <div class="project__img"><img src="/msdesign.be/assets/img/projet-vous-1200.webp" srcset="/msdesign.be/assets/img/projet-vous-600.webp 600w, /msdesign.be/assets/img/projet-vous-1200.webp 1200w" sizes="(max-width: 700px) 84vw, 44vw" width="1200" height="900" loading="lazy" decoding="async" alt="Le « & » de M&amp;S Design en volume sur fond olive, et la question : votre site, le prochain ?"></div>
+    </a>
+  </div>
+  <div class="wrap projects__foot">
+    <p class="projects__note" data-reveal>Chaque projet part d’un besoin concret. Les projets conceptuels sont identifiés comme tels.</p>
+    <a class="more" href="/msdesign.be/etudes/greentage.html" data-reveal>Lire l’étude de cas Greentage</a>
+  </div>
+</section>
 
 <!-- La promesse de délai -->
 <section class="sec sec--tint promise" id="promesse" aria-labelledby="promesse-title">
   <div class="wrap">
+    <div class="sec-head">
     <p class="label" data-reveal>Notre promesse</p>
-    <h2 class="h2" id="promesse-title" data-reveal>En ligne en 21&nbsp;jours. C’est écrit dans le&nbsp;devis.</h2>
+    <h2 class="h2" id="promesse-title" data-reveal>En ligne en 21&nbsp;jours. <span class="soft">C’est écrit dans le&nbsp;devis.</span></h2>
     <p class="lead" data-reveal>Dès que vous validez la maquette, la date de mise en ligne est fixée noir sur blanc&nbsp;: 21&nbsp;jours, 14 pour la formule Essentiel. Si nous la dépassons de notre fait, nous vous remboursons 10&nbsp;% du prix par semaine de retard, jusqu’à 50&nbsp;%.</p>
+    </div>
     <ol class="days" data-reveal>
       <li><strong>Jour 0</strong><span>Maquette validée</span></li>
       <li><strong>Jour 7</strong><span>Première version</span></li>
@@ -178,51 +186,12 @@
   </div>
 </section>
 
-<!-- Études de cas : Greentage (Signature) et le prochain site Premium, gardé secret -->
-<section class="sec" id="etudes" aria-labelledby="etudes-title">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="label" data-reveal>Études de cas</p>
-      <h2 class="h2" id="etudes-title" data-reveal>Des projets pensés pour chaque activité.</h2>
-      <p class="lead" data-reveal>Chaque projet part d’un besoin concret&nbsp;: présenter une activité, faciliter les prises de contact, faire découvrir une offre. Les projets conceptuels sont identifiés comme tels.</p>
-    </div>
-    <div class="cases">
-      <a class="case" href="/msdesign.be/etudes/greentage.html" data-reveal>
-        <div class="case__body">
-          <p class="case__sector"><span class="case__tag">Projet conceptuel</span> Plantes, fleurs &amp; vintage</p>
-          <h3 class="case__name">Greentage</h3>
-          <p class="case__text">Une maquette complète, réalisée de notre propre initiative pour une boutique de la rue du Noyer&nbsp;: commander un bouquet, préparer sa visite, lire les conseils de la maison. Sur ordinateur, tablette et téléphone.</p>
-          <p class="case__price">Équivaut à la formule Signature <strong>750&nbsp;€</strong> HTVA</p>
-          <span class="more">Lire l’étude de cas</span>
-        </div>
-        <div class="case__img"><img src="/msdesign.be/assets/img/cas-greentage-devices-800.webp" srcset="/msdesign.be/assets/img/cas-greentage-devices-800.webp 800w, /msdesign.be/assets/img/cas-greentage-devices-1600.webp 1600w" sizes="(max-width: 640px) 92vw, 45vw" width="1600" height="1000" loading="lazy" decoding="async" alt="Le site de Greentage sur un MacBook, un iPad et deux iPhone, posés sur une table claire dans la lumière d’une fenêtre."></div>
-      </a>
-      <a class="case case--secret" href="/msdesign.be/#contact" data-plan="premium" data-track="case_premium" data-reveal>
-        <div class="case__body">
-          <p class="case__sector"><span class="case__tag">En conception</span> Formule Premium</p>
-          <h3 class="case__name">Notre prochain site</h3>
-          <p class="case__text">Un projet Premium en cours de conception&nbsp;: trois langues, boutique en ligne, animations sur mesure. Nous le présentons sur rendez-vous.</p>
-          <p class="case__price">Formule Premium <strong>2&nbsp;200&nbsp;€</strong> HTVA</p>
-          <span class="more">Prendre rendez-vous</span>
-        </div>
-        <div class="secret" aria-hidden="true">
-          <img src="/msdesign.be/assets/img/site-mystere-720.webp" srcset="/msdesign.be/assets/img/site-mystere-720.webp 720w, /msdesign.be/assets/img/site-mystere-1440.webp 1440w" sizes="(max-width: 640px) 92vw, 45vw" width="1440" height="900" loading="lazy" decoding="async" alt="">
-          <p class="secret__q"><span></span><span></span><span></span></p>
-          <span class="secret__shine"></span>
-          <p class="secret__tag"><svg aria-hidden="true"><use href="#i-key"/></svg>En cours de conception</p>
-        </div>
-      </a>
-    </div>
-    <p class="cases__more"><a class="more" href="/msdesign.be/etudes/">Toutes les études de cas</a></p>
-  </div>
-</section>
-
 <!-- Services -->
 <section class="sec sec--tint" id="services" aria-labelledby="services-title">
   <div class="wrap">
     <div class="sec-head">
       <p class="label" data-reveal>Services</p>
-      <h2 class="h2" id="services-title" data-reveal>Ce que nous faisons.</h2>
+      <h2 class="h2" id="services-title" data-reveal>Ce que nous faisons, <span class="soft">de la maquette à l’entretien.</span></h2>
       <p class="lead" data-reveal>Un seul partenaire pour votre image en ligne, de la première maquette à l’entretien. Vous gardez la main, nous nous occupons de la technique.</p>
     </div>
     <div class="tiles">
@@ -259,7 +228,7 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="label" data-reveal>Méthode</p>
-      <h2 class="h2" id="methode-title" data-reveal>Comment nous travaillons.</h2>
+      <h2 class="h2" id="methode-title" data-reveal>Comment nous concevons <span class="soft">des sites qui vous apportent des clients.</span></h2>
       <p class="lead" data-reveal>Quatre étapes, un seul interlocuteur, et une date de mise en ligne qui ne bouge pas.</p>
     </div>
     <ol class="steps">
@@ -277,7 +246,7 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="label" data-reveal>Tarifs</p>
-      <h2 class="h2" id="tarifs-title" data-reveal>Des prix fixes, annoncés d’avance.</h2>
+      <h2 class="h2" id="tarifs-title" data-reveal>Des prix fixes, <span class="soft">annoncés d’avance.</span></h2>
       <p class="lead" data-reveal>Le devis est gratuit. Acompte de 50&nbsp;% à la commande, solde à la mise en ligne.</p>
     </div>
     <div class="plans">
@@ -331,7 +300,7 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="label" data-reveal>Questions fréquentes</p>
-      <h2 class="h2" id="faq-title" data-reveal>Les réponses, sans détour.</h2>
+      <h2 class="h2" id="faq-title" data-reveal>Les réponses, <span class="soft">sans détour.</span></h2>
     </div>
     <div class="faq__list" data-faq>
       <details data-reveal><summary>Combien de temps faut-il pour créer mon site&nbsp;?</summary><div class="faq__a"><p>La maquette arrive sous 5&nbsp;jours après le premier appel, puis votre site est en ligne 21&nbsp;jours après sa validation. La date est inscrite dans le devis&nbsp;; si nous la dépassons de notre fait, nous remboursons 10&nbsp;% du prix par semaine de retard. <a href="/msdesign.be/#promesse">Notre promesse en détail</a>.</p></div></details>
@@ -348,7 +317,7 @@
   <div class="wrap">
     <div class="sec-head">
       <p class="label" data-reveal>Le studio</p>
-      <h2 class="h2" id="studio-title" data-reveal>Un petit studio, un seul interlocuteur.</h2>
+      <h2 class="h2" id="studio-title" data-reveal>Un petit studio, <span class="soft">un seul interlocuteur.</span></h2>
       <p class="lead" data-reveal>M&amp;S Design ouvre à Bruxelles en 2027. Vous parlez à la même personne du premier appel à la mise en ligne, puis pour l’entretien.</p>
     </div>
     <dl class="studio__grid">
@@ -366,7 +335,7 @@
   <div class="wrap contact__grid">
     <div>
       <p class="label label--light" data-reveal>Contact</p>
-      <h2 class="h2" id="contact-title" data-reveal>Parlons de votre projet.</h2>
+      <h2 class="h2" id="contact-title" data-reveal>Parlons <span class="soft">de votre projet.</span></h2>
       <p class="lead" data-reveal>Un appel de 30&nbsp;minutes, gratuit et sans engagement. Vous recevez une maquette et un prix fixe sous 5&nbsp;jours.</p>
       <ul class="contact__list" data-reveal>
         <li><span>Téléphone</span><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
@@ -496,9 +465,7 @@
           <li><a href="/msdesign.be/confidentialite.html" data-page-link="confidentialite">Confidentialité (RGPD)</a></li>
           <li><a href="/msdesign.be/cgu.html" data-page-link="cgu">Conditions &amp; mentions légales</a></li>
           <li><button class="ftr__btn" type="button" data-cookie-open>Gérer les cookies</button></li>
-          <li><button class="ftr__btn" type="button" data-intro-replay>Revoir l’ouverture du Mac</button></li>
           <li><button class="ftr__btn" type="button" data-motion-toggle>Réduire les animations</button></li>
-          <li><button class="ftr__btn" type="button" data-sound-mute hidden>Couper le son</button></li>
         </ul>
       </div>
     </div>

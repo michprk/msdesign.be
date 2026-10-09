@@ -12,38 +12,19 @@ Une page produit à la manière d’Apple, chic et aérée :
 - **Inria Serif** pour les petites phrases : étiquettes, sous-titres, légendes, notes ;
 - l’italique d’**Instrument Serif** pour l’accent du héros (« des clients. ») ;
 - beaucoup d’air, des sections centrées, des tuiles douces ;
-- une palette olive, écru et encre.
+- un fond gris clair, une encre noire, des cartes blanches ; l’olive pour le logo et les boutons.
 
-**Le héros.** La promesse est à gauche : « Des sites qui vous ramènent des clients. ». À droite,
-un MacBook argent est posé sur une table en chêne, devant une photo floutée de studio (peinte
-dans le code par `assets/js/scenery.js`). Le décor est **modélisé dans le code** (Three.js,
-aucune photo, aucun fichier 3D) :
+**Le héros**, comme une page d’agence éditoriale : un très grand titre noir sur fond gris clair,
+« Des sites qui vous ramènent des clients. », et au milieu le « & » du logo **en volume**
+(`assets/js/amp3d.js`, Three.js, aucun fichier 3D) : le tracé du logo est extrudé, arrondi,
+légèrement tordu, habillé d’un motif organique orange et lilas brillant comme une céramique.
+Il arrive en tournant, flotte, suit la souris et tourne en défilant. À droite, une phrase pour
+dire à qui l’on s’adresse ; en bas, « Demander un devis gratuit » et « Voir les projets ».
+Sans 3D (animations réduites, WebGL absent), l’image fixe `amp-3d-*.webp` reste.
 
-- aluminium avec de vrais reflets ;
-- clavier AZERTY belge rétroéclairé, avec la touche « & », notre logo, en olive ;
-- « & » poli sur le capot.
-
-Le déroulé :
-
-1. On commence sur le Mac : fermé, centré, tout près. Le capot s’ouvre, l’écran s’allume (& puis
-   bureau), Safari affiche le site, et le portable glisse à droite pendant que la promesse arrive.
-2. **Le site s’ouvre depuis le Mac.** Le premier geste vers le bas (molette, doigt, ↓, Espace)
-   fait plonger la caméra dans l’écran ; l’écran montre la vraie première section, recopiée du
-   DOM à la taille de la fenêtre (`snapshot()` dans `screen.js`), si bien qu’à la fin de la
-   plongée la page et l’écran coïncident et le site prend le relais sans rien qui saute.
-3. En remontant au début du site, on rentre dans le Mac : la caméra part de la page plein écran
-   et recule jusqu’au portable.
-4. Le curseur du Mac montre les onglets ; ensuite la souris du visiteur devient le curseur.
-   Survoler un onglet ou une icône du Dock affiche l’aperçu, un clic plonge vers cette partie.
-5. Au doigt ou au clavier, une barre d’onglets fait la même chose.
-
-Réalisme : éclairage de studio (fenêtre, boîte à lumière, bandeaux au plafond) pour les reflets
-de l’aluminium microbillé, ombres douces de fenêtre, liseré d’ombre au contact de la table, reflet
-sur le verre de l’écran, tasse en grès émaillé moucheté (paroi épaisse, pied brut, anse aplatie,
-café). Outils : `../_msdesign-src/render.html` (vues rapprochées), `qa-flow.html` (plongée et
-retour), `qa-go.html` (onglets).
-
-Paramètres d’adresse : `?intro=1` rejoue l’ouverture, `?intro=0` la saute.
+**Projets.** Une rangée de cartes (une barre de titre blanche, puis l’image) qui défile au doigt
+ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premium flouté, et
+« Votre projet ». Les titres de section sont en deux tons, l’étiquette à gauche.
 
 ## Pensé pour la conversion
 
@@ -92,11 +73,10 @@ cgu.html                  mentions légales, conditions d’utilisation et de pr
 confidentialite.html      RGPD + cookies
 404.html                  page introuvable, qui propose la bonne section
 partials/                 blocs communs (head, en-tête, pied de page, cookies, icônes)
-assets/js/mac3d.js        le MacBook, la table, la lumière, l’ouverture et la plongée dans l’écran
-assets/js/screen.js       l’écran du Mac : démarrage, bureau, Safari à onglets, Dock
+assets/js/amp3d.js        le « & » du logo en volume (héros)
 assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
-assets/js/hero3d.js       charge la 3D seulement si possible (sinon image fixe)
+assets/js/hero3d.js       charge le & en 3D seulement si possible (sinon image fixe)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh
 ```
