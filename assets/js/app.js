@@ -111,11 +111,21 @@
   });
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
 
-  /* ---------- Défilement amorti (Lenis) ---------- */
+  /* ---------- Défilement amorti (Lenis) ----------
+     En haut de page, le Mac intercepte les gestes (heroInput) : le site s’ouvre depuis son écran. */
+  const heroInput = { wheel: null, touch: null };
   let lenis = null;
   safe('lenis', () => {
     if (reduced || typeof window.Lenis !== 'function') return;
-    lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false, autoRaf: true, respectReducedMotion: false });
+    lenis = new window.Lenis({
+      lerp: 0.1, smoothWheel: true, syncTouch: false, autoRaf: true, respectReducedMotion: false,
+      virtualScroll: (data) => {
+        const ev = data.event;
+        const fn = ev.type.indexOf('wheel') > -1 ? heroInput.wheel : ev.type.indexOf('touch') > -1 ? heroInput.touch : null;
+        if (fn && fn(data.deltaX, data.deltaY, ev)) { if (ev.cancelable) ev.preventDefault(); return false; }
+        return true;
+      }
+    });
     window.__msLenis = lenis; // accès pratique pour le débogage
   });
   function scrollToY(y, duration) {
@@ -188,13 +198,22 @@
   const hint = $('[data-mac-hint]');
   let zooming = false;
   let hintDone = false;
+  let lockUntil = 0;                 // après une transition, l’élan de la molette est ignoré
+  const bgOf = (el) => {
+    let bg = getComputedStyle(el).backgroundColor;
+    if (!bg || bg === 'transparent' || /rgba\(0, 0, 0, 0\)/.test(bg)) bg = getComputedStyle(document.body).backgroundColor;
+    return bg;
+  };
 
-  // la promesse apparaît tout de suite ; le Mac s’ouvre à son rythme
+  // à la première visite, on commence sur le Mac : la promesse arrive pendant qu’il s’ouvre
   safe('hero-in', () => {
     if (!hero) return;
     const show = () => d.classList.add('hero-in');
-    if (reduced) show();
-    else requestAnimationFrame(() => setTimeout(show, d.classList.contains('intro-on') ? 380 : 60));
+    if (reduced || !d.classList.contains('intro-on')) { requestAnimationFrame(() => setTimeout(show, 60)); return; }
+    window.addEventListener('ms:mac-ready', () => setTimeout(show, 1650), { once: true });
+    setTimeout(show, 3600);
+    const poll = setInterval(() => { if (d.classList.contains('no-3d')) { clearInterval(poll); show(); } }, 200);
+    setTimeout(() => clearInterval(poll), 4000);
   });
 
   function placeHint() {
@@ -228,6 +247,13 @@
     window.addEventListener('ms:mac-ready', (e) => {
       mac = e.detail && e.detail.api;
       if (!mac) return;
+      // l’écran du Mac affiche la vraie première section du site
+      if (mac.refreshHome) {
+        mac.refreshHome();
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => mac.refreshHome());
+        let t = 0;
+        window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { if (!zooming) mac.refreshHome(); }, 250); });
+      }
       if (d.classList.contains('intro-on')) setTimeout(() => mac.open(), 420);
       else mac.skip();
       try { sessionStorage.setItem(KEY + 'intro', 'seen'); } catch (err) { /* navigation privée */ }
@@ -247,33 +273,137 @@
       if (lenis) lenis.stop();
       track('mac_tab', { target: e.detail && e.detail.target });
     });
-    // … et le site prend le relais, sous un voile de la couleur de la section
+    // … et le site sort de l’écran : l’image de la fin de la plongée reste figée sous un voile,
+    // le site se place dessous, puis le voile s’efface (la page et l’écran coïncident)
+    const still = document.createElement('canvas');
+    if (veil) veil.appendChild(still);
+    function freeze() {
+      if (!mac || !mac.freeze) return false;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      still.width = Math.round(d.clientWidth * dpr);
+      still.height = Math.round(d.clientHeight * dpr);
+      try { return mac.freeze(still.getContext('2d'), still.width, still.height); } catch (err) { return false; }
+    }
     window.addEventListener('ms:mac-go', (e) => {
       const id = e.detail && e.detail.target;
       const section = document.getElementById(id);
       if (!section || !veil) { finish(); return; }
-      let bg = getComputedStyle(section).backgroundColor;
-      if (!bg || bg === 'transparent' || /rgba\(0, 0, 0, 0\)/.test(bg)) bg = getComputedStyle(document.body).backgroundColor;
-      veil.style.setProperty('--veil', bg);
-      veil.classList.remove('is-out');
-      veil.classList.add('is-on');
-      setTimeout(() => {
+      veil.style.setProperty('--veil', bgOf(section));
+      veil.classList.remove('is-out', 'has-frame');
+      if (freeze()) {
+        veil.classList.add('is-frozen', 'is-on', 'has-frame');
+        land();
+      } else {
+        veil.classList.add('is-on');
+        setTimeout(land, 230);
+      }
+      function land() {
         if (lenis) lenis.start();
         jumpToY(targetY(section));
         history.replaceState(null, '', '#' + id);
         finish();
-        requestAnimationFrame(() => {
+        lockUntil = performance.now() + 900;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
           veil.classList.add('is-out');
-          veil.classList.remove('is-on');
+          veil.classList.remove('is-on', 'is-frozen');
+          setTimeout(() => veil.classList.remove('has-frame'), 900);
           const h = $('h2', section);
           if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
-        });
-      }, 230);
+        }));
+      }
       function finish() {
         if (mac) mac.home();
         d.classList.remove('is-zooming');
         zooming = false;
       }
+    });
+
+    /* ----- Le site s’ouvre depuis le Mac ----------
+       Tout en haut, un geste vers le bas plonge dans l’écran (le site en sort) ;
+       en remontant au début du site, on rentre dans le Mac (la caméra recule). */
+    const first = document.getElementById('promesse');
+    const firstTop = () => (first ? targetY(first) : Infinity);
+    let emerging = false, lastEvt = 0, lastDir = 0, lastUp = 0;
+    const macOn = () => mac && !reduced && mac.mode !== 'closed' && !d.classList.contains('menu-open');
+    function dive() { hideHint(); if (!mac.go('promesse')) scrollToY(firstTop(), 1.2); }
+    function emerge() {
+      if (!macOn() || zooming || emerging || !mac.emerge) return;
+      emerging = true;
+      hideHint();
+      if (lenis) lenis.stop();
+      d.classList.add('is-zooming', 'is-emerging');
+      const run = () => {
+        jumpToY(0);
+        mac.emerge();
+        history.replaceState(null, '', location.pathname + location.search);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          d.classList.remove('is-emerging');
+          veil.classList.add('is-out');
+          veil.classList.remove('is-on', 'is-frozen');
+        }));
+      };
+      // l’écran montre déjà la même page au pixel près : on y entre sans voile
+      if (mac.exact || !veil) run();
+      else {
+        veil.style.setProperty('--veil', bgOf(first));
+        veil.classList.remove('is-out', 'is-frozen', 'has-frame');
+        veil.classList.add('is-on');
+        setTimeout(run, 220);
+      }
+    }
+    window.addEventListener('ms:mac-emerged', () => {
+      emerging = false;
+      lockUntil = performance.now() + 700;
+      if (lenis) lenis.start();
+      d.classList.remove('is-zooming', 'is-emerging');
+    });
+    // un geste : vers le bas en haut de page = plonger ; vers le haut au début du site = remonter
+    function gesture(dir, fresh) {
+      const y = window.scrollY;
+      if (dir < 0) lastUp = performance.now();
+      if (zooming || emerging || performance.now() < lockUntil) return y < firstTop() + 8;
+      if (!macOn()) return false;
+      const top = firstTop();
+      if (dir > 0 && y < 4) { if (fresh) dive(); return true; }
+      if (dir > 0 && y < top - 4) { if (fresh) scrollToY(top, 1.1); return true; }
+      if (dir < 0 && y > 4 && y <= top + 4) { emerge(); return true; }
+      return false;
+    }
+    heroInput.wheel = (dx, dy, ev) => {
+      if (ev.ctrlKey || Math.abs(dx) > Math.abs(dy) || !dy) return false;
+      const dir = dy > 0 ? 1 : -1;
+      const t = performance.now();
+      const fresh = t - lastEvt > 220 || dir !== lastDir;
+      lastEvt = t;
+      lastDir = dir;
+      return gesture(dir, fresh);
+    };
+    let touchAcc = 0, touchUsed = false;
+    heroInput.touch = (dx, dy, ev) => {
+      if (ev.type === 'touchstart') { touchAcc = 0; touchUsed = false; return false; }
+      if (ev.type !== 'touchmove' || Math.abs(dx) > Math.abs(dy)) return false;
+      if (dy < 0) lastUp = performance.now();
+      if (touchUsed) return true;
+      if (!macOn() || window.scrollY >= 4 || zooming || emerging) return false;
+      touchAcc += dy;
+      if (touchAcc < 0) { touchAcc = 0; return false; }
+      if (touchAcc > 26) { touchUsed = true; dive(); }
+      return true;
+    };
+    // en remontant (doigt, molette déjà lancée), passer le début du site ramène dans le Mac
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y > 4 && y < firstTop() - 4 && performance.now() - lastUp < 350 && !zooming && !emerging && performance.now() > lockUntil) emerge();
+    }, { passive: true });
+    // au clavier : ↓, Page suivante ou Espace en haut de page ; ↑ ou Page précédente au début du site
+    document.addEventListener('keydown', (e) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !macOn()) return;
+      const tag = (e.target && e.target.tagName) || '';
+      if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(tag) || (e.target && e.target.isContentEditable)) return;
+      const down = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
+      const up = e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey);
+      if (!down && !up) return;
+      if (gesture(down ? 1 : -1, true)) e.preventDefault();
     });
 
     // onglets en boutons (doigt, clavier, et repli sans 3D)
@@ -318,6 +448,7 @@
       if (!target) return;
       e.preventDefault();
       if (a.dataset.plan && formApi.preset) formApi.preset(a.dataset.plan);
+      if (target.id !== 'top' && window.scrollY < 40 && mac && !reduced && !zooming && mac.mode !== 'closed' && hero && hero.contains(a) && mac.go(target.id)) return;
       history.replaceState(null, '', url.hash);
       scrollToY(targetY(target), 1.4);
       if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form input[name="projet"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1400);

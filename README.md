@@ -25,12 +25,23 @@ aucune photo, aucun fichier 3D) :
 
 Le déroulé :
 
-1. Le capot s’ouvre, l’écran s’allume (& puis bureau), et Safari affiche le site.
-2. Le curseur du Mac montre les onglets tout seul.
-3. Ensuite, la souris du visiteur devient le curseur du Mac. Survoler un onglet (Études de cas,
-   Services, Méthode, Tarifs, Contact) ou une icône du Dock affiche l’aperçu sur l’écran.
-4. Un clic fait plonger la caméra dans l’écran, et le site arrive à la bonne section.
+1. On commence sur le Mac : fermé, centré, tout près. Le capot s’ouvre, l’écran s’allume (& puis
+   bureau), Safari affiche le site, et le portable glisse à droite pendant que la promesse arrive.
+2. **Le site s’ouvre depuis le Mac.** Le premier geste vers le bas (molette, doigt, ↓, Espace)
+   fait plonger la caméra dans l’écran ; l’écran montre la vraie première section, recopiée du
+   DOM à la taille de la fenêtre (`snapshot()` dans `screen.js`), si bien qu’à la fin de la
+   plongée la page et l’écran coïncident et le site prend le relais sans rien qui saute.
+3. En remontant au début du site, on rentre dans le Mac : la caméra part de la page plein écran
+   et recule jusqu’au portable.
+4. Le curseur du Mac montre les onglets ; ensuite la souris du visiteur devient le curseur.
+   Survoler un onglet ou une icône du Dock affiche l’aperçu, un clic plonge vers cette partie.
 5. Au doigt ou au clavier, une barre d’onglets fait la même chose.
+
+Réalisme : éclairage de studio (fenêtre, boîte à lumière, bandeaux au plafond) pour les reflets
+de l’aluminium microbillé, ombres douces de fenêtre, liseré d’ombre au contact de la table, reflet
+sur le verre de l’écran, tasse en grès émaillé moucheté (paroi épaisse, pied brut, anse aplatie,
+café). Outils : `../_msdesign-src/render.html` (vues rapprochées), `qa-flow.html` (plongée et
+retour), `qa-go.html` (onglets).
 
 Paramètres d’adresse : `?intro=1` rejoue l’ouverture, `?intro=0` la saute.
 

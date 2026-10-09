@@ -8,7 +8,7 @@
    Le module ne fait que dessiner et dire « qu’y a-t-il sous ce point » :
    la 3D (mac3d.js) s’occupe du reste.
    ========================================================================== */
-import { AMP } from './amp.js?v=ff0a18bf6e';
+import { AMP } from './amp.js?v=38b8324a59';
 
 export const CW = 2048;
 export const CH = 1330;
@@ -287,31 +287,171 @@ function mystery(x, im, X, Y, w, h, r) {
   x.restore();
 }
 
-function pageAccueil(x, img) {
-  const g = x.createLinearGradient(0, 0, PAGE_W, 760);
-  g.addColorStop(0, '#f4f0e6');
-  g.addColorStop(0.55, '#e4dccb');
-  g.addColorStop(1, '#c9bea6');
-  x.fillStyle = g;
+// La promesse dessinée à la main (repli quand la page réelle ne peut pas être recopiée : téléphone, outils)
+function pagePromesse(x) {
+  x.fillStyle = C.tint;
   x.fillRect(0, 0, PAGE_W, 760);
+  text(x, 'Notre promesse', PAGE_W / 2, 150, SMALL(17), C.olive, '0px', 'center');
+  ['En ligne en 21 jours.', 'C’est écrit dans le devis.'].forEach((l, i) => text(x, l, PAGE_W / 2, 222 + i * 63, H(60), C.ink, '-2.2px', 'center'));
+  para(x, 'Dès que vous validez la maquette, la date de mise en ligne est fixée noir sur blanc. Si nous la dépassons de notre fait, nous vous remboursons 10 % du prix par semaine de retard.', PAGE_W / 2, 336, 700, 32, SMALL(20), C.ink2, 'center');
+  const xs = [323, 568, 813, 1058];
   x.fillStyle = C.olive;
-  x.fillRect(96, 160, 26, 1.5);
-  text(x, 'AGENCE DE DESIGN WEB · BRUXELLES', 136, 166, SMALL(14), C.olive, '3px');
-  ['Des sites qui', 'vous ramènent'].forEach((l, i) => text(x, l, 92, 262 + i * 78, H(80), C.ink, '-3.4px'));
-  text(x, 'des clients.', 92, 418, 'italic 92px ' + ITALIC, C.olive, '-1px');
-  para(x, 'Des sites sur mesure, élégants et ultra-rapides, pensés pour transformer chaque visite en demande de devis.', 94, 478, 560, 30, '400 19px ' + SANS, C.ink2);
-  pill(x, 94, 562, 252, 52, '#5c6a35', '#f4f0e6', 'Demander un devis gratuit', 16);
-  text(x, 'Voir les études de cas  →', 374, 594, '600 16px ' + SANS, C.ink);
-  ['Réponse sous 24 h', 'Prix fixe', 'En ligne en 21 jours'].reduce((ox, l) => ox + text(x, '✓ ' + l, ox, 664, SMALL(15), C.ink2) + 26, 94);
-  x.save();
-  x.shadowColor = 'rgba(30,30,20,.28)';
-  x.shadowBlur = 40;
-  x.shadowOffsetY = 18;
-  rr(x, 760, 150, 590, 369, 14); x.fillStyle = '#fff'; x.fill();
-  rr(x, 700, 430, 360, 225, 14); x.fill();
-  x.restore();
-  cover(x, img.greentage, 760, 150, 590, 369, 14);
-  mystery(x, img.mystere, 700, 430, 360, 225, 14);
+  x.fillRect(xs[0], 486, xs[3] - xs[0], 2);
+  [['Jour 0', 'Maquette validée'], ['Jour 7', 'Première version'], ['Jour 14', 'Vos retours intégrés'], ['Jour 21', 'Votre site en ligne']].forEach(([a, b], i) => {
+    x.beginPath(); x.arc(xs[i], 487, 9, 0, Math.PI * 2);
+    x.fillStyle = i === 3 ? C.olive : C.tint; x.fill();
+    x.strokeStyle = C.olive; x.lineWidth = 2; x.stroke();
+    text(x, a, xs[i], 532, '600 15px ' + SANS, C.olive, '0px', 'center');
+    text(x, b, xs[i], 560, SMALL(19), C.ink, '0px', 'center');
+  });
+  text(x, 'Lire les conditions de la promesse  ›', PAGE_W / 2, 640, '500 16px ' + SANS, C.olive, '0px', 'center');
+}
+
+/* ---------- Le vrai site dans l’écran ----------
+   La première section du site est recopiée du DOM, ligne par ligne, avec ses vraies polices,
+   à la taille de la fenêtre du visiteur : à la fin de la plongée, l’écran du Mac et la page
+   coïncident au pixel près, et le site prend le relais sans que rien ne saute. */
+function revealShift(el) {
+  const r = el.closest('[data-reveal]');
+  if (!r) return 0;
+  const t = getComputedStyle(r).transform;
+  if (!t || t === 'none') return 0;
+  try { return new DOMMatrixReadOnly(t).m42; } catch (e) { return 0; }
+}
+function paintText(x, el, oy) {
+  const dy = revealShift(el);
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  let right = 0, base = 0, size = 16;
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const st = getComputedStyle(n.parentElement);
+    if (st.display === 'none' || st.visibility === 'hidden') continue;
+    const txt = n.data;
+    const lines = [];
+    const re = /[^ \t\n\r]+/g;
+    let m, line = null;
+    while ((m = re.exec(txt))) {
+      range.setStart(n, m.index);
+      range.setEnd(n, m.index + m[0].length);
+      const r = range.getClientRects()[0];
+      if (!r || !r.width) continue;
+      if (line && Math.abs(r.top - line.top) < 2) { line.end = m.index + m[0].length; line.right = r.right; }
+      else { line = { start: m.index, end: m.index + m[0].length, left: r.left, top: r.top, h: r.height, right: r.right }; lines.push(line); }
+    }
+    if (!lines.length) continue;
+    size = parseFloat(st.fontSize);
+    x.font = st.fontStyle + ' ' + st.fontWeight + ' ' + st.fontSize + ' ' + st.fontFamily;
+    x.fillStyle = st.color;
+    spacing(x, st.letterSpacing === 'normal' ? '0px' : st.letterSpacing);
+    lines.forEach((l) => {
+      let s = txt.slice(l.start, l.end).replace(/[ \t\n\r]+/g, ' ');
+      if (st.textTransform === 'uppercase') s = s.toUpperCase();
+      const mt = x.measureText(s);
+      const asc = mt.fontBoundingBoxAscent || size * 0.9;
+      const desc = mt.fontBoundingBoxDescent || size * 0.25;
+      base = l.top + (l.h - asc - desc) / 2 + asc - dy + oy;
+      x.fillText(s, l.left, base);
+      right = l.right;
+    });
+    spacing(x, '0px');
+  }
+  // « En savoir plus › » : le chevron est un pseudo-élément
+  if (el.matches('.more') && right) {
+    const st = getComputedStyle(el);
+    x.font = st.fontWeight + ' ' + (size * 1.25) + 'px ' + st.fontFamily;
+    x.fillStyle = st.color;
+    x.fillText('›', right + 6, base - 1);
+  }
+}
+export function snapshot(section, header) {
+  const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+  const k = CONTENT.h / vh;
+  const out = canvas(Math.round(vw * k), CONTENT.h);
+  const x = out.getContext('2d');
+  x.scale(k, k);
+  let bg = getComputedStyle(section).backgroundColor;
+  if (!bg || /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) bg = getComputedStyle(document.body).backgroundColor;
+  x.fillStyle = bg;
+  x.fillRect(0, 0, vw, vh);
+  // la section sera tout en haut de la fenêtre (le site s’y arrête au pixel près)
+  const oy = -(section.getBoundingClientRect().top + 1);
+  // si elle est moins haute que la fenêtre, le haut de la suivante apparaît dessous
+  for (let n = section.nextElementSibling, y = section.getBoundingClientRect().bottom + oy; n && y < vh; n = n.nextElementSibling) {
+    const r = n.getBoundingClientRect();
+    if (!r.height) continue;
+    let c = getComputedStyle(n).backgroundColor;
+    if (!c || /rgba\(0, 0, 0, 0\)|transparent/.test(c)) c = getComputedStyle(document.body).backgroundColor;
+    x.fillStyle = c;
+    x.fillRect(0, r.top + oy, vw, r.height);
+    y = r.bottom + oy;
+  }
+  // la frise des jours (cercles et trait : des pseudo-éléments)
+  const days = section.querySelector('.days');
+  if (days) {
+    const lis = [...days.children];
+    const dy = revealShift(days);
+    const cs = getComputedStyle(days.children[0], '::before');
+    const olive = cs.borderTopColor || C.olive;
+    const pts = lis.map((li) => { const r = li.getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + 10 - dy + oy }; });
+    if (pts.length > 1) {
+      x.globalAlpha = 0.85;
+      x.fillStyle = olive;
+      x.fillRect(pts[0].cx, pts[0].cy - 1, pts[pts.length - 1].cx - pts[0].cx, 2);
+      x.globalAlpha = 1;
+    }
+    pts.forEach((p, i) => {
+      x.beginPath(); x.arc(p.cx, p.cy, 9, 0, Math.PI * 2);
+      x.fillStyle = i === pts.length - 1 ? olive : bg; x.fill();
+      x.strokeStyle = olive; x.lineWidth = 2; x.stroke();
+    });
+  }
+  section.querySelectorAll('.label, .h2, .lead, .days strong, .days span, .more').forEach((el) => paintText(x, el, oy));
+  // l’en-tête du site, posé par-dessus comme en vrai
+  let barH = 0;
+  const bar = 'rgba(251,250,246,.78)';
+  if (header) {
+    const hr = header.getBoundingClientRect();
+    barH = hr.height;
+    x.fillStyle = bar;
+    x.fillRect(0, 0, vw, barH);
+    x.fillStyle = 'rgba(29,29,27,.1)';
+    x.fillRect(0, barH, vw, 1);
+    header.querySelectorAll('.btn').forEach((b) => {
+      const r = b.getBoundingClientRect();
+      if (!r.width) return;
+      rr(x, r.left, r.top, r.width, r.height, r.height / 2);
+      x.fillStyle = getComputedStyle(b).backgroundColor;
+      x.fill();
+    });
+    header.querySelectorAll('.logo__amp').forEach((svg) => {
+      const r = svg.getBoundingClientRect();
+      if (!r.width) return;
+      x.save();
+      x.translate(r.left, r.top);
+      x.scale(r.width / AMP.w, r.height / AMP.h);
+      x.fillStyle = getComputedStyle(svg).color;
+      x.fill(ampPath, 'evenodd');
+      x.restore();
+    });
+    // les pictogrammes au trait (téléphone) : on retrace le symbole du sprite
+    header.querySelectorAll('svg use').forEach((u) => {
+      const svg = u.closest('svg');
+      const sym = document.querySelector(u.getAttribute('href'));
+      const r = svg.getBoundingClientRect();
+      if (!sym || !r.width || svg.classList.contains('logo__amp')) return;
+      const vb = (sym.getAttribute('viewBox') || '0 0 24 24').split(/\s+/).map(Number);
+      x.save();
+      x.translate(r.left, r.top);
+      x.scale(r.width / vb[2], r.height / vb[3]);
+      x.strokeStyle = x.fillStyle = getComputedStyle(svg).color;
+      x.lineWidth = Number(sym.getAttribute('stroke-width') || 1.6);
+      x.lineJoin = 'round'; x.lineCap = 'round';
+      sym.querySelectorAll('path').forEach((p) => { const p2 = new Path2D(p.getAttribute('d')); if (sym.getAttribute('fill') === 'none') x.stroke(p2); else x.fill(p2); });
+      x.restore();
+    });
+    header.querySelectorAll('.logo, .hdr__nav a, .hdr__tel, .btn').forEach((el) => paintText(x, el, 0));
+  }
+  return { canvas: out, bg, bar, barH: barH * k };
 }
 function pageEtudes(x, img) {
   x.fillStyle = C.bg;
@@ -401,6 +541,7 @@ export function createScreen(images, scale) {
   const px = page.getContext('2d');
   let pageTab = -1;
   let custom = null;               // { url, title, page } : le site d’un client
+  let home = null;                 // { canvas, bg, bar, barH } : la première section, recopiée du site
 
   const state = {
     phase: 'off',     // off → boot → desktop
@@ -409,7 +550,8 @@ export function createScreen(images, scale) {
     win: 0,           // 0..1 : ouverture de la fenêtre Safari
     tab: 0,
     hoverTab: -1,
-    hoverDock: -1
+    hoverDock: -1,
+    flat: false       // la page sans coins arrondis (fin de la plongée)
   };
 
   // zones cliquables (coordonnées du canvas)
@@ -427,8 +569,22 @@ export function createScreen(images, scale) {
       pageTab = -2;
       return;
     }
+    if (tab === 0 && home) {
+      // la vraie première section du site, à la hauteur exacte de la fenêtre du visiteur
+      const s = page.height / home.canvas.height;
+      const w = home.canvas.width * s;
+      px.fillStyle = home.bg;
+      px.fillRect(0, 0, page.width, page.height);
+      px.fillStyle = home.bar;
+      px.fillRect(0, 0, page.width, home.barH * s);
+      px.fillStyle = 'rgba(29,29,27,.1)';
+      px.fillRect(0, home.barH * s, page.width, Math.max(1, s));
+      px.drawImage(home.canvas, (page.width - w) / 2, 0, w, page.height);
+      pageTab = 0;
+      return;
+    }
     px.setTransform(K * S, 0, 0, K * S, 0, 0);
-    [pageAccueil, pageEtudes, pageServices, pageMethode, pageTarifs, pageContact][tab](px, img);
+    [pagePromesse, pageEtudes, pageServices, pageMethode, pageTarifs, pageContact][tab](px, img);
     miniHeader(px);
     pageTab = tab;
   }
@@ -477,7 +633,8 @@ export function createScreen(images, scale) {
   }
 
   function safari() {
-    const { x: X, y: Y, w, h, r } = WIN;
+    const { x: X, y: Y, w, h } = WIN;
+    const r = state.flat ? 0 : WIN.r;   // pendant la plongée, la page va jusqu’aux bords
     x.save();
     x.shadowColor = 'rgba(20,22,10,.38)';
     x.shadowBlur = 70;
@@ -679,5 +836,7 @@ export function createScreen(images, scale) {
 
   function setCustom(cfg) { custom = cfg; pageTab = -1; }
 
-  return { canvas: c, state, draw, hitTest, setHover, targetOf, centerOf, renderPage, setCustom };
+  function setHome(h) { home = h; pageTab = -1; }
+
+  return { canvas: c, state, draw, hitTest, setHover, targetOf, centerOf, renderPage, setCustom, setHome };
 }

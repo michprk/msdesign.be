@@ -244,10 +244,26 @@ html.hero-in .hero__proof { transition-delay: 0.6s; }
 /* la plongée dans l’écran */
 html.is-zooming .hero__copy { opacity: 0; transform: translateX(-24px); }
 html.is-zooming .hero__wash, html.is-zooming .hero__hint, html.is-zooming .hero__tabs { opacity: 0; }
-html.is-zooming .hdr { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+html.is-zooming .hdr, html.is-zooming .hero__scroll { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+/* en rentrant dans le Mac, le site disparaît d’un coup : l’écran affiche déjà la même page */
+html.is-emerging .hero__copy, html.is-emerging .hero__wash, html.is-emerging .hero__hint, html.is-emerging .hero__tabs, html.is-emerging .hero__scroll, html.is-emerging .hdr { transition: none !important; }
 .veil { position: fixed; inset: 0; z-index: 150; background: var(--veil, var(--bg)); opacity: 0; pointer-events: none; transition: opacity 0.2s linear; }
 .veil.is-on { opacity: 1; }
+.veil.is-frozen { transition: none; }
 .veil.is-out { transition: opacity 0.75s var(--ease); }
+.veil canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+.veil.has-frame canvas { display: block; }
+/* défiler pour ouvrir le site */
+.hero__scroll {
+  position: absolute; left: 50%; bottom: max(26px, env(safe-area-inset-bottom)); z-index: 3; transform: translateX(-50%);
+  display: none; flex-direction: column; align-items: center; gap: 10px;
+  font: 400 14.5px/1.2 var(--serif); color: var(--ink-2); white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.8s var(--ease) 0.4s, transform 0.45s var(--ease);
+}
+.hero__scroll::after { content: ""; width: 1px; height: 34px; background: linear-gradient(var(--olive), transparent); transform-origin: top; animation: scroll-cue 2.2s var(--ease) infinite; }
+@keyframes scroll-cue { 0% { transform: scaleY(0); opacity: 1; } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+@media (hover: hover) and (pointer: fine) { .hero__scroll { display: flex; } }
+html.hero-in .hero__scroll { opacity: 1; }
 
 /* ==========================================================================
    Sections
@@ -619,3 +635,4 @@ html.reduced .hero__bg { transform: none !important; }
 }
 @media (max-width: 900px) { .shot--wide { grid-column: auto; } }
 .next--one { grid-template-columns: minmax(0, 1fr); }
+html.reduced .hero__scroll, html.no-3d .hero__scroll { display: none; }

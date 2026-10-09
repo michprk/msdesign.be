@@ -14,8 +14,8 @@
    go(id)  : la caméra plonge dans l’écran jusqu’à ce que l’onglet remplisse
              la fenêtre, puis « ms:mac-go » laisse le site prendre le relais.
    ========================================================================== */
-import * as THREE from '../vendor/three.module.min.js?v=ff0a18bf6e';
-import { createScreen, ampersand, CW, CH, CONTENT, TABS } from './screen.js?v=ff0a18bf6e';
+import * as THREE from '../vendor/three.module.min.js?v=38b8324a59';
+import { createScreen, snapshot, ampersand, CW, CH, CONTENT, TABS } from './screen.js?v=38b8324a59';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -179,21 +179,32 @@ function waitFonts(ms) {
   return Promise.race([loads, new Promise((r) => setTimeout(r, ms))]);
 }
 
-/* ---------- Lumière : la pièce et sa verrière, pour les reflets ---------- */
+/* ---------- Lumière : la pièce et ses fenêtres, pour les reflets ----------
+   Comme dans un studio photo : des murs mats assez sombres et quelques grandes sources
+   très claires. L’aluminium et le verre y trouvent des dégradés et des filets de lumière,
+   au lieu d’un gris uniforme. */
 function roomEnvironment(renderer) {
   const env = new THREE.Scene();
-  env.add(new THREE.Mesh(new THREE.BoxGeometry(900, 500, 900), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xbab3a4).multiplyScalar(1.0), side: THREE.BackSide })));
+  env.add(new THREE.Mesh(new THREE.BoxGeometry(900, 500, 900), new THREE.MeshBasicMaterial({ color: new THREE.Color(0x8d8578).multiplyScalar(0.62), side: THREE.BackSide })));
   const glass = canvasTex(512, 256, (x, w, h) => {
     const g = x.createLinearGradient(0, 0, 0, h);
     g.addColorStop(0, '#ffffff');
-    g.addColorStop(0.48, '#f2f3e8');
-    g.addColorStop(0.6, '#a9b37a');
-    g.addColorStop(1, '#5a6831');
+    g.addColorStop(0.5, '#f4f5ec');
+    g.addColorStop(0.62, '#b9c18e');
+    g.addColorStop(1, '#5d6b34');
     x.fillStyle = g;
     x.fillRect(0, 0, w, h);
     x.fillStyle = '#16180f';
-    for (let i = 1; i < 4; i++) x.fillRect(i * w / 4 - 4, 0, 8, h);
-    x.fillRect(0, h * 0.34, w, 6);
+    for (let i = 1; i < 4; i++) x.fillRect(i * w / 4 - 5, 0, 10, h);
+    x.fillRect(0, h * 0.34, w, 7);
+  });
+  const soft = canvasTex(256, 256, (x, w, h) => {
+    const g = x.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(0.7, '#f4f1ea');
+    g.addColorStop(1, '#8d8578');
+    x.fillStyle = g;
+    x.fillRect(0, 0, w, h);
   });
   const panel = (w, h, k, pos, map, color, look) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(color || 0xffffff).multiplyScalar(k), map: map || null, side: THREE.DoubleSide }));
@@ -201,16 +212,35 @@ function roomEnvironment(renderer) {
     m.lookAt(...(look || [0, 30, 0]));
     env.add(m);
   };
-  panel(460, 240, 3.2, [280, 150, -300], glass);          // la verrière, derrière à droite
-  panel(320, 200, 1.5, [-330, 140, 240], glass);          // une fenêtre derrière le photographe
-  panel(520, 520, 1.9, [0, 330, 0], null, 0xfff5e6);      // plafond clair
-  panel(900, 900, 0.5, [0, -60, 0], null, 0x8a6a48);      // plancher chaud
-  panel(300, 200, 1.5, [-80, 120, 420], null, 0xfffaf2);  // réflecteur doux face au portable
-  panel(200, 300, 1.2, [420, 120, 120], null, 0xfffaf2);  // mur clair à droite
+  panel(360, 260, 7.5, [400, 170, 40], glass);             // la grande fenêtre (lumière principale, à droite)
+  panel(460, 240, 3.4, [280, 150, -300], glass);           // la verrière derrière le portable
+  panel(300, 180, 2.6, [-200, 150, 330], soft);            // une boîte à lumière côté photographe
+  panel(520, 40, 5.5, [0, 330, -60], null, 0xfff4e2);      // bandeau lumineux au plafond
+  panel(520, 40, 4.2, [0, 330, 160], null, 0xfff4e2);
+  panel(900, 900, 0.32, [0, -60, 0], null, 0x7a5a3c);      // plancher chaud
+  panel(260, 300, 0.12, [-420, 120, -60], null, 0x2b2620); // bibliothèque sombre à gauche
+  panel(200, 260, 0.18, [-120, 120, -430], null, 0x3a3328);
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const rt = pmrem.fromScene(env, 0.035, 1, 2000);
+  const rt = pmrem.fromScene(env, 0.02, 1, 2000);
   pmrem.dispose();
   return rt.texture;
+}
+
+// Bruit fin (aluminium microbillé, argile) : une carte de rugosité ou de relief
+function noiseTex(size, base, amp, seed) {
+  let n = (seed || 7) >>> 0;
+  const rnd = () => ((n = (n * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const t = canvasTex(size, size, (x, w, h) => {
+    const im = x.createImageData(w, h);
+    for (let i = 0; i < w * h; i++) {
+      const v = Math.max(0, Math.min(255, Math.round((base + (rnd() - 0.5) * amp) * 255)));
+      im.data[i * 4] = im.data[i * 4 + 1] = im.data[i * 4 + 2] = v;
+      im.data[i * 4 + 3] = 255;
+    }
+    x.putImageData(im, 0, 0);
+  }, false);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
 }
 
 // Ombre de contact (occlusion douce sous les objets)
@@ -231,6 +261,19 @@ function softShadow(w, h, round, opacity) {
     }
   }, false);
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: 0x1a120a, alphaMap: t, transparent: true, opacity, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2;
+  m.renderOrder = 2;
+  return m;
+}
+function contactShadow(w, h, r, opacity) {
+  const t = canvasTex(512, 512, (x, cw, ch) => {
+    x.filter = 'blur(7px)';
+    x.fillStyle = '#000';
+    rr(x, cw * 0.07, ch * 0.07, cw * 0.86, ch * 0.86, r * cw);
+    x.fill();
+    x.filter = 'none';
+  }, false);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: 0x120c06, alphaMap: t, transparent: true, opacity, depthWrite: false }));
   m.rotation.x = -Math.PI / 2;
   m.renderOrder = 2;
   return m;
@@ -444,14 +487,16 @@ function cursorTexture(hand) {
 /* ---------- Le portable ---------- */
 function buildMac(screenTex) {
   const mac = new THREE.Group();
-  const alu = new THREE.MeshStandardMaterial({ color: 0xe4e3e0, metalness: 1, roughness: 0.3, envMapIntensity: 1.1 });
+  const bead = noiseTex(256, 0.86, 0.22, 11);
+  bead.repeat.set(9, 9);
+  const alu = new THREE.MeshStandardMaterial({ color: 0xe9e9e7, metalness: 1, roughness: 0.36, roughnessMap: bead, envMapIntensity: 1.12 });
   const deck = alu.clone();
   const deckTex = deckTexture();
   deckTex.repeat.set(1 / W, 1 / D);
   deckTex.offset.set(0.5, 0.5);
   deckTex.anisotropy = 8;
   deck.map = deckTex;
-  const black = new THREE.MeshStandardMaterial({ color: 0x0a0a0b, roughness: 0.62, metalness: 0.1 });
+  const black = new THREE.MeshStandardMaterial({ color: 0x050506, roughness: 0.7, metalness: 0.1 });
   const darkAlu = new THREE.MeshStandardMaterial({ color: 0x2a2a2d, metalness: 0.8, roughness: 0.38 });
 
   // coque inférieure, percée du puits du clavier
@@ -472,13 +517,13 @@ function buildMac(screenTex) {
   const keys = keyLayout();
   const kt = keyboardTextures(keys);
   kt.map.anisotropy = 8;
-  const keyMat = new THREE.MeshStandardMaterial({ map: kt.map, emissiveMap: kt.glow, emissive: 0xfff1d8, emissiveIntensity: 0, roughness: 0.58, metalness: 0.05 });
+  const keyMat = new THREE.MeshStandardMaterial({ map: kt.map, emissiveMap: kt.glow, emissive: 0xfff6ea, emissiveIntensity: 0, roughness: 0.5, metalness: 0, envMapIntensity: 0.6 });
   const keyboard = new THREE.Mesh(keyboardGeometry(keys), keyMat);
   keyboard.receiveShadow = true;
   mac.add(keyboard);
 
   // pavé tactile en verre, à peine plus satiné que l’aluminium
-  const pad = new THREE.Mesh(facePlane(rrect(TP_W - 0.08, TP_D - 0.08, 0.56), TP_W, TP_D, false), new THREE.MeshStandardMaterial({ color: 0xdedcd8, metalness: 0.7, roughness: 0.24 }));
+  const pad = new THREE.Mesh(facePlane(rrect(TP_W - 0.08, TP_D - 0.08, 0.56), TP_W, TP_D, false), new THREE.MeshPhysicalMaterial({ color: 0xe2e2e0, metalness: 0.9, roughness: 0.3, roughnessMap: bead, clearcoat: 0.35, clearcoatRoughness: 0.2, envMapIntensity: 1.1 }));
   pad.position.set(0, TOP + 0.012, TP_Z0 + TP_D / 2);
   mac.add(pad);
 
@@ -520,6 +565,20 @@ function buildMac(screenTex) {
   const display = new THREE.Mesh(facePlane(rrect(DISP_W, DISP_H, [0.5, 0.5, 0.1, 0.1]), DISP_W, DISP_H, true), dispMat);
   display.position.set(0, -0.018, DISP_C);
   lid.add(display);
+  const sheenTex = canvasTex(512, 512, (x, w, h) => {
+    const g = x.createLinearGradient(0, 0, w, h * 0.8);
+    g.addColorStop(0, 'rgba(255,255,255,.05)');
+    g.addColorStop(0.36, 'rgba(255,255,255,0)');
+    g.addColorStop(0.47, 'rgba(255,255,255,.75)');
+    g.addColorStop(0.6, 'rgba(255,255,255,.18)');
+    g.addColorStop(0.74, 'rgba(255,255,255,0)');
+    x.fillStyle = g;
+    x.fillRect(0, 0, w, h);
+  }, false);
+  const sheen = new THREE.Mesh(display.geometry, new THREE.MeshBasicMaterial({ map: sheenTex, transparent: true, opacity: 0.075, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  sheen.position.set(0, -0.03, DISP_C);
+  sheen.renderOrder = 2;
+  lid.add(sheen);
   // & poli miroir sur le capot (lisible capot fermé, vu de face)
   const logo = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 5.4), new THREE.MeshStandardMaterial({ color: 0xb4b5b2, metalness: 1, roughness: 0.05, alphaMap: glyphTexture(), transparent: true, depthWrite: false }));
   logo.rotation.x = -Math.PI / 2;
@@ -533,7 +592,7 @@ function buildMac(screenTex) {
   cursor.renderOrder = 3;
   lid.add(cursor);
 
-  return { mac, lid, display, dispMat, keyMat, cursor, arrowTex, handTex };
+  return { mac, lid, display, dispMat, keyMat, cursor, arrowTex, handTex, sheen };
 }
 
 /* ---------- Les objets du bureau ---------- */
@@ -592,25 +651,88 @@ function buildProps() {
   fan.rotation.y = 0.35;
   g.add(fan);
 
-  // tasse en grès écru
+  // tasse en grès émaillé : paroi de 4 mm, lèvre arrondie, pied brut, anse aplatie, café crémeux
   const mug = new THREE.Group();
-  const prof = [[0, 0], [3.7, 0], [4.05, 0.18], [4.2, 0.8], [4.25, 8.6], [4.15, 9.05], [3.85, 9.1], [3.78, 8.7], [3.72, 1.0], [0, 0.9]].map(([a, b]) => new THREE.Vector2(a, b));
-  const glaze = new THREE.MeshPhysicalMaterial({ color: 0xf3ecdd, roughness: 0.3, clearcoat: 0.6, clearcoatRoughness: 0.2 });
-  const body = new THREE.Mesh(new THREE.LatheGeometry(prof, 64), glaze);
+  const speckle = canvasTex(1024, 512, (x, w, h) => {
+    x.fillStyle = '#f2ece0';
+    x.fillRect(0, 0, w, h);
+    for (let i = 0; i < 90; i++) {      // nuages d’émail, à peine visibles
+      const cx = Math.random() * w, cy = Math.random() * h, r = 20 + Math.random() * 70;
+      const rg = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+      rg.addColorStop(0, Math.random() > 0.5 ? 'rgba(226,214,192,.14)' : 'rgba(250,247,240,.18)');
+      rg.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = rg;
+      x.fillRect(cx - r, cy - r, r * 2, r * 2);
+    }
+    for (let i = 0; i < 520; i++) {     // mouchetures de fer, discrètes
+      const r = Math.random() < 0.9 ? 0.35 + Math.random() * 0.6 : 0.9 + Math.random() * 0.9;
+      x.fillStyle = Math.random() > 0.3 ? 'rgba(110,78,48,' + (0.2 + Math.random() * 0.35) + ')' : 'rgba(52,36,22,' + (0.25 + Math.random() * 0.35) + ')';
+      x.beginPath(); x.arc(Math.random() * w, Math.random() * h, r, 0, Math.PI * 2); x.fill();
+    }
+  });
+  speckle.wrapS = THREE.RepeatWrapping;
+  const glaze = new THREE.MeshPhysicalMaterial({ map: speckle, vertexColors: true, roughness: 0.26, clearcoat: 1, clearcoatRoughness: 0.14, envMapIntensity: 0.95 });
+  const clay = new THREE.MeshStandardMaterial({ color: 0xc7b394, roughness: 0.92, roughnessMap: noiseTex(128, 0.9, 0.2, 5) });
+  const V = (a, b) => new THREE.Vector2(a, b);
+  // le profil : pied brut, puis paroi émaillée jusqu’à la lèvre, et l’intérieur
+  const footP = [V(0, 0.02), V(3.3, 0.02), V(3.62, 0.0), V(3.82, 0.05), V(3.95, 0.18), V(4.02, 0.38), V(4.05, 0.5)];
+  const bodyP = [V(4.05, 0.5), V(4.1, 0.75), V(4.15, 1.4), V(4.18, 3), V(4.2, 6), V(4.21, 8.6), V(4.19, 8.92), V(4.13, 9.1), V(4.03, 9.2), V(3.92, 9.2), V(3.84, 9.12), V(3.8, 8.95), V(3.79, 8.6), V(3.77, 6), V(3.74, 2), V(3.62, 1.1), V(3.3, 0.86), V(0, 0.82)];
+  const body = new THREE.Mesh(new THREE.LatheGeometry(bodyP, 160), glaze);
+  // l’émail s’amincit sur la lèvre : on y devine la terre
+  const bp = body.geometry.attributes.position;
+  const col = new Float32Array(bp.count * 3);
+  for (let i = 0; i < bp.count; i++) {
+    const y = bp.getY(i), r = Math.hypot(bp.getX(i), bp.getZ(i));
+    let k = 1;
+    if (y > 8.98) k = 0.9;
+    if (y < 0.9 && r > 3.9) k = 0.93;
+    col[i * 3] = k; col[i * 3 + 1] = k * 0.985; col[i * 3 + 2] = k * 0.96;
+  }
+  body.geometry.setAttribute('color', new THREE.BufferAttribute(col, 3));
   body.castShadow = true;
+  body.receiveShadow = true;
   mug.add(body);
-  const coffee = new THREE.Mesh(new THREE.CircleGeometry(3.74, 48), new THREE.MeshStandardMaterial({ color: 0x1c1009, roughness: 0.2, envMapIntensity: 0.35 }));
+  const foot = new THREE.Mesh(new THREE.LatheGeometry(footP, 160), clay);
+  foot.castShadow = true;
+  mug.add(foot);
+  // le café : une surface brillante, plus claire près de la paroi (la crème)
+  const crema = canvasTex(512, 512, (x, w, h) => {
+    const g = x.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
+    g.addColorStop(0, '#2a1409');
+    g.addColorStop(0.62, '#3b1e0e');
+    g.addColorStop(0.86, '#6e4223');
+    g.addColorStop(0.96, '#9a6a3f');
+    g.addColorStop(1, '#5a341a');
+    x.fillStyle = g;
+    x.fillRect(0, 0, w, h);
+    for (let i = 0; i < 260; i++) {
+      const a = Math.random() * Math.PI * 2, d = (0.75 + Math.random() * 0.23) * w / 2;
+      x.fillStyle = 'rgba(190,140,90,' + (0.1 + Math.random() * 0.2) + ')';
+      x.beginPath(); x.arc(w / 2 + Math.cos(a) * d, h / 2 + Math.sin(a) * d, 1 + Math.random() * 3, 0, Math.PI * 2); x.fill();
+    }
+  });
+  const coffee = new THREE.Mesh(new THREE.CircleGeometry(3.76, 96), new THREE.MeshPhysicalMaterial({ map: crema, color: 0x806a5c, roughness: 0.18, clearcoat: 0.6, clearcoatRoughness: 0.08, envMapIntensity: 0.12 }));
   coffee.rotation.x = -Math.PI / 2;
-  coffee.position.y = 7.4;
+  coffee.position.y = 7.85;
   mug.add(coffee);
-  const handle = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.55, 18, 40, Math.PI), glaze);
-  handle.rotation.z = -Math.PI / 2;
-  handle.position.set(4.1, 4.8, 0);
+  // l’anse : une boucle aplatie, collée à la paroi
+  const loop = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(3.7, 7.75, 0), new THREE.Vector3(5.2, 8.05, 0), new THREE.Vector3(6.7, 7.45, 0), new THREE.Vector3(7.25, 5.8, 0),
+    new THREE.Vector3(6.85, 4.0, 0), new THREE.Vector3(5.5, 2.75, 0), new THREE.Vector3(3.7, 2.45, 0)
+  ], false, 'catmullrom', 0.5);
+  const handleGeo = new THREE.TubeGeometry(loop, 96, 0.43, 24, false);
+  handleGeo.scale(1, 1, 1.55);
+  const handle = new THREE.Mesh(handleGeo, glaze);
+  const hc = new Float32Array(handleGeo.attributes.position.count * 3).fill(1);
+  handleGeo.setAttribute('color', new THREE.BufferAttribute(hc, 3));
   handle.castShadow = true;
   mug.add(handle);
-  const mugShadow = softShadow(13, 13, true, 0.45);
-  mugShadow.position.y = 0.015;
+  const mugShadow = softShadow(15, 15, true, 0.42);
+  mugShadow.position.set(-0.6, 0.015, 0.3);
   mug.add(mugShadow);
+  const mugAO = contactShadow(9.2, 9.2, 0.5, 0.55);
+  mugAO.position.y = 0.017;
+  mug.add(mugAO);
   mug.position.set(24, 0, -13);
   mug.rotation.y = -0.6;
   g.add(mug);
@@ -700,10 +822,10 @@ export async function createMac3D(container, options) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.75 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.04;
+  renderer.toneMappingExposure = 1.0;
   renderer.setClearColor(0x000000, 0);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.VSMShadowMap;
   renderer.shadowMap.autoUpdate = false;
   const canvas = renderer.domElement;
   canvas.className = 'mac3d';
@@ -715,18 +837,20 @@ export async function createMac3D(container, options) {
   scene.environment = roomEnvironment(renderer);
   const camera = new THREE.PerspectiveCamera(24, 1, 5, 2000);
 
-  const sun = new THREE.DirectionalLight(0xfff0dc, 2.3);
+  const sun = new THREE.DirectionalLight(0xfff1df, 2.9);
   sun.position.set(95, 120, 18);
   sun.castShadow = true;
   sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048);
   Object.assign(sun.shadow.camera, { left: -60, right: 60, top: 60, bottom: -60, near: 20, far: 400 });
-  sun.shadow.bias = -0.0004;
-  sun.shadow.normalBias = 0.035;
+  sun.shadow.bias = -0.0006;
+  sun.shadow.normalBias = 0.02;
+  sun.shadow.radius = 7;
+  sun.shadow.blurSamples = 18;
   scene.add(sun, sun.target);
-  const fill = new THREE.DirectionalLight(0xfff8ee, 0.45);
+  const fill = new THREE.DirectionalLight(0xfff8ee, 0.32);
   fill.position.set(-60, 40, 120);
   scene.add(fill);
-  scene.add(new THREE.HemisphereLight(0xf5f1e8, 0x7a5c3e, 0.5));
+  scene.add(new THREE.HemisphereLight(0xf5f1e8, 0x6b4f35, 0.36));
 
   // l’écran
   const screen = createScreen(shots, mobile ? 0.75 : 1);
@@ -738,9 +862,12 @@ export async function createMac3D(container, options) {
   const parts = buildMac(screenTex);
   const { mac, lid, display, dispMat, keyMat, cursor } = parts;
   scene.add(mac);
-  const macShadow = softShadow(40, 30, false, 0.55);
+  const macShadow = softShadow(40, 30, false, 0.45);
   macShadow.position.set(0, 0.012, 0.4);
   scene.add(macShadow);
+  const macAO = contactShadow(W + 1.4, D + 1.4, 0.05, 0.62);
+  macAO.position.set(0, 0.014, 0);
+  scene.add(macAO);
   const props = buildProps();
   scene.add(props);
 
@@ -818,18 +945,21 @@ export async function createMac3D(container, options) {
   let dirty = true, running = false, visible = true, first = true;
   let userTook = false;
   let clockFn = null;
+  const debug = { cam: null };   // outils : caméra imposée (render.html)
   const now = () => (clockFn ? clockFn() : performance.now());
   const camPos = new THREE.Vector3(), camTgt = new THREE.Vector3(), camUp = new THREE.Vector3(0, 1, 0);
 
   function restPose(k) {
     // k : 0 = départ (capot fermé, vu de haut), 1 = repos
+    // dès le début on est sur le Mac : centré et tout près, puis il glisse à sa place
     const e = inOut(clamp(k, 0, 1));
+    const c = inOut(clamp((k - 0.3) / 0.7, 0, 1));
     const az = lerp(START.az, REST.az, e) + pointer.x * 0.045 * e;
     const el = lerp(START.el, REST.el, e) - pointer.y * 0.03 * e;
-    const dist = view.dist * lerp(1.06, 1, e);
+    const dist = view.dist * lerp(0.78, 1, c);
     const ty = lerp(3, TARGET_Y, e);
     const pos = new THREE.Vector3(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(dist).add(new THREE.Vector3(0, ty, 0));
-    return { pos, tgt: new THREE.Vector3(0, ty, 0), up: new THREE.Vector3(0, 1, 0), ox: -(view.sx - 0.5) * VW, oy: -(view.sy - 0.5) * VH };
+    return { pos, tgt: new THREE.Vector3(0, ty, 0), up: new THREE.Vector3(0, 1, 0), ox: -(view.sx - 0.5) * VW * c, oy: -(view.sy - 0.5) * VH * c };
   }
 
   function screenPose() {
@@ -840,7 +970,7 @@ export async function createMac3D(container, options) {
     const Up = new THREE.Vector3(0, 0, 1).transformDirection(lid.matrixWorld);
     const wC = CONTENT.w / CW * DISP_W, hC = CONTENT.h / CH * DISP_H;
     const t = tanH();
-    const d = Math.min(hC / (2 * t), wC / (2 * t * (VW / VH))) * 0.97;
+    const d = Math.min(hC / (2 * t), wC / (2 * t * (VW / VH))) * 0.997;
     return { pos: P.clone().addScaledVector(N, d), tgt: P, up: Up, ox: 0, oy: 0 };
   }
 
@@ -848,13 +978,20 @@ export async function createMac3D(container, options) {
     let k = mode === 'closed' ? 0 : mode === 'opening' ? clamp(openT / 2500, 0, 1) : 1;
     let p = restPose(k);
     if (zoom) {
-      const z = inOut(clamp((now() - zoom.t0) / zoom.dur, 0, 1));
+      let z = inOut(clamp((now() - zoom.t0) / zoom.dur, 0, 1));
+      if (zoom.back) z = 1 - z;          // on ressort de l’écran
+      // les reflets s’effacent et les coins de la fenêtre s’ouvrent : à la fin, c’est la page
+      dispMat.envMapIntensity = 0.5 * (1 - z);
+      parts.sheen.material.opacity = 0.075 * (1 - z);
+      const flat = z > 0.55;
+      if (screen.state.flat !== flat) { screen.state.flat = flat; redrawScreen(); }
       const q = zoom.to;
       p = {
         pos: p.pos.clone().lerp(q.pos, z), tgt: p.tgt.clone().lerp(q.tgt, z),
         up: p.up.clone().lerp(q.up, z).normalize(), ox: lerp(p.ox, 0, z), oy: lerp(p.oy, 0, z)
       };
     }
+    if (debug.cam) p = { pos: new THREE.Vector3(...debug.cam.pos), tgt: new THREE.Vector3(...debug.cam.tgt), up: new THREE.Vector3(0, 1, 0), ox: 0, oy: 0 };
     camPos.copy(p.pos); camTgt.copy(p.tgt); camUp.copy(p.up);
     camera.position.copy(camPos);
     camera.up.copy(camUp);
@@ -994,7 +1131,54 @@ export async function createMac3D(container, options) {
   function home() {
     zoom = null;
     mode = 'rest';
+    dispMat.envMapIntensity = 0.5;
+    parts.sheen.material.opacity = 0.075;
+    if (screen.state.flat) { screen.state.flat = false; redrawScreen(); }
     dirty = true;
+  }
+  // Remonter du site vers le Mac : la caméra part de la page plein écran et recule jusqu’au portable
+  function emerge() {
+    if (zoom) return false;
+    if (mode === 'closed' || mode === 'opening') { applyOpen(OPEN_END); mode = 'rest'; }
+    stopDemo();
+    cursor.visible = false;
+    screen.setHover(null);
+    screen.state.tab = 0;
+    const z = zoom = { t0: now(), dur: mobile ? 1050 : 1350, to: screenPose(), back: true };
+    mode = 'zoom';
+    redrawScreen();
+    render();
+    start();
+    setTimeout(() => { if (zoom === z) endBack(); }, z.dur + 700);
+    return true;
+  }
+  function endBack() {
+    home();
+    window.dispatchEvent(new CustomEvent('ms:mac-emerged'));
+  }
+  // La première section du site, recopiée dans l’écran (exacte si la fenêtre est assez large)
+  let exact = false;
+  function refreshHome() {
+    const sec = document.getElementById('promesse');
+    const hdr = document.querySelector('[data-header]');
+    const de = document.documentElement;
+    const wide = de.clientWidth / de.clientHeight >= 1.2 && Math.abs(VH - de.clientHeight) < 2 && Math.abs(VW - de.clientWidth) < 2;
+    let snap = null;
+    if (sec && wide) { try { snap = snapshot(sec, hdr); } catch (e) { snap = null; } }
+    exact = !!snap;
+    screen.setHome(snap);
+    redrawScreen();
+    start();
+  }
+  // Image figée de la fenêtre (le voile de transition la reprend pendant que le site arrive)
+  function freeze(ctx, w, h) {
+    render();
+    const r = canvas.getBoundingClientRect();
+    if (!r.width) return false;
+    const k = canvas.width / r.width;
+    const de = document.documentElement;
+    ctx.drawImage(canvas, -r.left * k, -r.top * k, de.clientWidth * k, de.clientHeight * k, 0, 0, w, h);
+    return true;
   }
   function reset() {
     zoom = null;
@@ -1094,7 +1278,10 @@ export async function createMac3D(container, options) {
       active = true;
     }
     if (demo) { stepDemo(); active = true; }
-    if (zoom) {
+    if (zoom && zoom.back) {
+      active = true;
+      if (now() - zoom.t0 >= zoom.dur) endBack();
+    } else if (zoom) {
       active = true;
       if (now() - zoom.t0 >= zoom.dur && !zoom.done) {
         zoom.done = true;
@@ -1143,6 +1330,10 @@ export async function createMac3D(container, options) {
     skip,
     go,
     home,
+    emerge,
+    freeze,
+    refreshHome,
+    get exact() { return exact; },
     reset,
     anchor,
     resize,
@@ -1154,12 +1345,12 @@ export async function createMac3D(container, options) {
     // rendu fixe (outils : affiche, image de partage)
     hold(t) { mode = t >= OPEN_END ? 'rest' : t > 0 ? 'opening' : 'closed'; applyOpen(t); render(); },
     snapshot() { render(); return canvas.toDataURL('image/png'); },
-    _debug: {
+    _debug: Object.assign(debug, {
       THREE, scene, camera, renderer, parts, view, REST, START, tableMat, props,
       setClock(fn) { clockFn = fn; },
       tick() { loop(); render(); return canvas.toDataURL('image/png'); },
       redraw: () => { dirty = true; start(); }
-    }
+    })
   };
 }
 
