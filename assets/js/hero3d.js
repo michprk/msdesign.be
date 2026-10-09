@@ -25,7 +25,7 @@ if (stage) {
   else {
     const small = Math.min(window.innerWidth, window.innerHeight) < 700;
     const shot = (n) => base + '/assets/img/projet-' + n + '-' + (small ? 640 : 1200) + '.webp';
-    import('./mac3d.js?v=d22ed666d2').then(async ({ createMac3D }) => {
+    import('./mac3d.js?v=9950175b8a').then(async ({ createMac3D }) => {
       const api = await createMac3D(stage, {
         woodSrc: base + '/assets/img/chene-' + (small ? 1024 : 2048) + '.webp',
         shots: { rosenoire: shot('rosenoire'), kanaftchian: shot('kanaftchian'), studio124: shot('studio124') }

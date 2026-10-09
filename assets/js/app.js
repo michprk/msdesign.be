@@ -94,13 +94,13 @@
       else if (action === 'save') save(!!(toggle && toggle.checked));
     });
     $$('[data-cookie-open]').forEach((b) => b.addEventListener('click', () => open(true)));
-    // le bandeau ne gâche pas la première impression : il arrive au premier défilement (ou après 9 s)
+    // le bandeau ne gâche pas la première impression : il arrive au premier défilement (ou après 14 s)
     if (!consent) {
       let shown = false;
       const later = () => { if (shown) return; shown = true; window.removeEventListener('scroll', onScroll); if (!readConsent()) open(false); };
       const onScroll = () => { if (window.scrollY > 120) setTimeout(later, 600); };
       window.addEventListener('scroll', onScroll, { passive: true });
-      setTimeout(later, PAGE === 'index' ? 9000 : 1400);
+      setTimeout(later, PAGE === 'index' ? 14000 : 1400);
     }
   });
 
