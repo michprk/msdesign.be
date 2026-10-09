@@ -71,7 +71,7 @@ Deux sites, deux formules :
   démonstration (`michprk.github.io/greentage.be`), photos de son Instagram.
 - **Notre prochain site**, en formule **Premium à 2 200 €** : gardé secret. Sa carte montre une
   capture floutée, trois points d’interrogation, un reflet qui passe et l’étiquette
-  « Dévoilement au printemps 2027 ». Le clic ouvre le formulaire avec la formule Premium choisie.
+  « En cours de conception ». Le clic ouvre le formulaire avec la formule Premium choisie.
 
 Les images sont produites par l’outil `../_msdesign-src/assets-tool.html` :
 

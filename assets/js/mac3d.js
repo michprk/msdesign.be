@@ -14,8 +14,8 @@
    go(id)  : la caméra plonge dans l’écran jusqu’à ce que l’onglet remplisse
              la fenêtre, puis « ms:mac-go » laisse le site prendre le relais.
    ========================================================================== */
-import * as THREE from '../vendor/three.module.min.js?v=38b8324a59';
-import { createScreen, snapshot, ampersand, CW, CH, CONTENT, TABS } from './screen.js?v=38b8324a59';
+import * as THREE from '../vendor/three.module.min.js?v=4ae891781b';
+import { createScreen, snapshot, ampersand, CW, CH, CONTENT, TABS } from './screen.js?v=4ae891781b';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;

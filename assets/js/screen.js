@@ -8,7 +8,7 @@
    Le module ne fait que dessiner et dire « qu’y a-t-il sous ce point » :
    la 3D (mac3d.js) s’occupe du reste.
    ========================================================================== */
-import { AMP } from './amp.js?v=38b8324a59';
+import { AMP } from './amp.js?v=4ae891781b';
 
 export const CW = 2048;
 export const CH = 1330;
@@ -456,13 +456,13 @@ export function snapshot(section, header) {
 function pageEtudes(x, img) {
   x.fillStyle = C.bg;
   x.fillRect(0, 0, PAGE_W, 760);
-  head(x, 'Études de cas', 'Deux sites, deux formules.', 'Greentage en Signature. Le suivant, en Premium, se dévoile sur rendez-vous.', false, 124);
+  head(x, 'Études de cas', 'Des projets pensés pour chaque activité.', 'Les projets conceptuels sont identifiés comme tels.', false, 124);
   rr(x, 96, 340, 612, 420, 28); x.fillStyle = C.tint; x.fill();
   rr(x, 732, 340, 612, 420, 28); x.fillStyle = C.night; x.fill();
-  text(x, 'Signature · 750 €', 140, 396, SMALL(17), C.olive);
+  text(x, 'Projet conceptuel · Signature', 140, 396, SMALL(17), C.olive);
   text(x, 'Greentage', 140, 446, H(40), C.ink, '-1.2px');
-  text(x, 'Premium · 2 200 €', 776, 396, SMALL(17), C.sage);
-  text(x, 'Projet confidentiel', 776, 446, H(40), '#f3f0e8', '-1.2px');
+  text(x, 'En conception · Premium', 776, 396, SMALL(17), C.sage);
+  text(x, 'Notre prochain site', 776, 446, H(40), '#f3f0e8', '-1.2px');
   cover(x, img.greentage, 140, 480, 524, 250, 12, 0);
   mystery(x, img.mystere, 776, 480, 524, 250, 12);
 }
