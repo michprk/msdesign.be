@@ -6,21 +6,23 @@ ouvert.
 
 ## L’idée
 
-Une page produit à la manière d’Apple, chic et aérée :
+Une direction artistique éditoriale, reprise de la maquette validée : crème #F5F1E9, noir doux
+#171717, bleu électrique #155EEF pour les actions, vert sauge #DCE5D7 en accent.
 
-- **Instrument Sans** pour les titres et les textes ;
-- **Inria Serif** pour les petites phrases : étiquettes, sous-titres, légendes, notes ;
-- l’italique d’**Instrument Serif** pour l’accent du héros (« des clients. ») ;
-- beaucoup d’air, des sections centrées, des tuiles douces ;
-- un fond crème, des titres en Fraunces, des étiquettes en JetBrains Mono, le bleu électrique pour les actions.
+- **Fraunces** pour les titres ;
+- **Instrument Sans** pour les textes et les étiquettes (capitales espacées, en bleu) ;
+- l’italique d’**Instrument Serif** pour les « ??? » du projet secret.
 
-**Le héros**, direction artistique éditoriale (crème #F5F1E9, noir doux #171717, bleu électrique
-#155EEF, vert sauge #DCE5D7) : une étiquette en JetBrains Mono, le titre en Fraunces sur trois
-lignes (« Votre prochain site. Une vraie présence. Un design qui marque. », la dernière en bleu),
-deux boutons bleus, et à droite trois projets en fenêtres de navigateur (Greentage, Le Fournil,
-Atelier Véritas) avec une pastille « Design web Bruxelles ». Dessous, la bande des expertises,
-puis « Du beau. Du clair. Du pensé. » : un projet à la fois, 01 / 03, avec flèches.
-Le Fournil et Atelier Véritas sont des projets conceptuels dessinés au trait (outil `#concepts`).
+**Le héros** : l’étiquette « Studio web indépendant · Bruxelles », le titre « Des sites qui vous
+ramènent des clients. » (« ramènent » et « des clients. » en bleu), deux boutons (« Voir les
+réalisations », « Demander un devis ») et trois atouts (design sur mesure, responsive, prix fixe).
+À droite, trois projets en fenêtres de navigateur (Greentage, Le Fournil, Atelier Véritas), des
+feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite, « Nos réalisations » :
+un projet à la fois, 01 / 03, avec flèches.
+
+Le Fournil et Atelier Véritas sont des projets conceptuels. Leurs photos (pain, maison) et le décor
+(feuilles, fleurs) viennent de la maquette ChatGPT du studio (`_msdesign-src/ref/maquette-chatgpt.png`,
+outil `#refcuts`). Leur résolution est limitée par celle de la maquette.
 
 **Projets.** Une rangée de cartes (une barre de titre blanche, puis l’image) qui défile au doigt
 ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premium flouté, et
@@ -66,7 +68,7 @@ Les images sont produites par l’outil `../_msdesign-src/assets-tool.html` :
 ## Fichiers
 
 ```
-index.html                héros MacBook, promesse, études de cas, services, méthode, tarifs, FAQ, contact
+index.html                héros (3 projets en fenêtres), réalisations, promesse, études de cas, services, méthode, tarifs, FAQ, contact
 etudes/                   études de cas : index.html + une page par client
 merci.html                page de remerciement après le formulaire
 cgu.html                  mentions légales, conditions d’utilisation et de prestation (dont la promesse de délai)
