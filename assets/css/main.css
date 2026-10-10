@@ -10,6 +10,7 @@
 @font-face { font-family: "Fraunces"; src: url("../fonts/fraunces-italic-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: italic; font-display: swap; }
 @font-face { font-family: "Instrument Sans"; src: url("../fonts/instrument-sans-400-700-latin.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Instrument Serif"; src: url("../fonts/instrument-serif-italic-latin.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo-var-latin.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: swap; }
 
 :root {
   --bg: #f5f1e9;
@@ -168,14 +169,18 @@ strong { font-weight: 600; }
    projets en fenêtres de navigateur à droite, une pastille bleue
    ========================================================================== */
 .hero { position: relative; overflow: hidden; background: var(--bg); }
-.hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(28px, 4vw, 72px); padding-top: calc(var(--hdr) + clamp(28px, 7vh, 76px)); padding-bottom: clamp(36px, 6vh, 64px); }
-.hero__title { font: 400 clamp(40px, 4.25vw, 70px)/1.06 var(--display); letter-spacing: -0.028em; color: var(--ink); }
+.hero__grid { display: grid; grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr); align-items: center; gap: clamp(28px, 4vw, 72px); padding-top: calc(var(--hdr) + clamp(28px, 7vh, 76px)); padding-bottom: clamp(36px, 6vh, 64px); }
+/* le titre, comme une affiche : capitales très larges et grasses, puis une ligne en serif */
+.hero__title { color: var(--blue); }
+.hero__title .hl--caps { font: 900 clamp(40px, 5vw, 80px)/0.9 "Archivo", var(--sans); font-stretch: 125%; letter-spacing: -0.005em; text-transform: uppercase; }
+.hero__title .hl--serif { margin-top: 0.1em; font: 300 clamp(54px, 7vw, 116px)/1 var(--display); letter-spacing: -0.035em; }
+.hero__title em { font-style: italic; }
 .hero__title .hl { display: block; }
 .hero__title .accent { color: var(--blue); }
 .hero__lede { margin-top: 26px; max-width: 31em; font: 400 17.5px/1.7 var(--sans); color: var(--ink-2); }
 .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 34px; }
 .btn__icon { width: 16px; height: 16px; }
-.hero__stack { position: relative; aspect-ratio: 1.42; }
+.hero__stack { position: relative; aspect-ratio: 1.42; width: 104%; }
 .win { display: block; color: inherit; text-decoration: none; }
 .win { position: absolute; margin: 0; border-radius: 9px; background: #fff; box-shadow: 0 32px 60px -30px rgba(23, 23, 23, 0.42), 0 0 0 1px rgba(23, 23, 23, 0.06); overflow: hidden; transition: transform 0.9s var(--ease); }
 .win__bar { display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 10px; background: #fff; border-bottom: 1px solid rgba(23, 23, 23, 0.06); }
@@ -207,6 +212,7 @@ html.js .hero__title .hl { display: block; opacity: 0; transform: translateY(0.4
 html.hero-in [data-hero-in], html.hero-in .hero__title .hl { opacity: 1; transform: none; }
 html.hero-in .hero__title .hl:nth-child(2) { transition-delay: 0.08s; }
 html.hero-in .hero__title .hl:nth-child(3) { transition-delay: 0.16s; }
+html.hero-in .hero__title .hl:nth-child(4) { transition-delay: 0.24s; }
 html.hero-in .hero__lede { transition-delay: 0.3s; }
 html.hero-in .hero__actions { transition-delay: 0.4s; }
 html.hero-in .hero__feats { transition-delay: 0.5s; }
@@ -615,12 +621,15 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
 @media (max-width: 1080px) {
   .hero__grid { grid-template-columns: minmax(0, 1fr); min-height: 0; }
   .hero__stack { max-width: 720px; width: 100%; margin: 8px auto 0; }
+  .hero__title .hl--caps { font-size: clamp(40px, 9vw, 96px); }
+  .hero__title .hl--serif { font-size: clamp(54px, 12vw, 130px); }
   .projects__grid { grid-template-columns: minmax(0, 1fr); }
   .projects__side { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 22px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px 24px; }
   .projects__info { grid-column: 2; }
 }
 @media (max-width: 640px) {
-  .hero__title { font-size: clamp(32px, 8.9vw, 52px); }
+  .hero__title .hl--caps { font-size: 11.2vw; }
+  .hero__title .hl--serif { font-size: 17vw; }
   .hero__actions .btn { flex: 1 1 100%; }
   .hero__feats, .feats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .hero__feats li, .feats li { flex-direction: column; align-items: flex-start; gap: 8px; padding: 0 10px; font-size: 12.5px; }

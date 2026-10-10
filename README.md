@@ -10,11 +10,13 @@ Une direction artistique éditoriale, reprise de la maquette validée : crème #
 #171717, bleu électrique #155EEF pour les actions, vert sauge #DCE5D7 en accent.
 
 - **Fraunces** pour les titres ;
+- **Archivo** (gras, très large) pour les capitales du titre de l’accueil ;
 - **Instrument Sans** pour les textes et les étiquettes (capitales espacées, en bleu) ;
 - l’italique d’**Instrument Serif** pour les « ??? » du projet secret.
 
 **Le héros** : l’étiquette « Studio web indépendant · Bruxelles », le titre « Des sites qui vous
-ramènent des clients. » (« ramènent » et « des clients. » en bleu), deux boutons (« Voir les
+ramènent des clients. » en bleu, comme une affiche (capitales très larges en Archivo, puis « des
+clients. » en Fraunces fin), deux boutons (« Voir les
 réalisations », « Demander un devis ») et trois atouts (design sur mesure, responsive, prix fixe).
 À droite, trois exemples de sites en fenêtres de navigateur (Verdane, Le Fournil, Atelier Véritas),
 cliquables, des feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite,
