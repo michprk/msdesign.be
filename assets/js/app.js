@@ -322,7 +322,7 @@
   const PLANS = {
     essentiel: { name: 'Essentiel', price: 500, detail: 'Site une page sur mesure, formulaire, référencement de base, en ligne en 2 semaines.' },
     signature: { name: 'Signature', price: 1290, detail: 'Jusqu’à 6 pages, animations premium, SEO local et fiche Google, en ligne en 3 semaines.' },
-    premium: { name: 'Premium', price: 3900, detail: 'Multilingue, réservation ou boutique, identité visuelle et contenus, 3 mois de suivi, en ligne en 6 semaines.' }
+    premium: { name: 'Premium', price: 3900, detail: 'Design d’exception haut de gamme, animations sur mesure, trois langues, réservation ou boutique, identité visuelle et textes, 3 mois de suivi, en ligne en 6 semaines.' }
   };
   safe('form', () => {
     const form = $('[data-form]');

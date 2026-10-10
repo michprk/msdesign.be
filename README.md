@@ -49,7 +49,7 @@ Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoy
 - **Promesse de délai** : en ligne 21 jours après la maquette validée, ou 10 % remboursés par
   semaine de retard. Elle est détaillée dans `cgu.html#delais`.
 - **Exemples de sites** : une page de liste (`etudes/`) et quatre sites à ouvrir.
-- **Tarifs fixes** : 500 €, 1 290 € et 3 900 € HTVA ; entretien 30 €/mois (Essentiel) ou 60 €/mois (Signature, Premium) ; séance photo sur place 40 €.
+- **Tarifs fixes** : 500 €, 1 290 € et 3 900 € HTVA ; entretien 30 €/mois (Essentiel, Signature) ou 60 €/mois (Premium, le design d’exception pour architectes, paysagistes…) ; séance photo sur place 40 €.
 - **FAQ** de 5 questions, avec liens internes vers la promesse, les tarifs, les conditions et
   les études.
 - **Liens internes** partout : services vers études de cas et tarifs, FAQ, études entre elles,
