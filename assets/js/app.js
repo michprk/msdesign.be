@@ -242,7 +242,7 @@
       if (a.dataset.plan && formApi.preset) formApi.preset(a.dataset.plan);
       history.replaceState(null, '', url.hash);
       scrollToY(targetY(target), 1.4);
-      if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form input[name="projet"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1400);
+      if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form [name="name"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1400);
     });
   });
 
@@ -332,7 +332,6 @@
     const submit = $('button[type="submit"]', form);
     const startedAt = Date.now();
     const val = (n) => (form.elements[n] ? String(form.elements[n].value || '').trim() : '');
-    const radio = (n) => (form.querySelector('input[name="' + n + '"]:checked') || {}).value || '';
     const checked = (n) => !!(form.elements[n] && form.elements[n].checked);
 
     // Formule choisie : prix, acompte et solde, tout de suite
@@ -350,8 +349,8 @@
     formApi.preset = (plan) => {
       const sel = form.elements.formule;
       if (sel && PLANS[plan]) { sel.value = plan; estimate(); }
-      const r = form.querySelector('input[name="projet"][value="vitrine"]');
-      if (r && !radio('projet')) r.checked = true;
+      const pj = form.elements.projet;
+      if (pj && !val('projet')) pj.value = 'vitrine';
     };
     try {
       const plan = sessionStorage.getItem(KEY + 'plan');
@@ -400,7 +399,7 @@
 
     function collect() {
       return {
-        form: 'devis', projet: radio('projet'), formule: val('formule'),
+        form: 'devis', projet: val('projet'), formule: val('formule'),
         name: val('name'), societe: val('societe'), email: val('email'), phone: val('phone'), site: val('site'), message: val('message'),
         consent: checked('consent'), website: val('website'), elapsed: Date.now() - startedAt
       };
@@ -464,7 +463,7 @@
       if (keys.length) {
         keys.forEach((k) => showError(k, errors[k]));
         setStatus('error', keys.length > 1 ? 'Merci de corriger les ' + keys.length + ' champs indiqués.' : 'Merci de corriger le champ indiqué.');
-        const firstBad = (errors.projet && $('input[name="projet"]', form)) || $('[aria-invalid="true"]', form);
+        const firstBad = (errors.projet && $('[name="projet"]', form)) || $('[aria-invalid="true"]', form);
         if (firstBad) firstBad.focus();
         track('form_error', { fields: keys.join(',') });
         return;

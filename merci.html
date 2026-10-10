@@ -18,10 +18,10 @@
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=6ab1ae298c">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=b2883a14b6">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=6ab1ae298c" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=6ab1ae298c" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=b2883a14b6" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=b2883a14b6" defer></script>
 <!--/include-->
 </head>
 <body>
@@ -90,57 +90,47 @@
 <!--#include footer-->
 <footer class="ftr">
   <div class="wrap">
-    <p class="ftr__lead">Un projet en tête&nbsp;? <a href="/msdesign.be/#contact" data-track="cta_footer">Parlons-en</a>, l’appel découverte est gratuit.</p>
-    <div class="ftr__grid">
-      <div>
-        <h2 class="ftr__title">Le studio</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/#promesse">Notre promesse de délai</a></li>
-          <li><a href="/msdesign.be/#methode">Méthode</a></li>
-          <li><a href="/msdesign.be/#faq">Questions fréquentes</a></li>
-          <li><a href="/msdesign.be/#contact">Contact</a></li>
-        </ul>
+    <div class="ftr__cta">
+      <img class="ftr__leaves" src="/msdesign.be/assets/img/feuilles-fin-760.webp" width="760" height="420" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      <div class="ftr__cta-copy">
+        <p class="label">Prêt à démarrer&nbsp;?</p>
+        <p class="ftr__lead"><span class="accent">Votre projet</span> mérite un site<br> <span class="accent">à la hauteur de vos ambitions.</span></p>
       </div>
-      <div>
-        <h2 class="ftr__title">Études de cas</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/etudes/greentage.html">Greentage</a></li>
-          <li><a href="/msdesign.be/etudes/#premium">Notre prochain site Premium</a></li>
-          <li><a href="/msdesign.be/etudes/">Toutes les études</a></li>
-        </ul>
+      <a class="btn btn--line" href="/msdesign.be/#etudes" data-track="cta_footer">Découvrir nos projets<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+    </div>
+    <div class="ftr__main">
+      <div class="ftr__brand">
+        <a class="ftr__logo" href="/msdesign.be/">M&amp;S DESIGN</a>
+        <p>Des sites web qui font la différence.</p>
       </div>
-      <div>
-        <h2 class="ftr__title">Services</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/#services">Sites sur mesure</a></li>
-          <li><a href="/msdesign.be/#services">Identité visuelle</a></li>
-          <li><a href="/msdesign.be/#services">Référencement local</a></li>
-          <li><a href="/msdesign.be/#tarifs">Tarifs &amp; entretien</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="ftr__title">Nous joindre</h2>
-        <ul class="ftr__list">
-          <li><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
-          <li><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click">WhatsApp</a></li>
-          <li><a href="mailto:mck.honorable@gmail.com" data-track="email_click">mck.honorable@gmail.com</a></li>
-          <li>Bruxelles · lun – ven, 9 h – 18 h</li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="ftr__title">Informations</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/confidentialite.html" data-page-link="confidentialite">Confidentialité (RGPD)</a></li>
-          <li><a href="/msdesign.be/cgu.html" data-page-link="cgu">Conditions &amp; mentions légales</a></li>
-          <li><button class="ftr__btn" type="button" data-cookie-open>Gérer les cookies</button></li>
-          <li><button class="ftr__btn" type="button" data-motion-toggle>Réduire les animations</button></li>
-        </ul>
+      <nav class="ftr__nav" aria-label="Plan du site">
+        <a href="/msdesign.be/#etudes">Projets</a>
+        <a href="/msdesign.be/#services">Services</a>
+        <a href="/msdesign.be/#methode">Méthode</a>
+        <a href="/msdesign.be/#tarifs">Tarifs</a>
+        <a href="/msdesign.be/#faq">Questions</a>
+        <a href="/msdesign.be/#contact">Contact</a>
+        <a href="/msdesign.be/etudes/">Études de cas</a>
+      </nav>
+      <div class="ftr__end">
+        <p class="ftr__icons">
+          <a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click" aria-label="WhatsApp"><svg aria-hidden="true"><use href="#i-chat"/></svg></a>
+          <a href="mailto:mck.honorable@gmail.com" data-track="email_click" aria-label="E-mail : mck.honorable@gmail.com"><svg aria-hidden="true"><use href="#i-mail"/></svg></a>
+          <a href="tel:+32486611159" data-track="phone_click" aria-label="Appeler le +32 486 61 11 59"><svg aria-hidden="true"><use href="#i-phone"/></svg></a>
+        </p>
+        <p>Studio web · Bruxelles</p>
       </div>
     </div>
     <div class="ftr__bottom">
-      <p>© <span data-year>2026</span> M&amp;S Design · Bruxelles · BCE&nbsp;: en cours d’immatriculation</p>
-      <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027. Greentage est un projet conceptuel.</p>
+      <p>© <span data-year>2026</span> M&amp;S Design. Tous droits réservés. BCE&nbsp;: en cours d’immatriculation.</p>
+      <p class="ftr__links">
+        <a href="/msdesign.be/cgu.html" data-page-link="cgu">Mentions légales</a>
+        <a href="/msdesign.be/confidentialite.html" data-page-link="confidentialite">Politique de confidentialité</a>
+        <button class="ftr__btn" type="button" data-cookie-open>Cookies</button>
+        <button class="ftr__btn" type="button" data-motion-toggle>Réduire les animations</button>
+      </p>
     </div>
+    <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027. Greentage, Le Fournil et Atelier Véritas sont des projets conceptuels.</p>
   </div>
 </footer>
 <div class="dock" data-dock>

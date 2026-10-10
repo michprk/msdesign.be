@@ -20,6 +20,12 @@ réalisations », « Demander un devis ») et trois atouts (design sur mesure, r
 feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite, « Nos réalisations » :
 un projet à la fois, 01 / 03, avec flèches.
 
+**Tarifs** : trois cartes en verre dépoli (Essentiel, Signature « Recommandé », Premium), prix en
+italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-src/flower-lab.html`,
+`flower.js`). **Fin de page** : « Parlons de votre projet. » avec la photo du Mac et du carnet bleu
+(`_msdesign-src/contact-photo.html`), le bloc bleu et le formulaire, le plan stylisé de Bruxelles
+(outil `#map`), puis le bandeau « Prêt à démarrer ? » (`#ftrleaves`) et le pied de page.
+
 Le Fournil et Atelier Véritas sont des projets conceptuels. Leurs photos (pain, maison) et le décor
 (feuilles, fleurs) viennent de la maquette ChatGPT du studio (`_msdesign-src/ref/maquette-chatgpt.png`,
 outil `#refcuts`). Leur résolution est limitée par celle de la maquette.

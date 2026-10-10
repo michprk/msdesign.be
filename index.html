@@ -31,10 +31,10 @@
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=6ab1ae298c">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=b2883a14b6">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=6ab1ae298c" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=6ab1ae298c" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=b2883a14b6" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=b2883a14b6" defer></script>
 <!--/include-->
 <script type="application/ld+json">
 {
@@ -250,49 +250,51 @@
   </div>
 </section>
 
-<!-- Tarifs -->
-<section class="sec sec--tint" id="tarifs" aria-labelledby="tarifs-title">
+<!-- Tarifs : trois formules, une grande pervenche bleue en fond -->
+<section class="sec tarifs" id="tarifs" aria-labelledby="tarifs-title">
+  <img class="tarifs__flower" src="/msdesign.be/assets/img/fleur-bleue-900.webp" srcset="/msdesign.be/assets/img/fleur-bleue-900.webp 900w, /msdesign.be/assets/img/fleur-bleue-1800.webp 1800w" sizes="(max-width: 900px) 150vw, 82vw" width="1800" height="1800" alt="" aria-hidden="true" fetchpriority="low" decoding="async">
   <div class="wrap">
-    <div class="sec-head">
-      <p class="label" data-reveal>Tarifs</p>
-      <h2 class="h2" id="tarifs-title" data-reveal>Des prix fixes, <span class="soft">annoncés d’avance.</span></h2>
-      <p class="lead" data-reveal>Le devis est gratuit. Acompte de 50&nbsp;% à la commande, solde à la mise en ligne.</p>
+    <div class="tarifs__head">
+      <div>
+        <p class="label" data-reveal>Tarifs</p>
+        <h2 class="h2" id="tarifs-title" data-reveal>Des prix fixes, <em>annoncés d’avance.</em></h2>
+        <p class="lead" data-reveal>Le devis est gratuit. Acompte de 50&nbsp;% à la commande, solde à la mise en ligne.</p>
+      </div>
+      <p class="tarifs__note" data-reveal>Tous les prix HTVA · EUR</p>
     </div>
     <div class="plans">
       <article class="plan" data-reveal>
-        <p class="plan__tag"></p>
+        <p class="plan__meta">Une page · 14 jours</p>
         <h3 class="plan__name">Essentiel</h3>
-        <p class="plan__for">Une page, l’essentiel.</p>
         <p class="plan__price">500&nbsp;€</p>
-        <p class="plan__vat">HTVA</p>
-        <a class="btn btn--line" href="/msdesign.be/#contact" data-plan="essentiel" data-track="plan_click">Choisir Essentiel</a>
-        <ul class="plan__list"><li>Site d’une page sur mesure</li><li>Adapté au mobile</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Pages légales et cookies</li><li>En ligne en 14 jours</li></ul>
+        <p class="plan__for">Une page sur mesure, l’essentiel pour être trouvé et contacté.</p>
+        <ul class="plan__list"><li>Site d’une page sur mesure</li><li>Adapté au mobile</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Pages légales et cookies</li></ul>
+        <a class="btn btn--line plan__btn" href="/msdesign.be/#contact" data-plan="essentiel" data-track="plan_click">Choisir Essentiel<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
       </article>
       <article class="plan plan--hi" data-reveal>
-        <p class="plan__tag">Notre conseil</p>
+        <p class="plan__tag">Recommandé</p>
+        <p class="plan__meta">Jusqu’à six pages · 21 jours</p>
         <h3 class="plan__name">Signature</h3>
-        <p class="plan__for">Le site complet.</p>
         <p class="plan__price">750&nbsp;€</p>
-        <p class="plan__vat">HTVA</p>
-        <a class="btn" href="/msdesign.be/#contact" data-plan="signature" data-track="plan_click">Choisir Signature</a>
-        <ul class="plan__list"><li>Jusqu’à six pages</li><li>Animations soignées</li><li>Formulaire de devis</li><li>Fiche Google et SEO local</li><li>Deux séries de retouches</li><li>En ligne en 21 jours</li></ul>
+        <p class="plan__for">Le site complet, de bout en bout. La formule que choisissent la plupart des commerces.</p>
+        <ul class="plan__list"><li>Jusqu’à six pages</li><li>Animations soignées</li><li>Formulaire de devis</li><li>Fiche Google et SEO local</li><li>Deux séries de retouches</li></ul>
+        <a class="btn plan__btn" href="/msdesign.be/#contact" data-plan="signature" data-track="plan_click">Choisir Signature<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
       </article>
       <article class="plan" data-reveal>
-        <p class="plan__tag"></p>
+        <p class="plan__meta">Trois langues · 21 jours</p>
         <h3 class="plan__name">Premium</h3>
-        <p class="plan__for">Pour aller plus loin.</p>
         <p class="plan__price">2&nbsp;200&nbsp;€</p>
-        <p class="plan__vat">HTVA</p>
-        <a class="btn btn--line" href="/msdesign.be/#contact" data-plan="premium" data-track="plan_click">Choisir Premium</a>
-        <ul class="plan__list"><li>Trois langues&nbsp;: FR, NL, EN</li><li>Réservation ou boutique</li><li>Identité visuelle incluse</li><li>Rédaction des contenus</li><li>Statistiques mensuelles</li><li>Trois mois de suivi</li></ul>
+        <p class="plan__for">Pour aller plus loin&nbsp;: plusieurs langues, réservation ou boutique.</p>
+        <ul class="plan__list"><li>Trois langues&nbsp;: FR, NL, EN</li><li>Réservation ou boutique</li><li>Identité visuelle incluse</li><li>Rédaction des contenus</li><li>Trois mois de suivi</li></ul>
+        <a class="btn btn--line plan__btn" href="/msdesign.be/#contact" data-plan="premium" data-track="plan_click">Choisir Premium<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
       </article>
     </div>
     <div class="care" data-reveal>
       <div>
         <h3 class="h3">Entretien &amp; hébergement, en option</h3>
-        <p>Domaine à votre nom, hébergement, sécurité, sauvegardes, formulaire, statistiques et jusqu’à 30&nbsp;minutes de modifications par mois. Engagement de 12&nbsp;mois.</p>
+        <p>Domaine à votre nom, hébergement, sécurité, sauvegardes, formulaire, statistiques et jusqu’à 30&nbsp;minutes de modifications par mois.</p>
       </div>
-      <p class="care__price">15&nbsp;€ <small>par mois, HTVA, engagement de 12&nbsp;mois</small></p>
+      <p class="care__price">15&nbsp;€ <em>/mois</em> <small>HTVA, engagement de 12&nbsp;mois</small></p>
     </div>
     <dl class="terms" data-reveal>
       <div><dt>Délais</dt><dd>21&nbsp;jours après la maquette validée, 14 pour l’Essentiel. En cas de retard de notre fait, 10&nbsp;% remboursés par semaine, jusqu’à 50&nbsp;%. <a href="/msdesign.be/cgu.html#delais">Les conditions</a></dd></div>
@@ -321,167 +323,165 @@
   </div>
 </section>
 
-<!-- Le studio -->
-<section class="sec sec--tint studio" id="studio" aria-labelledby="studio-title">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="label" data-reveal>Le studio</p>
-      <h2 class="h2" id="studio-title" data-reveal>Un petit studio, <span class="soft">un seul interlocuteur.</span></h2>
-      <p class="lead" data-reveal>M&amp;S Design ouvre à Bruxelles en 2027. Vous parlez à la même personne du premier appel à la mise en ligne, puis pour l’entretien.</p>
+<!-- Contact : l’invitation et la photo, puis le bloc bleu et le formulaire -->
+<section class="sec contact" id="contact" aria-labelledby="contact-title">
+  <div class="wrap contact__intro">
+    <div class="contact__copy">
+      <p class="label" data-reveal>Contact</p>
+      <h2 class="contact__title" id="contact-title" data-reveal><span>Parlons de</span> <span class="accent">votre projet.</span></h2>
+      <p class="lead" data-reveal>Vous avez une idée, un besoin ou une question&nbsp;? Écrivez-nous, nous vous répondons dans les plus brefs délais.</p>
+      <ul class="feats" data-reveal>
+        <li><svg aria-hidden="true"><use href="#i-bolt"/></svg><span>Réponse rapide<br>sous 24&nbsp;h ouvrées</span></li>
+        <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Basé à Bruxelles<br>et disponible en ligne</span></li>
+        <li><svg aria-hidden="true"><use href="#i-shield"/></svg><span>Échange gratuit<br>et sans engagement</span></li>
+      </ul>
     </div>
-    <dl class="studio__grid">
-      <div data-reveal><dt>Notre approche</dt><dd>Le design et le code sont faits à la main, pour votre activité. Pas de thème acheté, pas de constructeur de site&nbsp;: un site léger, que nous connaissons ligne par ligne.</dd></div>
-      <div data-reveal><dt>Pour qui</dt><dd>Indépendants, commerces, artisans, restaurants et petites entreprises qui veulent un site clair, agréable sur mobile et facile à faire évoluer.</dd></div>
-      <div data-reveal><dt>Comment nous communiquons</dt><dd>Une réponse sous 24&nbsp;h ouvrées, un point à chaque étape, par téléphone, e-mail ou WhatsApp. Sans jargon, avec des dates.</dd></div>
-      <div data-reveal><dt>Ce qui vous appartient</dt><dd>Le nom de domaine à votre nom, le code, les textes et les images créés pour vous, dès le paiement du solde.</dd></div>
-    </dl>
-    <p class="studio__legal" data-reveal>Immatriculation en cours&nbsp;: numéro d’entreprise et adresse du siège seront publiés dans les <a href="/msdesign.be/cgu.html#mentions">mentions légales</a> à l’ouverture.</p>
+    <figure class="contact__photo" data-reveal>
+      <img src="/msdesign.be/assets/img/contact-studio-1200.webp" width="1200" height="900" loading="lazy" decoding="async" alt="Un ordinateur portable ouvert sur un bureau clair, un carnet bleu M&amp;S Design posé dessus, l’ombre d’une plante.">
+      <svg class="seal" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="seal-path" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1 -88 0"/></defs><g class="seal__ring"><text><textPath href="#seal-path">M&amp;S DESIGN · STUDIO WEB · BRUXELLES ·</textPath></text></g><text class="seal__amp" x="60" y="69" text-anchor="middle">&amp;</text></svg>
+    </figure>
+  </div>
+  <div class="wrap">
+    <div class="contact__box">
+      <aside class="contact__panel" data-reveal>
+        <p class="label label--light">Restons en contact</p>
+        <p class="contact__q">Une question&nbsp;?<br>Une idée&nbsp;?</p>
+        <p class="contact__txt">Remplissez le formulaire ci-contre et nous vous recontactons rapidement. Premier appel de 30&nbsp;minutes gratuit, maquette et prix fixe sous 5&nbsp;jours.</p>
+        <ul class="contact__lines">
+          <li><svg aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:mck.honorable@gmail.com" data-track="email_click">mck.honorable@gmail.com</a></li>
+          <li><svg aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
+          <li><svg aria-hidden="true"><use href="#i-chat"/></svg><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click">WhatsApp</a></li>
+          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Bruxelles, Belgique · chez vous ou en visio</span></li>
+        </ul>
+        <p class="promise-mini"><strong>Notre promesse&nbsp;:</strong> votre site en ligne 21&nbsp;jours après la maquette validée, ou 10&nbsp;% remboursés par semaine de retard. <a href="/msdesign.be/cgu.html#delais">Les conditions</a>.</p>
+      </aside>
+      <form class="form" id="contact-form" data-form action="/msdesign.be/merci.html" novalidate data-reveal>
+        <div class="form__row">
+          <div class="field">
+            <label for="f-name">Nom <span aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Votre nom" aria-describedby="err-name">
+            <p class="field__error" id="err-name" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="nom@exemple.be" aria-describedby="err-email">
+            <p class="field__error" id="err-email" hidden></p>
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="f-projet">Type de projet <span aria-hidden="true">*</span></label>
+            <select id="f-projet" name="projet" required aria-describedby="err-projet">
+              <option value="">Choisissez une option</option>
+              <option value="vitrine">Nouveau site</option>
+              <option value="refonte">Refonte de site</option>
+              <option value="identite">Identité visuelle</option>
+              <option value="seo">Référencement</option>
+              <option value="autre">Autre demande</option>
+            </select>
+            <p class="field__error" id="err-projet" hidden></p>
+          </div>
+          <div class="field">
+            <label for="f-phone">Téléphone <span class="field__opt">(facultatif)</span></label>
+            <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+32" aria-describedby="err-phone">
+            <p class="field__error" id="err-phone" hidden></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-formule">Formule envisagée</label>
+          <select id="f-formule" name="formule">
+            <option value="conseil">Je ne sais pas encore, conseillez-moi</option>
+            <option value="essentiel">Essentiel · 500 € HTVA</option>
+            <option value="signature">Signature · 750 € HTVA</option>
+            <option value="premium">Premium · 2 200 € HTVA</option>
+          </select>
+          <p class="form__estimate" data-estimate hidden></p>
+        </div>
+        <div class="field">
+          <label for="f-message">Message <span aria-hidden="true">*</span></label>
+          <textarea id="f-message" name="message" rows="5" required placeholder="Décrivez votre projet en quelques mots : votre activité, vos objectifs, une date de lancement…" aria-describedby="err-message"></textarea>
+          <p class="field__error" id="err-message" hidden></p>
+        </div>
+        <div class="field field--hp" aria-hidden="true">
+          <label for="f-website">Ne pas remplir</label>
+          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="field">
+          <label class="check"><input type="checkbox" name="consent" required aria-describedby="err-consent"><span>J’accepte que M&amp;S Design utilise ces informations pour répondre à ma demande (<a href="/msdesign.be/confidentialite.html">confidentialité</a>).</span></label>
+          <p class="field__error" id="err-consent" hidden></p>
+        </div>
+        <button class="btn btn--lg form__send" type="submit" data-track="form_submit">Envoyer ma demande<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+        <p class="form__note"><svg aria-hidden="true"><use href="#i-shield"/></svg>Vos informations sont protégées et ne servent qu’à vous répondre.</p>
+        <p class="form__status" data-status role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </div>
 </section>
 
-<!-- Contact -->
-<section class="sec sec--night contact" id="contact" aria-labelledby="contact-title">
-  <div class="wrap contact__grid">
-    <div>
-      <p class="label label--light" data-reveal>Contact</p>
-      <h2 class="h2" id="contact-title" data-reveal>Parlons <span class="soft">de votre projet.</span></h2>
-      <p class="lead" data-reveal>Un appel de 30&nbsp;minutes, gratuit et sans engagement. Vous recevez une maquette et un prix fixe sous 5&nbsp;jours.</p>
-      <ul class="contact__list" data-reveal>
-        <li><span>Téléphone</span><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
-        <li><span>WhatsApp</span><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click">Écrire un message</a></li>
-        <li><span>E-mail</span><a href="mailto:mck.honorable@gmail.com" data-track="email_click">mck.honorable@gmail.com</a></li>
-        <li><span>Rendez-vous</span><p>Chez vous à Bruxelles, ou en visio</p></li>
-      </ul>
-      <p class="promise-mini" data-reveal><strong>Notre promesse&nbsp;:</strong> votre site en ligne 21&nbsp;jours après la maquette validée, ou 10&nbsp;% remboursés par semaine de retard. <a href="/msdesign.be/cgu.html#delais">Les conditions</a>.</p>
+<!-- Le studio : le plan de Bruxelles -->
+<section class="sec studio" id="studio" aria-labelledby="studio-title">
+  <div class="wrap studio__grid">
+    <figure class="studio__map" data-reveal>
+      <img src="/msdesign.be/assets/img/plan-bruxelles-700.webp" srcset="/msdesign.be/assets/img/plan-bruxelles-700.webp 700w, /msdesign.be/assets/img/plan-bruxelles-1400.webp 1400w" sizes="(max-width: 900px) 92vw, 46vw" width="1400" height="980" loading="lazy" decoding="async" alt="Plan stylisé de Bruxelles : le centre, Ixelles, Saint-Gilles, Etterbeek, Schaerbeek et Molenbeek.">
+      <p class="studio__pin"><svg aria-hidden="true"><use href="#i-pin"/></svg><span><strong>M&amp;S Design</strong>Bruxelles</span></p>
+    </figure>
+    <div class="studio__copy">
+      <p class="label" data-reveal>Notre studio</p>
+      <h2 class="h2" id="studio-title" data-reveal>Bruxelles, Belgique</h2>
+      <p class="lead" data-reveal>Basés à Bruxelles, nous travaillons pour des indépendants, commerces et petites entreprises partout en Belgique. Un petit studio, un seul interlocuteur&nbsp;: du premier appel à la mise en ligne, puis pour l’entretien.</p>
+      <a class="more" href="https://www.google.com/maps/place/Bruxelles" target="_blank" rel="noopener" data-reveal>Voir sur Google Maps</a>
+      <p class="studio__legal" data-reveal>Ouverture en 2027. Immatriculation en cours&nbsp;: numéro d’entreprise et adresse du siège seront publiés dans les <a href="/msdesign.be/cgu.html#mentions">mentions légales</a>.</p>
     </div>
-    <form class="form" id="contact-form" data-form action="/msdesign.be/merci.html" novalidate>
-      <fieldset class="field">
-        <legend>Votre projet <span aria-hidden="true">*</span></legend>
-        <div class="chips">
-          <label class="chip"><input type="radio" name="projet" value="vitrine" required><span>Nouveau site</span></label>
-          <label class="chip"><input type="radio" name="projet" value="refonte"><span>Refonte</span></label>
-          <label class="chip"><input type="radio" name="projet" value="identite"><span>Identité visuelle</span></label>
-          <label class="chip"><input type="radio" name="projet" value="seo"><span>Référencement</span></label>
-          <label class="chip"><input type="radio" name="projet" value="autre"><span>Autre</span></label>
-        </div>
-        <p class="field__error" id="err-projet" hidden></p>
-      </fieldset>
-      <div class="field">
-        <label for="f-formule">Formule envisagée</label>
-        <select id="f-formule" name="formule">
-          <option value="conseil">Je ne sais pas encore, conseillez-moi</option>
-          <option value="essentiel">Essentiel · 500 € HTVA</option>
-          <option value="signature">Signature · 750 € HTVA</option>
-          <option value="premium">Premium · 2 200 € HTVA</option>
-        </select>
-        <p class="form__estimate" data-estimate hidden></p>
-      </div>
-      <div class="form__row">
-        <div class="field">
-          <label for="f-name">Nom <span aria-hidden="true">*</span></label>
-          <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="err-name">
-          <p class="field__error" id="err-name" hidden></p>
-        </div>
-        <div class="field">
-          <label for="f-societe">Entreprise</label>
-          <input id="f-societe" name="societe" type="text" autocomplete="organization">
-        </div>
-      </div>
-      <div class="form__row">
-        <div class="field">
-          <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
-          <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="err-email">
-          <p class="field__error" id="err-email" hidden></p>
-        </div>
-        <div class="field">
-          <label for="f-phone">Téléphone</label>
-          <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="err-phone">
-          <p class="field__error" id="err-phone" hidden></p>
-        </div>
-      </div>
-      <div class="field">
-        <label for="f-site">Site actuel <span class="field__opt">(facultatif)</span></label>
-        <input id="f-site" name="site" type="url" inputmode="url" placeholder="https://" aria-describedby="err-site">
-        <p class="field__error" id="err-site" hidden></p>
-      </div>
-      <div class="field">
-        <label for="f-message">Votre message <span aria-hidden="true">*</span></label>
-        <textarea id="f-message" name="message" rows="5" required placeholder="Votre activité, vos objectifs, une date de lancement…" aria-describedby="err-message"></textarea>
-        <p class="field__error" id="err-message" hidden></p>
-      </div>
-      <div class="field field--hp" aria-hidden="true">
-        <label for="f-website">Ne pas remplir</label>
-        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
-      </div>
-      <div class="field">
-        <label class="check"><input type="checkbox" name="consent" required aria-describedby="err-consent"><span>J’accepte que M&amp;S Design utilise ces informations pour répondre à ma demande (<a href="/msdesign.be/confidentialite.html">confidentialité</a>).</span></label>
-        <p class="field__error" id="err-consent" hidden></p>
-      </div>
-      <div class="form__foot">
-        <button class="btn btn--lg" type="submit" data-track="form_submit">Envoyer ma demande</button>
-        <p class="form__note">Réponse sous 24&nbsp;h ouvrées.<br>Vos données servent uniquement à vous répondre.</p>
-      </div>
-      <p class="form__status" data-status role="status" aria-live="polite"></p>
-    </form>
   </div>
 </section>
 
 </main>
 
+
 <!--#include footer-->
 <footer class="ftr">
   <div class="wrap">
-    <p class="ftr__lead">Un projet en tête&nbsp;? <a href="/msdesign.be/#contact" data-track="cta_footer">Parlons-en</a>, l’appel découverte est gratuit.</p>
-    <div class="ftr__grid">
-      <div>
-        <h2 class="ftr__title">Le studio</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/#promesse">Notre promesse de délai</a></li>
-          <li><a href="/msdesign.be/#methode">Méthode</a></li>
-          <li><a href="/msdesign.be/#faq">Questions fréquentes</a></li>
-          <li><a href="/msdesign.be/#contact">Contact</a></li>
-        </ul>
+    <div class="ftr__cta">
+      <img class="ftr__leaves" src="/msdesign.be/assets/img/feuilles-fin-760.webp" width="760" height="420" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      <div class="ftr__cta-copy">
+        <p class="label">Prêt à démarrer&nbsp;?</p>
+        <p class="ftr__lead"><span class="accent">Votre projet</span> mérite un site<br> <span class="accent">à la hauteur de vos ambitions.</span></p>
       </div>
-      <div>
-        <h2 class="ftr__title">Études de cas</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/etudes/greentage.html">Greentage</a></li>
-          <li><a href="/msdesign.be/etudes/#premium">Notre prochain site Premium</a></li>
-          <li><a href="/msdesign.be/etudes/">Toutes les études</a></li>
-        </ul>
+      <a class="btn btn--line" href="/msdesign.be/#etudes" data-track="cta_footer">Découvrir nos projets<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+    </div>
+    <div class="ftr__main">
+      <div class="ftr__brand">
+        <a class="ftr__logo" href="/msdesign.be/">M&amp;S DESIGN</a>
+        <p>Des sites web qui font la différence.</p>
       </div>
-      <div>
-        <h2 class="ftr__title">Services</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/#services">Sites sur mesure</a></li>
-          <li><a href="/msdesign.be/#services">Identité visuelle</a></li>
-          <li><a href="/msdesign.be/#services">Référencement local</a></li>
-          <li><a href="/msdesign.be/#tarifs">Tarifs &amp; entretien</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="ftr__title">Nous joindre</h2>
-        <ul class="ftr__list">
-          <li><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
-          <li><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click">WhatsApp</a></li>
-          <li><a href="mailto:mck.honorable@gmail.com" data-track="email_click">mck.honorable@gmail.com</a></li>
-          <li>Bruxelles · lun – ven, 9 h – 18 h</li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="ftr__title">Informations</h2>
-        <ul class="ftr__list">
-          <li><a href="/msdesign.be/confidentialite.html" data-page-link="confidentialite">Confidentialité (RGPD)</a></li>
-          <li><a href="/msdesign.be/cgu.html" data-page-link="cgu">Conditions &amp; mentions légales</a></li>
-          <li><button class="ftr__btn" type="button" data-cookie-open>Gérer les cookies</button></li>
-          <li><button class="ftr__btn" type="button" data-motion-toggle>Réduire les animations</button></li>
-        </ul>
+      <nav class="ftr__nav" aria-label="Plan du site">
+        <a href="/msdesign.be/#etudes">Projets</a>
+        <a href="/msdesign.be/#services">Services</a>
+        <a href="/msdesign.be/#methode">Méthode</a>
+        <a href="/msdesign.be/#tarifs">Tarifs</a>
+        <a href="/msdesign.be/#faq">Questions</a>
+        <a href="/msdesign.be/#contact">Contact</a>
+        <a href="/msdesign.be/etudes/">Études de cas</a>
+      </nav>
+      <div class="ftr__end">
+        <p class="ftr__icons">
+          <a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click" aria-label="WhatsApp"><svg aria-hidden="true"><use href="#i-chat"/></svg></a>
+          <a href="mailto:mck.honorable@gmail.com" data-track="email_click" aria-label="E-mail : mck.honorable@gmail.com"><svg aria-hidden="true"><use href="#i-mail"/></svg></a>
+          <a href="tel:+32486611159" data-track="phone_click" aria-label="Appeler le +32 486 61 11 59"><svg aria-hidden="true"><use href="#i-phone"/></svg></a>
+        </p>
+        <p>Studio web · Bruxelles</p>
       </div>
     </div>
     <div class="ftr__bottom">
-      <p>© <span data-year>2026</span> M&amp;S Design · Bruxelles · BCE&nbsp;: en cours d’immatriculation</p>
-      <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027. Greentage est un projet conceptuel.</p>
+      <p>© <span data-year>2026</span> M&amp;S Design. Tous droits réservés. BCE&nbsp;: en cours d’immatriculation.</p>
+      <p class="ftr__links">
+        <a href="/msdesign.be/cgu.html" data-page-link="cgu">Mentions légales</a>
+        <a href="/msdesign.be/confidentialite.html" data-page-link="confidentialite">Politique de confidentialité</a>
+        <button class="ftr__btn" type="button" data-cookie-open>Cookies</button>
+        <button class="ftr__btn" type="button" data-motion-toggle>Réduire les animations</button>
+      </p>
     </div>
+    <p class="demo-note">Maquette de démonstration : ouverture du studio en 2027. Greentage, Le Fournil et Atelier Véritas sont des projets conceptuels.</p>
   </div>
 </footer>
 <div class="dock" data-dock>
