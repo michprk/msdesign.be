@@ -6,7 +6,7 @@ envoie sa demande en JSON à une petite API hébergée à part, qui revérifie t
 l’e-mail à l’agence.
 
 ```
-Visiteur ──(formulaire)──▶ site statique ──(POST /contact)──▶ API ──▶ e-mail à mck.honorable@gmail.com
+Visiteur ──(formulaire)──▶ site statique ──(POST /contact)──▶ API ──▶ e-mail à mck.honorable@msdesign.be
                                                               (clés ici seulement)
 ```
 

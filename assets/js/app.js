@@ -20,7 +20,7 @@
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
   const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const safe = (name, fn) => { try { fn(); } catch (error) { console.warn('[ms] ' + name, error); } };
-  const EMAIL = 'mck.honorable@gmail.com';
+  const EMAIL = 'mck.honorable@msdesign.be';
   const PHONE = '+32 486 61 11 59';
   const KEY = 'ms_';
   const euro = (n) => new Intl.NumberFormat('fr-BE', { maximumFractionDigits: 2 }).format(n) + ' €';
@@ -321,8 +321,8 @@
   const PROJETS = { vitrine: 'Site vitrine', refonte: 'Refonte de site', identite: 'Identité visuelle', seo: 'Référencement', autre: 'Autre demande' };
   const PLANS = {
     essentiel: { name: 'Essentiel', price: 500, detail: 'Site une page sur mesure, formulaire, référencement de base, en ligne en 2 semaines.' },
-    signature: { name: 'Signature', price: 750, detail: 'Jusqu’à 6 pages, animations premium, SEO local et fiche Google, en ligne en 3 semaines.' },
-    premium: { name: 'Premium', price: 2200, detail: 'Multilingue, réservation ou boutique, identité visuelle et contenus, 3 mois de suivi.' }
+    signature: { name: 'Signature', price: 1290, detail: 'Jusqu’à 6 pages, animations premium, SEO local et fiche Google, en ligne en 3 semaines.' },
+    premium: { name: 'Premium', price: 3900, detail: 'Multilingue, réservation ou boutique, identité visuelle et contenus, 3 mois de suivi, en ligne en 6 semaines.' }
   };
   safe('form', () => {
     const form = $('[data-form]');

@@ -370,7 +370,7 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .care p { color: var(--ink-2); max-width: 44em; margin-top: 6px; font-size: 16.5px; }
 .care__price { flex: none; text-align: right; font: 400 40px/1 var(--display); letter-spacing: -0.02em; }
 .care__price em { font-size: 0.55em; color: var(--muted); }
-.care__price small { display: block; letter-spacing: 0; font: 400 13.5px/1.4 var(--sans); color: var(--muted); margin-top: 8px; }
+.care__price small { display: block; letter-spacing: 0; font: 400 13.5px/1.4 var(--sans); color: var(--muted); margin-top: 8px; max-width: 17em; margin-left: auto; }
 .pricing__note { text-align: center; color: var(--muted); margin-top: 28px; font: 400 16.5px/1.5 var(--sans); }
 
 /* FAQ */
@@ -598,6 +598,7 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
   .case--wide .case__img img { border-radius: 14px 14px 0 0; height: auto; }
 }
 @media (max-width: 900px) {
+  .care__price small { margin-left: 0; }
   .plans, .cs-text, .shots, .next { grid-template-columns: minmax(0, 1fr); }
   .tarifs__flower { width: 125vw; right: -58vw; top: 150px; }
   .plans { max-width: 560px; margin: 0 auto; }

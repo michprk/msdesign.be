@@ -8,7 +8,7 @@
  *
  * Variables (wrangler.toml ou tableau de bord Cloudflare) :
  *   ALLOWED_ORIGIN   origine(s) autorisée(s), ex. https://michprk.github.io,https://www.msdesign.be
- *   STUDIO_EMAIL     boîte qui reçoit les demandes, ex. mck.honorable@gmail.com
+ *   STUDIO_EMAIL     boîte qui reçoit les demandes, ex. mck.honorable@msdesign.be
  *   FROM_EMAIL       expéditeur vérifié chez Resend, ex. M&S Design <site@msdesign.be>
  * Secret (npx wrangler secret put RESEND_API_KEY) :
  *   RESEND_API_KEY   clé de l’API Resend (envoi des e-mails)
@@ -22,7 +22,7 @@ const FORMS = {
 };
 const ENUMS = {
   projet: { vitrine: 'Site vitrine', refonte: 'Refonte de site', identite: 'Identité visuelle', seo: 'Référencement', autre: 'Autre demande' },
-  formule: { conseil: 'À conseiller', essentiel: 'Essentiel (500 € HTVA)', signature: 'Signature (750 € HTVA)', premium: 'Premium (2 200 € HTVA)' },
+  formule: { conseil: 'À conseiller', essentiel: 'Essentiel (500 € HTVA)', signature: 'Signature (1 290 € HTVA)', premium: 'Premium (3 900 € HTVA)' },
 };
 const LABELS = { projet: 'Projet', formule: 'Formule', name: 'Nom', societe: 'Entreprise', email: 'E-mail', phone: 'Téléphone', site: 'Site actuel', message: 'Message' };
 const MAX = { name: 80, societe: 80, email: 120, phone: 24, site: 200, message: 2000 };

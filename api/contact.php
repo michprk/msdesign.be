@@ -12,7 +12,7 @@
 declare(strict_types=1);
 
 // ---------------------------------------------------------------- Réglages
-const DESTINATAIRE = 'mck.honorable@gmail.com'; // boîte qui reçoit les demandes
+const DESTINATAIRE = 'mck.honorable@msdesign.be'; // boîte qui reçoit les demandes
 const EXPEDITEUR   = 'site@msdesign.be';        // adresse du domaine (Hostinger > E-mails > créer)
 const NOM_SITE     = 'Site M&S Design';
 const LIMITE       = 5;    // demandes maximum par adresse IP…
@@ -78,7 +78,7 @@ $essais[] = $maintenant;
 // Listes de choix et libellés (identiques au site)
 $choix = [
     'projet'  => ['vitrine' => 'Site vitrine', 'refonte' => 'Refonte de site', 'identite' => 'Identité visuelle', 'seo' => 'Référencement', 'autre' => 'Autre demande'],
-    'formule' => ['conseil' => 'À conseiller', 'essentiel' => 'Essentiel (500 € HTVA)', 'signature' => 'Signature (750 € HTVA)', 'premium' => 'Premium (2 200 € HTVA)'],
+    'formule' => ['conseil' => 'À conseiller', 'essentiel' => 'Essentiel (500 € HTVA)', 'signature' => 'Signature (1 290 € HTVA)', 'premium' => 'Premium (3 900 € HTVA)'],
 ];
 $libelles = ['projet' => 'Projet', 'formule' => 'Formule', 'name' => 'Nom', 'societe' => 'Entreprise', 'email' => 'E-mail', 'phone' => 'Téléphone', 'site' => 'Site actuel', 'message' => 'Message'];
 $longueurs = ['name' => 80, 'societe' => 80, 'email' => 120, 'phone' => 24, 'site' => 200, 'message' => 2000];
