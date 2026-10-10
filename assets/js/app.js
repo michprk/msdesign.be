@@ -199,29 +199,31 @@
     requestAnimationFrame(() => setTimeout(() => d.classList.add('hero-in'), reduced ? 0 : 80));
   });
 
-  // la rangée de projets se fait glisser à la souris (au doigt et au pavé tactile, elle défile seule)
-  safe('drag', () => {
-    $$('[data-drag]').forEach((row) => {
-      let x0 = 0, s0 = 0, down = false, moved = false;
-      row.addEventListener('pointerdown', (e) => {
-        if (e.pointerType !== 'mouse' || e.button !== 0) return;
-        down = true; moved = false; x0 = e.clientX; s0 = row.scrollLeft;
-      });
-      window.addEventListener('pointermove', (e) => {
-        if (!down) return;
-        const dx = e.clientX - x0;
-        if (!moved && Math.abs(dx) > 5) { moved = true; row.classList.add('is-dragging'); }
-        if (moved) row.scrollLeft = s0 - dx;
-      });
-      window.addEventListener('pointerup', () => {
-        if (!down) return;
-        down = false;
-        row.classList.remove('is-dragging');
-      });
-      // un glissé n’ouvre pas la carte sur laquelle il s’arrête
-      row.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
-      row.addEventListener('dragstart', (e) => e.preventDefault());
-    });
+  // la sélection de projets : un projet à la fois (flèches, clavier, glissé au doigt)
+  safe('projects', () => {
+    const slides = $$('[data-slide]');
+    if (slides.length < 2) return;
+    const infos = $$('[data-slide-info]');
+    const num = $('[data-slide-num]');
+    let i = 0;
+    const show = (n) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
+      infos.forEach((s, k) => { s.hidden = k !== i; s.classList.toggle('is-on', k === i); });
+      if (num) num.textContent = String(i + 1).padStart(2, '0');
+    };
+    const prev = $('[data-slide-prev]'), next = $('[data-slide-next]');
+    if (prev) prev.addEventListener('click', () => show(i - 1));
+    if (next) next.addEventListener('click', () => show(i + 1));
+    const view = slides[0].parentElement;
+    let x0 = null;
+    view.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    view.addEventListener('touchend', (e) => {
+      if (x0 == null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+      x0 = null;
+    }, { passive: true });
   });
 
   /* ---------- Ancres douces + présélection du formulaire ---------- */

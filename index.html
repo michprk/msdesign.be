@@ -22,7 +22,7 @@
 <!--#include head-->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-h8x+1TI3lhiN1wviDJ1tzIy+riaVHR7tPj81RF4qpeY=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#fbfaf6">
+<meta name="theme-color" content="#f5f1e9">
 <meta name="color-scheme" content="light">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
@@ -30,11 +30,11 @@
 <link rel="apple-touch-icon" href="/msdesign.be/apple-touch-icon.png">
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=e951a7d7e5">
+<link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=b3ba3214c1">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=e951a7d7e5" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=e951a7d7e5" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=b3ba3214c1" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=b3ba3214c1" defer></script>
 <!--/include-->
 <script type="application/ld+json">
 {
@@ -85,20 +85,15 @@
 <a class="skip" href="#main">Aller au contenu</a>
 <header class="hdr" data-header>
   <div class="hdr__inner">
-    <a class="logo" href="/msdesign.be/" data-page-link="index" aria-current="page" aria-label="M&amp;S Design, studio de design web à Bruxelles — accueil">
-      <span class="logo__mark" aria-hidden="true">M<svg class="logo__amp" viewBox="0 0 468 665"><use href="#amp"/></svg>S</span>
-      <span class="logo__word" aria-hidden="true">Design</span>
-    </a>
+    <a class="logo" href="/msdesign.be/" data-page-link="index" aria-current="page" aria-label="M&amp;S Design, studio de design web à Bruxelles — accueil">M&amp;S DESIGN</a>
     <nav class="hdr__nav" aria-label="Navigation principale">
-      <a href="/msdesign.be/etudes/" data-page-link="etudes" data-nav="etudes">Études de cas</a>
+      <a href="/msdesign.be/#etudes" data-nav="etudes">Projets</a>
       <a href="/msdesign.be/#services" data-nav="services">Services</a>
       <a href="/msdesign.be/#methode" data-nav="methode">Méthode</a>
-      <a href="/msdesign.be/#tarifs" data-nav="tarifs">Tarifs</a>
-      <a href="/msdesign.be/#faq" data-nav="faq">FAQ</a>
+      <a href="/msdesign.be/#contact" data-nav="contact">Contact</a>
     </nav>
     <div class="hdr__end">
-      <a class="hdr__tel" href="tel:+32486611159" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>0486&nbsp;61&nbsp;11&nbsp;59</span></a>
-      <a class="btn btn--sm" href="/msdesign.be/#contact" data-track="cta_header">Devis gratuit</a>
+      <a class="btn btn--line btn--sm" href="/msdesign.be/#contact" data-track="cta_header">Parlons de votre projet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
         <span class="burger__bars" aria-hidden="true"><span></span><span></span></span>
         <span class="sr-only">Ouvrir le menu</span>
@@ -108,7 +103,7 @@
 </header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu data-lenis-prevent>
   <nav class="menu__nav" aria-label="Menu principal">
-    <a href="/msdesign.be/etudes/">Études de cas</a>
+    <a href="/msdesign.be/#etudes">Projets</a>
     <a href="/msdesign.be/#services">Services</a>
     <a href="/msdesign.be/#methode">Méthode</a>
     <a href="/msdesign.be/#tarifs">Tarifs</a>
@@ -116,7 +111,7 @@
     <a href="/msdesign.be/#contact">Contact</a>
   </nav>
   <div class="menu__foot">
-    <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_menu">Demander un devis gratuit</a>
+    <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_menu">Parlons de votre projet</a>
     <a class="btn btn--line btn--lg" href="tel:+32486611159" data-track="phone_click">Appeler le 0486&nbsp;61&nbsp;11&nbsp;59</a>
     <p>Bruxelles · chez vous ou en visio · réponse sous 24&nbsp;h ouvrées</p>
   </div>
@@ -125,46 +120,60 @@
 
 <main id="main">
 
-<!-- Héros : une planche de présentation — fond vert forêt, feuilles au trait, un projet sur MacBook et iPhone, le titre dessous -->
+<!-- Héros : la promesse à gauche, trois projets en fenêtres de navigateur à droite -->
 <section class="hero" id="top" data-hero aria-labelledby="hero-title">
-  <img class="hero__leaves" src="/msdesign.be/assets/img/hero-leaves.svg" alt="" aria-hidden="true" width="1600" height="900">
-  <p class="hero__side" aria-hidden="true">Design UI / UX</p>
-  <div class="wrap hero__inner">
-    <figure class="hero__devices" data-hero-in>
-      <img src="/msdesign.be/assets/img/hero-devices-1600.webp" srcset="/msdesign.be/assets/img/hero-devices-900.webp 900w, /msdesign.be/assets/img/hero-devices-1600.webp 1370w" sizes="(max-width: 700px) 100vw, 860px" width="1370" height="844" alt="Le site Greentage, un projet conceptuel du studio, sur un MacBook et un iPhone." fetchpriority="high" decoding="async">
-      <figcaption><a href="/msdesign.be/etudes/greentage.html">À l’écran&nbsp;: Greentage, projet conceptuel</a></figcaption>
-    </figure>
-    <h1 class="hero__title" id="hero-title" data-hero-in>Des sites qui vous ramènent des clients.</h1>
-    <p class="hero__sub" data-hero-in>Studio de design web · Bruxelles · prix fixe, en ligne en 21&nbsp;jours</p>
-    <div class="hero__actions" data-hero-in>
-      <a class="btn btn--light btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Demander un devis gratuit</a>
-      <a class="link link--light" href="/msdesign.be/#etudes">Voir les projets<svg aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow" data-hero-in>Studio web indépendant · Bruxelles</p>
+      <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Votre prochain site.</span> <span class="hl">Une vraie présence.</span> <span class="hl accent">Un design qui marque.</span></h1>
+      <p class="hero__lede" data-hero-in>Des sites web sur mesure, pensés pour mettre votre activité en valeur et faciliter les prises de contact.</p>
+      <div class="hero__actions" data-hero-in>
+        <a class="btn btn--lg" href="/msdesign.be/#etudes" data-track="cta_hero_projects">Découvrir les projets<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+        <a class="btn btn--line btn--lg" href="/msdesign.be/#contact" data-track="cta_hero">Parler de mon projet</a>
+      </div>
+    </div>
+    <div class="hero__stack" data-hero-in>
+      <figure class="win win--a"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/msdesign.be/assets/img/concept-greentage-720.webp" srcset="/msdesign.be/assets/img/concept-greentage-720.webp 720w, /msdesign.be/assets/img/concept-greentage-1440.webp 1440w" sizes="(max-width: 900px) 60vw, 26vw" width="1440" height="900" alt="Le site Greentage : « Une jungle vintage à deux pas du Cinquantenaire »." fetchpriority="high" decoding="async"></figure>
+      <figure class="win win--b"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/msdesign.be/assets/img/concept-fournil-720.webp" srcset="/msdesign.be/assets/img/concept-fournil-720.webp 720w, /msdesign.be/assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 900px) 56vw, 24vw" width="1440" height="900" alt="Le site Le Fournil, une boulangerie : « Du bon pain, tous les jours »." decoding="async"></figure>
+      <figure class="win win--c"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/msdesign.be/assets/img/concept-veritas-720.webp" srcset="/msdesign.be/assets/img/concept-veritas-720.webp 720w, /msdesign.be/assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 900px) 64vw, 28vw" width="1440" height="900" alt="Le site Atelier Véritas, un architecte : « Architecture durable pour un avenir meilleur »." decoding="async"></figure>
+      <p class="badge" aria-hidden="true"><span>Design</span><span>web</span><span>Bruxelles</span></p>
     </div>
   </div>
 </section>
 
-<!-- Projets : chaque carte, une barre de titre et une image -->
+<!-- Ce que nous faisons, en une ligne -->
+<section class="skills" aria-label="Nos expertises">
+  <ul class="wrap skills__list">
+    <li><svg aria-hidden="true"><use href="#i-target"/></svg>Stratégie</li>
+    <li><svg aria-hidden="true"><use href="#i-pen"/></svg>Design UI/UX</li>
+    <li><svg aria-hidden="true"><use href="#i-code"/></svg>Développement web</li>
+    <li><svg aria-hidden="true"><use href="#i-loupe"/></svg>SEO technique</li>
+  </ul>
+</section>
+
+<!-- Sélection de projets : un projet à la fois, en grand -->
 <section class="sec projects" id="etudes" aria-labelledby="etudes-title">
-  <div class="wrap">
-    <h2 class="projects__title" id="etudes-title" data-reveal>Projets.</h2>
-  </div>
-  <div class="projects__row" data-drag>
-    <a class="project" href="/msdesign.be/etudes/greentage.html" data-reveal>
-      <p class="project__bar"><strong>Greentage.</strong><span>/2026</span><em>Projet conceptuel</em></p>
-      <div class="project__img"><img src="/msdesign.be/assets/img/projet-greentage-1200.webp" srcset="/msdesign.be/assets/img/projet-greentage-600.webp 600w, /msdesign.be/assets/img/projet-greentage-1200.webp 1200w" sizes="(max-width: 700px) 84vw, 44vw" width="1200" height="900" loading="lazy" decoding="async" alt="Planche de présentation du site Greentage : un MacBook et un iPhone affichent l’accueil, sur fond vert forêt avec des feuilles dessinées au trait."></div>
-    </a>
-    <a class="project project--secret" href="/msdesign.be/#contact" data-plan="premium" data-track="case_premium" data-reveal>
-      <p class="project__bar"><strong>Projet Premium.</strong><span>/2027</span><em>En conception</em></p>
-      <div class="project__img"><img src="/msdesign.be/assets/img/site-mystere-720.webp" srcset="/msdesign.be/assets/img/site-mystere-720.webp 720w, /msdesign.be/assets/img/site-mystere-1440.webp 1440w" sizes="(max-width: 700px) 84vw, 44vw" width="1440" height="900" loading="lazy" decoding="async" alt=""><p class="secret__q" aria-hidden="true"><span></span><span></span><span></span></p><span class="secret__shine" aria-hidden="true"></span></div>
-    </a>
-    <a class="project" href="/msdesign.be/#contact" data-track="case_yours" data-reveal>
-      <p class="project__bar"><strong>Votre projet.</strong><span>/2027</span><em>Sur rendez-vous</em></p>
-      <div class="project__img"><img src="/msdesign.be/assets/img/projet-vous-1200.webp" srcset="/msdesign.be/assets/img/projet-vous-600.webp 600w, /msdesign.be/assets/img/projet-vous-1200.webp 1200w" sizes="(max-width: 700px) 84vw, 44vw" width="1200" height="900" loading="lazy" decoding="async" alt="Le « & » de M&amp;S Design en volume sur fond olive, et la question : votre site, le prochain ?"></div>
-    </a>
-  </div>
-  <div class="wrap projects__foot">
-    <p class="projects__note" data-reveal>Chaque projet part d’un besoin concret. Les projets conceptuels sont identifiés comme tels.</p>
-    <a class="more" href="/msdesign.be/etudes/greentage.html" data-reveal>Lire l’étude de cas Greentage</a>
+  <div class="wrap projects__grid">
+    <div class="projects__intro">
+      <p class="eyebrow" data-reveal>Sélection de projets</p>
+      <h2 class="h2" id="etudes-title" data-reveal>Du beau. Du clair. Du pensé.</h2>
+      <p class="lead" data-reveal>Chaque projet est une rencontre entre vos besoins, notre expertise et une vision esthétique. Les projets conceptuels sont identifiés comme tels.</p>
+    </div>
+    <div class="projects__view" data-reveal>
+      <figure class="win win--big is-on" data-slide><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/msdesign.be/assets/img/concept-greentage-1440.webp" srcset="/msdesign.be/assets/img/concept-greentage-720.webp 720w, /msdesign.be/assets/img/concept-greentage-1440.webp 1440w" sizes="(max-width: 900px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Greentage, plantes, fleurs et vintage."></figure>
+      <figure class="win win--big" data-slide><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/msdesign.be/assets/img/concept-fournil-1440.webp" srcset="/msdesign.be/assets/img/concept-fournil-720.webp 720w, /msdesign.be/assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 900px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Le Fournil, une boulangerie, avec un pain et un épi de blé dessinés."></figure>
+      <figure class="win win--big" data-slide><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/msdesign.be/assets/img/concept-veritas-1440.webp" srcset="/msdesign.be/assets/img/concept-veritas-720.webp 720w, /msdesign.be/assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 900px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Atelier Véritas, un architecte, avec l’élévation d’une maison dessinée au trait."></figure>
+    </div>
+    <div class="projects__side" data-reveal>
+      <p class="projects__count" aria-live="polite"><span data-slide-num>01</span> / 03</p>
+      <div class="projects__info is-on" data-slide-info><h3 class="h3">Greentage</h3><p>Plantes, fleurs &amp; vintage<br>(projet conceptuel)</p><a class="more" href="/msdesign.be/etudes/greentage.html">Lire l’étude de cas</a></div>
+      <div class="projects__info" data-slide-info hidden><h3 class="h3">Le Fournil</h3><p>Boulangerie<br>(projet conceptuel)</p><a class="more" href="/msdesign.be/#contact">Un projet similaire&nbsp;?</a></div>
+      <div class="projects__info" data-slide-info hidden><h3 class="h3">Atelier Véritas</h3><p>Architecte<br>(projet conceptuel)</p><a class="more" href="/msdesign.be/#contact">Un projet similaire&nbsp;?</a></div>
+      <div class="projects__nav">
+        <button type="button" data-slide-prev aria-label="Projet précédent"><svg aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+        <button type="button" data-slide-next aria-label="Projet suivant"><svg aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -527,7 +536,7 @@
 <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" stroke-linecap="round"/></symbol>
 <symbol id="i-site" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9h18M6 6.8h.01M8.5 6.8h.01M7 13h6M7 16h4"/></symbol>
 <symbol id="i-brush" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-1.8.4-2.6 1.7-2.6 3.3 0 1.4-.4 2.4-1.4 3.2 3.4.6 6.6-.3 8-2.5"/><path d="m16.5 3 4.5 4.5"/></symbol>
-<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="8"/><circle cx="11" cy="13" r="4"/><circle cx="11" cy="13" r=".6"/><path d="m11 13 8-8M16 4.5V8h3.5"/></symbol><symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.6L15.6 5a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z"/><path d="M13.5 7.1l3.4 3.4M4 20h16"/></symbol><symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/></symbol><symbol id="i-loupe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19.5 6v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="m8.8 12.2 2.3 2.3 4.3-4.6"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M13 2.5 5 13.5h6l-1 8 8-11h-6z"/></symbol>
 <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15.5" r="4.5"/><path d="m11.2 12.3 8.3-8.3M16.5 7l2.5 2.5M14 9.5l2 2"/></symbol>

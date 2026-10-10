@@ -12,13 +12,15 @@ Une page produit à la manière d’Apple, chic et aérée :
 - **Inria Serif** pour les petites phrases : étiquettes, sous-titres, légendes, notes ;
 - l’italique d’**Instrument Serif** pour l’accent du héros (« des clients. ») ;
 - beaucoup d’air, des sections centrées, des tuiles douces ;
-- un fond gris clair, une encre noire, des cartes blanches ; l’olive pour le logo et les boutons.
+- un fond crème, des titres en Fraunces, des étiquettes en JetBrains Mono, le bleu électrique pour les actions.
 
-**Le héros**, comme une planche de présentation de projet : fond vert forêt, feuilles tropicales
-dessinées au trait (`hero-leaves.svg`, qui se dessine à l’ouverture), « Design UI / UX » à la
-verticale, un site sur MacBook et iPhone au centre (`hero-devices-*.webp`, rendu par l’outil
-`#herodevices`), puis le titre centré « Des sites qui vous ramènent des clients. », une ligne
-d’explication et les deux boutons.
+**Le héros**, direction artistique éditoriale (crème #F5F1E9, noir doux #171717, bleu électrique
+#155EEF, vert sauge #DCE5D7) : une étiquette en JetBrains Mono, le titre en Fraunces sur trois
+lignes (« Votre prochain site. Une vraie présence. Un design qui marque. », la dernière en bleu),
+deux boutons bleus, et à droite trois projets en fenêtres de navigateur (Greentage, Le Fournil,
+Atelier Véritas) avec une pastille « Design web Bruxelles ». Dessous, la bande des expertises,
+puis « Du beau. Du clair. Du pensé. » : un projet à la fois, 01 / 03, avec flèches.
+Le Fournil et Atelier Véritas sont des projets conceptuels dessinés au trait (outil `#concepts`).
 
 **Projets.** Une rangée de cartes (une barre de titre blanche, puis l’image) qui défile au doigt
 ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premium flouté, et

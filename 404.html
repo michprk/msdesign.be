@@ -9,7 +9,7 @@
 <!--#include head-->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-h8x+1TI3lhiN1wviDJ1tzIy+riaVHR7tPj81RF4qpeY=' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#fbfaf6">
+<meta name="theme-color" content="#f5f1e9">
 <meta name="color-scheme" content="light">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
@@ -17,11 +17,11 @@
 <link rel="apple-touch-icon" href="/msdesign.be/apple-touch-icon.png">
 <link rel="manifest" href="/msdesign.be/site.webmanifest">
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/msdesign.be/assets/fonts/inria-serif-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=e951a7d7e5">
+<link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=b3ba3214c1">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=e951a7d7e5" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=e951a7d7e5" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=b3ba3214c1" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=b3ba3214c1" defer></script>
 <!--/include-->
 </head>
 <body>
@@ -29,20 +29,15 @@
 <a class="skip" href="#main">Aller au contenu</a>
 <header class="hdr" data-header>
   <div class="hdr__inner">
-    <a class="logo" href="/msdesign.be/" data-page-link="index" aria-label="M&amp;S Design, studio de design web à Bruxelles — accueil">
-      <span class="logo__mark" aria-hidden="true">M<svg class="logo__amp" viewBox="0 0 468 665"><use href="#amp"/></svg>S</span>
-      <span class="logo__word" aria-hidden="true">Design</span>
-    </a>
+    <a class="logo" href="/msdesign.be/" data-page-link="index" aria-label="M&amp;S Design, studio de design web à Bruxelles — accueil">M&amp;S DESIGN</a>
     <nav class="hdr__nav" aria-label="Navigation principale">
-      <a href="/msdesign.be/etudes/" data-page-link="etudes" data-nav="etudes">Études de cas</a>
+      <a href="/msdesign.be/#etudes" data-nav="etudes">Projets</a>
       <a href="/msdesign.be/#services" data-nav="services">Services</a>
       <a href="/msdesign.be/#methode" data-nav="methode">Méthode</a>
-      <a href="/msdesign.be/#tarifs" data-nav="tarifs">Tarifs</a>
-      <a href="/msdesign.be/#faq" data-nav="faq">FAQ</a>
+      <a href="/msdesign.be/#contact" data-nav="contact">Contact</a>
     </nav>
     <div class="hdr__end">
-      <a class="hdr__tel" href="tel:+32486611159" data-track="phone_click"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>0486&nbsp;61&nbsp;11&nbsp;59</span></a>
-      <a class="btn btn--sm" href="/msdesign.be/#contact" data-track="cta_header">Devis gratuit</a>
+      <a class="btn btn--line btn--sm" href="/msdesign.be/#contact" data-track="cta_header">Parlons de votre projet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
         <span class="burger__bars" aria-hidden="true"><span></span><span></span></span>
         <span class="sr-only">Ouvrir le menu</span>
@@ -52,7 +47,7 @@
 </header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu data-lenis-prevent>
   <nav class="menu__nav" aria-label="Menu principal">
-    <a href="/msdesign.be/etudes/">Études de cas</a>
+    <a href="/msdesign.be/#etudes">Projets</a>
     <a href="/msdesign.be/#services">Services</a>
     <a href="/msdesign.be/#methode">Méthode</a>
     <a href="/msdesign.be/#tarifs">Tarifs</a>
@@ -60,7 +55,7 @@
     <a href="/msdesign.be/#contact">Contact</a>
   </nav>
   <div class="menu__foot">
-    <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_menu">Demander un devis gratuit</a>
+    <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_menu">Parlons de votre projet</a>
     <a class="btn btn--line btn--lg" href="tel:+32486611159" data-track="phone_click">Appeler le 0486&nbsp;61&nbsp;11&nbsp;59</a>
     <p>Bruxelles · chez vous ou en visio · réponse sous 24&nbsp;h ouvrées</p>
   </div>
@@ -188,7 +183,7 @@
 <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" stroke-linecap="round"/></symbol>
 <symbol id="i-site" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9h18M6 6.8h.01M8.5 6.8h.01M7 13h6M7 16h4"/></symbol>
 <symbol id="i-brush" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-1.8.4-2.6 1.7-2.6 3.3 0 1.4-.4 2.4-1.4 3.2 3.4.6 6.6-.3 8-2.5"/><path d="m16.5 3 4.5 4.5"/></symbol>
-<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="13" r="8"/><circle cx="11" cy="13" r="4"/><circle cx="11" cy="13" r=".6"/><path d="m11 13 8-8M16 4.5V8h3.5"/></symbol><symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.6L15.6 5a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z"/><path d="M13.5 7.1l3.4 3.4M4 20h16"/></symbol><symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4.5l-3 15"/></symbol><symbol id="i-loupe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19.5 6v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="m8.8 12.2 2.3 2.3 4.3-4.6"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M13 2.5 5 13.5h6l-1 8 8-11h-6z"/></symbol>
 <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15.5" r="4.5"/><path d="m11.2 12.3 8.3-8.3M16.5 7l2.5 2.5M14 9.5l2 2"/></symbol>
