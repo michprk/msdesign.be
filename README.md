@@ -50,6 +50,9 @@ Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoy
   semaine de retard. Elle est détaillée dans `cgu.html#delais`.
 - **Exemples de sites** : une page de liste (`etudes/`) et quatre sites à ouvrir.
 - **Tarifs fixes** : 500 €, 1 290 € et 3 900 € HTVA ; entretien 30 €/mois (Essentiel, Signature) ou 60 €/mois (Premium, le design d’exception pour architectes, paysagistes…) ; séance photo sur place 40 €.
+- **À la carte** (`#a-la-carte`), sans site complet : audit SEO 150 €, SEO local 490 €, suivi SEO 120 €/mois ;
+  une automatisation 290 €, pack de quatre 790 €, suivi 30 €/mois ; identité visuelle 490 €, textes
+  90 €/page, séance photo 40 €.
 - **FAQ** de 5 questions, avec liens internes vers la promesse, les tarifs, les conditions et
   les études.
 - **Liens internes** partout : services vers études de cas et tarifs, FAQ, études entre elles,

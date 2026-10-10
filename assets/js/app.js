@@ -240,6 +240,7 @@
       if (!target) return;
       e.preventDefault();
       if (a.dataset.plan && formApi.preset) formApi.preset(a.dataset.plan);
+      if (a.dataset.projet && formApi.projet) formApi.projet(a.dataset.projet);
       history.replaceState(null, '', url.hash);
       scrollToY(targetY(target), 1.4);
       if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form [name="name"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1400);
@@ -318,7 +319,7 @@
   });
 
   /* ---------- Devis : formulaire ---------- */
-  const PROJETS = { vitrine: 'Site vitrine', refonte: 'Refonte de site', identite: 'Identité visuelle', seo: 'Référencement', autre: 'Autre demande' };
+  const PROJETS = { vitrine: 'Site vitrine', refonte: 'Refonte de site', identite: 'Identité visuelle', seo: 'Référencement', automatisation: 'Automatisation', autre: 'Autre demande' };
   const PLANS = {
     essentiel: { name: 'Essentiel', price: 500, detail: 'Site une page sur mesure, formulaire, référencement de base, en ligne en 2 semaines.' },
     signature: { name: 'Signature', price: 1290, detail: 'Jusqu’à 6 pages, animations premium, SEO local et fiche Google, en ligne en 3 semaines.' },
@@ -351,6 +352,10 @@
       if (sel && PLANS[plan]) { sel.value = plan; estimate(); }
       const pj = form.elements.projet;
       if (pj && !val('projet')) pj.value = 'vitrine';
+    };
+    formApi.projet = (p) => {
+      const pj = form.elements.projet;
+      if (pj && PROJETS[p]) { pj.value = p; const box = $('#err-projet', form); if (box) { box.hidden = true; box.textContent = ''; } }
     };
     try {
       const plan = sessionStorage.getItem(KEY + 'plan');

@@ -21,7 +21,7 @@ const FORMS = {
   devis: { subject: 'Demande de devis', required: ['projet', 'name', 'email', 'message'] },
 };
 const ENUMS = {
-  projet: { vitrine: 'Site vitrine', refonte: 'Refonte de site', identite: 'Identité visuelle', seo: 'Référencement', autre: 'Autre demande' },
+  projet: { vitrine: 'Site vitrine', refonte: 'Refonte de site', identite: 'Identité visuelle', seo: 'Référencement', automatisation: 'Automatisation', autre: 'Autre demande' },
   formule: { conseil: 'À conseiller', essentiel: 'Essentiel (500 € HTVA)', signature: 'Signature (1 290 € HTVA)', premium: 'Premium (3 900 € HTVA)' },
 };
 const LABELS = { projet: 'Projet', formule: 'Formule', name: 'Nom', societe: 'Entreprise', email: 'E-mail', phone: 'Téléphone', site: 'Site actuel', message: 'Message' };
