@@ -40,7 +40,7 @@ Une seule feuille de style (`exemples/exemples.css`), pas de JavaScript. Les cap
 sont faites par `_msdesign-src/cap-ex.sh <slug>` (1440 × 936) puis rognées par l’outil `#exshots`.
 Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoyées par le client
 (outil `#excrops`) : **à remplacer par nos propres photos avant l’ouverture**. La photo du contact
-(Mac et carnet bleu) vient de sa maquette ChatGPT, d’où sa résolution limitée.
+(Mac et carnet bleu) est refaite en 3D d’après sa maquette (`_msdesign-src/contact-photo2.html`).
 
 ## Pensé pour la conversion
 
@@ -49,7 +49,7 @@ Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoy
 - **Promesse de délai** : en ligne 21 jours après la maquette validée, ou 10 % remboursés par
   semaine de retard. Elle est détaillée dans `cgu.html#delais`.
 - **Exemples de sites** : une page de liste (`etudes/`) et quatre sites à ouvrir.
-- **Tarifs fixes** : 500 €, 750 € et 2 200 € HTVA, plus l’entretien à 15 €/mois.
+- **Tarifs fixes** : 500 €, 750 € et 2 200 € HTVA, plus l’entretien à 60 €/mois.
 - **FAQ** de 5 questions, avec liens internes vers la promesse, les tarifs, les conditions et
   les études.
 - **Liens internes** partout : services vers études de cas et tarifs, FAQ, études entre elles,
