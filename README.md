@@ -16,9 +16,9 @@ Une direction artistique éditoriale, reprise de la maquette validée : crème #
 **Le héros** : l’étiquette « Studio web indépendant · Bruxelles », le titre « Des sites qui vous
 ramènent des clients. » (« ramènent » et « des clients. » en bleu), deux boutons (« Voir les
 réalisations », « Demander un devis ») et trois atouts (design sur mesure, responsive, prix fixe).
-À droite, trois projets en fenêtres de navigateur (Greentage, Le Fournil, Atelier Véritas), des
-feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite, « Nos réalisations » :
-un projet à la fois, 01 / 03, avec flèches.
+À droite, trois exemples de sites en fenêtres de navigateur (Verdane, Le Fournil, Atelier Véritas),
+cliquables, des feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite,
+« Nos réalisations » : quatre exemples, un à la fois, 01 / 04, avec flèches et « Voir le site ».
 
 **Tarifs** : trois cartes en verre dépoli (Essentiel, Signature « Recommandé », Premium), prix en
 italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-src/flower-lab.html`,
@@ -26,13 +26,19 @@ italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-s
 (`_msdesign-src/contact-photo.html`), le bloc bleu et le formulaire, le plan stylisé de Bruxelles
 (outil `#map`), puis le bandeau « Prêt à démarrer ? » (`#ftrleaves`) et le pied de page.
 
-Le Fournil et Atelier Véritas sont des projets conceptuels. Leurs photos (pain, maison) et le décor
-(feuilles, fleurs) viennent de la maquette ChatGPT du studio (`_msdesign-src/ref/maquette-chatgpt.png`,
-outil `#refcuts`). Leur résolution est limitée par celle de la maquette.
+**Exemples de sites** (`exemples/`) : quatre petits sites autonomes, des commerces fictifs à
+Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de retour :
 
-**Projets.** Une rangée de cartes (une barre de titre blanche, puis l’image) qui défile au doigt
-ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premium flouté, et
-« Votre projet ». Les titres de section sont en deux tons, l’étiquette à gauche.
+- `exemples/verdane/` : boutique de plantes (crème, vert sapin, terracotta) ;
+- `exemples/le-fournil/` : boulangerie au levain (serif gras, terracotta) ;
+- `exemples/atelier-veritas/` : bureau d’architecture (serif fin, grandes photos) ;
+- `exemples/studio-bascule/` : studio de graphisme (lettres larges bleues, fond sable).
+
+Une seule feuille de style (`exemples/exemples.css`), pas de JavaScript. Les captures des fenêtres
+sont faites par `_msdesign-src/cap-ex.sh <slug>` (1440 × 936) puis rognées par l’outil `#exshots`.
+Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoyées par le client
+(outil `#excrops`) : **à remplacer par nos propres photos avant l’ouverture**. La photo du contact
+(Mac et carnet bleu) vient de sa maquette ChatGPT, d’où sa résolution limitée.
 
 ## Pensé pour la conversion
 
@@ -40,8 +46,7 @@ ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premi
   pied de page et **barre d’action mobile** (appeler + devis).
 - **Promesse de délai** : en ligne 21 jours après la maquette validée, ou 10 % remboursés par
   semaine de retard. Elle est détaillée dans `cgu.html#delais`.
-- **Études de cas** : une page de liste et l’étude Greentage, avec fil d’Ariane, faits clés,
-  point de départ, réalisation, captures, état du projet, étude suivante et appel à l’action.
+- **Exemples de sites** : une page de liste (`etudes/`) et quatre sites à ouvrir.
 - **Tarifs fixes** : 500 €, 750 € et 2 200 € HTVA, plus l’entretien à 15 €/mois.
 - **FAQ** de 5 questions, avec liens internes vers la promesse, les tarifs, les conditions et
   les études.
@@ -49,33 +54,21 @@ ou se fait glisser à la souris : Greentage (projet conceptuel), le projet Premi
   pied de page en plan du site.
 - **Page de remerciement** (`merci.html`) après l’envoi du formulaire.
   - Elle reprend le prénom de la personne (stockage de session, jamais dans l’adresse).
-  - Elle annonce les étapes suivantes et propose les études de cas.
+  - Elle annonce les étapes suivantes et propose les exemples de sites.
 
-## Les études de cas
+## Le projet Premium
 
-Deux sites, deux formules :
-
-- **Greentage** (`etudes/greentage.html`), plantes, fleurs et vintage rue du Noyer : la
-  maquette proposée au commerce, en formule **Signature à 750 €**. Captures du vrai site de
-  démonstration (`michprk.github.io/greentage.be`), photos de son Instagram.
-- **Notre prochain site**, en formule **Premium à 2 200 €** : gardé secret. Sa carte montre une
-  capture floutée, trois points d’interrogation, un reflet qui passe et l’étiquette
-  « En cours de conception ». Le clic ouvre le formulaire avec la formule Premium choisie.
-
-Les images sont produites par l’outil `../_msdesign-src/assets-tool.html` :
-
-- `#greentage` : les captures de Greentage en WebP ;
-- `#mystery` : la page Premium dessinée puis floutée ;
-- `#devices,poster,og` : le MacBook qui affiche Greentage, l’image de repli du héros et l’image
-  de partage.
-
-**Avant l’ouverture** : obtenir l’accord de Greentage pour la montrer publiquement.
+**Notre prochain site**, en formule **Premium à 2 200 €** : gardé secret. Sa carte montre une
+capture floutée, trois points d’interrogation, un reflet qui passe et l’étiquette
+« En cours de conception ». Le clic ouvre le formulaire avec la formule Premium choisie
+(outil `#mystery`).
 
 ## Fichiers
 
 ```
-index.html                héros (3 projets en fenêtres), réalisations, promesse, études de cas, services, méthode, tarifs, FAQ, contact
-etudes/                   études de cas : index.html + une page par client
+index.html                héros (3 projets en fenêtres), réalisations, promesse, services, méthode, tarifs, FAQ, contact
+etudes/                   la liste des exemples de sites (et le projet Premium)
+exemples/                 quatre exemples de sites fictifs, autonomes
 merci.html                page de remerciement après le formulaire
 cgu.html                  mentions légales, conditions d’utilisation et de prestation (dont la promesse de délai)
 confidentialite.html      RGPD + cookies
@@ -103,7 +96,7 @@ bash scripts/export-hostinger.sh   # → dist/msdesign-hostinger.zip, à extrair
 **À compléter avant l’ouverture** (en jaune dans les pages légales) :
 
 - forme juridique, adresse du siège, numéro BCE, régime TVA ;
-- accord de Greentage pour son étude de cas, et le site Premium une fois prêt ;
+- nos propres photos pour les exemples de sites, et le site Premium une fois prêt ;
 - identifiant Google Analytics (`data-ga`), si souhaité.
 
 ## Checklist en place

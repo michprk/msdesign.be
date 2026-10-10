@@ -579,9 +579,9 @@
     if (code) code.textContent = location.host + location.pathname;
     const guesses = [
       [/service|site|vitrine|identit|logo|seo|referencement|hebergement|entretien/, '/#services', 'Nos services'],
-      [/greentage|plante|fleur|vintage/, '/etudes/greentage.html', 'L’étude de cas Greentage'],
+      [/greentage|verdane|plante|fleur|vintage|fournil|pain|veritas|architect|bascule|graphis/, '/etudes/', 'Nos exemples de sites'],
       [/premium|mystere|secret|bientot/, '/etudes/#premium', 'Notre prochain site Premium'],
-      [/etude|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos études de cas'],
+      [/etude|exemple|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos exemples de sites'],
       [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],
       [/methode|process|etape/, '/#methode', 'Notre méthode'],
       [/tarif|prix|offre|formule|devis-gratuit|pricing/, '/#tarifs', 'Les tarifs'],
