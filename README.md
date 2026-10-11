@@ -57,6 +57,9 @@ Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoy
   les études.
 - **Liens internes** partout : services vers études de cas et tarifs, FAQ, études entre elles,
   pied de page en plan du site.
+- **Formulaire** (comme la maquette du client) : nom, e-mail, téléphone, type de projet, formules en
+  cartes à cocher, message, pièce jointe facultative. Sans API, le nom du fichier est écrit dans
+  l’e-mail prérempli (à joindre à la main) ; l’envoi de la pièce jointe par l’API reste à brancher.
 - **Page de remerciement** (`merci.html`) après l’envoi du formulaire.
   - Elle reprend le prénom de la personne (stockage de session, jamais dans l’adresse).
   - Elle annonce les étapes suivantes et propose les exemples de sites.

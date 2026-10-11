@@ -333,7 +333,8 @@
     const submit = $('button[type="submit"]', form);
     const startedAt = Date.now();
     const val = (n) => (form.elements[n] ? String(form.elements[n].value || '').trim() : '');
-    const checked = (n) => !!(form.elements[n] && form.elements[n].checked);
+    const fileInput = form.elements.fichier;
+    const fileName = () => (fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0].name.slice(0, 120) : '');
 
     // Formule choisie : prix, acompte et solde, tout de suite
     function estimate() {
@@ -345,6 +346,7 @@
     }
     form.addEventListener('change', (e) => {
       if (e.target.name === 'formule') estimate();
+      if (e.target.name === 'fichier') { const l = $('[data-file-label]', form); if (l) l.textContent = fileName() || 'Ajouter un fichier (facultatif)'; }
       if (e.target.name === 'projet') { const box = $('#err-projet', form); if (box) { box.hidden = true; box.textContent = ''; } }
     });
     formApi.preset = (plan) => {
@@ -404,9 +406,9 @@
 
     function collect() {
       return {
-        form: 'devis', projet: val('projet'), formule: val('formule'),
+        form: 'devis', projet: val('projet'), formule: val('formule') || 'conseil',
         name: val('name'), societe: val('societe'), email: val('email'), phone: val('phone'), site: val('site'), message: val('message'),
-        consent: checked('consent'), website: val('website'), elapsed: Date.now() - startedAt
+        fichier: fileName(), website: val('website'), elapsed: Date.now() - startedAt
       };
     }
     function validate(data) {
@@ -419,7 +421,7 @@
       if (data.site && !URL_RE.test(data.site)) errors.site = 'Cette adresse ne semble pas valide (exemple : monsite.be).';
       if (data.message.length < 10) errors.message = 'Décrivez votre projet en quelques mots (10 caractères minimum).';
       else if ((data.message.match(/https?:\/\/|www\./gi) || []).length > 1) errors.message = 'Un seul lien maximum dans le message, s’il vous plaît.';
-      if (!data.consent) errors.consent = 'Cochez la case pour que nous puissions vous répondre.';
+      if (fileInput && fileInput.files && fileInput.files[0] && fileInput.files[0].size > 10 * 1024 * 1024) errors.fichier = 'Ce fichier est trop lourd (10 Mo maximum).';
       return errors;
     }
     function typoHint(email) {
@@ -437,6 +439,7 @@
       lines.push('E-mail : ' + data.email);
       if (data.phone) lines.push('Téléphone : ' + data.phone);
       if (data.site) lines.push('Site actuel : ' + data.site);
+      if (data.fichier) lines.push('Fichier : ' + data.fichier + ' (à joindre à cet e-mail)');
       lines.push('', data.message);
       return lines.join('\n');
     }

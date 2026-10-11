@@ -75,7 +75,6 @@ export default {
     });
     const fields = {};
     FORMS[form].required.forEach((k) => { if (!f[k]) fields[k] = 'Ce champ est nécessaire.'; });
-    if (data.consent !== true) fields.consent = 'Votre accord est nécessaire pour traiter la demande.';
     if (f.email && !EMAIL_RE.test(f.email)) fields.email = 'Cette adresse e-mail ne semble pas valide.';
     if (f.phone && !PHONE_RE.test(f.phone)) fields.phone = 'Ce numéro ne semble pas valide.';
     if (f.site && !URL_RE.test(f.site)) fields.site = 'Cette adresse ne semble pas valide.';

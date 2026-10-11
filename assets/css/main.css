@@ -401,6 +401,7 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 
 /* Contact : l’invitation et la photo, puis le bloc bleu et le formulaire */
 .contact { background: var(--bg); }
+.sec.contact { padding-bottom: clamp(36px, 6vh, 72px); }
 .contact__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(40px, 5vw, 88px); align-items: center; margin-bottom: clamp(64px, 10vh, 112px); }
 .contact__title { font: 400 clamp(46px, 5.4vw, 86px)/1.02 var(--display); letter-spacing: -0.03em; }
 .contact__title span { display: block; }
@@ -415,8 +416,10 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .seal__ring text { font: 600 9.6px/1 var(--sans); letter-spacing: 2.3px; fill: var(--blue); }
 .seal__amp { font: 400 30px/1 var(--display); fill: var(--blue); }
 @keyframes seal-turn { to { transform: rotate(360deg); } }
-.contact__box { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.5fr); border: 1px solid var(--line); background: var(--white); }
-.contact__panel { display: flex; flex-direction: column; padding: clamp(32px, 3.6vw, 56px); background: var(--blue); color: #fff; }
+.contact__box { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.5fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #f8f5ef; }
+.contact__panel { position: relative; overflow: hidden; display: flex; flex-direction: column; padding: clamp(32px, 3.6vw, 56px) clamp(28px, 3.2vw, 48px) clamp(200px, 22vw, 280px); background: var(--blue); color: #fff; }
+.contact__panel > *:not(.contact__leaves) { position: relative; z-index: 1; }
+.contact__leaves { position: absolute; left: -36px; bottom: -48px; width: 78%; max-width: 330px; height: auto; opacity: 0.6; mix-blend-mode: multiply; filter: saturate(0.5) brightness(0.65) blur(0.6px); transform: rotate(-14deg); pointer-events: none; }
 .contact__panel .label { color: rgba(255, 255, 255, 0.8); }
 .contact__q { margin-top: 4px; font: 400 clamp(32px, 3vw, 46px)/1.08 var(--display); letter-spacing: -0.02em; }
 .contact__txt { margin-top: 18px; color: rgba(255, 255, 255, 0.86); font-size: 16px; line-height: 1.6; }
@@ -428,10 +431,42 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .promise-mini { margin-top: 34px; padding: 18px 20px; border-radius: 4px; background: rgba(255, 255, 255, 0.11); color: rgba(255, 255, 255, 0.9); font: 400 14.5px/1.55 var(--sans); }
 .promise-mini strong { color: #fff; font-weight: 600; }
 .promise-mini a { color: #fff; }
-.contact .form { border-radius: 0; background: transparent; padding: clamp(28px, 3.4vw, 52px); gap: 18px; }
+.contact .form { border-radius: 0; background: transparent; padding: clamp(26px, 3.2vw, 48px); gap: 18px; }
 .contact .field label:not(.check) { font: 600 11px/1.3 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
-.contact .field input, .contact .field select, .contact .field textarea { border-radius: 3px; border-color: rgba(23, 23, 23, 0.12); background: var(--bg); }
+.contact .field input, .contact .field select, .contact .field textarea { border-radius: 7px; border-color: rgba(23, 23, 23, 0.12); background: #fff; }
 .form__send { width: 100%; }
+.form__send .btn__icon:first-child { margin-right: 2px; }
+/* l’étape et la petite note manuscrite */
+.form__step { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.form__step > p:first-child { display: flex; align-items: center; gap: 12px; font: 600 14.5px/1.3 var(--sans); color: var(--blue); }
+.form__num { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; font: 600 12px/1 var(--sans); }
+.note { font: italic 400 23px/1.1 "Instrument Serif", var(--display); color: var(--blue); transform: rotate(-6deg); }
+.note svg { display: block; width: 46px; height: 34px; margin-top: 2px; }
+.note--start { margin-top: -18px; text-align: right; }
+.note--start svg { margin-left: auto; }
+/* champs avec icône */
+.field__in { position: relative; display: block; }
+.field__in svg { position: absolute; left: 14px; top: 50%; width: 17px; height: 17px; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.field .field__in input { padding-left: 42px; }
+/* les formules en cartes à cocher */
+.contact .field legend { font: 600 11px/1.3 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 8px; }
+.formules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.contact .field label.formule { font: 400 14px/1.4 var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
+.formule { position: relative; cursor: pointer; }
+.formule input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.formule > span { display: grid; grid-template-columns: 16px minmax(0, 1fr); column-gap: 10px; height: 100%; padding: 14px; border: 1px solid rgba(23, 23, 23, 0.14); border-radius: 8px; background: #fff; transition: border-color 0.2s, background 0.2s; }
+.formule > span::before { content: ""; grid-row: 1 / span 3; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; border: 1.5px solid rgba(23, 23, 23, 0.35); }
+.formule b { font: 600 14.5px/1.3 var(--sans); color: var(--ink); }
+.formule small { grid-column: 2; font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.formule:hover > span { border-color: rgba(21, 94, 239, 0.5); }
+.formule input:checked + span { border-color: var(--blue); background: #eef2fd; }
+.formule input:checked + span::before { border: 5px solid var(--blue); }
+.formule input:focus-visible + span { outline: 2px solid var(--blue); outline-offset: 2px; }
+/* pièce jointe */
+.contact .field label.file { display: inline-flex; align-items: center; gap: 8px; width: fit-content; font: 500 14px/1.3 var(--sans); letter-spacing: 0; text-transform: none; color: var(--blue); cursor: pointer; }
+.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.file svg { width: 17px; height: 17px; flex: none; }
+.file:focus-within { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
 .contact .form__note { display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; }
 .form__note svg { width: 15px; height: 15px; flex: none; }
 .form { padding: clamp(26px, 3vw, 44px); border-radius: var(--radius); background: var(--bg); color: var(--ink); display: grid; gap: 20px; font-family: var(--sans); }
@@ -715,18 +750,32 @@ html.reduced .hero__scroll, html.no-3d .hero__scroll { display: none; }
 /* le studio : le plan de Bruxelles */
 .studio { background: var(--bg); }
 .sec.studio { padding-top: clamp(32px, 6vh, 72px); padding-bottom: clamp(32px, 5vh, 64px); }
-.studio__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(36px, 5vw, 88px); align-items: center; }
+.studio__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr) minmax(0, 0.42fr); gap: clamp(32px, 4.4vw, 72px); align-items: center; }
 .studio__map { position: relative; margin: 0; }
-.studio__map img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.studio__map img { display: block; width: 100%; height: auto; border-radius: 12px; }
 .studio__pin { position: absolute; left: 50%; top: 50%; transform: translate(-22px, -100%); display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 9px; border-radius: 6px; background: #fff; box-shadow: 0 16px 32px -16px rgba(23, 23, 23, 0.4); font: 400 13px/1.3 var(--sans); color: var(--muted); white-space: nowrap; }
 .studio__pin::after { content: ""; position: absolute; left: 16px; bottom: -6px; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); }
 .studio__pin svg { width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--blue); color: #fff; }
 .studio__pin strong { display: block; font-weight: 600; color: var(--ink); }
 .studio__copy .lead { margin-top: 18px; }
-.studio__copy .more { margin-top: 22px; }
+.studio__maps { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; font: 500 15.5px/1.3 var(--sans); color: var(--blue); text-decoration: none; }
+.studio__maps:hover { text-decoration: underline; text-underline-offset: 4px; }
+.studio__maps svg { width: 18px; height: 18px; }
+.studio__sketch { color: var(--blue); }
+.studio__sketch .note { margin: 0 0 4px 6px; }
+.studio__sketch .note svg { width: 40px; height: 40px; margin: 4px 0 0 52%; }
+.hdv { display: block; width: 100%; max-width: 170px; height: auto; margin-left: auto; }
 .studio__legal { margin-top: 26px; font: 400 14px/1.55 var(--sans); color: var(--muted); }
 .studio__legal a { color: var(--blue); text-underline-offset: 3px; }
-@media (max-width: 1080px) { .studio__grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1080px) {
+  .studio__grid { grid-template-columns: minmax(0, 1fr); }
+  .studio__sketch { display: flex; align-items: flex-end; gap: 20px; }
+  .studio__sketch .hdv { max-width: 130px; margin-left: 0; }
+}
+@media (max-width: 640px) {
+  .formules { grid-template-columns: minmax(0, 1fr); }
+  .note--start { display: none; }
+}
 
 .terms { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px 32px; margin-top: clamp(36px, 5vh, 56px); padding-top: clamp(28px, 4vh, 40px); border-top: 1px solid var(--line-2); }
 .terms dt { font: 600 15px/1.3 var(--sans); margin-bottom: 8px; }

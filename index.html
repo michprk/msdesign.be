@@ -32,10 +32,10 @@
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=e8826a4f0f">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=982e0adec0">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=e8826a4f0f" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=e8826a4f0f" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=982e0adec0" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=982e0adec0" defer></script>
 <!--/include-->
 <script type="application/ld+json">
 {
@@ -406,29 +406,37 @@
       <aside class="contact__panel" data-reveal>
         <p class="label label--light">Restons en contact</p>
         <p class="contact__q">Une question&nbsp;?<br>Une idée&nbsp;?</p>
-        <p class="contact__txt">Remplissez le formulaire ci-contre et nous vous recontactons rapidement. Premier appel de 30&nbsp;minutes gratuit, maquette et prix fixe sous 5&nbsp;jours.</p>
+        <p class="contact__txt">Que ce soit pour un projet, une demande de devis ou simplement échanger sur vos idées, nous sommes à votre écoute.</p>
         <ul class="contact__lines">
           <li><svg aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:mck.honorable@msdesign.be" data-track="email_click">mck.honorable@msdesign.be</a></li>
           <li><svg aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
-          <li><svg aria-hidden="true"><use href="#i-chat"/></svg><a href="https://wa.me/32486611159" target="_blank" rel="noopener" data-track="whatsapp_click">WhatsApp</a></li>
-          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Bruxelles, Belgique · chez vous ou en visio</span></li>
+          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Bruxelles, Belgique</span></li>
         </ul>
-        <p class="promise-mini"><strong>Notre promesse&nbsp;:</strong> votre site en ligne à la date écrite dans le devis, ou 10&nbsp;% remboursés par semaine de retard. <a href="/msdesign.be/cgu.html#delais">Les conditions</a>.</p>
+        <img class="contact__leaves" src="/msdesign.be/assets/img/deco-leaves-left.webp" width="188" height="232" alt="" aria-hidden="true" loading="lazy" decoding="async">
       </aside>
       <form class="form" id="contact-form" data-form action="/msdesign.be/merci.html" novalidate data-reveal>
+        <div class="form__step">
+          <p><span class="form__num">01</span>Dites-nous en quelques mots</p>
+          <p class="note note--start" aria-hidden="true">C’est parti&nbsp;!<svg viewBox="0 0 60 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M50 4c4 14-6 30-36 34"/><path d="M20 31l-7 7 9 3"/></svg></p>
+        </div>
         <div class="form__row">
           <div class="field">
-            <label for="f-name">Nom <span aria-hidden="true">*</span></label>
-            <input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Votre nom" aria-describedby="err-name">
+            <label for="f-name">Nom et prénom <span aria-hidden="true">*</span></label>
+            <span class="field__in"><svg aria-hidden="true"><use href="#i-user"/></svg><input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Votre nom et prénom" aria-describedby="err-name"></span>
             <p class="field__error" id="err-name" hidden></p>
           </div>
           <div class="field">
             <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
-            <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="nom@exemple.be" aria-describedby="err-email">
+            <span class="field__in"><svg aria-hidden="true"><use href="#i-mail"/></svg><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="votre@email.be" aria-describedby="err-email"></span>
             <p class="field__error" id="err-email" hidden></p>
           </div>
         </div>
         <div class="form__row">
+          <div class="field">
+            <label for="f-phone">Téléphone <span class="field__opt">(facultatif)</span></label>
+            <span class="field__in"><svg aria-hidden="true"><use href="#i-phone"/></svg><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+32 4XX XX XX XX" aria-describedby="err-phone"></span>
+            <p class="field__error" id="err-phone" hidden></p>
+          </div>
           <div class="field">
             <label for="f-projet">Type de projet <span aria-hidden="true">*</span></label>
             <select id="f-projet" name="projet" required aria-describedby="err-projet">
@@ -442,56 +450,79 @@
             </select>
             <p class="field__error" id="err-projet" hidden></p>
           </div>
-          <div class="field">
-            <label for="f-phone">Téléphone <span class="field__opt">(facultatif)</span></label>
-            <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+32" aria-describedby="err-phone">
-            <p class="field__error" id="err-phone" hidden></p>
+        </div>
+        <fieldset class="field">
+          <legend>Formule envisagée <span class="field__opt">(si vous le savez)</span></legend>
+          <div class="formules">
+            <label class="formule"><input type="radio" name="formule" value="essentiel"><span><b>Essentiel</b><small>1 page</small><small>500&nbsp;€ HTVA</small></span></label>
+            <label class="formule"><input type="radio" name="formule" value="signature"><span><b>Signature</b><small>Jusqu’à 6 pages</small><small>1&nbsp;290&nbsp;€ HTVA</small></span></label>
+            <label class="formule"><input type="radio" name="formule" value="premium"><span><b>Premium</b><small>Design d’exception</small><small>3&nbsp;900&nbsp;€ HTVA</small></span></label>
           </div>
-        </div>
+        </fieldset>
         <div class="field">
-          <label for="f-formule">Formule envisagée</label>
-          <select id="f-formule" name="formule">
-            <option value="conseil">Je ne sais pas encore, conseillez-moi</option>
-            <option value="essentiel">Essentiel · 500 € HTVA</option>
-            <option value="signature">Signature · 1 290 € HTVA</option>
-            <option value="premium">Premium · 3 900 € HTVA</option>
-          </select>
-          <p class="form__estimate" data-estimate hidden></p>
-        </div>
-        <div class="field">
-          <label for="f-message">Message <span aria-hidden="true">*</span></label>
-          <textarea id="f-message" name="message" rows="5" required placeholder="Décrivez votre projet en quelques mots : votre activité, vos objectifs, une date de lancement…" aria-describedby="err-message"></textarea>
+          <label for="f-message">Votre message <span aria-hidden="true">*</span></label>
+          <textarea id="f-message" name="message" rows="4" required placeholder="Parlez-nous de votre projet, de vos idées, de vos besoins…" aria-describedby="err-message"></textarea>
           <p class="field__error" id="err-message" hidden></p>
+        </div>
+        <div class="field field--file">
+          <label class="file"><input type="file" name="fichier" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" aria-describedby="err-fichier"><svg aria-hidden="true"><use href="#i-clip"/></svg><span data-file-label>Ajouter un fichier <span class="field__opt">(facultatif)</span></span></label>
+          <p class="field__error" id="err-fichier" hidden></p>
         </div>
         <div class="field field--hp" aria-hidden="true">
           <label for="f-website">Ne pas remplir</label>
           <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
         </div>
-        <div class="field">
-          <label class="check"><input type="checkbox" name="consent" required aria-describedby="err-consent"><span>J’accepte que M&amp;S Design utilise ces informations pour répondre à ma demande (<a href="/msdesign.be/confidentialite.html">confidentialité</a>).</span></label>
-          <p class="field__error" id="err-consent" hidden></p>
-        </div>
-        <button class="btn btn--lg form__send" type="submit" data-track="form_submit">Envoyer ma demande<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
-        <p class="form__note"><svg aria-hidden="true"><use href="#i-shield"/></svg>Vos informations sont protégées et ne servent qu’à vous répondre.</p>
+        <button class="btn btn--lg form__send" type="submit" data-track="form_submit"><svg class="btn__icon" aria-hidden="true"><use href="#i-send"/></svg>Envoyer ma demande<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+        <p class="form__note"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Vos informations sont protégées et ne seront jamais partagées. <a href="/msdesign.be/confidentialite.html">Confidentialité</a></span></p>
         <p class="form__status" data-status role="status" aria-live="polite"></p>
       </form>
     </div>
   </div>
 </section>
 
-<!-- Le studio : le plan de Bruxelles -->
+<!-- Le studio : le plan de Bruxelles, et l’hôtel de ville dessiné au trait -->
 <section class="sec studio" id="studio" aria-labelledby="studio-title">
   <div class="wrap studio__grid">
     <figure class="studio__map" data-reveal>
-      <img src="/msdesign.be/assets/img/plan-bruxelles-700.webp" srcset="/msdesign.be/assets/img/plan-bruxelles-700.webp 700w, /msdesign.be/assets/img/plan-bruxelles-1400.webp 1400w" sizes="(max-width: 900px) 92vw, 46vw" width="1400" height="980" loading="lazy" decoding="async" alt="Plan stylisé de Bruxelles : le centre, Ixelles, Saint-Gilles, Etterbeek, Schaerbeek et Molenbeek.">
+      <img src="/msdesign.be/assets/img/plan-bruxelles-700.webp" srcset="/msdesign.be/assets/img/plan-bruxelles-700.webp 700w, /msdesign.be/assets/img/plan-bruxelles-1400.webp 1400w" sizes="(max-width: 900px) 92vw, 40vw" width="1400" height="980" loading="lazy" decoding="async" alt="Plan stylisé de Bruxelles : le centre, Ixelles, Saint-Gilles, Etterbeek, Schaerbeek et Molenbeek.">
       <p class="studio__pin"><svg aria-hidden="true"><use href="#i-pin"/></svg><span><strong>M&amp;S Design</strong>Bruxelles</span></p>
     </figure>
     <div class="studio__copy">
-      <p class="label" data-reveal>Notre studio</p>
-      <h2 class="h2" id="studio-title" data-reveal>Bruxelles, Belgique</h2>
-      <p class="lead" data-reveal>Basés à Bruxelles, nous travaillons pour des indépendants, commerces et petites entreprises partout en Belgique. Un petit studio, un seul interlocuteur&nbsp;: du premier appel à la mise en ligne, puis pour l’entretien.</p>
-      <a class="more" href="https://www.google.com/maps/place/Bruxelles" target="_blank" rel="noopener" data-reveal>Voir sur Google Maps</a>
-      <p class="studio__legal" data-reveal>Ouverture en 2027. Immatriculation en cours&nbsp;: numéro d’entreprise et adresse du siège seront publiés dans les <a href="/msdesign.be/cgu.html#mentions">mentions légales</a>.</p>
+      <p class="label" data-reveal>Bruxelles</p>
+      <h2 class="h2" id="studio-title" data-reveal>Basés au cœur<br>de la capitale.</h2>
+      <p class="lead" data-reveal>Nous travaillons avec des clients en Belgique et partout en Europe. Que vous soyez indépendant, commerce ou PME, nous sommes à votre écoute pour créer un site qui vous ressemble.</p>
+      <a class="studio__maps" href="https://www.google.com/maps/place/Bruxelles" target="_blank" rel="noopener" data-reveal><svg aria-hidden="true"><use href="#i-pin"/></svg>Voir sur Google Maps <span aria-hidden="true">→</span></a>
+      <p class="studio__legal" data-reveal>Ouverture en 2027. Numéro d’entreprise et adresse du siège seront publiés dans les <a href="/msdesign.be/cgu.html#mentions">mentions légales</a>.</p>
+    </div>
+    <div class="studio__sketch" aria-hidden="true" data-reveal>
+      <p class="note">On se rencontre&nbsp;?<br>Pourquoi pas&nbsp;!<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M14 4c22 6 34 22 30 46"/><path d="M37 43l7 9 6-10"/></svg></p>
+      <svg class="hdv" viewBox="0 0 160 230" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 222h148"/>
+        <!-- les ailes -->
+        <path d="M14 222v-66h50v66M96 222v-66h50v66"/>
+        <path d="M14 156l25-20 25 20M96 156l25-20 25 20"/>
+        <path d="M24 148l4-8 4 8M46 148l4-8 4 8M106 148l4-8 4 8M128 148l4-8 4 8"/>
+        <path d="M20 182v-12a3 3 0 0 1 6 0v12M32 182v-12a3 3 0 0 1 6 0v12M44 182v-12a3 3 0 0 1 6 0v12M54 182v-12a3 3 0 0 1 6 0v12"/>
+        <path d="M20 208v-12a3 3 0 0 1 6 0v12M32 208v-12a3 3 0 0 1 6 0v12M44 208v-12a3 3 0 0 1 6 0v12M54 208v-12a3 3 0 0 1 6 0v12"/>
+        <path d="M102 182v-12a3 3 0 0 1 6 0v12M114 182v-12a3 3 0 0 1 6 0v12M126 182v-12a3 3 0 0 1 6 0v12M136 182v-12a3 3 0 0 1 6 0v12"/>
+        <path d="M102 208v-12a3 3 0 0 1 6 0v12M114 208v-12a3 3 0 0 1 6 0v12M126 208v-12a3 3 0 0 1 6 0v12M136 208v-12a3 3 0 0 1 6 0v12"/>
+        <path d="M14 192h50M96 192h50"/>
+        <!-- la tour -->
+        <path d="M64 222v-98h32v98"/>
+        <path d="M72 222v-16a8 8 0 0 1 16 0v16"/>
+        <path d="M70 190v-14a3 3 0 0 1 6 0v14M84 190v-14a3 3 0 0 1 6 0v14M70 160v-14a3 3 0 0 1 6 0v14M84 160v-14a3 3 0 0 1 6 0v14"/>
+        <path d="M64 124l-3-8M96 124l3-8M61 116h38"/>
+        <path d="M67 116v-36h26v36"/>
+        <path d="M72 108v-18a3 3 0 0 1 6 0v18M82 108v-18a3 3 0 0 1 6 0v18"/>
+        <path d="M67 80l-2-7M93 80l2-7M65 73h30"/>
+        <path d="M70 73v-18h20v18"/>
+        <path d="M75 70v-10a2.5 2.5 0 0 1 5 0v10M80 70v-10a2.5 2.5 0 0 1 5 0v10"/>
+        <path d="M70 55h20"/>
+        <!-- la flèche et saint Michel -->
+        <path d="M71 55l9-40 9 40"/>
+        <path d="M73.5 46h13M75.5 37h9M77.3 28h5.4"/>
+        <path d="M80 15v-9M77 9l3-3 3 3M80 6l3-3"/>
+      </svg>
     </div>
   </div>
 </section>
@@ -597,7 +628,7 @@
 <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" stroke-linecap="round"/></symbol>
 <symbol id="i-site" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9h18M6 6.8h.01M8.5 6.8h.01M7 13h6M7 16h4"/></symbol>
 <symbol id="i-brush" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-1.8.4-2.6 1.7-2.6 3.3 0 1.4-.4 2.4-1.4 3.2 3.4.6 6.6-.3 8-2.5"/><path d="m16.5 3 4.5 4.5"/></symbol>
-<symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.6L15.6 5a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z"/><path d="M13.5 7.1l3.4 3.4M4 20h16"/></symbol><symbol id="i-devices" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20H4.5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9.5a2 2 0 0 1 2 2v2"/><rect x="13.5" y="9.5" width="8" height="11.5" rx="1.6"/><path d="M7.5 17h2.5M16.8 18.6h1.4"/></symbol><symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.6V4.5a1 1 0 0 1 1-1h8.1l8 8a1.5 1.5 0 0 1 0 2.1l-7 7a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8.3" cy="8.3" r="1.5"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.6L15.6 5a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z"/><path d="M13.5 7.1l3.4 3.4M4 20h16"/></symbol><symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></symbol><symbol id="i-clip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5l-7.8 7.8a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/></symbol><symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/></symbol><symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol><symbol id="i-devices" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20H4.5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9.5a2 2 0 0 1 2 2v2"/><rect x="13.5" y="9.5" width="8" height="11.5" rx="1.6"/><path d="M7.5 17h2.5M16.8 18.6h1.4"/></symbol><symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.6V4.5a1 1 0 0 1 1-1h8.1l8 8a1.5 1.5 0 0 1 0 2.1l-7 7a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8.3" cy="8.3" r="1.5"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 19.5 6v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="m8.8 12.2 2.3 2.3 4.3-4.6"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M13 2.5 5 13.5h6l-1 8 8-11h-6z"/></symbol>
 <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15.5" r="4.5"/><path d="m11.2 12.3 8.3-8.3M16.5 7l2.5 2.5M14 9.5l2 2"/></symbol>

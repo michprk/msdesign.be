@@ -80,8 +80,8 @@ $choix = [
     'projet'  => ['vitrine' => 'Site vitrine', 'refonte' => 'Refonte de site', 'identite' => 'Identité visuelle', 'seo' => 'Référencement', 'automatisation' => 'Automatisation', 'autre' => 'Autre demande'],
     'formule' => ['conseil' => 'À conseiller', 'essentiel' => 'Essentiel (500 € HTVA)', 'signature' => 'Signature (1 290 € HTVA)', 'premium' => 'Premium (3 900 € HTVA)'],
 ];
-$libelles = ['projet' => 'Projet', 'formule' => 'Formule', 'name' => 'Nom', 'societe' => 'Entreprise', 'email' => 'E-mail', 'phone' => 'Téléphone', 'site' => 'Site actuel', 'message' => 'Message'];
-$longueurs = ['name' => 80, 'societe' => 80, 'email' => 120, 'phone' => 24, 'site' => 200, 'message' => 2000];
+$libelles = ['projet' => 'Projet', 'formule' => 'Formule', 'name' => 'Nom', 'societe' => 'Entreprise', 'email' => 'E-mail', 'phone' => 'Téléphone', 'site' => 'Site actuel', 'message' => 'Message', 'fichier' => 'Fichier (envoyé à part)'];
+$longueurs = ['name' => 80, 'societe' => 80, 'email' => 120, 'phone' => 24, 'site' => 200, 'message' => 2000, 'fichier' => 120];
 
 function ligne($valeur, int $max): string
 {
@@ -121,9 +121,6 @@ foreach (['projet', 'name', 'email', 'message'] as $cle) {
     if (!isset($f[$cle])) {
         $erreurs[$cle] = 'Ce champ est nécessaire.';
     }
-}
-if (($data['consent'] ?? false) !== true) {
-    $erreurs['consent'] = 'Votre accord est nécessaire pour traiter la demande.';
 }
 if (isset($f['email']) && !filter_var($f['email'], FILTER_VALIDATE_EMAIL)) {
     $erreurs['email'] = 'Cette adresse e-mail ne semble pas valide.';
