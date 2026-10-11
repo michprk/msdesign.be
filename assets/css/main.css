@@ -411,6 +411,10 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .contact__photo { position: relative; margin: 0 18px 18px 0; }
 .contact__photo::before { content: ""; position: absolute; right: -18px; bottom: -18px; width: 64%; height: 60%; background: var(--blue); }
 .contact__photo img { position: relative; display: block; width: 100%; height: auto; aspect-ratio: auto; }
+/* les touches M, & et S du clavier s’allument en bleu, comme un rétroéclairage */
+.contact__photo .contact__keys { position: absolute; left: 0; top: 0; z-index: 1; width: 100%; height: auto; pointer-events: none; animation: keys-blink 2.4s ease-in-out infinite; }
+@keyframes keys-blink { 0%, 100% { opacity: 0; } 40%, 72% { opacity: 1; } }
+html.reduced .contact__photo .contact__keys { animation: none !important; opacity: 1; }
 .seal { position: absolute; z-index: 2; right: -30px; top: -34px; width: 120px; height: 120px; border-radius: 50%; background: var(--bg); box-shadow: 0 0 0 1px rgba(21, 94, 239, 0.3), 0 14px 30px -18px rgba(23, 23, 23, 0.4); }
 .seal__ring { transform-origin: 60px 60px; animation: seal-turn 28s linear infinite; }
 .seal__ring text { font: 600 9.6px/1 var(--sans); letter-spacing: 2.3px; fill: var(--blue); }
