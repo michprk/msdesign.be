@@ -3,16 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>Le jardin au fil des saisons, Strate (exemple de site M&amp;S Design)</title>
-<meta name="description" content="Exemple de site fictif imaginé par M&amp;S Design : le même jardin bruxellois au printemps, en été, en automne et en hiver, et ce que Strate y fait à chaque saison.">
+<title>Le même lieu, quatre fois : Strate (exemple de site M&amp;S Design)</title>
+<meta name="description" content="Exemple de site fictif imaginé par M&amp;S Design : l’étang du Bois de la Cambre au printemps, en été, en automne et en hiver, et ce que Strate fait dans les jardins à chaque saison.">
 <meta name="theme-color" content="#e4e9e6">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/gloock-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/hanken-grotesk-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="modulepreload" href="js/garden.js">
 <link rel="stylesheet" href="strate.css">
 </head>
 <body class="page-seasons">
@@ -38,16 +37,20 @@
 <main id="main">
   <section class="sz" aria-labelledby="sz-t">
     <div class="sz__stage">
-      <canvas class="sz__canvas" aria-hidden="true"></canvas>
-      <img class="sz__still" src="img/strate-saison-automne-1400.webp" width="1400" height="875" alt="" aria-hidden="true">
+      <div class="sz__photos">
+        <img class="sz__img" src="img/saison-printemps-1920.webp" srcset="img/saison-printemps-1100.webp 1100w, img/saison-printemps-1920.webp 1920w" sizes="100vw" width="1920" height="1200" alt="L’étang du Bois de la Cambre au printemps : l’île et son grand pin, les arbres en jeunes feuilles sous un ciel bleu." fetchpriority="high" decoding="async">
+        <img class="sz__img" src="img/saison-ete-1920.webp" srcset="img/saison-ete-1100.webp 1100w, img/saison-ete-1920.webp 1920w" sizes="100vw" width="1920" height="1200" alt="Le même étang en été : l’île couverte d’un feuillage dense, une fontaine au milieu de l’eau." decoding="async">
+        <img class="sz__img" src="img/saison-automne-1920.webp" srcset="img/saison-automne-1100.webp 1100w, img/saison-automne-1920.webp 1920w" sizes="100vw" width="1920" height="1200" alt="L’étang en automne : la berge courbe, des chênes et des hêtres orange et cuivre, des promeneurs sur l’allée." decoding="async">
+        <img class="sz__img" src="img/saison-hiver-1920.webp" srcset="img/saison-hiver-1100.webp 1100w, img/saison-hiver-1920.webp 1920w" sizes="100vw" width="1920" height="1200" alt="L’étang en hiver : l’eau gelée sous la neige, l’île et son pin, les arbres nus." decoding="async">
+      </div>
       <div class="container sz__ui">
         <div class="sz__card">
-
-          <h1 class="sz__title" id="sz-t">Le même jardin, quatre fois.</h1>
+          <h1 class="sz__title" id="sz-t">Le même lieu, quatre fois.</h1>
+          <p class="sz__place">L’étang du Bois de la Cambre, à deux pas de l’atelier.</p>
           <div class="sz__now" aria-live="polite">
             <p class="sz__name" data-season-name>Printemps</p>
             <p class="sz__months" data-season-months>mars à mai</p>
-            <p class="sz__text" data-season-text>L’amélanchier fleurit en blanc avant ses feuilles. Les graminées repartent du pied.</p>
+            <p class="sz__text" data-season-text>Les arbres de l’île débourrent, l’eau reflète un vert tendre. Chez vous, c’est le moment de planter les vivaces.</p>
           </div>
         </div>
         <div class="sz__bar">
@@ -70,7 +73,7 @@
 
   <section class="year" id="annee" aria-labelledby="annee-t">
     <div class="container">
-      <h2 class="section-title" id="annee-t">Ce qu’on y fait, saison par saison.</h2>
+      <h2 class="section-title" id="annee-t">Ce qu’on fait chez vous, saison par saison.</h2>
       <ol class="year__list">
         <li data-season-card="0">
           <h3>Printemps</h3><p class="year__months">mars à mai</p>
@@ -105,7 +108,7 @@
     </div>
     <div class="pfoot__legal">
       <p>Strate est une entreprise fictive. <a href="../../">Site d’exemple conçu par M&amp;S Design, Bruxelles</a>.</p>
-      <p>Le jardin est dessiné en 3D par le code&nbsp;: la même vue, rendue aux quatre saisons.</p>
+      <p data-credits>Photographies de l’étang du Bois de la Cambre (Wikimedia Commons)&nbsp;: printemps, <a href="https://commons.wikimedia.org/wiki/File:Le_bois_de_la_Cambre12_Avril_2016.jpg" rel="noopener">GdML</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="noopener">CC BY-SA 4.0</a>&nbsp;; été, <a href="https://commons.wikimedia.org/wiki/File:Bois_de_la_Cambre_(Bruxelles),_%C3%A9tang.JPG" rel="noopener">Ben2</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.fr" rel="noopener">CC BY-SA 3.0</a>&nbsp;; automne, <a href="https://commons.wikimedia.org/wiki/File:Panorama_-_Bois_de_la_Cambre_-_panoramio.jpg" rel="noopener">Henrik Buhl</a>, <a href="https://creativecommons.org/licenses/by/3.0/deed.fr" rel="noopener">CC BY 3.0</a>&nbsp;; hiver, <a href="https://commons.wikimedia.org/wiki/File:Les_rondeurs_d%27un_lac_gel%C3%A9_et_dangereusement_pi%C3%A9tin%C3%A9_au_bois_de_la_Cambre_-_panoramio.jpg" rel="noopener">Charles Lecompte</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.fr" rel="noopener">CC BY-SA 3.0</a>. Images recadrées, partagées sous les mêmes licences.</p>
       <button class="linkbtn" type="button" data-motion-toggle>Réduire les animations</button>
     </div>
   </div>

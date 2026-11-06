@@ -1,5 +1,6 @@
-/* Strate — la page Saisons : le même jardin, du printemps à l'hiver.
-   Un cran de molette = une saison (transition douce), un curseur, les flèches, ou l'image qu'on fait glisser. */
+/* Strate — la page Saisons : l'étang du Bois de la Cambre, le même lieu aux quatre saisons.
+   Un cran de molette = une saison ; la photo suivante se dévoile par un balayage doux, de gauche à droite.
+   Aussi : un curseur, les boutons, les flèches du clavier, ou la photo qu'on fait glisser. */
 const root = document.documentElement;
 const qs = (s, el = document) => el.querySelector(s), qsa = (s, el = document) => [...el.querySelectorAll(s)];
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -17,37 +18,48 @@ if (motionBtn) {
 }
 
 const SEASONS = [
-  { name: 'Printemps', months: 'mars à mai', text: 'L’amélanchier fleurit en blanc avant ses feuilles. Les graminées repartent du pied, coupées début mars.', top: [220, 232, 236], bot: [238, 243, 239] },
-  { name: 'Été', months: 'juin à août', text: 'Le jardin est plein : sauges, échinops et achillées fleurissent sous un feuillage dense.', top: [211, 229, 240], bot: [237, 243, 241] },
-  { name: 'Automne', months: 'septembre à novembre', text: 'L’amélanchier vire à l’orange, les graminées dorent, les feuilles tombent sur la pelouse.', top: [231, 228, 217], bot: [239, 236, 229] },
-  { name: 'Hiver', months: 'décembre à février', text: 'Reste la structure : les buis, la haie d’ifs et les graminées givrées, laissées debout pour les oiseaux.', top: [216, 224, 234], bot: [238, 241, 245] },
+  { name: 'Printemps', months: 'mars à mai', text: 'Les arbres de l’île débourrent, l’eau reflète un vert tendre. Chez vous, c’est le moment de planter les vivaces.' },
+  { name: 'Été', months: 'juin à août', text: 'Le feuillage est au plus dense, l’ombre gagne les berges. Chez vous : arrosage au pied, tôt le matin.' },
+  { name: 'Automne', months: 'septembre à novembre', text: 'Les chênes et les hêtres virent au cuivre le long de l’allée. Chez vous : la saison de plantation des arbres.' },
+  { name: 'Hiver', months: 'décembre à février', text: 'L’étang gèle, il ne reste que la structure des arbres. Chez vous : taille des fruitiers, dessin des plans.' },
 ];
-const NOW = [11, 0, 1].includes(new Date().getMonth()) ? 3 : [2, 3, 4].includes(new Date().getMonth()) ? 0 : [5, 6, 7].includes(new Date().getMonth()) ? 1 : 2;
+const mo = new Date().getMonth();
+const NOW = [11, 0, 1].includes(mo) ? 3 : [2, 3, 4].includes(mo) ? 0 : [5, 6, 7].includes(mo) ? 1 : 2;
 
-const section = qs('.sz'), stage = qs('.sz__stage'), canvas = qs('.sz__canvas'), range = qs('#sz-range');
-const nameEl = qs('[data-season-name]'), monthsEl = qs('[data-season-months]'), textEl = qs('[data-season-text]'), ticks = qsa('[data-season]');
+const section = qs('.sz'), stage = qs('.sz__stage'), photos = qs('.sz__photos'), imgs = qsa('.sz__img'), range = qs('#sz-range');
+const nameEl = qs('[data-season-name]'), monthsEl = qs('[data-season-months]'), textEl = qs('[data-season-text]'), ticks = qsa('[data-season]'), nowBox = qs('.sz__now');
 qsa('[data-season-card]').forEach((li) => { if (+li.dataset.seasonCard === NOW) { li.classList.add('is-now'); const t = qs('.year__months', li); if (t) t.textContent += ', en ce moment'; } });
 ticks.forEach((b) => b.classList.toggle('is-now', +b.dataset.season === NOW));
 
-/* la saison affichée suit une cible, en douceur */
-let target = 0, shown = 0, shownLabel = -1, garden = null, top = 0, vh = innerHeight;
+let target = 0, shown = 0, shownLabel = -1, top = 0, vh = innerHeight, dragging = false;
 function measure() { vh = qsa('.sz__step')[0]?.offsetHeight || innerHeight; top = section.getBoundingClientRect().top + scrollY; }
 measure();
-const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+
+/* les photos : celles d'avant restent, la suivante se dévoile en balayage */
+let lastKey = '';
+function paintPhotos() {
+  const i0 = Math.min(2, Math.floor(shown)), t = reduced ? Math.round(shown - i0) : shown - i0;
+  const key = i0 + ':' + t.toFixed(3); if (key === lastKey) return; lastKey = key;
+  imgs.forEach((im, k) => {
+    let m = 'none', vis = '1';
+    if (k === i0 + 1) {
+      if (t <= 0.001) vis = '0';
+      else if (t < 0.999) { const p = t * 150 - 25; m = `linear-gradient(100deg, #000 ${(p - 22).toFixed(1)}%, rgba(0,0,0,0) ${(p + 22).toFixed(1)}%)`; }
+    } else if (k > i0 + 1) vis = '0';
+    im.style.opacity = vis; im.style.webkitMaskImage = m; im.style.maskImage = m;
+  });
+}
 function paint() {
-  const i0 = Math.min(2, Math.floor(shown)), t = shown - i0, A = SEASONS[i0], B = SEASONS[i0 + 1];
-  const tp = mix(A.top, B.top, t), bt = mix(A.bot, B.bot, t);
-  stage.style.setProperty('--sky-top', `rgb(${tp})`); stage.style.setProperty('--sky-bot', `rgb(${bt})`);
+  paintPhotos();
   const lab = Math.round(shown);
   if (lab !== shownLabel) {
     shownLabel = lab; const S = SEASONS[lab];
     nameEl.textContent = S.name; monthsEl.textContent = S.months + (lab === NOW ? ', en ce moment' : ''); textEl.textContent = S.text;
     range.setAttribute('aria-valuetext', S.name);
     ticks.forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.season === lab)));
-    qs('.sz__now').classList.remove('is-swap'); void qs('.sz__now').offsetWidth; qs('.sz__now').classList.add('is-swap');
+    nowBox.classList.remove('is-swap'); void nowBox.offsetWidth; nowBox.classList.add('is-swap');
   }
   if (document.activeElement !== range && !dragging) range.value = String(Math.round(shown * 100));
-  if (garden) garden.setSeason(shown);
 }
 
 /* défilement : un cran = une saison */
@@ -57,7 +69,7 @@ const stepY = (i) => top + i * vh;
 function goSeason(i, fast = false) {
   i = clamp(i, 0, 3); lockUntil = performance.now() + (fast ? 600 : 1250);
   if (lenis) lenis.scrollTo(stepY(i), { duration: fast ? 0.8 : 1.6, easing: ease, lock: true, force: true });
-  else { scrollTo({ top: stepY(i), behavior: reduced ? 'auto' : 'smooth' }); }
+  else scrollTo({ top: stepY(i), behavior: reduced ? 'auto' : 'smooth' });
   if (reduced) target = shown = i;
 }
 if (Lenis && !reduced) {
@@ -83,7 +95,6 @@ if (Lenis && !reduced) {
 }
 
 /* curseur, boutons, clavier, glisser */
-let dragging = false;
 range.addEventListener('input', () => { const v = +range.value / 100; target = v; if (lenis) lenis.scrollTo(top + v * vh, { immediate: true, force: true }); else scrollTo(0, top + v * vh); });
 range.addEventListener('change', () => goSeason(Math.round(+range.value / 100), true));
 ticks.forEach((b) => b.addEventListener('click', () => goSeason(+b.dataset.season)));
@@ -91,44 +102,32 @@ addEventListener('keydown', (e) => {
   if (document.activeElement === range || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '')) return;
   const y = lenis ? lenis.targetScroll : scrollY; if (y < top - vh * 0.5 || y > top + 3 * vh + 2) return;
   const cur = clamp(Math.round((y - top) / vh), 0, 3);
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { if (cur < 3) { e.preventDefault(); goSeason(cur + 1); } }
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { if (cur > 0) { e.preventDefault(); goSeason(cur - 1); } }
+  if (['ArrowRight', 'ArrowDown', 'PageDown'].includes(e.key) && cur < 3) { e.preventDefault(); goSeason(cur + 1); }
+  if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key) && cur > 0) { e.preventDefault(); goSeason(cur - 1); }
 });
-let dragX = 0, dragV = 0;
-canvas.addEventListener('pointerdown', (e) => { dragging = true; dragX = e.clientX; dragV = target; canvas.setPointerCapture(e.pointerId); stage.classList.add('is-dragging'); });
-canvas.addEventListener('pointermove', (e) => {
-  if (garden && e.pointerType !== 'touch') { const r = canvas.getBoundingClientRect(); garden.setPointer(((e.clientX - r.left) / r.width) * 2 - 1, -(((e.clientY - r.top) / r.height) * 2 - 1)); }
-  if (!dragging) return; target = clamp(dragV + ((e.clientX - dragX) / canvas.clientWidth) * 3.2, 0, 3);
+let dragX = 0, dragV = 0, px = 0, py = 0, tx = 0, ty = 0;
+photos.addEventListener('pointerdown', (e) => { dragging = true; dragX = e.clientX; dragV = target; photos.setPointerCapture(e.pointerId); stage.classList.add('is-dragging'); });
+photos.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'touch') { tx = (e.clientX / innerWidth) * 2 - 1; ty = (e.clientY / innerHeight) * 2 - 1; }
+  if (dragging) target = clamp(dragV - ((e.clientX - dragX) / photos.clientWidth) * 3.2, 0, 3);
 });
 const endDrag = () => { if (!dragging) return; dragging = false; stage.classList.remove('is-dragging'); goSeason(Math.round(target), true); };
-canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+photos.addEventListener('pointerup', endDrag); photos.addEventListener('pointercancel', endDrag);
 
-/* la scène */
-function start() {
-  const ok = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } })();
-  if (!ok) { root.classList.add('no-webgl'); return; }
-  const low = matchMedia('(pointer: coarse)').matches || innerWidth < 760 || (navigator.hardwareConcurrency || 8) <= 4;
-  import('./garden.js').then(({ createGarden }) => {
-    garden = createGarden({ canvas, low, mode: 'seasons' });
-    window.__strateSeasons = garden;
-    garden.setSeason(shown); garden.render();
-    root.classList.add('garden-ready');
-    if (params.has('qa')) { const v = clamp(parseFloat(params.get('qa')) || 0, 0, 3); target = shown = v; paint(); for (let k = 0; k < 3; k++) garden.render(); document.title += ' [qa-ready]'; }
-  }).catch(() => root.classList.add('no-webgl'));
-}
-
-let visible = true;
-new IntersectionObserver(([en]) => { visible = en.isIntersecting; }, { rootMargin: '100px' }).observe(stage);
+/* la boucle */
 function frame() {
   const y = lenis ? lenis.animatedScroll : scrollY;
   if (!dragging) target = clamp((y - top) / vh, 0, 3);
-  shown += (target - shown) * (reduced ? 1 : dragging ? 0.18 : 0.12);
+  shown += (target - shown) * (reduced ? 1 : dragging ? 0.2 : 0.12);
   if (Math.abs(target - shown) < 0.0005) shown = target;
+  if (!reduced) { px += (tx - px) * 0.05; py += (ty - py) * 0.05; photos.style.transform = `translate3d(${(-px * 12).toFixed(2)}px, ${(-py * 8).toFixed(2)}px, 0) scale(1.04)`; }
   paint();
-  if (garden && visible) garden.render();
   requestAnimationFrame(frame);
 }
-addEventListener('resize', () => { measure(); if (garden) garden.resize(); });
-new ResizeObserver(() => { measure(); if (garden) garden.resize(); }).observe(document.body);
-start(); paint();
-if (!params.has('qa')) requestAnimationFrame(frame);
+addEventListener('resize', measure);
+new ResizeObserver(measure).observe(document.body);
+root.classList.add('photos-ready');
+if (params.has('qa')) {
+  const v = clamp(parseFloat(params.get('qa')) || 0, 0, 3); target = shown = v; paint();
+  Promise.all(imgs.map((im) => (im.complete ? 1 : new Promise((r) => { im.onload = im.onerror = r; })))).then(() => { document.title += ' [qa-ready]'; });
+} else { paint(); requestAnimationFrame(frame); }
