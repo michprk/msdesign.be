@@ -13,9 +13,20 @@
 <link rel="preload" href="fonts/gloock-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/hanken-grotesk-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="modulepreload" href="js/garden.js">
+<link rel="modulepreload" href="js/sound.js">
 <link rel="stylesheet" href="strate.css">
 </head>
 <body>
+<div class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-t" aria-describedby="gate-d" hidden>
+  <div class="gate__in">
+    <svg class="gate__mark" viewBox="0 0 22 16" aria-hidden="true"><rect class="brand__l1" x="0" y="0" width="22" height="3.6" rx="1.8"/><rect class="brand__l2" x="3" y="6.2" width="16" height="3.6" rx="1.8"/><rect class="brand__l3" x="6" y="12.4" width="10" height="3.6" rx="1.8"/></svg>
+    <p class="gate__name" id="gate-t">Strate</p>
+    <p class="gate__line" id="gate-d">Jardins dessinés, plantés et suivis à Bruxelles depuis&nbsp;2011.</p>
+    <button class="btn btn--primary gate__enter" type="button" data-enter="sound"><span data-enter-label>Le jardin pousse…</span></button>
+    <button class="gate__quiet" type="button" data-enter="quiet">Entrer sans le son</button>
+  </div>
+  <p class="gate__note">Exemple de site fictif, imaginé par M&amp;S Design. Le son est discret&nbsp;: vent, oiseaux, et le sol.</p>
+</div>
 <a class="skip" href="#jardins">Aller aux jardins</a>
 <p class="ex-note">Exemple de site fictif, imaginé par M&amp;S Design. <a href="../../#etudes">Retour au studio</a></p>
 
@@ -32,8 +43,36 @@
       <a href="#saisons">Saisons</a>
     </nav>
     <a class="btn btn--primary hdr__cta" href="#contact">Demander une visite</a>
+    <button class="hdr__menu" type="button" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><i></i><i></i></button>
   </div>
 </header>
+
+<div class="menu" id="menu" hidden>
+  <button class="menu__scrim" type="button" tabindex="-1" aria-label="Fermer le menu" data-menu-close></button>
+  <div class="menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <button class="menu__close" type="button" aria-label="Fermer le menu" data-menu-close><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16"/></svg></button>
+    <nav aria-label="Menu complet">
+      <ol class="menu__list">
+        <li><a href="#accueil"><span class="menu__n">01</span>Le jardin</a></li>
+        <li><a href="#sol"><span class="menu__n">02</span>Le sol</a></li>
+        <li><a href="#jardins"><span class="menu__n">03</span>Jardins</a></li>
+        <li><a href="#methode"><span class="menu__n">04</span>Méthode et prix</a></li>
+        <li><a href="#saisons"><span class="menu__n">05</span>Saisons</a></li>
+        <li><a href="#contact"><span class="menu__n">06</span>Une visite</a></li>
+      </ol>
+    </nav>
+    <div class="menu__foot">
+      <p>Atelier à Uccle, sur rendez-vous<br>Du lundi au vendredi, de 8&nbsp;h à 17&nbsp;h</p>
+      <p class="coord">50,800° N, 4,350° E</p>
+      <button class="linkbtn" type="button" data-sound-toggle aria-pressed="false">Activer le son</button>
+    </div>
+  </div>
+</div>
+
+<div class="corners" aria-hidden="true">
+  <a class="corner-pill" href="#saisons" tabindex="-1" data-month-pill>Novembre&nbsp;: on plante les arbres</a>
+  <p class="corner-coord coord">50,800° N, 4,350° E</p>
+</div>
 
 <main id="main">
   <section class="story" aria-label="Le jardin, de la pelouse à la nappe">
@@ -239,7 +278,7 @@
     <div class="foot__legal">
       <p>Strate est une entreprise fictive&nbsp;: ses jardins, ses prix et ses dates sont inventés pour montrer ce que M&amp;S Design sait faire.</p>
       <p><a href="../../">Site d’exemple conçu par M&amp;S Design, Bruxelles</a></p>
-      <button class="linkbtn" type="button" data-motion-toggle>Réduire les animations</button>
+      <p class="foot__toggles"><button class="linkbtn" type="button" data-sound-toggle aria-pressed="false">Activer le son</button><button class="linkbtn" type="button" data-motion-toggle>Réduire les animations</button></p>
     </div>
   </div>
 </footer>

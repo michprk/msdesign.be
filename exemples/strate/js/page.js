@@ -1,5 +1,6 @@
 /* Strate — défilement par chapitres, arche, révélations, plans, calendrier.
    Un cran de molette = une animation entière (pas de défilement « au pas à pas »). */
+import { createAmbience } from './sound.js';
 const root = document.documentElement;
 const qs = (s, el = document) => el.querySelector(s), qsa = (s, el = document) => [...el.querySelectorAll(s)];
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -74,7 +75,7 @@ if (Lenis && !reduced) {
 
 /* clavier : flèches, page suivante, espace */
 addEventListener('keydown', (e) => {
-  if (reduced || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (reduced || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || root.classList.contains('gate-open') || root.classList.contains('menu-open')) return;
   if (/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement?.tagName || '')) return;
   const down = ['ArrowDown', 'PageDown', ' '].includes(e.key) && !e.shiftKey, up = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey);
   if (!down && !up) return;
@@ -85,12 +86,14 @@ addEventListener('keydown', (e) => {
 });
 
 /* liens internes vers les chapitres (menu, boutons) */
-qsa('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
-  const id = a.getAttribute('href').slice(1); const ch = chapters.findIndex((c) => c.id === id);
-  if (ch >= 0) { e.preventDefault(); goChapter(ch); history.replaceState(null, '', `#${id}`); return; }
+function navTo(id) {
+  const ch = chapters.findIndex((c) => c.id === id);
+  if (ch >= 0) { goChapter(ch); history.replaceState(null, '', `#${id}`); return true; }
   const t = id && document.getElementById(id);
-  if (t && lenis) { e.preventDefault(); lenis.scrollTo(t, { offset: -8, duration: 1.4, easing: ease }); history.replaceState(null, '', `#${id}`); }
-}));
+  if (t && lenis) { lenis.scrollTo(t, { offset: -8, duration: 1.4, easing: ease, force: true }); history.replaceState(null, '', `#${id}`); return true; }
+  return false;
+}
+qsa('a[href^="#"]').filter((a) => !a.closest('.menu')).forEach((a) => a.addEventListener('click', (e) => { if (navTo(a.getAttribute('href').slice(1))) e.preventDefault(); }));
 const descend = qs('[data-descend]');
 if (descend) descend.addEventListener('click', () => goChapter(1));
 
@@ -129,6 +132,8 @@ function frame() {
   const active = Math.round(p);
   if (active !== lastActive && Math.abs(p - active) < 0.3) { chapters.forEach((c, i) => c.classList.toggle('is-active', i === active)); lastActive = active; story.dataset.chapter = active; }
   frameHeader(y);
+  root.classList.toggle('past-story', y > storyTop + 2.4 * vh);
+  if (ambience) ambience.setProgress(p);
   requestAnimationFrame(frame);
 }
 // ton de l'en-tête selon ce qui passe dessous
@@ -145,7 +150,7 @@ function frameHeader(y) {
 /* ---------- la scène 3D ---------- */
 function startGarden() {
   const ok = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2')); } catch (e) { return false; } })();
-  if (!ok) { root.classList.add('no-webgl'); return; }
+  if (!ok) { root.classList.add('no-webgl'); gateReady(); return; }
   const low = matchMedia('(pointer: coarse)').matches || innerWidth < 760 || (navigator.hardwareConcurrency || 8) <= 4;
   import('./garden.js').then(({ createGarden }) => {
     garden = createGarden({
@@ -154,14 +159,14 @@ function startGarden() {
     });
     window.__strateGarden = garden;
     measureArch(); garden.setProgress(p); garden.render();
-    if (QA !== null) { root.classList.add('garden-ready'); window.__strateQA(); document.title += ' [qa-ready]'; return; }
-    requestAnimationFrame(() => root.classList.add('garden-ready'));
+    if (QA !== null) { root.classList.add('garden-ready'); gateReady(); window.__strateQA(); document.title += ' [qa-ready]'; return; }
+    requestAnimationFrame(() => { root.classList.add('garden-ready'); gateReady(); });
     new IntersectionObserver(([en]) => { visible = en.isIntersecting; }, { rootMargin: '200px' }).observe(stage);
     addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch') return;
       const r = canvas.getBoundingClientRect(); garden.setPointer(((e.clientX - r.left) / r.width) * 2 - 1, -(((e.clientY - r.top) / r.height) * 2 - 1));
     }, { passive: true });
-  }).catch(() => root.classList.add('no-webgl'));
+  }).catch(() => { root.classList.add('no-webgl'); gateReady(); });
 }
 
 /* ---------- révélations (une seule fois) ---------- */
@@ -238,9 +243,77 @@ if (QA !== null) {
     p = q; chapters.forEach((c, i) => c.classList.toggle('is-active', i === Math.round(q)));
     clipStage(smooth(0, 0.5, q)); measureTones(); frameHeader(y); qsa('[data-reveal]').forEach((el) => el.classList.add('is-in'));
     if (garden) { if (q >= 0.8) garden.growNow(); garden.setProgress(q); for (let k = 0; k < 3; k++) garden.render(); }
+    if (new URLSearchParams(location.search).has('menu') && menu && menu.hidden) { openMenu(); menu.classList.add('is-open'); }
     return 'ok';
   };
 }
+
+/* ---------- le son : seulement après un geste, coupable à tout moment ---------- */
+let ambience = null, soundOn = false;
+const soundBtns = qsa('[data-sound-toggle]');
+function setSoundLabels() { soundBtns.forEach((b) => { b.textContent = soundOn ? 'Couper le son' : 'Activer le son'; b.setAttribute('aria-pressed', String(soundOn)); }); }
+function startSound() { if (!ambience) ambience = createAmbience(); if (!ambience) return; ambience.start(); ambience.setProgress(p); soundOn = true; setSoundLabels(); }
+function stopSound() { if (ambience) ambience.mute(); soundOn = false; setSoundLabels(); }
+soundBtns.forEach((b) => b.addEventListener('click', () => (soundOn ? stopSound() : startSound())));
+setSoundLabels();
+
+/* ---------- l'entrée : « Entrer dans le jardin », avec ou sans le son ---------- */
+const params = new URLSearchParams(location.search), gate = qs('.gate');
+let isReady = false, pending = null;
+const gateOn = !!gate && ((QA === null && params.get('intro') !== '0') || (QA !== null && params.has('gate')));
+if (gateOn) {
+  gate.hidden = false; root.classList.add('gate-open'); if (lenis) lenis.stop();
+  const enter = qs('[data-enter="sound"]', gate); enter.focus({ preventScroll: true });
+  qsa('[data-enter]', gate).forEach((b) => b.addEventListener('click', () => openGate(b.dataset.enter === 'sound')));
+}
+function gateReady() {
+  isReady = true; if (!gateOn) return;
+  gate.classList.add('is-ready'); const label = qs('[data-enter-label]', gate); if (label) label.textContent = 'Entrer dans le jardin';
+  if (pending !== null) openGate(pending);
+}
+function openGate(withSound) {
+  if (withSound) startSound();                                  // dans le geste du visiteur, sinon le navigateur refuse
+  if (!isReady) { pending = withSound; gate.classList.add('is-waiting'); return; }
+  pending = null; gate.classList.add('is-leaving');
+  const W = innerWidth, H = innerHeight, cx = W / 2, cy = H * 0.55, max = Math.hypot(W, H) * 1.3, dur = reduced ? 1 : 1250;
+  const done = () => { gate.hidden = true; gate.style.clipPath = ''; root.classList.remove('gate-open'); if (lenis) lenis.start(); };
+  if (reduced || !CSS.supports('clip-path', 'path(evenodd, "M0 0H1V1Z")')) { setTimeout(done, reduced ? 0 : 500); return; }
+  let t0 = 0;
+  const step = (t) => {
+    if (!t0) t0 = t;
+    const k = ease(clamp((t - t0) / dur)), w = 24 + k * max, h = w * 1.3, x0 = cx - w / 2, x1 = cx + w / 2, yb = cy + h / 2, yt = cy - h / 2 + w / 2;
+    gate.style.clipPath = `path(evenodd, "M0 0H${W}V${H}H0Z M${x0.toFixed(1)} ${yb.toFixed(1)}V${yt.toFixed(1)}A${(w / 2).toFixed(1)} ${(w / 2).toFixed(1)} 0 0 1 ${x1.toFixed(1)} ${yt.toFixed(1)}V${yb.toFixed(1)}Z")`;
+    if (k < 1) requestAnimationFrame(step); else done();
+  };
+  setTimeout(() => requestAnimationFrame(step), 260);
+}
+
+/* ---------- le grand menu ---------- */
+const menu = qs('#menu'), menuBtn = qs('.hdr__menu');
+function openMenu() {
+  menu.hidden = false; root.classList.add('menu-open'); menuBtn.setAttribute('aria-expanded', 'true'); if (lenis) lenis.stop();
+  requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open')));
+  setTimeout(() => qs('.menu__list a', menu)?.focus({ preventScroll: true }), 60);
+}
+function closeMenu(then) {
+  menu.classList.remove('is-open'); root.classList.remove('menu-open'); menuBtn.setAttribute('aria-expanded', 'false');
+  setTimeout(() => { menu.hidden = true; if (lenis) lenis.start(); menuBtn.focus({ preventScroll: true }); if (then) then(); }, reduced ? 0 : 450);
+}
+if (menu && menuBtn) {
+  menuBtn.addEventListener('click', () => (menu.hidden ? openMenu() : closeMenu()));
+  qsa('[data-menu-close]', menu).forEach((b) => b.addEventListener('click', () => closeMenu()));
+  qsa('a[href^="#"]', menu).forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); const id = a.getAttribute('href').slice(1); closeMenu(() => navTo(id)); }));
+  menu.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closeMenu(); return; }
+    if (e.key !== 'Tab') return;
+    const f = qsa('a, button', menu).filter((el) => el.offsetParent !== null), first = f[0], lastEl = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); } else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
+  });
+}
+
+/* ---------- les coins : le geste du mois ---------- */
+const SHORT = ['Janvier : on taille les fruitiers', 'Février : dernières plantations', 'Mars : les vivaces entrent en terre', 'Avril : on sème la prairie', 'Mai : on arrose les jeunes plants', 'Juin : la citerne travaille', 'Juillet : on taille les haies', 'Août : on observe le jardin', 'Septembre : on plante les vivaces', 'Octobre : les bulbes', 'Novembre : on plante les arbres', 'Décembre : on plante encore'];
+const monthPill = qs('[data-month-pill]'); if (monthPill) monthPill.textContent = SHORT[new Date().getMonth()].replace(' :', '\u00a0:');
 
 /* ---------- démarrage ---------- */
 function relayout() { measure(); measureArch(); measureTones(); if (garden) garden.resize(); }
