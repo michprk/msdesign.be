@@ -45,7 +45,10 @@ Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de ret
   à l’envoi (photo de cour « courtyard », Serge Melki, CC BY 2.0). Page `saisons.html` : un lieu réel,
   l’étang du Bois de la Cambre, aux quatre saisons (photos Wikimedia Commons, CC BY / CC BY-SA, créditées),
   balayage doux d’une saison à l’autre, un cran de molette par saison, curseur, clavier, glisser ;
-  en dessous, les gestes de chaque saison.
+  en dessous, les gestes de chaque saison. Page `jardins.html` : quatre vrais jardins publics de Bruxelles
+  présentés comme « jardins qui nous inspirent » (Van Buuren, abbaye de la Cambre, Jardin botanique, parc
+  Josaphat ; photos Wikimedia créditées) : photos presque plein écran, commune au survol, au clic la photo
+  s’ouvre en grand avec un cadre de repérage et la fiche du lieu.
   Sources et outils dans `_msdesign-src/strate/` : `build.mjs` (assemble `index.html` depuis
   `index.src.html` et dessine les plans et le calendrier), `shoot.mjs` (captures figées `?qa=0..3`,
   `&at=section`, `&plan=uccle`, `&gate=1`, `&menu=1`), `export.mjs` (copie autonome publiée dans le
