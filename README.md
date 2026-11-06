@@ -35,14 +35,16 @@ Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de ret
 - `exemples/le-fournil/` : boulangerie au levain (serif gras, terracotta) ;
 - `exemples/atelier-veritas/` : bureau d’architecture (serif fin, grandes photos) ;
 - `exemples/studio-bascule/` : studio de graphisme (lettres larges bleues, fond sable) ;
-- `exemples/strate/` : **exemple Premium**, paysagiste. Un jardin bruxellois en 3D temps réel
-  (Three.js, `js/garden.js`, tout généré par le code) dans une arche ; un cran de molette = un chapitre :
+- `exemples/strate/` : **exemple Premium**, paysagiste. Écran d’entrée (avec ou sans son), puis une
+  vraie photo en plein écran (« Autumn Joy », Memotions, CC BY 2.0, créditée en pied de page) ; derrière,
+  un jardin bruxellois en 3D temps réel (Three.js, `js/garden.js`) ; un cran de molette = un chapitre :
   on descend sous la pelouse (coupe du sol, racines qui poussent), l’eau s’infiltre jusqu’à la nappe,
   puis les étages du jardin s’écartent. Ensuite trois plans au trait, les prix en diagramme de semaines,
   le calendrier des saisons (aiguille sur la date du jour) et un formulaire de démonstration.
   Sources et outils dans `_msdesign-src/strate/` : `build.mjs` (assemble `index.html` depuis
   `index.src.html` et dessine les plans et le calendrier), `shoot.mjs` (captures figées `?qa=0..3`,
-  `&at=section`, `&plan=uccle`). Polices Gloock, Hanken Grotesk, DM Mono (OFL).
+  `&at=section`, `&plan=uccle`, `&gate=1`, `&menu=1`), `export.mjs` (copie autonome publiée dans le
+  dépôt [michprk/strate](https://github.com/michprk/strate)). Polices Gloock, Hanken Grotesk, DM Mono (OFL).
 
 Les quatre premiers partagent une feuille de style (`exemples/exemples.css`), sans JavaScript. Les captures des fenêtres
 sont faites par `_msdesign-src/cap-ex.sh <slug>` (1440 × 936) puis rognées par l’outil `#exshots`.

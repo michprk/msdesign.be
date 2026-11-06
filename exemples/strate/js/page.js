@@ -104,7 +104,7 @@ if (matchMedia('(pointer: coarse)').matches) root.classList.add('snap');
 const arch = qs('.hero__arch');
 let archRect = null;
 function measureArch() {
-  if (!arch) return;
+  if (!arch) { if (garden) garden.setShift(0, 0); stage.style.clipPath = 'none'; return; }
   const r = arch.getBoundingClientRect(), s = stage.getBoundingClientRect();
   archRect = { x: r.left - s.left, y: r.top + scrollY - (story.getBoundingClientRect().top + scrollY), w: r.width, h: r.height };
   if (garden) garden.setShift(((archRect.x + archRect.w / 2) / s.width) * 2 - 1, -(((archRect.y + archRect.h / 2) / vh) * 2 - 1));
@@ -122,11 +122,19 @@ const tones = qsa('[data-tone]');
 let toneMarks = [];
 const BG = { jardins: 'olive', methode: 'paper', saisons: 'bottle', contact: 'orange' };
 function measureTones() { toneMarks = tones.filter((el) => el !== header).map((el) => { const r = el.getBoundingClientRect(); return { top: r.top + scrollY, bottom: r.bottom + scrollY, tone: el.dataset.tone, bg: BG[el.id] || 'forest' }; }); }
-let lastActive = -1, visible = true;
+let lastActive = -1, visible = true, drew = false;
+const heroPhoto = qs('.hero__photo'); let px = 0, py = 0, tx = 0, ty = 0;
+addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; tx = (e.clientX / innerWidth) * 2 - 1; ty = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
 function frame() {
   const y = lenis ? lenis.animatedScroll : scrollY;
   p = clamp((y - storyTop) / vh, 0, 3);
-  if (garden && visible) { garden.setProgress(p); garden.render(); }
+  if (garden && visible && (p > 0.002 || !drew)) { garden.setProgress(p); garden.render(); drew = true; }
+  if (heroPhoto && !reduced) {
+    px += (tx - px) * 0.05; py += (ty - py) * 0.05;
+    const k = smooth(0, 0.85, p);
+    heroPhoto.style.transform = `translate3d(${(-px * 14).toFixed(2)}px, ${(-py * 9).toFixed(2)}px, 0) scale(${(1 + 0.28 * k).toFixed(4)})`;
+    heroPhoto.style.opacity = (1 - smooth(0.3, 0.8, p)).toFixed(3);
+  }
   clipStage(reduced ? 1 : smooth(0, 0.5, p));
   root.style.setProperty('--p', p.toFixed(4));
   const active = Math.round(p);
@@ -141,7 +149,7 @@ function frameHeader(y) {
   const noteH = note ? Math.max(0, note.offsetHeight - y) : 0;
   header.style.transform = `translateY(${noteH}px)`;
   let tone = 'light', bg = '';
-  if (y < storyTop + 3 * vh + vh * 0.5) bg = p > 0.55 && p < 2.45 ? 'paper' : '';
+  if (y < storyTop + 3 * vh + vh * 0.5) { if (p < 0.5) tone = 'dark'; else bg = p < 2.45 ? 'paper' : ''; }
   else { const probe = y + 40; for (const m of toneMarks) if (probe >= m.top && probe < m.bottom) { tone = m.tone; bg = m.bg; break; } }
   if (header.dataset.tone !== tone) header.dataset.tone = tone;
   if (bg) { header.dataset.bg = bg; header.classList.add('is-solid'); } else header.classList.remove('is-solid');
@@ -275,17 +283,8 @@ function openGate(withSound) {
   if (withSound) startSound();                                  // dans le geste du visiteur, sinon le navigateur refuse
   if (!isReady) { pending = withSound; gate.classList.add('is-waiting'); return; }
   pending = null; gate.classList.add('is-leaving');
-  const W = innerWidth, H = innerHeight, cx = W / 2, cy = H * 0.55, max = Math.hypot(W, H) * 1.3, dur = reduced ? 1 : 1250;
-  const done = () => { gate.hidden = true; gate.style.clipPath = ''; root.classList.remove('gate-open'); if (lenis) lenis.start(); };
-  if (reduced || !CSS.supports('clip-path', 'path(evenodd, "M0 0H1V1Z")')) { setTimeout(done, reduced ? 0 : 500); return; }
-  let t0 = 0;
-  const step = (t) => {
-    if (!t0) t0 = t;
-    const k = ease(clamp((t - t0) / dur)), w = 24 + k * max, h = w * 1.3, x0 = cx - w / 2, x1 = cx + w / 2, yb = cy + h / 2, yt = cy - h / 2 + w / 2;
-    gate.style.clipPath = `path(evenodd, "M0 0H${W}V${H}H0Z M${x0.toFixed(1)} ${yb.toFixed(1)}V${yt.toFixed(1)}A${(w / 2).toFixed(1)} ${(w / 2).toFixed(1)} 0 0 1 ${x1.toFixed(1)} ${yt.toFixed(1)}V${yb.toFixed(1)}Z")`;
-    if (k < 1) requestAnimationFrame(step); else done();
-  };
-  setTimeout(() => requestAnimationFrame(step), 260);
+  const done = () => { gate.hidden = true; root.classList.remove('gate-open'); if (lenis) lenis.start(); };
+  setTimeout(done, reduced ? 0 : 1150);
 }
 
 /* ---------- le grand menu ---------- */

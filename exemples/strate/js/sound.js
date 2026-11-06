@@ -23,10 +23,10 @@ export function createAmbience() {
   }
   const noise = ctx.createBufferSource(); noise.buffer = buf; noise.loop = true;
   const wind = ctx.createBiquadFilter(); wind.type = 'bandpass'; wind.frequency.value = 520; wind.Q.value = 0.55;
-  const windGain = ctx.createGain(); windGain.gain.value = 0.26;
+  const windGain = ctx.createGain(); windGain.gain.value = 0.32;
   noise.connect(wind).connect(windGain).connect(muffle);
   const leaves = ctx.createBiquadFilter(); leaves.type = 'highpass'; leaves.frequency.value = 2600;
-  const leavesGain = ctx.createGain(); leavesGain.gain.value = 0.05;
+  const leavesGain = ctx.createGain(); leavesGain.gain.value = 0.06;
   noise.connect(leaves).connect(leavesGain).connect(muffle);
   // rafales lentes
   const lfo = ctx.createOscillator(); lfo.frequency.value = 0.06; const lfoAmt = ctx.createGain(); lfoAmt.gain.value = 170; lfo.connect(lfoAmt).connect(wind.frequency);
@@ -80,7 +80,7 @@ export function createAmbience() {
       progress = p; if (!started || Math.abs(p - last) < 0.01) return; last = p;
       const depth = smooth(0.35, 1, p) * (1 - smooth(2.3, 2.9, p)), now = ctx.currentTime;
       muffle.frequency.setTargetAtTime(lerp(9000, 360, depth), now, 0.25);
-      windGain.gain.setTargetAtTime(lerp(0.26, 0.1, depth), now, 0.3);
+      windGain.gain.setTargetAtTime(lerp(0.32, 0.1, depth), now, 0.3);
       drone.gain.setTargetAtTime(depth * 0.05, now, 0.4);
     },
   };
