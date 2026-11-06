@@ -245,12 +245,15 @@ function lumpy(geo, amp, freq, seed) {
 
 /* ---------- le vent, partagé par toute la végétation ---------- */
 const U = { uTime: { value: 0 }, uWind: { value: 1 }, uMouse: { value: new THREE.Vector3(99, 0, 99) }, uMousePow: { value: 0 } };
-function windify(mat, { blade = false, stiff = 1, lift = 0.1 } = {}) {
+function windify(mat, { blade = false, stiff = 1, lift = 0.1, extra = null } = {}) {
+  const x = extra || {};
+  mat.customProgramCacheKey = () => `wind:${blade}:${lift}:${x.key || ''}`;
   mat.onBeforeCompile = (sh) => {
-    Object.assign(sh.uniforms, U); sh.uniforms.uStiff = { value: stiff };
+    Object.assign(sh.uniforms, U, x.uniforms || {}); sh.uniforms.uStiff = { value: stiff };
     sh.vertexShader = sh.vertexShader
       .replace('#include <common>', `#include <common>
 uniform float uTime, uWind, uStiff, uMousePow; uniform vec3 uMouse; varying float vGY; varying float vLY;
+${x.decl || ''}
 vec3 windAt(vec3 gp) {
   float h = max(gp.y, 0.0);
   float ph = uTime * 1.25 + gp.x * 0.45 + gp.z * 0.32;
@@ -264,6 +267,7 @@ vec3 windAt(vec3 gp) {
   return o;
 }`)
       .replace('#include <begin_vertex>', `#include <begin_vertex>
+  ${x.vpre || ''}
   {
     mat4 im = mat4(1.0);
     #ifdef USE_INSTANCING
@@ -274,18 +278,40 @@ vec3 windAt(vec3 gp) {
     vGY = gp.y; vLY = position.y;
   }`);
     sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', '#include <common>\nvarying float vGY; varying float vLY;')
+      .replace('#include <common>', `#include <common>\nvarying float vGY; varying float vLY;\n${x.decl || ''}`)
       .replace('#include <color_fragment>', `#include <color_fragment>
   diffuseColor.rgb *= mix(0.4, 1.0, smoothstep(0.0, 0.22, vGY));
-  ${blade ? 'diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.22, 1.14, 0.8), smoothstep(0.5, 1.0, vLY));' : ''}`)
+  ${blade ? 'diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.22, 1.14, 0.8), smoothstep(0.5, 1.0, vLY));' : ''}
+  ${x.frag || ''}`)
       .replace('#include <normal_fragment_begin>', '#include <normal_fragment_begin>\n  normal = normalize(mix(normal, (viewMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz, 0.55));')
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>\n  totalEmissiveRadiance += diffuseColor.rgb * ${lift.toFixed(3)};`);
   };
   return mat;
 }
 
+/* ---------- saisons : réglages lus par les shaders ---------- */
+const SZ = {
+  grass: { uTint: { value: new THREE.Vector3(1, 1, 1) }, uDesat: { value: 0 }, uFrost: { value: 0 } },
+  cal: { uTint: { value: new THREE.Vector3(1, 1, 1) }, uDesat: { value: 0 }, uFrost: { value: 0 }, uH: { value: 1 } },
+  flower: { uHead: { value: 1 }, uBrown: { value: 0 } },
+  stem: { uStemH: { value: 1 }, uBrown: { value: 0 } },
+};
+const TINT_DECL = 'uniform vec3 uTint; uniform float uDesat; uniform float uFrost;';
+const TINT_FRAG = 'float lumS = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114)); diffuseColor.rgb = mix(diffuseColor.rgb, vec3(lumS), uDesat) * uTint; diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.86, 0.9, 0.93), uFrost * smoothstep(0.15, 1.0, vLY));';
+// printemps, été, automne (l'état d'origine), hiver
+const SEASONS = [
+  { grass: [0.98, 1.12, 0.9], gDesat: 0, gFrost: 0, cal: [0.6, 1.05, 0.5], cDesat: 0, cFrost: 0, calH: 0.38, head: 0, brown: 0, stemH: 0.42, leafS: 1.25,
+    lawn: '#f2fff0', card: '#ffffff', sun: '#fff1dc', sunI: 2.6, sky: '#eef4f6', grd: '#6f7046', hemiI: 1.7, fog: '#e3ebe6', fall: 0.55, fallSize: 0.7, fallSpeed: 0.7 },
+  { grass: [0.9, 1.02, 0.84], gDesat: 0, gFrost: 0, cal: [0.82, 1.02, 0.66], cDesat: 0, cFrost: 0, calH: 0.92, head: 1, brown: 0, stemH: 1, leafS: 1.4,
+    lawn: '#ecfae6', card: '#ffffff', sun: '#fff6e6', sunI: 2.9, sky: '#f0f6f8', grd: '#6b6a45', hemiI: 1.75, fog: '#e1e9e6', fall: 0, fallSize: 1, fallSpeed: 1 },
+  { grass: [1, 1, 1], gDesat: 0, gFrost: 0, cal: [1, 1, 1], cDesat: 0, cFrost: 0, calH: 1, head: 1, brown: 0.3, stemH: 1, leafS: 1,
+    lawn: '#ffffff', card: '#ffffff', sun: '#ffe6c6', sunI: 2.5, sky: '#eef3f6', grd: '#6b6a45', hemiI: 1.65, fog: '#e2e8e4', fall: 1, fallSize: 1, fallSpeed: 1 },
+  { grass: [0.96, 0.95, 0.9], gDesat: 0.6, gFrost: 0.5, cal: [1.06, 1.04, 1.0], cDesat: 0.35, cFrost: 0.4, calH: 0.95, head: 0.78, brown: 0.88, stemH: 0.92, leafS: 0,
+    lawn: '#f4f8ff', card: '#eef6ff', sun: '#e8efff', sunI: 1.9, sky: '#e6eef6', grd: '#7c8288', hemiI: 1.6, fog: '#e6ebf0', fall: 1, fallSize: 0.32, fallSpeed: 1.6 },
+];
+
 /* ---------- construction de la scène ---------- */
-export function createGarden({ canvas: cvs, labels = {}, low = false }) {
+export function createGarden({ canvas: cvs, labels = {}, low = false, mode = 'story' }) {
   const rand = mulberry(20111106);
   const renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setClearColor(0x000000, 0);
@@ -299,7 +325,7 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
   const tex = (cv, srgb = true) => { const t = new THREE.CanvasTexture(cv); t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.anisotropy = maxAniso; return t; };
 
   // lumière d'automne, basse, venant du fond à gauche : contre-jour sur l'herbe
-  scene.add(new THREE.HemisphereLight('#eef3f6', '#6b6a45', 1.65));
+  const hemi = new THREE.HemisphereLight('#eef3f6', '#6b6a45', 1.65); scene.add(hemi);
   const sun = new THREE.DirectionalLight('#ffe6c6', 2.5);
   sun.position.set(-10, 10, 2); sun.target.position.set(0, 0, -6); scene.add(sun, sun.target);
   sun.castShadow = true; sun.shadow.mapSize.set(low ? 1024 : 2048, low ? 1024 : 2048);
@@ -369,7 +395,7 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
 
   // l'herbe : un seul maillage instancié, pelouse au centre, prairie sur les bords
   const nGrass = low ? 26000 : 72000;
-  const grassMat = windify(new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.82, color: '#ffffff' }), { blade: true, lift: 0.14 });
+  const grassMat = windify(new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.82, color: '#ffffff' }), { blade: true, lift: 0.14, extra: { key: 'grass', uniforms: SZ.grass, decl: TINT_DECL, frag: TINT_FRAG } });
   const grass = new THREE.InstancedMesh(bladeGeometry(5), grassMat, nGrass); grass.receiveShadow = true;
   const LAWN = ['#5b7f34', '#6a8c3a', '#527530', '#77963f', '#628536'], MEADOW = ['#4a6a2e', '#5f7a34', '#77803e', '#8a8446', '#557033', '#6a7a3a'];
   let gi = 0;
@@ -388,7 +414,7 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
 
   // géraniums vivaces : petits coussins à fleurs bleu-violet (couvre-sol)
   const dotGeo = new THREE.IcosahedronGeometry(1, 0);
-  const flowerMat = windify(new THREE.MeshStandardMaterial({ roughness: 0.6, color: '#ffffff' }), { lift: 0.16 });
+  const flowerMat = windify(new THREE.MeshStandardMaterial({ roughness: 0.6, color: '#ffffff' }), { lift: 0.16, extra: { key: 'flower', uniforms: SZ.flower, decl: 'uniform float uHead; uniform float uBrown;', vpre: 'transformed *= uHead;', frag: 'diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.4, 0.29, 0.19), uBrown);' } });
   const borderPoint = () => { for (let k = 0; k < 40; k++) { const r = rand(); let x, z; if (r < 0.38) { x = lerp(-5.8, -3.2, rand()); z = lerp(-12.4, -0.4, rand()); } else if (r < 0.76) { x = lerp(3.45, 5.8, rand()); z = lerp(-12.4, -0.4, rand()); } else { x = lerp(-5.8, 5.8, rand()); z = lerp(-0.9, -0.08, rand()); } if (isBorder(x, z) && !blocked(slabs, x, z)) return [x, z]; } return [-5, -5]; };
   const drift = (n, rad, fn) => { let left = n; while (left > 0) { const [cx, cz] = borderPoint(), k = Math.min(left, 4 + Math.floor(rand() * 9)); for (let i = 0; i < k; i++) { const an = rand() * TAU, rr = Math.sqrt(rand()) * rad, x = cx + Math.cos(an) * rr, z = cz + Math.sin(an) * rr; if (!isBorder(x, z) || blocked(slabs, x, z) || nearCam(x, z)) continue; fn(x, z); } left -= k; } };
   const gera = new THREE.InstancedMesh(dotGeo, flowerMat, low ? 380 : 700); let ge = 0;
@@ -397,7 +423,7 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
 
   /* étage 2 : vivaces et graminées */
   const stemGeo = new THREE.CylinderGeometry(0.0035, 0.005, 1, 3, 4, true); stemGeo.translate(0, 0.5, 0);
-  const stemMat = windify(new THREE.MeshStandardMaterial({ roughness: 0.8, color: '#ffffff' }), { lift: 0.1 });
+  const stemMat = windify(new THREE.MeshStandardMaterial({ roughness: 0.8, color: '#ffffff' }), { lift: 0.1, extra: { key: 'stem', uniforms: SZ.stem, decl: 'uniform float uStemH; uniform float uBrown;', vpre: 'transformed.y *= uStemH;', frag: 'diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.45, 0.36, 0.24), uBrown * 0.8);' } });
   const spikeGeo = (() => { const g = new THREE.CylinderGeometry(0.002, 0.0085, 1, 7, 10); g.translate(0, 0.5, 0); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i), k = 1 + 0.22 * Math.sin(y * 46); p.setX(i, p.getX(i) * k); p.setZ(i, p.getZ(i) * k); } g.computeVertexNormals(); return g; })();
   const globeGeo = lumpy(new THREE.IcosahedronGeometry(1, 2), 0.35, 4.5, 2);
   const umbelGeo = (() => { const g = new THREE.SphereGeometry(1, 12, 5, 0, TAU, 0, Math.PI * 0.42); g.scale(1, 0.38, 1); return g; })();
@@ -426,7 +452,7 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
   finish(stems, si); L[2].add(stems);
 
   // Calamagrostis 'Karl Foerster' : touffes droites couleur paille, quelques-unes devant la coupe
-  const calMat = windify(new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.85, color: '#ffffff' }), { blade: true, stiff: 1.8, lift: 0.16 });
+  const calMat = windify(new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.85, color: '#ffffff' }), { blade: true, stiff: 1.8, lift: 0.16, extra: { key: 'cal', uniforms: SZ.cal, decl: TINT_DECL + ' uniform float uH;', vpre: 'transformed.y *= uH; transformed.z *= uH;', frag: TINT_FRAG } });
   const nCl = low ? 22 : 34, perCl = low ? 26 : 40;
   const cal = new THREE.InstancedMesh(bladeGeometry(6), calMat, nCl * perCl); let ci = 0;
   for (let k = 0; k < nCl; k++) {
@@ -523,12 +549,19 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
   const AUT = ['#e2702a', '#d4552a', '#e99a35', '#c8432a', '#efb04a', '#e0802e', '#8d8f3a'];
   const maxLeaves = low ? 4200 : 9600, nl = Math.min(maxLeaves, spots.length * 3);
   const leaves = new THREE.InstancedMesh(leafGeo, leafMat, nl);
+  const leafData = [], leafPal = [[], [], [], []];
   for (let i = 0; i < nl; i++) {
     const sp = spots[Math.floor(rand() * spots.length)];
     pos.set(sp.x + (rand() - 0.5) * 0.28, sp.y + (rand() - 0.5) * 0.22, sp.z + (rand() - 0.5) * 0.28);
     n.set(rand() - 0.5, rand() * 0.8 + 0.2, rand() - 0.5).normalize();
-    setCard(leaves, i, pos, n, rand() * TAU, range(rand, [0.055, 0.085]));
+    const roll = rand() * TAU, sc = range(rand, [0.055, 0.085]);
+    setCard(leaves, i, pos, n, roll, sc);
     leaves.setColorAt(i, _c.set(pick(rand, AUT)).offsetHSL((rand() - 0.5) * 0.02, 0, (rand() - 0.5) * 0.06));
+    leafData.push({ p: pos.clone(), n: n.clone(), roll, sc });
+    leafPal[2].push(_c.r, _c.g, _c.b);
+    _c.set(rand() < 0.14 ? pick(rand, ['#b7cf86', '#a6c277']) : pick(rand, ['#f6efee', '#f1dfe2', '#ecd3d8', '#faf6f4', '#f3e4e6'])); leafPal[0].push(_c.r, _c.g, _c.b);
+    _c.set(pick(rand, ['#4f7a36', '#5c8a3c', '#456d30', '#6a9444', '#3f6430'])).offsetHSL(0, 0, (rand() - 0.5) * 0.05); leafPal[1].push(_c.r, _c.g, _c.b);
+    leafPal[3].push(0.5, 0.36, 0.22);
   }
   finish(leaves, nl); leaves.castShadow = true; tree.add(leaves);
 
@@ -536,6 +569,7 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
   const nFall = low ? 26 : 46, fall = new THREE.InstancedMesh(leafGeometry(0.58, 0.14, true), new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 0.7, color: '#ffffff' }), nFall);
   const falling = Array.from({ length: nFall }, (_, i) => ({ t: rand() * 9, life: lerp(7, 11, rand()), x0: TREE.x + (rand() - 0.5) * 2.6, z0: TREE.z + (rand() - 0.5) * 2.4, y0: lerp(2.2, 4.2, rand()), ph: rand() * TAU, s: range(rand, [0.06, 0.085]) }));
   falling.forEach((f, i) => fall.setColorAt(i, _c.set(pick(rand, AUT))));
+  const fallCfg = { k: 1, size: 1, speed: 1 };
   finish(fall, nFall); L[4].add(fall);
 
   /* l'eau qui s'infiltre (deuxième chapitre) */
@@ -574,6 +608,8 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
   const camPos = new THREE.Vector3(), camTgt = new THREE.Vector3(), right = new THREE.Vector3(), upv = new THREE.Vector3();
 
   /* ---------- état ---------- */
+  let lastSeason = -1;
+  const _c2 = new THREE.Color();
   let progress = 0, shift = { x: 0, y: 0 }, pointer = { x: 0, y: 0, tx: 0, ty: 0 }, mouseLive = 0, growStart = null, size = { w: 1, h: 1 }, shadowDirty = true, lastLift = -1;
   const ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), hit = new THREE.Vector3(), ndc = new THREE.Vector2();
   const clock = new THREE.Clock();
@@ -585,7 +621,17 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }
 
+  const SEASON_CAM = { pos: V([-0.15, 1.6, -0.45]), tgt: V([0.75, 1.05, -8.6]), fov: 52 };
   function applyCamera(p) {
+    if (mode === 'seasons') {
+      pointer.x += (pointer.tx - pointer.x) * 0.05; pointer.y += (pointer.ty - pointer.y) * 0.05;
+      camPos.copy(SEASON_CAM.pos); camTgt.copy(SEASON_CAM.tgt); camera.fov = SEASON_CAM.fov;
+      if (size.w / size.h < 0.9) { camera.fov = 64; camTgt.x += 0.6; }
+      right.subVectors(camTgt, camPos).cross(camera.up).normalize();
+      camPos.addScaledVector(right, pointer.x * 0.18).addScaledVector(camera.up, pointer.y * 0.08);
+      camera.position.copy(camPos); camera.lookAt(camTgt); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
+      return;
+    }
     const seg = Math.min(2, Math.floor(p)); let t = clamp(p - seg); t = t * t * (3 - 2 * t);
     const A = KEYS[seg], B = KEYS[seg + 1], C = CTRL[seg];
     bez(camPos, A.pos, C.pos[0], C.pos[1], B.pos, t); bez(camTgt, A.tgt, C.tgt[0], C.tgt[1], B.tgt, t);
@@ -643,10 +689,11 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
 
   function stepFall(dt) {
     for (let i = 0; i < nFall; i++) {
-      const f = falling[i]; f.t += dt; if (f.t > f.life) { f.t = 0; f.x0 = TREE.x + (Math.random() - 0.5) * 2.6; f.z0 = TREE.z + (Math.random() - 0.5) * 2.4; }
+      const f = falling[i]; f.t += dt * fallCfg.speed; if (f.t > f.life) { f.t = 0; f.x0 = TREE.x + (Math.random() - 0.5) * (fallCfg.size < 0.5 ? 9 : 2.6); f.z0 = TREE.z + (Math.random() - 0.5) * (fallCfg.size < 0.5 ? 8 : 2.4); }
       const k = f.t / f.life, y = f.y0 * (1 - k) + 0.01, drift = f.t * 0.32;
       const x = f.x0 + drift * 0.85 + Math.sin(f.t * 1.3 + f.ph) * 0.18, z = f.z0 + drift * 0.35 + Math.cos(f.t * 1.1 + f.ph) * 0.12;
-      const s = f.s * (k > 0.9 ? 1 - smooth(0.9, 1, k) : 1);
+      const on = i < nFall * fallCfg.k ? 1 : 0;
+      const s = f.s * fallCfg.size * on * (k > 0.9 ? 1 - smooth(0.9, 1, k) : 1);
       setInst(fall, i, x, Math.max(0.01, y), z, Math.sin(f.t * 1.7 + f.ph) * 1.2 + 0.4, f.t * 0.9 + f.ph, Math.cos(f.t * 1.3) * 0.8, s, s, s);
     }
     fall.instanceMatrix.needsUpdate = true;
@@ -694,6 +741,27 @@ export function createGarden({ canvas: cvs, labels = {}, low = false }) {
     renderer, scene, camera,
     resize, render,
     setProgress(p) { progress = clamp(p, 0, 3); },
+    setSeason(v) {
+      v = clamp(v, 0, 3); if (Math.abs(v - lastSeason) < 0.002) return; lastSeason = v;
+      const i0 = Math.min(2, Math.floor(v)), t = v - i0, A = SEASONS[i0], B = SEASONS[i0 + 1], m = (a, b) => a + (b - a) * t;
+      const mc = (a, b, out) => out.set(a).lerp(_c2.set(b), t);
+      SZ.grass.uTint.value.set(m(A.grass[0], B.grass[0]), m(A.grass[1], B.grass[1]), m(A.grass[2], B.grass[2])); SZ.grass.uDesat.value = m(A.gDesat, B.gDesat); SZ.grass.uFrost.value = m(A.gFrost, B.gFrost);
+      SZ.cal.uTint.value.set(m(A.cal[0], B.cal[0]), m(A.cal[1], B.cal[1]), m(A.cal[2], B.cal[2])); SZ.cal.uDesat.value = m(A.cDesat, B.cDesat); SZ.cal.uFrost.value = m(A.cFrost, B.cFrost); SZ.cal.uH.value = m(A.calH, B.calH);
+      SZ.flower.uHead.value = m(A.head, B.head); SZ.flower.uBrown.value = SZ.stem.uBrown.value = m(A.brown, B.brown); SZ.stem.uStemH.value = m(A.stemH, B.stemH);
+      mc(A.lawn, B.lawn, lawnTop.color); mc(A.card, B.card, cardMat.color);
+      mc(A.sun, B.sun, sun.color); sun.intensity = m(A.sunI, B.sunI); mc(A.sky, B.sky, hemi.color); mc(A.grd, B.grd, hemi.groundColor); hemi.intensity = m(A.hemiI, B.hemiI); mc(A.fog, B.fog, scene.fog.color);
+      const ls = m(A.leafS, B.leafS) * (i0 === 0 && t < 0.5 ? 1 : 1), P0 = leafPal[i0], P1 = leafPal[i0 + 1], col = leaves.instanceColor.array;
+      for (let i = 0; i < leafData.length; i++) {
+        const d = leafData[i], j = i * 3, lsI = ls * (0.75 + 0.25 * Math.sin(i * 7.31 + v * 0.5) ** 2);
+        col[j] = m(P0[j], P1[j]); col[j + 1] = m(P0[j + 1], P1[j + 1]); col[j + 2] = m(P0[j + 2], P1[j + 2]);
+        setCard(leaves, i, d.p, d.n, d.roll, d.sc * (Math.abs(ls - 1) < 0.001 ? 1 : lsI));
+      }
+      leaves.instanceMatrix.needsUpdate = true; leaves.instanceColor.needsUpdate = true;
+      fallCfg.k = m(A.fall, B.fall); fallCfg.size = m(A.fallSize, B.fallSize); fallCfg.speed = m(A.fallSpeed, B.fallSpeed);
+      const pal = t < 0.5 ? i0 : i0 + 1, fc = [['#f7f3ee', '#f3e9e7'], ['#5c8a3c'], AUT, ['#ffffff', '#f4f8ff']][pal];
+      falling.forEach((f, i) => fall.setColorAt(i, _c.set(fc[i % fc.length]))); fall.instanceColor.needsUpdate = true;
+      shadowDirty = true;
+    },
     setShift(x, y) { shift = { x, y }; },
     setPointer(nx, ny) { pointer.tx = nx; pointer.ty = ny; mouseLive = Math.min(1.6, mouseLive + 0.35); },
     growNow() { growStart = clock.elapsedTime - 9; },

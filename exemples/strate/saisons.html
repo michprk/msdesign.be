@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Le jardin au fil des saisons, Strate (exemple de site M&amp;S Design)</title>
+<meta name="description" content="Exemple de site fictif imaginé par M&amp;S Design : le même jardin bruxellois au printemps, en été, en automne et en hiver, et ce que Strate y fait à chaque saison.">
+<meta name="theme-color" content="#e4e9e6">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/gloock-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/hanken-grotesk-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="js/garden.js">
+<link rel="stylesheet" href="strate.css">
+</head>
+<body class="page-seasons">
+<a class="skip" href="#annee">Aller au calendrier</a>
+<p class="ex-note">Exemple de site fictif, imaginé par M&amp;S Design. <a href="../../#etudes">Retour au studio</a></p>
+
+<header class="phdr">
+  <div class="container phdr__in">
+    <a class="brand" href="index.html" aria-label="Strate, accueil">
+      <svg class="brand__mark" viewBox="0 0 22 16" aria-hidden="true"><rect class="brand__l1" x="0" y="0" width="22" height="3.6" rx="1.8"/><rect class="brand__l2" x="3" y="6.2" width="16" height="3.6" rx="1.8"/><rect class="brand__l3" x="6" y="12.4" width="10" height="3.6" rx="1.8"/></svg>
+      <span class="brand__word">Strate</span>
+    </a>
+    <nav class="phdr__nav" aria-label="Menu principal">
+      <a href="index.html#sol">Le sol</a>
+      <a href="index.html#jardins">Jardins</a>
+      <a href="index.html#methode">Méthode</a>
+      <a href="saisons.html" aria-current="page">Saisons</a>
+    </nav>
+    <a class="phdr__cta" href="contact.html">Contact</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="sz" aria-labelledby="sz-t">
+    <div class="sz__stage">
+      <canvas class="sz__canvas" aria-hidden="true"></canvas>
+      <img class="sz__still" src="img/strate-saison-automne-1400.webp" width="1400" height="875" alt="" aria-hidden="true">
+      <div class="container sz__ui">
+        <div class="sz__card">
+
+          <h1 class="sz__title" id="sz-t">Le même jardin, quatre fois.</h1>
+          <div class="sz__now" aria-live="polite">
+            <p class="sz__name" data-season-name>Printemps</p>
+            <p class="sz__months" data-season-months>mars à mai</p>
+            <p class="sz__text" data-season-text>L’amélanchier fleurit en blanc avant ses feuilles. Les graminées repartent du pied.</p>
+          </div>
+        </div>
+        <div class="sz__bar">
+          <label class="visually-hidden" for="sz-range">Saison affichée</label>
+          <input class="sz__range" id="sz-range" type="range" min="0" max="300" step="1" value="0" aria-valuetext="Printemps">
+          <div class="sz__ticks">
+            <button type="button" data-season="0">Printemps</button>
+            <button type="button" data-season="1">Été</button>
+            <button type="button" data-season="2">Automne</button>
+            <button type="button" data-season="3">Hiver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sz__step" data-step="0"></div>
+    <div class="sz__step" data-step="1"></div>
+    <div class="sz__step" data-step="2"></div>
+    <div class="sz__step" data-step="3"></div>
+  </section>
+
+  <section class="year" id="annee" aria-labelledby="annee-t">
+    <div class="container">
+      <h2 class="section-title" id="annee-t">Ce qu’on y fait, saison par saison.</h2>
+      <ol class="year__list">
+        <li data-season-card="0">
+          <h3>Printemps</h3><p class="year__months">mars à mai</p>
+          <p>On plante les vivaces, on sème la prairie, on paille les massifs. Les graminées sont coupées début mars, juste avant qu’elles repartent.</p>
+        </li>
+        <li data-season-card="1">
+          <h3>Été</h3><p class="year__months">juin à août</p>
+          <p>La citerne arrose au pied, tôt le matin. Taille légère des haies en juillet, et on repère les zones sèches pour corriger le plan.</p>
+        </li>
+        <li data-season-card="2">
+          <h3>Automne</h3><p class="year__months">septembre à novembre</p>
+          <p>La saison de plantation&nbsp;: arbres et haies à racines nues, bulbes, vivaces. Les feuilles tombées restent au pied des massifs.</p>
+        </li>
+        <li data-season-card="3">
+          <h3>Hiver</h3><p class="year__months">décembre à février</p>
+          <p>On garde les graminées debout pour les oiseaux, on taille les fruitiers et on dessine les plans du printemps.</p>
+        </li>
+      </ol>
+      <p class="year__cta"><a class="vbtn" href="contact.html"><span>Organiser une visite</span><svg viewBox="0 0 18 12" aria-hidden="true"><path d="M1 6h15M11 1l5 5-5 5"/></svg></a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="pfoot">
+  <div class="container">
+    <div class="pfoot__row">
+      <a class="brand" href="index.html" aria-label="Strate, accueil"><svg class="brand__mark" viewBox="0 0 22 16" aria-hidden="true"><rect class="brand__l1" x="0" y="0" width="22" height="3.6" rx="1.8"/><rect class="brand__l2" x="3" y="6.2" width="16" height="3.6" rx="1.8"/><rect class="brand__l3" x="6" y="12.4" width="10" height="3.6" rx="1.8"/></svg><span class="brand__word">Strate</span></a>
+      <p class="pfoot__trade">Dessin, plantation, entretien</p>
+      <nav class="pfoot__nav" aria-label="Pied de page">
+        <a href="index.html#sol">Le sol</a><a href="index.html#jardins">Jardins</a><a href="index.html#methode">Méthode</a><a href="saisons.html" aria-current="page">Saisons</a><a href="contact.html">Contact</a>
+      </nav>
+    </div>
+    <div class="pfoot__legal">
+      <p>Strate est une entreprise fictive. <a href="../../">Site d’exemple conçu par M&amp;S Design, Bruxelles</a>.</p>
+      <p>Le jardin est dessiné en 3D par le code&nbsp;: la même vue, rendue aux quatre saisons.</p>
+      <button class="linkbtn" type="button" data-motion-toggle>Réduire les animations</button>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/vendor/lenis.min.js" defer></script>
+<script type="module" src="js/saisons.js"></script>
+</body>
+</html>

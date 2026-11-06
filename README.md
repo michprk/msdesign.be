@@ -42,7 +42,9 @@ Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de ret
   puis les étages du jardin s’écartent. Ensuite trois plans au trait, les prix en diagramme de semaines,
   le calendrier des saisons (aiguille sur la date du jour). Page `contact.html` d’après la maquette du
   client : un plan se dessine au crayon et ses lignes deviennent celles du formulaire, puis une pousse
-  à l’envoi (photo de cour « courtyard », Serge Melki, CC BY 2.0).
+  à l’envoi (photo de cour « courtyard », Serge Melki, CC BY 2.0). Page `saisons.html` : le même jardin 3D
+  rendu aux quatre saisons (`garden.setSeason(0..3)`), un cran de molette par saison, curseur, clavier,
+  glisser ; en dessous, les gestes de chaque saison.
   Sources et outils dans `_msdesign-src/strate/` : `build.mjs` (assemble `index.html` depuis
   `index.src.html` et dessine les plans et le calendrier), `shoot.mjs` (captures figées `?qa=0..3`,
   `&at=section`, `&plan=uccle`, `&gate=1`, `&menu=1`), `export.mjs` (copie autonome publiée dans le
