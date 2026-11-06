@@ -20,7 +20,7 @@ clients. » en Fraunces fin), deux boutons (« Voir les
 réalisations », « Demander un devis ») et trois atouts (design sur mesure, responsive, prix fixe).
 À droite, trois exemples de sites en fenêtres de navigateur (Verdane, Le Fournil, Atelier Véritas),
 cliquables, des feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite,
-« Nos réalisations » : quatre exemples, un à la fois, 01 / 04, avec flèches et « Voir le site ».
+« Nos réalisations » : cinq exemples (Strate en premier), un à la fois, 01 / 05, avec flèches et « Voir le site ».
 
 **Tarifs** : trois cartes en verre dépoli (Essentiel, Signature « Recommandé », Premium), prix en
 italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-src/flower-lab.html`,
@@ -28,15 +28,23 @@ italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-s
 (`_msdesign-src/contact-photo.html`), le bloc bleu et le formulaire, le plan stylisé de Bruxelles
 (outil `#map`), puis le bandeau « Prêt à démarrer ? » (`#ftrleaves`) et le pied de page.
 
-**Exemples de sites** (`exemples/`) : quatre petits sites autonomes, des commerces fictifs à
+**Exemples de sites** (`exemples/`) : cinq sites autonomes, des commerces fictifs à
 Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de retour :
 
 - `exemples/verdane/` : boutique de plantes (crème, vert sapin, terracotta) ;
 - `exemples/le-fournil/` : boulangerie au levain (serif gras, terracotta) ;
 - `exemples/atelier-veritas/` : bureau d’architecture (serif fin, grandes photos) ;
-- `exemples/studio-bascule/` : studio de graphisme (lettres larges bleues, fond sable).
+- `exemples/studio-bascule/` : studio de graphisme (lettres larges bleues, fond sable) ;
+- `exemples/strate/` : **exemple Premium**, paysagiste. Un jardin bruxellois en 3D temps réel
+  (Three.js, `js/garden.js`, tout généré par le code) dans une arche ; un cran de molette = un chapitre :
+  on descend sous la pelouse (coupe du sol, racines qui poussent), l’eau s’infiltre jusqu’à la nappe,
+  puis les étages du jardin s’écartent. Ensuite trois plans au trait, les prix en diagramme de semaines,
+  le calendrier des saisons (aiguille sur la date du jour) et un formulaire de démonstration.
+  Sources et outils dans `_msdesign-src/strate/` : `build.mjs` (assemble `index.html` depuis
+  `index.src.html` et dessine les plans et le calendrier), `shoot.mjs` (captures figées `?qa=0..3`,
+  `&at=section`, `&plan=uccle`). Polices Gloock, Hanken Grotesk, DM Mono (OFL).
 
-Une seule feuille de style (`exemples/exemples.css`), pas de JavaScript. Les captures des fenêtres
+Les quatre premiers partagent une feuille de style (`exemples/exemples.css`), sans JavaScript. Les captures des fenêtres
 sont faites par `_msdesign-src/cap-ex.sh <slug>` (1440 × 936) puis rognées par l’outil `#exshots`.
 Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoyées par le client
 (outil `#excrops`) : **à remplacer par nos propres photos avant l’ouverture**. La photo du contact

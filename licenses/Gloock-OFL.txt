@@ -1,0 +1,1 @@
+Gloock est distribuée sous licence SIL Open Font License 1.1 (https://openfontlicense.org). Fichier woff2 téléchargé depuis Google Fonts, utilisé par exemples/strate/.
