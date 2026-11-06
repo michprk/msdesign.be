@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Organiser une visite, Strate (exemple de site M&amp;S Design)</title>
+<meta name="description" content="Exemple de site fictif imaginé par M&amp;S Design : la page contact de Strate, paysagiste à Bruxelles. Une heure dans votre jardin, une bêche, quelques questions.">
+<meta name="theme-color" content="#e4e9e6">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/gloock-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/hanken-grotesk-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="strate.css">
+</head>
+<body class="page-contact">
+<a class="skip" href="#visite-form">Aller au formulaire</a>
+<p class="ex-note">Exemple de site fictif, imaginé par M&amp;S Design. <a href="../../#etudes">Retour au studio</a></p>
+
+<header class="phdr">
+  <div class="container phdr__in">
+    <a class="brand" href="index.html" aria-label="Strate, accueil">
+      <svg class="brand__mark" viewBox="0 0 22 16" aria-hidden="true"><rect class="brand__l1" x="0" y="0" width="22" height="3.6" rx="1.8"/><rect class="brand__l2" x="3" y="6.2" width="16" height="3.6" rx="1.8"/><rect class="brand__l3" x="6" y="12.4" width="10" height="3.6" rx="1.8"/></svg>
+      <span class="brand__word">Strate</span>
+    </a>
+    <nav class="phdr__nav" aria-label="Menu principal">
+      <a href="index.html#sol">Le sol</a>
+      <a href="index.html#jardins">Jardins</a>
+      <a href="index.html#methode">Méthode</a>
+      <a href="index.html#saisons">Saisons</a>
+    </nav>
+    <a class="phdr__current" href="contact.html" aria-current="page">Contact</a>
+  </div>
+</header>
+
+<main class="container cpage" id="main">
+  <section class="cpage__form" aria-labelledby="cpage-t">
+    <p class="cpage__label">Contact</p>
+    <h1 class="cpage__title" id="cpage-t" data-words>Organisons une visite.</h1>
+    <p class="cpage__lead">Une heure dans votre jardin, une bêche, quelques questions.</p>
+
+    <form class="vform" id="visite-form" action="#" method="post" novalidate>
+      <svg class="vform__sketch" aria-hidden="true"></svg>
+      <div class="vfield" data-step>
+        <label for="f-nom">Nom <span aria-hidden="true">*</span></label>
+        <input id="f-nom" name="nom" placeholder="Votre nom" autocomplete="name" required>
+        <p class="vfield__err" id="e-nom" hidden>Indiquez votre nom.</p>
+      </div>
+      <div class="vfield" data-step>
+        <label for="f-contact">E-mail ou téléphone <span aria-hidden="true">*</span></label>
+        <input id="f-contact" name="contact" placeholder="E-mail ou téléphone" autocomplete="email" required>
+        <p class="vfield__err" id="e-contact" hidden>Indiquez un e-mail ou un numéro où vous joindre.</p>
+      </div>
+      <div class="vfield vfield--select" data-step>
+        <label for="f-commune">Commune <span aria-hidden="true">*</span></label>
+        <select id="f-commune" name="commune" required>
+          <option value="" selected disabled>Sélectionnez votre commune</option>
+          <option>Anderlecht</option><option>Auderghem</option><option>Berchem-Sainte-Agathe</option><option>Bruxelles</option><option>Etterbeek</option><option>Evere</option><option>Forest</option><option>Ganshoren</option><option>Ixelles</option><option>Jette</option><option>Koekelberg</option><option>Molenbeek-Saint-Jean</option><option>Saint-Gilles</option><option>Saint-Josse-ten-Noode</option><option>Schaerbeek</option><option>Uccle</option><option>Watermael-Boitsfort</option><option>Woluwe-Saint-Lambert</option><option>Woluwe-Saint-Pierre</option><option>Hors de Bruxelles</option>
+        </select>
+        <svg class="vfield__chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5"/></svg>
+        <p class="vfield__err" id="e-commune" hidden>Choisissez une commune.</p>
+      </div>
+      <div class="vfield" data-step>
+        <label for="f-surface">Surface du jardin <span aria-hidden="true">*</span></label>
+        <input id="f-surface" name="surface" placeholder="Ex.&nbsp;: 50&nbsp;m², 100&nbsp;m², etc." inputmode="text" required>
+        <p class="vfield__err" id="e-surface" hidden>Une estimation suffit, par exemple 80&nbsp;m².</p>
+      </div>
+      <div class="vfield vfield--area" data-step>
+        <label for="f-message">Votre jardin en quelques mots <span aria-hidden="true">*</span></label>
+        <textarea id="f-message" name="message" rows="3" placeholder="Décrivez votre projet, vos envies, vos contraintes…" required></textarea>
+        <p class="vfield__err" id="e-message" hidden>Quelques mots suffisent&nbsp;: ombre, pente, envies…</p>
+      </div>
+      <div class="vform__end" data-step>
+        <button class="vbtn" type="submit"><span>Envoyer la demande</span><svg viewBox="0 0 18 12" aria-hidden="true"><path d="M1 6h15M11 1l5 5-5 5"/></svg></button>
+        <div class="vform__done" role="status" tabindex="-1" hidden>
+          <svg class="sprout" viewBox="0 0 60 80" aria-hidden="true"><path class="sprout__soil" d="M4 76h52"/><path class="sprout__stem" d="M30 76C30 60 31 46 30 30"/><path class="sprout__leaf sprout__leaf--l" d="M30 46C20 46 12 40 10 30c10 0 18 5 20 16z"/><path class="sprout__leaf sprout__leaf--r" d="M30 36c2-12 10-19 21-19-1 11-9 18-21 19z"/></svg>
+          <p><strong>Merci, votre demande est partie.</strong> On vous rappelle sous deux jours ouvrables pour fixer la visite.</p>
+          <p class="vform__fiction">Site d’exemple&nbsp;: rien n’a été envoyé. Le même pour votre entreprise&nbsp;? <a href="../../#contact">Écrivez à M&amp;S Design</a>.</p>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <aside class="cpage__side" aria-label="L’atelier">
+    <figure class="cpage__photo">
+      <img src="img/strate-cour-1200.webp" srcset="img/strate-cour-720.webp 720w, img/strate-cour-1200.webp 1200w" sizes="(max-width: 60rem) 92vw, 40vw" width="1200" height="1154" alt="Une cour de ville entre des murs de briques : terrasse en briques et pierre bleue, chaises de bistrot, massifs d’arbustes." fetchpriority="high" decoding="async">
+    </figure>
+    <ul class="cinfo">
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/></svg><p><span>Atelier</span>Uccle, sur rendez-vous</p></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5l5.5-2.5 7 2.5L21 4v13.5L15.5 20l-7-2.5L3 20z"/><path d="M8.5 4v13.5M15.5 6.5V20"/></svg><p><span>Zone</span>Les 19 communes de Bruxelles</p></li>
+      <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><p><span>Horaires</span>Du lundi au vendredi, de 8&nbsp;h à 17&nbsp;h</p></li>
+    </ul>
+  </aside>
+</main>
+
+<footer class="pfoot">
+  <div class="container">
+    <div class="pfoot__row">
+      <a class="brand" href="index.html" aria-label="Strate, accueil"><svg class="brand__mark" viewBox="0 0 22 16" aria-hidden="true"><rect class="brand__l1" x="0" y="0" width="22" height="3.6" rx="1.8"/><rect class="brand__l2" x="3" y="6.2" width="16" height="3.6" rx="1.8"/><rect class="brand__l3" x="6" y="12.4" width="10" height="3.6" rx="1.8"/></svg><span class="brand__word">Strate</span></a>
+      <p class="pfoot__trade">Dessin, plantation, entretien</p>
+      <nav class="pfoot__nav" aria-label="Pied de page">
+        <a href="index.html#sol">Le sol</a><a href="index.html#jardins">Jardins</a><a href="index.html#methode">Méthode</a><a href="index.html#saisons">Saisons</a><a href="contact.html" aria-current="page">Contact</a>
+      </nav>
+    </div>
+    <div class="pfoot__legal">
+      <p>Strate est une entreprise fictive. <a href="../../">Site d’exemple conçu par M&amp;S Design, Bruxelles</a>.</p>
+      <p>Photographie&nbsp;: <a href="https://www.flickr.com/photos/67958110@N00/4708186264" rel="noopener">«&nbsp;courtyard&nbsp;», Serge Melki</a>, licence <a href="https://creativecommons.org/licenses/by/2.0/deed.fr" rel="noopener">CC BY 2.0</a>.</p>
+      <button class="linkbtn" type="button" data-motion-toggle>Réduire les animations</button>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="js/contact.js"></script>
+</body>
+</html>
