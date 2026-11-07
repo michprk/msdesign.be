@@ -1,8 +1,9 @@
 /* ==========================================================================
    M&S Design — la ficelle bleue
    Un tube 3D (Three.js) qui serpente derrière la section « Le studio ».
-   Il se dessine quand la section arrive, ondule doucement, s’écarte de la
-   souris et frémit quand on fait défiler la page. Purement décoratif.
+   Il se dessine quand la section arrive, se rembobine quand on remonte la page,
+   ondule doucement, s’écarte de la souris et frémit au défilement. Purement décoratif.
+   Options : path (tracé sur mesure, en px), color, trigger (hauteur d’écran où il se dessine).
    ========================================================================== */
 import * as THREE from '../vendor/three.module.min.js';
 
@@ -14,8 +15,8 @@ const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) 
    z : profondeur, pour que la boucle passe vraiment devant puis derrière elle-même. */
 const PATH_WIDE = [
   [-0.2, 0.8, 0], [-0.03, 0.5, 0], [0.0, 0.2, 0], [0.1, 0.0, 0], [0.25, -0.1, 0], [0.4, -0.08, 0], [0.49, 0.06, 0],
-  [0.51, 0.3, 0], [0.515, 0.55, 0], [0.56, 0.78, 0], [0.66, 0.9, 0], [0.78, 0.86, 30], [0.86, 0.72, 30], [0.84, 0.6, 20],
-  [0.76, 0.62, -20], [0.75, 0.8, -30], [0.84, 0.97, -20], [0.98, 0.98, 0], [1.08, 1.06, 0], [1.3, 1.2, 0],
+  [0.51, 0.3, 0], [0.515, 0.55, 0], [0.56, 0.8, 0], [0.7, 0.93, 0], [0.86, 0.9, 30], [0.94, 0.78, 30], [0.92, 0.67, 20],
+  [0.84, 0.69, -20], [0.83, 0.87, -30], [0.92, 1.01, -20], [1.02, 1.01, 0], [1.1, 1.08, 0], [1.3, 1.2, 0],
 ];
 /* Écran étroit (texte au-dessus, vidéo en dessous) : la boucle se pose à droite du bouton,
    puis la ficelle file derrière la vidéo et ressort en bas à gauche. Tracé calé sur les éléments. */
@@ -33,7 +34,21 @@ function stackedPath(rel, W) {
   ];
 }
 
-export function createRibbon(host, { reduced = false, grid = null, lenis = () => null } = {}) {
+/* Le tracé de la section « M&S Studio » de l’accueil */
+function studioPath({ rel, W, gx, gy, gw, gh }) {
+  const b = rel('.btn--dot'), c = rel('.reel__link');
+  const stacked = b && c && c.y > b.y + b.h;                                  // texte au-dessus de la vidéo
+  const S = stacked ? stackedPath(rel, W) : null;
+  const radius = stacked ? clamp(W * 0.018, 6.5, 9) : clamp(W * 0.0082, 6.5, 12.5);
+  if (S) return { radius, pts: S };
+  return { radius, pts: PATH_WIDE.map(([u, v, z], i) => {
+    let x = gx + u * gw;
+    if (i === 0 || i === PATH_WIDE.length - 1) x = u < 0 ? -radius * 6 : W + radius * 6;      // les bouts sortent de l’écran
+    return [x, gy + v * gh, z];
+  }) };
+}
+
+export function createRibbon(host, { reduced = false, grid = null, lenis = () => null, path = studioPath, color = 0x1d5cf5, trigger = 0.62, light = null } = {}) {
   const canvas = document.createElement('canvas');
   canvas.className = 'ribbon__gl';
   canvas.setAttribute('aria-hidden', 'true');
@@ -49,14 +64,14 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(0, 1, 0, -1, -1000, 1000);
   camera.position.z = 500;
-  scene.add(new THREE.HemisphereLight(0xf2f5ff, 0x1736b8, 1.25));
+  scene.add(new THREE.HemisphereLight(0xf2f5ff, light || 0x1736b8, 1.25));
   const key = new THREE.DirectionalLight(0xffffff, 2.2);
   key.position.set(-0.45, 0.75, 1);
   scene.add(key);
   const rim = new THREE.DirectionalLight(0x9fb6ff, 0.9);
   rim.position.set(0.6, -0.8, 0.4);
   scene.add(rim);
-  const mat = new THREE.MeshStandardMaterial({ color: 0x1d5cf5, roughness: 0.36, metalness: 0 });
+  const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.36, metalness: 0 });
   const mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat);
   const cap = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), mat);
   scene.add(mesh, cap);
@@ -65,7 +80,7 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
   const rest = Array.from({ length: N }, () => new THREE.Vector3());
   const off = Array.from({ length: N }, () => ({ x: 0, y: 0, vx: 0, vy: 0 }));
   const pts = Array.from({ length: N }, () => new THREE.Vector3());
-  let W = 1, H = 1, radius = 10, draw = reduced ? 1 : 0, drawStart = -1, visible = false, raf = 0, last = 0, time = 0;
+  let W = 1, H = 1, radius = 10, draw = reduced ? 1 : 0, prog = draw, visible = false, raf = 0, last = 0, time = 0;
   const pointer = { x: -1e4, y: -1e4, active: false };
   let lastScroll = window.scrollY, scrollKick = 0;
 
@@ -77,17 +92,9 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
     const g = (grid || host).getBoundingClientRect();
     const gx = g.left - r.left, gy = g.top - r.top, gw = g.width, gh = g.height;
     const rel = (sel) => { const el = host.querySelector(sel); if (!el) return null; const q = el.getBoundingClientRect(); return { x: q.left - r.left, y: q.top - r.top, w: q.width, h: q.height }; };
-    const b = rel('.btn--dot'), c = rel('.reel__link');
-    const stacked = b && c && c.y > b.y + b.h;                                // texte au-dessus de la vidéo
-    const S = stacked ? stackedPath(rel, W) : null;
-    radius = stacked ? clamp(W * 0.018, 6.5, 9) : clamp(W * 0.0082, 6.5, 12.5);
-    const ctrl = S
-      ? S.map(([x, y, z]) => new THREE.Vector3(x, -y, z))
-      : PATH_WIDE.map(([u, v, z], i) => {
-        let x = gx + u * gw;
-        if (i === 0 || i === PATH_WIDE.length - 1) x = u < 0 ? -radius * 6 : W + radius * 6;   // les bouts sortent de l’écran
-        return new THREE.Vector3(x, -(gy + v * gh), z);
-      });
+    const P = path({ rel, W, H, gx, gy, gw, gh });
+    radius = P.radius;
+    const ctrl = P.pts.map(([x, y, z]) => new THREE.Vector3(x, -y, z));
     const spline = new THREE.CatmullRomCurve3(ctrl, false, 'centripetal');
     for (let i = 0; i < N; i++) rest[i].copy(spline.getPointAt(i / (N - 1)));
   }
@@ -134,7 +141,12 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
   function frame(now) {
     raf = 0;
     const dt = Math.min(0.05, last ? (now - last) / 1000 : 1 / 60); last = now;
-    if (drawStart >= 0 && draw < 1) draw = easeInOut(clamp((now - drawStart) / 2400, 0, 1));
+    // se dessine quand la section est montée assez haut, se rembobine quand on redescend la page vers le haut
+    if (!reduced) {
+      const target = host.getBoundingClientRect().top < window.innerHeight * trigger ? 1 : 0;
+      prog = target > prog ? Math.min(1, prog + dt / 2.4) : Math.max(0, prog - dt / 1.6);
+      draw = easeInOut(prog);
+    }
     step(dt); build(); renderer.render(scene, camera);
     if (visible && !reduced) raf = requestAnimationFrame(frame);
   }
@@ -148,7 +160,7 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       visible = e.isIntersecting;
-      if (visible && drawStart < 0 && !reduced && e.intersectionRatio > 0.2) drawStart = performance.now();
+      if (!visible && !reduced && e.boundingClientRect.top > 0) { prog = 0; draw = 0; }        // repartie sous l’écran : on rembobine
       if (visible) kick();
     });
   }, { threshold: [0, 0.2, 0.4] });
@@ -159,5 +171,5 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
     pointer.active = e.pointerType === 'mouse' && pointer.y > -200 && pointer.y < r.height + 200;
   }, { passive: true });
   document.addEventListener('pointerleave', () => { pointer.active = false; });
-  return { renderer, layout, setDraw(v) { draw = v; drawStart = -1; still(); }, stats: () => ({ draw, maxOff: Math.max(...off.map((o) => Math.hypot(o.x, o.y))).toFixed(1), visible }) };
+  return { renderer, layout, setDraw(v) { draw = prog = v; still(); }, stats: () => ({ draw, maxOff: Math.max(...off.map((o) => Math.hypot(o.x, o.y))).toFixed(1), visible }) };
 }

@@ -5,46 +5,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="robots" content="noindex, nofollow">
-<title>Verdane, boutique de plantes · exemple de site M&amp;S Design</title>
-<meta name="description" content="Exemple de site fictif imaginé par M&amp;S Design : Verdane, une boutique de plantes de quartier à Ixelles.">
+<title>Verdane, plantes d’intérieur · exemple de site M&amp;S Design</title>
+<meta name="description" content="Exemple de site fictif imaginé par M&amp;S Design : Verdane, une boutique de plantes d’intérieur à Ixelles, avec son catalogue en ligne.">
 <link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../exemples.css">
 </head>
-<body class="ex-verdane">
+<body class="ex-verdane vb">
 <p class="ex-note">Exemple de site fictif, imaginé par M&amp;S Design. <a href="/msdesign.be/#etudes">← Retour au studio</a></p>
-<div class="ex-wrap">
-  <header class="vd-hdr">
-    <a class="vd-logo" href="#">Verdane</a>
-    <nav class="vd-nav" aria-label="Menu"><a href="#plantes">Plantes</a><a href="#plantes">Entretien</a><a href="#visite">Ateliers</a><a href="#visite">Visite</a></nav>
-  </header>
-  <main>
-    <section class="vd-hero">
-      <div>
-        <p class="vd-eyebrow">Boutique de plantes · Ixelles</p>
-        <h1 class="vd-title">Des plantes pour des pièces plus calmes</h1>
-        <p class="vd-lead">Une boutique de quartier&nbsp;: des plantes faciles à vivre, des pots tournés à la main et des conseils d’entretien simples.</p>
-        <p class="vd-actions"><a class="vd-btn" href="#plantes">Voir les nouveautés</a><a class="vd-link" href="#visite">Préparer une visite</a></p>
+<header class="vb-hdr">
+  <div class="vb-wrap vb-hdr__in">
+    <a class="vb-brand" href="#top">
+      <svg class="vb-leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5.5-13 14-14-1 8.5-6 14-14 14zm0 0 7-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span><b>Verdane</b><small>Plantes d’intérieur · Ixelles</small></span>
+    </a>
+    <nav class="vb-nav" aria-label="Menu">
+      <a class="is-on" href="#catalogue">Catalogue</a>
+      <a href="#visite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Favoris</a>
+    </nav>
+    <a class="vb-btn vb-btn--dark vb-btn--sm" href="#visite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7l5 5-5 5M15 12H4M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Se connecter</a>
+  </div>
+</header>
+<main id="top">
+  <section class="vb-hero">
+    <img class="vb-hero__plant" src="../img/verdane-ficus.webp" width="1032" height="734" alt="" aria-hidden="true">
+    <div class="vb-wrap vb-hero__in">
+      <p class="vb-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.5 2.5M15.2 15.2l2.5 2.5M6.3 17.7l2.5-2.5M15.2 8.8l2.5-2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Plantes choisies, faciles à vivre</p>
+      <h1 class="vb-title">Des plantes d’intérieur pour des pièces calmes et modernes.</h1>
+      <p class="vb-lead">Des variétés choisies une à une, des conseils d’entretien clairs et une liste d’envies qui se souvient de vos coups de cœur.</p>
+      <div class="vb-tools">
+        <label class="vb-search"><span class="vb-sr">Chercher une plante</span><input type="search" placeholder="Chercher par nom, taille, lumière…" autocomplete="off"></label>
+        <a class="vb-btn" href="#visite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5.5-13 14-14-1 8.5-6 14-14 14zm0 0 7-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Conseils d’entretien</a>
+        <a class="vb-btn vb-btn--dark" href="#catalogue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Mes favoris</a>
       </div>
-      <figure class="vd-photo"><img src="../img/verdane-boutique.webp" width="762" height="788" alt="L’intérieur lumineux de la boutique : des plantes vertes sur des étagères et des tables en bois."></figure>
-    </section>
-    <section class="vd-cols" id="plantes">
-      <div><h2>Plantes faciles</h2><p>Monstera, pothos, fougères&nbsp;: des plantes choisies pour les appartements bruxellois, même peu lumineux.</p></div>
-      <div><h2>Pots d’artisans</h2><p>Des pots en grès et en terre cuite, tournés par des céramistes de la région.</p></div>
-      <div><h2>Conseils d’entretien</h2><p>Arrosage, lumière, rempotage&nbsp;: une fiche simple accompagne chaque plante.</p></div>
-    </section>
-    <section class="vd-visit" id="visite">
+    </div>
+  </section>
+
+  <section class="vb-wrap vb-cat" id="catalogue" aria-labelledby="cat-title">
+    <h2 class="vb-h2" id="cat-title">Catalogue</h2>
+    <p class="vb-count">6 plantes</p>
+    <ul class="vb-grid">
+      <li class="vb-card">
+        <div class="vb-card__img"><img src="../img/verdane-pothos.webp" width="669" height="326" alt="Feuilles de pothos panachées de jaune." loading="lazy"><p class="vb-tags"><span>Lumière moyenne</span></p></div>
+        <div class="vb-card__body"><h3>Pothos doré <span>26&nbsp;€</span></h3><p class="vb-size">Petit</p><p>Une liane panachée et vigoureuse. Parfaite pour les étagères, les suspensions et les débuts.</p><p class="vb-pills"><span>Retombante</span><span>Pousse vite</span><span>Débutant</span></p></div>
+      </li>
+      <li class="vb-card">
+        <div class="vb-card__img"><img src="../img/verdane-monstera.webp" width="669" height="326" alt="Une grande feuille découpée de monstera." loading="lazy"><p class="vb-tags"><span>Lumière vive</span></p></div>
+        <div class="vb-card__body"><h3>Monstera deliciosa <span>68&nbsp;€</span></h3><p class="vb-size">Grande</p><p>De grandes feuilles découpées, une croissance rapide et beaucoup d’indulgence. Un classique pour la lumière vive et indirecte.</p><p class="vb-pills"><span>Plante phare</span><span>Facile</span><span>Tropicale</span></p></div>
+      </li>
+      <li class="vb-card">
+        <div class="vb-card__img"><img src="../img/verdane-palmier.webp" width="669" height="326" alt="Des palmes fines et légères dans la pénombre." loading="lazy"><p class="vb-tags"><span>Lumière moyenne</span><span>Sans danger pour les animaux</span></p></div>
+        <div class="vb-card__body"><h3>Palmier de salon <span>46&nbsp;€</span></h3><p class="vb-size">Moyen</p><p>Des palmes légères qui apaisent un coin de salon ou un bureau. Se plaît à la lumière moyenne, même faible.</p><p class="vb-pills"><span>Animaux OK</span><span>Palmier</span><span>Feuillage doux</span></p></div>
+      </li>
+      <li class="vb-card">
+        <div class="vb-card__img"><img src="../img/verdane-calathea.webp" width="669" height="326" alt="Plantes vertes et pot en terre cuite sur une étagère en bois." loading="lazy"><p class="vb-tags"><span>Lumière douce</span></p></div>
+        <div class="vb-card__body"><h3>Philodendron <span>39&nbsp;€</span></h3><p class="vb-size">Moyen</p><p>Un feuillage dense et brillant qui pousse sans bruit. Idéal pour une pièce lumineuse sans soleil direct.</p><p class="vb-pills"><span>Facile</span><span>Feuillage dense</span><span>Pot en terre cuite</span></p></div>
+      </li>
+      <li class="vb-card">
+        <div class="vb-card__img"><img src="../img/verdane-pots.webp" width="669" height="326" alt="Des pots en grès crème et vert sur une table en bois." loading="lazy"><p class="vb-tags"><span>Fait main</span></p></div>
+        <div class="vb-card__body"><h3>Pots en grès <span>24&nbsp;€</span></h3><p class="vb-size">Trois tailles</p><p>Tournés par des céramistes de la région, avec trou de drainage et soucoupe assortie.</p><p class="vb-pills"><span>Artisanal</span><span>Drainage</span><span>Belgique</span></p></div>
+      </li>
+      <li class="vb-card">
+        <div class="vb-card__img"><img src="../img/verdane-adansonii.webp" width="669" height="326" alt="Une monstera aux feuilles percées dans un pot blanc." loading="lazy"><p class="vb-tags"><span>Lumière vive</span></p></div>
+        <div class="vb-card__body"><h3>Monstera adansonii <span>34&nbsp;€</span></h3><p class="vb-size">Moyenne</p><p>Des feuilles percées et un port retombant&nbsp;: à suspendre près d’une fenêtre, à l’abri du soleil de midi.</p><p class="vb-pills"><span>Retombante</span><span>Facile</span><span>Graphique</span></p></div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="vb-wrap" id="visite">
+    <div class="vd-visit">
       <div>
         <h2>Atelier rempotage, le samedi matin</h2>
-        <p>Venez avec votre plante, on s’occupe du terreau. Six places par atelier, café offert.</p>
+        <p>Venez avec votre plante, on s’occupe du terreau. Six places par atelier, café offert. Rue du Bailli, Ixelles.</p>
       </div>
       <ul class="vd-hours">
         <li><span>Mardi – vendredi</span><span>11 h – 19 h</span></li>
         <li><span>Samedi</span><span>10 h – 18 h</span></li>
         <li><span>Dimanche, lundi</span><span>Fermé</span></li>
       </ul>
-    </section>
-  </main>
-  <footer class="ex-foot">Verdane est un commerce fictif. Site d’exemple conçu par M&amp;S Design, Bruxelles.</footer>
-</div>
+    </div>
+  </section>
+</main>
+<footer class="vb-wrap ex-foot">Verdane est un commerce fictif. Site d’exemple conçu par M&amp;S Design, Bruxelles.</footer>
 </body>
 </html>

@@ -399,6 +399,21 @@
     v.addEventListener('ended', close);
   });
 
+  /* ---------- L’équipe : les cartes à jouer en 3D (chargées à l’approche) ---------- */
+  safe('deck', () => {
+    const deck = $('[data-deck]'), stage = $('[data-deck-stage]');
+    if (!deck || !stage || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      import('/msdesign.be/assets/js/cards3d.js?v=' + VER)
+        .then((m) => m.createDeck(stage, { cards: $$('.pcard', deck), reduced }))
+        .then((api) => { if (api) { deck.classList.add('is-3d'); window.__msDeck = api; } })
+        .catch((err) => console.warn('[ms] deck', err));
+    }, { rootMargin: '600px 0px' });
+    io.observe(deck);
+  });
+
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
   safe('ribbon', () => {
     const host = $('[data-ribbon]');

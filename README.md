@@ -22,7 +22,7 @@ réalisations », « Demander un devis ») et trois atouts (design sur mesure, r
 cliquables, des feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite,
 « Nos réalisations » : cinq exemples (Strate en premier), un à la fois, 01 / 05, avec flèches et « Voir le site ».
 
-**Le studio** (`#le-studio`, juste après le héros, esprit « studio de mouvement ») : un extrait muet du **film M&S**
+**M&S Studio** (`#le-studio`, juste après le héros, esprit « studio de mouvement ») : un extrait muet du **film M&S**
 (`assets/video/reel-studio.mp4`, en boucle, chargé seulement à l’écran) ; un clic ouvre le film complet avec le son
 (`assets/video/msdesign-film.mp4`, 34 s, 1080p) dans un lecteur plein écran. Le film, façon publicité Apple : un MacBook
 argent sur un bureau laqué noir, on appuie sur M puis S, le logo s’illumine en bleu électrique, BAM, nos sites jaillissent
@@ -32,8 +32,17 @@ le son est synthétisé : `_msdesign-src/film2/film2.html?render=1&w=3840&h=2160
 `_msdesign-src/video/out/msdesign-film-4k.mp4`, planche d’essai `?sheet=…`). À côté, le texte dont les mots
 montent un à un, le bouton pastille « Notre méthode » et, derrière, **une ficelle bleue en vraie 3D**
 (`assets/js/ribbon.js`, Three.js chargé seulement à l’approche) : elle se dessine, ondule, s’écarte de la souris et
-frémit au défilement ; sur téléphone, sa boucle se pose à droite du bouton. Partout : le texte des boutons et du
+frémit au défilement, et se rembobine quand on remonte la page ; sur téléphone, sa boucle se pose à droite du bouton. Lien « Rencontrer l’équipe ». Partout : le texte des boutons et du
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
+
+**La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
+diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
+
+**L’équipe** (`equipe.html`) : Michal (cofondateur, développeur), Mamoudou (cofondateur, directeur artistique) et
+Adam (designer 3D) en cartes à jouer 3D (`assets/js/cards3d.js`, lues dans la liste `.pcard` de la page, qui reste pour
+les lecteurs d’écran et sans WebGL) : un dos de carte M&S, les cartes se distribuent quand la section arrive et se
+ramassent quand on remonte ; survol = la carte se soulève, clic = elle se retourne ; une ficelle crème fait une orbite
+autour du jeu. Lien dans le menu (« Équipe ») et le pied de page.
 
 **Tarifs** : pas de grille affichée d’entrée (« Un prix sur mesure, fixé avant de commencer »). Une scène 3D
 (`assets/js/devis3d.js`, Three.js) se lance d’elle-même quand on arrive : un site se construit en cinq étapes, synchronisées
@@ -48,7 +57,8 @@ page, repliés derrière « Voir nos repères de prix » ; un lien vers `#a-la-c
 **Exemples de sites** (`exemples/`) : cinq sites autonomes, des commerces fictifs à
 Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de retour :
 
-- `exemples/verdane/` : boutique de plantes (crème, vert sapin, terracotta) ;
+- `exemples/verdane/` : plantes d’intérieur, version catalogue (d’après la capture « Botanica » du client) : héros avec
+  la photo du caoutchouc (texte effacé : `_msdesign-src/verdane-crops.html`), recherche, favoris, six fiches plantes ;
 - `exemples/le-fournil/` : boulangerie au levain (serif gras, terracotta) ;
 - `exemples/atelier-veritas/` : bureau d’architecture (serif fin, grandes photos) ;
 - `exemples/studio-bascule/` : studio de graphisme (lettres larges bleues, fond sable) ;
@@ -121,6 +131,8 @@ assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
 assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
 assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
+assets/js/cards3d.js      les cartes à jouer 3D de la page Équipe
+equipe.html               l’équipe (Michal, Mamoudou, Adam)
 assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh
