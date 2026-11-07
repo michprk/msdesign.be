@@ -399,19 +399,29 @@
     v.addEventListener('ended', close);
   });
 
-  /* ---------- L’équipe : les cartes à jouer en 3D (chargées à l’approche) ---------- */
-  safe('deck', () => {
-    const deck = $('[data-deck]'), stage = $('[data-deck-stage]');
-    if (!deck || !stage || !('IntersectionObserver' in window)) return;
+  /* ---------- L’équipe : la fleur bleue en 3D, un pétale par personne (chargée à l’approche) ---------- */
+  safe('bloom', () => {
+    const root = $('[data-bloom]'), stage = $('[data-bloom-stage]');
+    if (!root || !stage || !('IntersectionObserver' in window)) return;
+    const cards = $$('[data-person]', root);
+    const light = (i) => cards.forEach((c, k) => c.classList.toggle('is-on', k === i));
     const io = new IntersectionObserver((entries) => {
       if (!entries.some((e) => e.isIntersecting)) return;
       io.disconnect();
-      import('/msdesign.be/assets/js/cards3d.js?v=' + VER)
-        .then((m) => m.createDeck(stage, { cards: $$('.pcard', deck), reduced }))
-        .then((api) => { if (api) { deck.classList.add('is-3d'); window.__msDeck = api; } })
-        .catch((err) => console.warn('[ms] deck', err));
+      const people = cards.map((c) => ({ name: $('.person__name', c).textContent.trim(), suit: $('.person__suit', c).textContent.trim().toUpperCase() }));
+      import('/msdesign.be/assets/js/flower3d.js?v=' + VER)
+        .then((m) => m.createBloom(stage, { people, reduced, onHover: light }))
+        .then((api) => {
+          if (!api) return;
+          root.classList.add('is-3d'); window.__msBloom = api;
+          cards.forEach((c, i) => {                                      // survol d’une fiche : son pétale se soulève
+            c.addEventListener('pointerenter', () => { api.setFocus(i); light(i); });
+            c.addEventListener('pointerleave', () => { api.setFocus(-1); light(-1); });
+          });
+        })
+        .catch((err) => console.warn('[ms] bloom', err));
     }, { rootMargin: '600px 0px' });
-    io.observe(deck);
+    io.observe(root);
   });
 
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */

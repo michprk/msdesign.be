@@ -39,10 +39,11 @@ menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
 
 **L’équipe** (`equipe.html`) : Michal (cofondateur, développeur), Mamoudou (cofondateur, directeur artistique) et
-Adam (designer 3D) en cartes à jouer 3D (`assets/js/cards3d.js`, lues dans la liste `.pcard` de la page, qui reste pour
-les lecteurs d’écran et sans WebGL) : un dos de carte M&S, les cartes se distribuent quand la section arrive et se
-ramassent quand on remonte ; survol = la carte se soulève, clic = elle se retourne ; une ficelle crème fait une orbite
-autour du jeu. Lien dans le menu (« Équipe ») et le pied de page.
+Adam (designer 3D) sur une grande fleur bleue en 3D à trois pétales (`assets/js/flower3d.js`, même famille que la
+pervenche des tarifs) : un pétale par personne, le prénom et le métier imprimés droit sur le pétale. La fleur s’ouvre
+quand la section arrive et se referme quand on remonte ; survol d’un pétale = il se soulève et la fiche correspondante
+s’allume dessous (et inversement) ; la ficelle bleue fait une orbite fermée autour. Les fiches (`[data-person]`) restent
+lisibles sans WebGL. Lien dans le menu (« Équipe ») et le pied de page.
 
 **Tarifs** : pas de grille affichée d’entrée (« Un prix sur mesure, fixé avant de commencer »). Une scène 3D
 (`assets/js/devis3d.js`, Three.js) se lance d’elle-même quand on arrive : un site se construit en cinq étapes, synchronisées
@@ -131,7 +132,7 @@ assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
 assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
 assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
-assets/js/cards3d.js      les cartes à jouer 3D de la page Équipe
+assets/js/flower3d.js     la fleur bleue 3D de la page Équipe
 equipe.html               l’équipe (Michal, Mamoudou, Adam)
 assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker

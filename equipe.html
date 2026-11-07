@@ -29,10 +29,10 @@
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=b7691a017f">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=9f44ee3cdb">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=b7691a017f" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=b7691a017f" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=9f44ee3cdb" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=9f44ee3cdb" defer></script>
 <!--/include-->
 <script type="application/ld+json">
 {
@@ -95,35 +95,33 @@
     </header>
   </div>
 
-  <!-- Les cartes de l’équipe : en 3D (assets/js/cards3d.js), lues dans cette liste qui reste là pour les lecteurs d’écran et sans WebGL -->
-  <section class="deck" aria-labelledby="deck-title" data-deck>
-    <h2 class="sr-only" id="deck-title">Qui fait quoi</h2>
-    <div class="deck__stage" data-deck-stage></div>
-    <ul class="deck__cards">
-      <li class="pcard">
-        <p class="pcard__corner" aria-hidden="true"><b>M</b><span>&amp;</span></p>
-        <p class="pcard__suit">Développement</p>
-        <h3 class="pcard__name">Michal</h3>
-        <p class="pcard__role">Cofondateur · Développeur web</p>
-        <ul class="pcard__list"><li>Sites codés sur mesure</li><li>Animations et interactions</li><li>3D temps réel (WebGL)</li><li>Vitesse et référencement</li><li>Formulaires et automatisations</li></ul>
+  <!-- L’équipe en fleur : une fleur bleue en 3D (assets/js/flower3d.js), un pétale par personne ; les fiches dessous servent aussi sans WebGL -->
+  <section class="bloom" aria-labelledby="bloom-title" data-bloom>
+    <h2 class="sr-only" id="bloom-title">Qui fait quoi</h2>
+    <div class="bloom__stage" data-bloom-stage aria-hidden="true"></div>
+    <p class="bloom__hint" aria-hidden="true">Survolez un pétale</p>
+    <ul class="bloom__people">
+      <li class="person" data-person="0">
+        <p class="person__suit">Développement</p>
+        <h3 class="person__name">Michal</h3>
+        <p class="person__role">Cofondateur · Développeur web</p>
+        <ul class="person__list"><li>Sites codés sur mesure</li><li>Animations et interactions</li><li>3D temps réel (WebGL)</li><li>Vitesse et référencement</li><li>Formulaires et automatisations</li></ul>
       </li>
-      <li class="pcard">
-        <p class="pcard__corner" aria-hidden="true"><b>M</b><span>&amp;</span></p>
-        <p class="pcard__suit">Direction artistique</p>
-        <h3 class="pcard__name">Mamoudou</h3>
-        <p class="pcard__role">Cofondateur · Directeur artistique</p>
-        <ul class="pcard__list"><li>Direction artistique</li><li>Identité visuelle et logos</li><li>Design d’interfaces</li><li>Typographie et mise en page</li><li>Photos sur place</li></ul>
+      <li class="person" data-person="1">
+        <p class="person__suit">Direction artistique</p>
+        <h3 class="person__name">Mamoudou</h3>
+        <p class="person__role">Cofondateur · Directeur artistique</p>
+        <ul class="person__list"><li>Direction artistique</li><li>Identité visuelle et logos</li><li>Design d’interfaces</li><li>Typographie et mise en page</li><li>Photos sur place</li></ul>
       </li>
-      <li class="pcard">
-        <p class="pcard__corner" aria-hidden="true"><b>A</b><span>&amp;</span></p>
-        <p class="pcard__suit">Design 3D</p>
-        <h3 class="pcard__name">Adam</h3>
-        <p class="pcard__role">Designer 3D</p>
-        <ul class="pcard__list"><li>Modélisation 3D</li><li>Matières et lumières</li><li>Animation 3D</li><li>Scènes pour le web</li><li>Produits et objets</li></ul>
+      <li class="person" data-person="2">
+        <p class="person__suit">Design 3D</p>
+        <h3 class="person__name">Adam</h3>
+        <p class="person__role">Designer 3D</p>
+        <ul class="person__list"><li>Modélisation 3D</li><li>Matières et lumières</li><li>Animation 3D</li><li>Scènes pour le web</li><li>Produits et objets</li></ul>
       </li>
     </ul>
-    <p class="deck__hint" aria-hidden="true">Survolez une carte · cliquez pour la retourner</p>
   </section>
+
 
   <div class="wrap">
     <section class="team-how" aria-labelledby="how-title">
