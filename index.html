@@ -32,10 +32,10 @@
 <link rel="preload" href="/msdesign.be/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=73ca43b918">
+<link rel="stylesheet" href="/msdesign.be/assets/css/main.css?v=7bb785689e">
 <script>(function(){var d=document.documentElement,l=location,R=false,I=true,m,s;if(l.protocol==='http:'&&!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(l.hostname)){l.replace('https:'+l.href.slice(5));return}d.classList.add('js');try{m=(l.search.match(/[?&]motion=(full|reduce)/)||[])[1];if(m)localStorage.setItem('ms_motion',m);R=localStorage.getItem('ms_motion')==='reduce'}catch(e){}if(R)d.classList.add('reduced');s=(l.search.match(/[?&]intro=(0|1)/)||[])[1];try{if(s!=='1'&&sessionStorage.getItem('ms_intro')==='seen'&&document.referrer.indexOf(l.origin)===0)I=false}catch(e){}if(s==='0'||R||(!s&&l.hash.length>1))I=false;if(d.getAttribute('data-page')==='index'&&I)d.classList.add('intro-on');setTimeout(function(){if(!d.classList.contains('js-ready'))d.classList.remove('js')},6000)})();</script>
-<script src="/msdesign.be/assets/vendor/lenis.min.js?v=73ca43b918" defer></script>
-<script src="/msdesign.be/assets/js/app.js?v=73ca43b918" defer></script>
+<script src="/msdesign.be/assets/vendor/lenis.min.js?v=7bb785689e" defer></script>
+<script src="/msdesign.be/assets/js/app.js?v=7bb785689e" defer></script>
 <!--/include-->
 <script type="application/ld+json">
 {
@@ -293,20 +293,47 @@
 
 <!-- Tarifs : trois formules, une grande pervenche bleue en fond -->
 <section class="sec tarifs" id="tarifs" aria-labelledby="tarifs-title">
-  <img class="tarifs__flower" src="/msdesign.be/assets/img/fleur-bleue-900.webp" srcset="/msdesign.be/assets/img/fleur-bleue-900.webp 900w, /msdesign.be/assets/img/fleur-bleue-1800.webp 1800w" sizes="(max-width: 900px) 150vw, 82vw" width="1800" height="1800" alt="" aria-hidden="true" fetchpriority="low" decoding="async">
   <div class="wrap">
-    <div class="tarifs__head">
-      <div>
+    <!-- Un prix sur mesure : un site se construit en 3D, étape par étape, jusqu’au devis tamponné -->
+    <div class="devis" data-devis>
+      <div class="devis__head">
         <p class="label" data-reveal>Tarifs</p>
-        <h2 class="h2" id="tarifs-title" data-reveal>Des prix fixes, <em>annoncés d’avance.</em></h2>
-        <p class="lead" data-reveal>Le devis est gratuit. Acompte de 50&nbsp;% à la commande, solde à la mise en ligne.</p>
+        <h2 class="h2" id="tarifs-title" data-reveal>Un prix sur mesure, <em>fixé avant de commencer.</em></h2>
+        <p class="lead" data-reveal>Chaque site est dessiné pour une activité&nbsp;: il n’y a donc pas de grille toute faite. Votre prix dépend de ce dont vous avez vraiment besoin. On en parle, il est écrit noir sur blanc dans le devis, et il ne bouge plus.</p>
       </div>
-      <p class="tarifs__note" data-reveal>Tous les prix HTVA · EUR</p>
+      <div class="devis__stage" data-devis-stage data-reveal>
+        <img class="devis__poster" src="/msdesign.be/assets/img/devis3d-poster.webp" width="900" height="760" alt="Illustration en 3D : un site se construit étage par étage, la ficelle bleue s’enroule autour, puis un devis reçoit le tampon « Prix fixe »." loading="lazy" decoding="async">
+        <p class="devis__caption" aria-hidden="true" data-devis-caption>1 / 5 · Votre métier</p>
+        <button class="devis__replay" type="button" data-devis-replay hidden><svg aria-hidden="true"><use href="#i-replay"/></svg>Rejouer</button>
+      </div>
+      <div class="devis__body">
+        <ol class="devis__steps" data-devis-steps data-reveal>
+          <li aria-current="step"><button type="button" data-step="0"><b>Votre métier</b><span>Un appel de 30&nbsp;minutes, gratuit&nbsp;: vos clients, vos concurrents, ce que vous voulez changer.</span></button></li>
+          <li><button type="button" data-step="1"><b>Les pages</b><span>Une seule page pour démarrer, ou un site complet avec vos services, vos réalisations et un formulaire.</span></button></li>
+          <li><button type="button" data-step="2"><b>Le design</b><span>Vos couleurs, des animations, de la 3D, des photos faites sur place&nbsp;: selon l’image que vous voulez donner.</span></button></li>
+          <li><button type="button" data-step="3"><b>Les fonctions</b><span>Réservation, boutique, plusieurs langues, tâches automatisées&nbsp;: seulement ce qui vous sert.</span></button></li>
+          <li><button type="button" data-step="4"><b>Votre devis</b><span>Un prix fixe sous 5&nbsp;jours, avec la maquette de votre page d’accueil. Vous validez, ou vous arrêtez là sans rien devoir.</span></button></li>
+        </ol>
+        <div class="devis__actions" data-reveal>
+          <a class="btn btn--lg" href="/msdesign.be/#contact" data-track="cta_devis">Demander mon devis gratuit<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+          <button class="btn btn--line btn--lg" type="button" aria-expanded="false" aria-controls="reperes" data-reperes-toggle>Voir nos repères de prix</button>
+        </div>
+      </div>
     </div>
+    <div class="reperes" id="reperes" data-reperes hidden>
+      <img class="tarifs__flower" src="/msdesign.be/assets/img/fleur-bleue-900.webp" srcset="/msdesign.be/assets/img/fleur-bleue-900.webp 900w, /msdesign.be/assets/img/fleur-bleue-1800.webp 1800w" sizes="(max-width: 900px) 150vw, 82vw" width="1800" height="1800" alt="" aria-hidden="true" fetchpriority="low" decoding="async">
+      <div class="tarifs__head">
+        <div>
+          <p class="label">Repères</p>
+          <h3 class="h2">Nos formules de départ, <em>à titre indicatif.</em></h3>
+          <p class="lead">Pour vous donner un ordre d’idée avant d’en parler&nbsp;: votre devis part d’une de ces bases et s’ajuste à votre projet. Acompte de 50&nbsp;% à la commande, solde à la mise en ligne.</p>
+        </div>
+        <p class="tarifs__note">Tous les prix HTVA · EUR</p>
+      </div>
     <div class="plans">
       <article class="plan" data-reveal>
         <p class="plan__meta">Une page · 14 jours</p>
-        <h3 class="plan__name">Essentiel</h3>
+        <h4 class="plan__name">Essentiel</h4>
         <p class="plan__price">500&nbsp;€</p>
         <p class="plan__for">Une page sur mesure, l’essentiel pour être trouvé et contacté.</p>
         <ul class="plan__list"><li>Site d’une page sur mesure</li><li>Adapté au mobile</li><li>Formulaire de contact</li><li>Référencement de base</li><li>Une série de retouches</li></ul>
@@ -315,7 +342,7 @@
       <article class="plan plan--hi" data-reveal>
         <p class="plan__tag">Recommandé</p>
         <p class="plan__meta">Jusqu’à six pages · 21 jours</p>
-        <h3 class="plan__name">Signature</h3>
+        <h4 class="plan__name">Signature</h4>
         <p class="plan__price">1&nbsp;290&nbsp;€</p>
         <p class="plan__for">Le site complet, de bout en bout. La formule que choisissent la plupart des commerces.</p>
         <ul class="plan__list"><li>Jusqu’à six pages</li><li>Animations soignées</li><li>Formulaire de devis</li><li>Fiche Google et SEO local</li><li>Deux séries de retouches</li></ul>
@@ -323,7 +350,7 @@
       </article>
       <article class="plan" data-reveal>
         <p class="plan__meta">Design d’exception · 6 semaines</p>
-        <h3 class="plan__name">Premium</h3>
+        <h4 class="plan__name">Premium</h4>
         <p class="plan__price">3&nbsp;900&nbsp;€</p>
         <p class="plan__for">Un site d’exception, au design haut de gamme, pour les métiers où l’image fait tout&nbsp;: architectes, paysagistes, décorateurs, hôtels, galeries. <a class="more" href="/msdesign.be/exemples/strate/" target="_blank" rel="noopener" data-track="example_open">Un exemple&nbsp;: Strate, paysagiste</a></p>
         <ul class="plan__list"><li>Direction artistique haut de gamme</li><li>Animations et transitions sur mesure</li><li>Trois langues&nbsp;: FR, NL, EN</li><li>Réservation ou boutique</li><li>Identité visuelle et textes rédigés</li><li>Trois mois de suivi</li></ul>
@@ -332,7 +359,7 @@
     </div>
     <div class="care" data-reveal>
       <div>
-        <h3 class="h3">Entretien &amp; hébergement, en option</h3>
+        <h4 class="h3">Entretien &amp; hébergement, en option</h4>
         <p>Domaine à votre nom, hébergement, sécurité, sauvegardes et formulaire, avec des modifications chaque mois&nbsp;: 15&nbsp;minutes pour les sites Essentiel et Signature, 30&nbsp;minutes et des statistiques mensuelles pour le Premium.</p>
       </div>
       <p class="care__price">dès 30&nbsp;€ <em>/mois</em> <small>30&nbsp;€ pour Essentiel et Signature, 60&nbsp;€ pour le Premium. HTVA, engagement de 12&nbsp;mois</small></p>
@@ -340,13 +367,13 @@
     <div class="carte" id="a-la-carte">
       <div class="carte__head" data-reveal>
         <p class="label">À la carte</p>
-        <h3 class="carte__title">Sans site complet, <em>une seule partie.</em></h3>
+        <h4 class="carte__title">Sans site complet, <em>une seule partie.</em></h4>
         <p class="lead">Vous avez déjà un site&nbsp;? Nous pouvons aussi vous aider sur un seul point&nbsp;: être mieux trouvé sur Google, gagner du temps avec des automatisations, soigner votre image.</p>
       </div>
       <div class="carte__grid">
         <article class="carte__card" data-reveal>
           <p class="plan__meta">Être trouvé sur Google</p>
-          <h4 class="carte__name">Référencement</h4>
+          <h5 class="carte__name">Référencement</h5>
           <ul class="carte__list">
             <li><p><b>Audit SEO</b>Votre site et votre fiche Google passés au crible&nbsp;: un rapport clair et un plan d’action par priorité.</p><strong>150&nbsp;€</strong></li>
             <li><p><b>SEO local</b>Fiche Google optimisée, titres et descriptions, données structurées, vitesse, annuaires belges.</p><strong>490&nbsp;€</strong></li>
@@ -356,7 +383,7 @@
         </article>
         <article class="carte__card" data-reveal>
           <p class="plan__meta">Gagner du temps</p>
-          <h4 class="carte__name">Automatisation</h4>
+          <h5 class="carte__name">Automatisation</h5>
           <ul class="carte__list">
             <li><p><b>Une automatisation</b>Une tâche qui se fait toute seule&nbsp;: demande d’avis Google après une visite, formulaire vers un tableau, rappel de rendez-vous.</p><strong>290&nbsp;€</strong></li>
             <li><p><b>Pack automatisations</b>Jusqu’à quatre tâches reliées&nbsp;: prise de rendez-vous en ligne, rappels, devis et relances, tableau de suivi.</p><strong>790&nbsp;€</strong></li>
@@ -366,7 +393,7 @@
         </article>
         <article class="carte__card" data-reveal>
           <p class="plan__meta">Soigner votre image</p>
-          <h4 class="carte__name">Image &amp; contenus</h4>
+          <h5 class="carte__name">Image &amp; contenus</h5>
           <ul class="carte__list">
             <li><p><b>Séance photo sur place</b>Nous venons avec notre appareil photo&nbsp;: votre commerce, vos produits, votre équipe, photos retouchées.</p><strong>40&nbsp;€</strong></li>
             <li><p><b>Identité visuelle</b>Logo et variantes, couleurs, typographies, cartes de visite et modèles pour vos réseaux.</p><strong>490&nbsp;€</strong></li>
@@ -383,6 +410,7 @@
       <div><dt>Frais de tiers</dt><dd>Nom de domaine premium, photos de banque d’images, outils payants (réservation, paiement en ligne)&nbsp;: annoncés à part, avant de commencer.</dd></div>
     </dl>
     <p class="pricing__note" data-reveal>Vous hésitez entre deux formules&nbsp;? <a class="more" href="/msdesign.be/#contact">Décrivez votre projet, nous vous conseillons</a></p>
+    </div>
   </div>
 </section>
 
@@ -646,6 +674,7 @@
 <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="9" cy="8.5" r="3.3"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M15.5 5.6a3.2 3.2 0 0 1 0 6M17.5 14.3a6 6 0 0 1 3.5 5.2"/></symbol>
+<symbol id="i-replay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4.5v4h4"/></symbol>
 <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
 <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" stroke-linecap="round"/></symbol>
 <symbol id="i-site" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9h18M6 6.8h.01M8.5 6.8h.01M7 13h6M7 16h4"/></symbol>

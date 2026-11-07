@@ -833,3 +833,45 @@ a:hover > .roll > span + span, a:focus-visible > .roll > span + span { transform
   .reel { margin: 18px 0 0; }
   .manifeste__text { max-width: none; }
 }
+
+/* ---------- Tarifs : « Un prix sur mesure », un site se construit en 3D jusqu’au devis ---------- */
+.devis { display: grid; grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr); grid-template-areas: "head stage" "body stage"; gap: 0 clamp(36px, 5.5vw, 96px); align-items: start; }
+.devis__head { grid-area: head; }
+.devis__head .h2 { font-size: clamp(40px, 4.4vw, 68px); }
+.devis__head .lead { margin-top: 18px; max-width: 30em; }
+.devis__stage { grid-area: stage; position: sticky; top: calc(var(--hdr) + 28px); align-self: start; aspect-ratio: 900 / 760; border-radius: 24px; overflow: hidden; background: radial-gradient(120% 90% at 30% 20%, #fbf9f4 0%, #f1ece2 70%, #ebe5d9 100%); box-shadow: inset 0 0 0 1px rgba(23, 23, 23, 0.05); }
+.devis__poster, .devis__gl { position: absolute; inset: 0; width: 100%; height: 100%; }
+.devis__poster { object-fit: contain; transition: opacity 0.6s var(--ease); }
+.devis__gl { opacity: 0; transition: opacity 0.6s var(--ease); }
+.devis__stage.is-live .devis__gl { opacity: 1; }
+.devis__stage.is-live .devis__poster { opacity: 0; }
+.devis__caption { position: absolute; left: 16px; bottom: 16px; z-index: 2; margin: 0; padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, 0.9); font: 600 11.5px/1 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); box-shadow: 0 8px 22px -14px rgba(23, 23, 23, 0.4); }
+.devis__replay { position: absolute; right: 16px; bottom: 16px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font: 600 12px/1 var(--sans); letter-spacing: 0.06em; cursor: pointer; animation: cookie-in 0.6s var(--ease) both; }
+.devis__replay[hidden] { display: none; }
+.devis__replay svg { width: 14px; height: 14px; transition: transform 0.6s var(--ease); }
+.devis__replay:hover svg { transform: rotate(-200deg); }
+.devis__body { grid-area: body; }
+.devis__steps { list-style: none; margin: clamp(26px, 3vw, 40px) 0 clamp(28px, 3vw, 40px); padding: 0; border-top: 1px solid var(--line); }
+.devis__steps li { position: relative; border-bottom: 1px solid var(--line); }
+.devis__steps button { display: grid; grid-template-columns: 22px minmax(0, 1fr); width: 100%; padding: 15px 0; border: 0; background: none; font: inherit; text-align: left; color: var(--ink-2); cursor: pointer; }
+.devis__steps button::before { content: ""; width: 8px; height: 8px; margin-top: 7px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line-2); transition: background-color 0.4s, box-shadow 0.4s, transform 0.5s var(--ease); }
+.devis__steps b { font: 600 16.5px/1.45 var(--sans); transition: color 0.4s; }
+.devis__steps span { grid-column: 2; display: block; max-height: 0; overflow: hidden; opacity: 0; font-size: 15px; line-height: 1.55; color: var(--muted); transition: max-height 0.7s var(--ease), opacity 0.5s, margin 0.7s var(--ease); }
+.devis__steps button:hover b { color: var(--blue); }
+.devis__steps li.is-done button::before { background: var(--ink-2); box-shadow: none; }
+.devis__steps li[aria-current] button::before { background: var(--blue); box-shadow: none; transform: scale(1.35); }
+.devis__steps li[aria-current] b { color: var(--blue); }
+.devis__steps li[aria-current] span { max-height: 6em; opacity: 1; margin-top: 4px; }
+/* la ligne de l’étape en cours se remplit comme une barre de progression */
+.devis__steps li::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 1.5px; width: 0; background: var(--blue); }
+.devis.is-playing .devis__steps li[aria-current]::after { animation: devis-fill var(--dur, 2.3s) linear forwards; }
+@keyframes devis-fill { to { width: 100%; } }
+.devis__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+html.reduced .devis__steps span { max-height: none; opacity: 1; margin-top: 4px; }
+.reperes { position: relative; margin-top: clamp(70px, 9vw, 130px); padding-top: clamp(40px, 5vw, 64px); border-top: 1px solid var(--line); }
+.reperes .tarifs__flower { right: calc(min(82vw, 1300px) * -0.5 + 12.5vw - var(--pad)); }
+@media (max-width: 900px) {
+  .devis { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "stage" "body"; }
+  .devis__stage { position: relative; top: auto; margin-top: 30px; aspect-ratio: 1 / 1; border-radius: 18px; }
+  .devis__steps { margin-top: 26px; }
+}

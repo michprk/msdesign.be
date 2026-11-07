@@ -31,9 +31,13 @@ montent un à un, le bouton pastille « Notre méthode » et, derrière, **une f
 frémit au défilement ; sur téléphone, sa boucle se pose à droite du bouton. Partout : le texte des boutons et du
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 
-**Tarifs** : trois cartes en verre dépoli (Essentiel, Signature « Recommandé », Premium), prix en
-italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-src/flower-lab.html`,
-`flower.js`). **Fin de page** : « Parlons de votre projet. » avec la photo du Mac et du carnet bleu
+**Tarifs** : pas de grille affichée d’entrée (« Un prix sur mesure, fixé avant de commencer »). Une scène 3D
+(`assets/js/devis3d.js`, Three.js) se lance d’elle-même quand on arrive : un site se construit en cinq étapes, synchronisées
+avec la liste à gauche (votre métier, les pages, le design, les fonctions, votre devis) ; à la fin, une feuille de devis
+glisse et le tampon « Prix fixe · M&S » s’y pose. On peut cliquer une étape ou « Rejouer ». Image de repli
+`assets/img/devis3d-poster.webp` (outil `_msdesign-src/devis-lab.html?poster=1`). Les **repères de prix** (trois cartes
+Essentiel, Signature, Premium devant la pervenche bleue en 3D, l’entretien, l’à-la-carte et les conditions) restent sur la
+page, repliés derrière « Voir nos repères de prix » ; un lien vers `#a-la-carte` les ouvre tout seul. **Fin de page** : « Parlons de votre projet. » avec la photo du Mac et du carnet bleu
 (`_msdesign-src/contact-photo.html`), le bloc bleu et le formulaire, le plan stylisé de Bruxelles
 (outil `#map`), puis le bandeau « Prêt à démarrer ? » (`#ftrleaves`) et le pied de page.
 
@@ -112,6 +116,7 @@ partials/                 blocs communs (head, en-tête, pied de page, cookies, 
 assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
 assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
+assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
 assets/video/             la mini-vidéo bleue (reel-strate.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh

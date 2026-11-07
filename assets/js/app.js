@@ -243,6 +243,7 @@
       if (a.dataset.plan && formApi.preset) formApi.preset(a.dataset.plan);
       if (a.dataset.projet && formApi.projet) formApi.projet(a.dataset.projet);
       history.replaceState(null, '', url.hash);
+      openReperes(target);
       scrollToY(targetY(target), 1.4);
       if (target.id === 'contact') setTimeout(() => { const f = $('#contact-form [name="name"]'); if (f && fine) f.focus({ preventScroll: true }); }, reduced ? 0 : 1400);
     });
@@ -256,6 +257,84 @@
       el.innerHTML = parts.map((html) => '<span class="ml-line"><span class="ml-line__inner">' + html.trim() + '</span></span>').join('');
       $$('.ml-line__inner', el).forEach((s, i) => s.style.setProperty('--ml-delay', (i * 0.1).toFixed(2) + 's'));
     });
+  });
+
+  /* ---------- Tarifs : les repères de prix, repliés derrière un bouton ---------- */
+  function openReperes(target, open = true) {
+    const box = $('[data-reperes]'), btn = $('[data-reperes-toggle]');
+    if (!box || !btn || (target && !box.contains(target))) return false;
+    if (box.hidden !== open) return false;
+    box.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? 'Masquer les repères de prix' : 'Voir nos repères de prix';
+    if (lenis) lenis.resize();
+    return true;
+  }
+  safe('reperes', () => {
+    const box = $('[data-reperes]'), btn = $('[data-reperes-toggle]');
+    if (!box || !btn) return;
+    btn.addEventListener('click', () => {
+      const open = box.hidden;
+      openReperes(null, open);
+      if (open) setTimeout(() => scrollToY(targetY(box), 1.3), 60);
+      else { const r = btn.getBoundingClientRect(); if (r.top < 0 || r.bottom > window.innerHeight) jumpToY(r.top + window.scrollY - window.innerHeight * 0.55); }
+      track('reperes_toggle', { open });
+    });
+    // arrivée directe sur une ancre des repères (#a-la-carte…)
+    const hashEl = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+    if (hashEl && box.contains(hashEl)) { openReperes(hashEl); setTimeout(() => jumpToY(targetY(hashEl)), 120); }
+  });
+
+  /* ---------- Tarifs : un site se construit en 3D, étape par étape, jusqu’au devis ---------- */
+  safe('devis3d', () => {
+    const root = $('[data-devis]'), stage = $('[data-devis-stage]');
+    if (!root || !stage) return;
+    const steps = $$('[data-devis-steps] li'), cap = $('[data-devis-caption]'), replay = $('[data-devis-replay]');
+    const names = steps.map((li) => (li.querySelector('b') || li).textContent.trim());
+    let api = null, wantPlay = false, seen = false, onScreen = false;
+    const setStep = (i) => {
+      steps.forEach((li, k) => {
+        li.classList.toggle('is-done', k < i);
+        if (k === i) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+      });
+      if (cap) cap.textContent = (i + 1) + ' / ' + steps.length + ' · ' + names[i];
+    };
+    const playing = (on) => { root.classList.toggle('is-playing', on); if (replay) replay.hidden = on || reduced; };
+    const start = (from) => { if (!api) { wantPlay = true; return; } playing(true); api.play(from); };
+    if (!('IntersectionObserver' in window)) return;
+    const loader = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      loader.disconnect();
+      import('/msdesign.be/assets/js/devis3d.js?v=' + VER).then(async (m) => {
+        steps.forEach((li, i) => li.style.setProperty('--dur', ((m.STEPS[i + 1] || m.END) - m.STEPS[i]).toFixed(2) + 's'));
+        api = await m.createDevis3D(stage, {
+          reduced,
+          onStep: setStep,
+          onReady: () => stage.classList.add('is-live'),
+          onEnd: () => playing(false),
+        });
+        if (!api) return;
+        window.__msDevis = api;
+        api.setVisible(onScreen);
+        if (reduced) { setStep(steps.length - 1); return; }
+        if (wantPlay) start(0);
+      }).catch((err) => console.warn('[ms] devis3d', err));
+    }, { rootMargin: '700px 0px' });
+    loader.observe(stage);
+    // un seul geste suffit : l’animation se lance d’elle-même quand la scène est bien à l’écran
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      onScreen = e.isIntersecting;
+      if (api) api.setVisible(onScreen);
+      if (e.intersectionRatio >= 0.45 && !seen) { seen = true; start(0); }
+    }), { threshold: [0, 0.45] });
+    io.observe(stage);
+    steps.forEach((li, i) => li.querySelector('button').addEventListener('click', () => {
+      seen = true; setStep(i);
+      if (!api) { wantPlay = true; return; }
+      if (reduced) return;
+      playing(true); api.jump(i);
+    }));
+    if (replay) replay.addEventListener('click', () => start(0));
   });
 
   /* ---------- Texte du studio : les mots montent un à un ---------- */
