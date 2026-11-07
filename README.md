@@ -22,6 +22,15 @@ réalisations », « Demander un devis ») et trois atouts (design sur mesure, r
 cliquables, des feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite,
 « Nos réalisations » : cinq exemples (Strate en premier), un à la fois, 01 / 05, avec flèches et « Voir le site ».
 
+**Le studio** (`#le-studio`, juste après le héros, esprit « studio de mouvement ») : une mini-vidéo bleue
+(10 s en boucle, `assets/video/reel-strate.mp4`, 1,5 Mo, chargée seulement à l’écran) : on entre dans le jardin 3D de
+Strate, on descend parmi les racines, puis le jardin se sépare en étages. Elle est rendue image par image et passée
+en bichromie bleue par `_msdesign-src/reel/reel.html?render=1` (WebCodecs + mp4-muxer). À côté, le texte dont les mots
+montent un à un, le bouton pastille « Notre méthode » et, derrière, **une ficelle bleue en vraie 3D**
+(`assets/js/ribbon.js`, Three.js chargé seulement à l’approche) : elle se dessine, ondule, s’écarte de la souris et
+frémit au défilement ; sur téléphone, sa boucle se pose à droite du bouton. Partout : le texte des boutons et du
+menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
+
 **Tarifs** : trois cartes en verre dépoli (Essentiel, Signature « Recommandé », Premium), prix en
 italique bleu, devant une grande pervenche bleue modélisée en 3D (`_msdesign-src/flower-lab.html`,
 `flower.js`). **Fin de page** : « Parlons de votre projet. » avec la photo du Mac et du carnet bleu
@@ -102,6 +111,8 @@ confidentialite.html      RGPD + cookies
 partials/                 blocs communs (head, en-tête, pied de page, cookies, icônes)
 assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
+assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
+assets/video/             la mini-vidéo bleue (reel-strate.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh
 ```

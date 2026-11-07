@@ -23,6 +23,7 @@
   const EMAIL = 'mck.honorable@msdesign.be';
   const PHONE = '+32 486 61 11 59';
   const KEY = 'ms_';
+  const VER = ((document.currentScript && document.currentScript.src) || '').split('?v=')[1] || '';
   const euro = (n) => new Intl.NumberFormat('fr-BE', { maximumFractionDigits: 2 }).format(n) + ' €';
 
   /* ---------- Mesure d’audience (Google Analytics 4, uniquement après accord) ---------- */
@@ -257,6 +258,61 @@
     });
   });
 
+  /* ---------- Texte du studio : les mots montent un à un ---------- */
+  safe('words', () => {
+    $$('[data-words]').forEach((el) => {
+      const words = el.textContent.trim().split(/ +/);
+      el.setAttribute('aria-label', el.textContent.trim());
+      el.textContent = '';
+      words.forEach((w, i) => {
+        const outer = document.createElement('span'), inner = document.createElement('span');
+        outer.className = 'w'; outer.setAttribute('aria-hidden', 'true');
+        inner.textContent = w; inner.style.setProperty('--wd', (i * 0.022).toFixed(3) + 's');
+        outer.appendChild(inner); el.appendChild(outer);
+        if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+      });
+    });
+  });
+
+  /* ---------- Boutons et menu : le texte roule vers le haut au survol ---------- */
+  safe('roll', () => {
+    $$('a.btn, .hdr__nav a').forEach((a) => {
+      const node = Array.from(a.childNodes).find((n) => n.nodeType === 3 && n.textContent.trim());
+      if (!node) return;
+      const text = node.textContent.trim();
+      const roll = document.createElement('span'), one = document.createElement('span'), two = document.createElement('span');
+      roll.className = 'roll'; one.textContent = text; two.textContent = text; two.setAttribute('aria-hidden', 'true');
+      roll.append(one, two);
+      a.replaceChild(roll, node);
+    });
+  });
+
+  /* ---------- La mini-vidéo : ne se charge et ne joue que lorsqu’elle est à l’écran ---------- */
+  safe('reel', () => {
+    const v = $('[data-reel-video]');
+    if (!v || reduced || !('IntersectionObserver' in window)) return;
+    v.muted = true;
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { if (v.preload !== 'auto') { v.preload = 'auto'; v.load(); } const p = v.play(); if (p) p.catch(() => {}); }
+      else v.pause();
+    }), { rootMargin: '120px 0px', threshold: 0.05 });
+    io.observe(v);
+  });
+
+  /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
+  safe('ribbon', () => {
+    const host = $('[data-ribbon]');
+    if (!host || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      import('/msdesign.be/assets/js/ribbon.js?v=' + VER)
+        .then((m) => { window.__msRibbon = m.createRibbon(host, { reduced, grid: $('[data-ribbon-grid]', host), lenis: () => lenis }); })
+        .catch((err) => console.warn('[ms] ribbon', err));
+    }, { rootMargin: '500px 0px' });
+    io.observe(host);
+  });
+
   /* ---------- Apparitions à l’entrée dans l’écran ---------- */
   safe('reveal', () => {
     const groups = new Map();
@@ -266,7 +322,7 @@
       groups.set(p, n + 1);
       if (n) el.style.setProperty('--d', Math.min(0.42, n * 0.08).toFixed(2) + 's');
     });
-    const targets = $$('[data-reveal], [data-lines]');
+    const targets = $$('[data-reveal], [data-lines], [data-words]');
     if (!('IntersectionObserver' in window)) { targets.forEach((el) => el.classList.add('is-in')); return; }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
