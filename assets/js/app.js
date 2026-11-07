@@ -378,6 +378,27 @@
     io.observe(v);
   });
 
+  /* ---------- Le film M&S : la carte ouvre le film complet, avec le son ---------- */
+  safe('film', () => {
+    const dlg = $('[data-film]'), open = $('[data-film-open]');
+    if (!dlg || !open || typeof dlg.showModal !== 'function') return;     // sans <dialog> : le lien ouvre la vidéo
+    const v = $('[data-film-video]', dlg);
+    open.addEventListener('click', (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      dlg.showModal();
+      if (lenis) lenis.stop();
+      v.currentTime = 0;
+      const p = v.play(); if (p) p.catch(() => {});
+      track('film_play');
+    });
+    const close = () => { if (dlg.open) dlg.close(); };
+    $('[data-film-close]', dlg).addEventListener('click', close);
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });       // clic sur le fond
+    dlg.addEventListener('close', () => { v.pause(); if (lenis) lenis.start(); open.focus({ preventScroll: true }); });
+    v.addEventListener('ended', close);
+  });
+
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
   safe('ribbon', () => {
     const host = $('[data-ribbon]');

@@ -22,10 +22,14 @@ réalisations », « Demander un devis ») et trois atouts (design sur mesure, r
 cliquables, des feuilles, des fleurs bleues et la pastille « Design web Bruxelles ». Ensuite,
 « Nos réalisations » : cinq exemples (Strate en premier), un à la fois, 01 / 05, avec flèches et « Voir le site ».
 
-**Le studio** (`#le-studio`, juste après le héros, esprit « studio de mouvement ») : une mini-vidéo bleue
-(10 s en boucle, `assets/video/reel-strate.mp4`, 1,5 Mo, chargée seulement à l’écran) : on entre dans le jardin 3D de
-Strate, on descend parmi les racines, puis le jardin se sépare en étages. Elle est rendue image par image et passée
-en bichromie bleue par `_msdesign-src/reel/reel.html?render=1` (WebCodecs + mp4-muxer). À côté, le texte dont les mots
+**Le studio** (`#le-studio`, juste après le héros, esprit « studio de mouvement ») : un extrait muet du **film M&S**
+(`assets/video/reel-studio.mp4`, en boucle, chargé seulement à l’écran) ; un clic ouvre le film complet avec le son
+(`assets/video/msdesign-film.mp4`, 34 s, 1080p) dans un lecteur plein écran. Le film, façon publicité Apple : un MacBook
+argent sur un bureau laqué noir, on appuie sur M puis S, le logo s’illumine en bleu électrique, BAM, nos sites jaillissent
+de l’écran et la caméra tourne autour ; puis les services (sans aucun prix) et la signature « Votre vision. Notre
+création. ». Palette #080A0F, blanc, argent #C0C0C0, anthracite #252830, bleu #2563EB. Tout est rendu image par image et
+le son est synthétisé : `_msdesign-src/film2/film2.html?render=1&w=3840&h=2160` (master 4K dans
+`_msdesign-src/video/out/msdesign-film-4k.mp4`, planche d’essai `?sheet=…`). À côté, le texte dont les mots
 montent un à un, le bouton pastille « Notre méthode » et, derrière, **une ficelle bleue en vraie 3D**
 (`assets/js/ribbon.js`, Three.js chargé seulement à l’approche) : elle se dessine, ondule, s’écarte de la souris et
 frémit au défilement ; sur téléphone, sa boucle se pose à droite du bouton. Partout : le texte des boutons et du
@@ -117,7 +121,7 @@ assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
 assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
 assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
-assets/video/             la mini-vidéo bleue (reel-strate.mp4)
+assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh
 ```

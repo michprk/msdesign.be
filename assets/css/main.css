@@ -875,3 +875,19 @@ html.reduced .devis__steps span { max-height: none; opacity: 1; margin-top: 4px;
   .devis__stage { position: relative; top: auto; margin-top: 30px; aspect-ratio: 1 / 1; border-radius: 18px; }
   .devis__steps { margin-top: 26px; }
 }
+
+/* ---------- Le film M&S (carte « Le studio » + lecteur plein écran) ---------- */
+.reel__link { aspect-ratio: 16 / 9; background: #080a0f; box-shadow: 0 34px 70px -38px rgba(8, 10, 15, 0.7); }
+.reel__tag--play { opacity: 1; transform: none; gap: 10px; }
+.reel__tag--play::before { display: none; }
+.reel__tag--play svg { width: 12px; height: 12px; color: var(--blue); transition: transform 0.5s var(--ease); }
+.reel__link:hover .reel__tag--play svg { animation: none; transform: scale(1.25); }
+.film { width: min(1280px, 94vw); max-width: none; max-height: none; padding: 0; border: 0; background: transparent; overflow: visible; }
+.film::backdrop { background: rgba(8, 10, 15, 0.92); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.film[open] { animation: film-in 0.6s var(--ease) both; }
+@keyframes film-in { from { opacity: 0; transform: scale(0.96); } }
+.film__box { position: relative; }
+.film__video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 14px; background: #080a0f; box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.8); }
+.film__close { position: absolute; top: -54px; right: 0; display: grid; place-items: center; width: 42px; height: 42px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.12); color: #fff; cursor: pointer; transition: background-color 0.3s; }
+.film__close:hover { background: rgba(255, 255, 255, 0.24); }
+.film__close svg { width: 20px; height: 20px; transform: rotate(45deg); }
