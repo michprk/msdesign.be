@@ -46,12 +46,18 @@ flèche, ou glisser) = un tourbillon d’un tour, tous dans le même sens, vers 
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
 
-**L’équipe** (`equipe.html`) : Michal (cofondateur, développeur), Mamoudou (cofondateur, directeur artistique) et
-Adam (designer 3D) sur une grande fleur bleue en 3D à trois pétales (`assets/js/flower3d.js`, même famille que la
-pervenche des tarifs) : un pétale par personne, le prénom et le métier imprimés droit sur le pétale. La fleur s’ouvre
-quand la section arrive et se referme quand on remonte ; survol d’un pétale = il se soulève et la fiche correspondante
-s’allume dessous (et inversement) ; la ficelle bleue fait une orbite fermée autour. Les fiches (`[data-person]`) restent
-lisibles sans WebGL. Lien dans le menu (« Équipe ») et le pied de page.
+**L’équipe** (`equipe.html`, page plein écran autonome) : un voyage en 3D dans un Japon d’hiver, entièrement
+modélisé dans `assets/js/journey.js` (Three.js, aucun modèle ni image) : neige qui tombe et pétales roses, cerisiers en
+fleurs (branches générées, bouquets de fleurs en instances), pins taillés sous la neige, lanternes de pierre et de
+papier allumées, collines de sapins, chaînes de montagnes et grand mont enneigé dans la brume rose. On avance **sur le
+côté, comme en voiture** : un cran de molette (ou flèche, glisser, clic sur la route) = un trajet avec accélération
+franche, **flou de vitesse selon la profondeur** (le premier plan file, le lointain reste net), virage de la caméra, puis
+arrêt net avec un petit rebond. Cinq arrêts : l’entrée sous le torii, **Mamoudou** (le grand cerisier et ses lanternes
+rouges), **Michal** (la pagode, le mont derrière), **Adam** (le pont rouge sur l’étang gelé, avec un vrai reflet :
+monde retourné rendu sous la glace), la maison de thé illuminée (contact). Textes en HTML (lus aussi sans WebGL), son
+synthétisé très discret (vent, souffle du trajet, clochette à l’arrivée, « Couper le son »), « Réduire les animations »
+respecté (fondus au lieu des trajets). Test : `_msdesign-src/probe-jr.mjs [base] [w] [h] [arrêts]` et
+`probe-jr-wheel.mjs`. Lien dans le menu (« Équipe ») et le pied de page.
 
 **Tarifs** : pas de grille affichée d’entrée (« Un prix sur mesure, fixé avant de commencer »). Une scène 3D
 (`assets/js/devis3d.js`, Three.js) se lance d’elle-même quand on arrive : un site se construit en cinq étapes, synchronisées
@@ -140,7 +146,7 @@ assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
 assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
 assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
-assets/js/flower3d.js     la fleur bleue 3D de la page Équipe
+assets/js/journey.js      le voyage 3D de la page Équipe (Japon d’hiver)
 equipe.html               l’équipe (Michal, Mamoudou, Adam)
 experience/               « La tempête », l’expérience 3D des pétales (page autonome)
 assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
