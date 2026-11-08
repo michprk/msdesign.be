@@ -61,9 +61,9 @@ const camera = new THREE.PerspectiveCamera(42, 1, 0.3, 1200);
 const SUN_DIR = new THREE.Vector3(-0.8, 0.32, -0.42).normalize();
 const skyMat = new THREE.ShaderMaterial({
   side: THREE.DoubleSide, depthWrite: false, fog: false,
-  uniforms: { top: { value: new THREE.Color('#8ea8d6') }, mid: { value: new THREE.Color('#d9d3e6') }, hor: { value: HORIZON.clone() }, sunDir: { value: SUN_DIR }, sunCol: { value: new THREE.Color('#ffd6b0') } },
+  uniforms: { top: { value: new THREE.Color('#8ea8d6') }, mid: { value: new THREE.Color('#d9d3e6') }, hor: { value: HORIZON.clone() }, sunDir: { value: SUN_DIR }, sunCol: { value: new THREE.Color('#ffd6b0') }, tPano: { value: null }, uPano: { value: 0 }, A: { value: new THREE.Vector4(-1.3, 1.3, -0.06, 0.44) } },
   vertexShader: 'varying vec3 vDir; void main(){ vDir = position; vec4 p = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_Position = p.xyww; }',
-  fragmentShader: `uniform vec3 top, mid, hor, sunDir, sunCol; varying vec3 vDir;
+  fragmentShader: `uniform vec3 top, mid, hor, sunDir, sunCol; uniform sampler2D tPano; uniform float uPano; uniform vec4 A; varying vec3 vDir;
     float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y); }
     float fb(vec2 p){ return vn(p) * 0.5 + vn(p * 2.03) * 0.28 + vn(p * 4.1) * 0.14 + vn(p * 8.3) * 0.08; }
@@ -72,6 +72,8 @@ const skyMat = new THREE.ShaderMaterial({
       float s = max(dot(d, sunDir), 0.0); c += sunCol * (pow(s, 900.0) * 2.0 + pow(s, 14.0) * 0.28 + pow(s, 3.0) * 0.06);
       if (h > 0.0) { vec2 p = d.xz / (h + 0.12) * 1.4; float cl = smoothstep(0.52, 0.86, fb(p * 0.6 + vec2(3.0, 1.0))) * smoothstep(0.0, 0.08, h) * (1.0 - smoothstep(0.25, 0.6, h));
         c = mix(c, mix(vec3(0.98, 0.9, 0.93), vec3(1.0, 0.92, 0.86), s), cl * 0.55); }
+      if (uPano > 0.5) { float az = atan(d.x, -d.z), el = asin(clamp(d.y, -1.0, 1.0)); vec2 pu = vec2((az - A.x) / (A.y - A.x), (el - A.z) / (A.w - A.z));
+        if (pu.x > 0.0 && pu.x < 1.0 && pu.y > 0.0 && pu.y < 1.0) { vec4 m = texture2D(tPano, pu); c = mix(c, m.rgb, m.a); } }
       gl_FragColor = vec4(c, 1.0);
       #include <colorspace_fragment>
     }`,
@@ -507,47 +509,139 @@ fence(-60, -13, 1.4);
   ground.receiveShadow = true; world.add(ground);
 }
 
-/* ---------- au loin : forêt de pins, chaînes de montagnes, et le grand mont ---------- */
+/* ---------- au loin : une vraie forêt de sapins enneigés, des bancs de brume ---------- */
 {
-  const tiers = [[1.0, 1.5, 0.4], [0.78, 1.3, 1.2], [0.52, 1.15, 1.95], [0.3, 0.9, 2.6]].map(([r, h, y]) => { const g = new THREE.ConeGeometry(r, h, 10, 1, true); g.translate(0, y + h / 2, 0); return g.toNonIndexed(); });
-  const cone = new THREE.BufferGeometry(), parts = tiers.map((g) => g.attributes.position.array), tot = parts.reduce((a, p) => a + p.length, 0), P = new Float32Array(tot); let o = 0; parts.forEach((p) => { P.set(p, o); o += p.length; });
-  cone.setAttribute('position', new THREE.BufferAttribute(P, 3)); cone.computeVertexNormals();
-  const cp = cone.attributes.position, cc = new Float32Array(cp.count * 3), c = new THREE.Color();
-  for (let i = 0; i < cp.count; i++) { const yv = cp.getY(i), fr = yv - Math.floor(yv / 0.8) * 0.8; c.set('#3f574b').lerp(SNOW, smooth(0.45, 0.75, fr / 0.8) * 0.55 + smooth(2.6, 3.4, yv) * 0.4); cc[i * 3] = c.r; cc[i * 3 + 1] = c.g; cc[i * 3 + 2] = c.b; }
-  cone.setAttribute('color', new THREE.BufferAttribute(cc, 3));
-  const n = small ? 500 : 1100, im = new THREE.InstancedMesh(cone, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9 }), n), m4 = new THREE.Matrix4();
-  for (let i = 0; i < n; i++) { const x = rr(-120, 380), z = rr(-120, -52), s = rr(1.2, 2.4); m4.compose(new THREE.Vector3(x, groundH(x, z) - 0.3, z), new THREE.Quaternion(), new THREE.Vector3(s, s * rr(0.9, 1.4), s)); im.setMatrixAt(i, m4); }
-  im.castShadow = false; im.receiveShadow = true; world.add(im);
-  const haze = (col, k) => new THREE.Color(col).lerp(HORIZON, k);
-  const range = (zc, hBase, hVar, colLow, sdz, hz) => {
-    const g = new THREE.PlaneGeometry(1100, 90, 300, 18); g.rotateX(-Math.PI / 2); g.translate(130, 0, zc);
-    const p = g.attributes.position, col = new Float32Array(p.count * 3), lo = new THREE.Color(colLow), c2 = new THREE.Color();
-    for (let i = 0; i < p.count; i++) {
-      const x = p.getX(i), zl = (p.getZ(i) - zc + 45) / 90;               // 0 au fond, 1 devant
-      const ridge = hBase + hVar * (fbm(x * 0.006 + sdz, 1.7) + 0.6 * Math.abs(noise(x * 0.02 + sdz, 3) - 0.5));
-      const y = ridge * Math.pow(1 - zl, 0.9) - 2; p.setY(i, y);
-      c2.copy(lo).lerp(SNOW, smooth(ridge * 0.42, ridge * 0.62, y + (noise(x * 0.08, sdz) - 0.5) * 8)).lerp(HORIZON, hz);
-      col[i * 3] = c2.r; col[i * 3 + 1] = c2.g; col[i * 3 + 2] = c2.b;
+  // quatre sapins dessinés branche par branche (tronc, branches tombantes, aiguilles, neige posée sur le dessus)
+  const VAR = 4, TW = 256, TH = 512;
+  const atlas = canvasTex(TW * VAR, TH, (x) => {
+    for (let k = 0; k < VAR; k++) {
+      const ox = k * TW, cx = ox + TW / 2, base = TH * 0.985, top = TH * (0.03 + rnd() * 0.05), H = base - top;
+      x.strokeStyle = '#2a2320'; x.lineWidth = 5; x.beginPath(); x.moveTo(cx, base); x.lineTo(cx, top + H * 0.05); x.stroke();
+      const levels = 58;
+      for (let i = 0; i < levels; i++) {
+        const t = i / levels, y = base - H * 0.06 - t * H * 0.92, len = (TW * 0.47) * Math.pow(1 - t, 0.82) * (0.7 + rnd() * 0.45) + 5;
+        for (const side of [-1, 1]) {
+          const L = len * (0.8 + rnd() * 0.35), ex = cx + side * L, ey = y + L * (0.18 + rnd() * 0.12);
+          const g = 30 + Math.floor(rnd() * 22), gg = 48 + Math.floor(rnd() * 26);
+          x.strokeStyle = `rgb(${g * 0.55 | 0},${gg},${(g * 0.9) | 0})`; x.lineCap = 'round';
+          x.lineWidth = 3.2 + (1 - t) * 3; x.beginPath(); x.moveTo(cx, y); x.quadraticCurveTo(cx + side * L * 0.5, y - L * 0.04, ex, ey); x.stroke();
+          for (let s = 0; s < 14; s++) {                                       // aiguilles
+            const u = 0.15 + (s / 14) * 0.85, px = cx + side * L * u, py = y + (ey - y) * u * u - L * 0.02 * Math.sin(u * 3);
+            x.lineWidth = 1.6; x.beginPath(); x.moveTo(px, py); x.lineTo(px + side * rr(2, 6), py + rr(4, 11)); x.stroke();
+          }
+          x.strokeStyle = `rgba(${236 + rnd() * 16 | 0},${240 + rnd() * 12 | 0},250,${0.75 + rnd() * 0.25})`;            // la neige sur la branche
+          x.lineWidth = 2 + (1 - t) * 3.2; x.beginPath();
+          const s0 = 0.12 + rnd() * 0.15, s1 = 0.55 + rnd() * 0.4;
+          for (let u = s0; u <= s1; u += 0.05) { const px = cx + side * L * u, py = y + (ey - y) * u * u - L * 0.02 * Math.sin(u * 3) - 2.4; if (u === s0) x.moveTo(px, py); else x.lineTo(px, py); }
+          x.stroke();
+        }
+      }
+      x.fillStyle = '#eef2f8'; x.beginPath(); x.ellipse(cx, top + 6, 5, 9, 0, 0, Math.PI * 2); x.fill();
     }
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3)); g.computeVertexNormals();
-    world.add(new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, fog: false })));
+  });
+  atlas.anisotropy = 4;
+  const firMat = new THREE.MeshLambertMaterial({ map: atlas, alphaTest: 0.5, side: THREE.DoubleSide });
+  const quads = (k) => {
+    const a = new THREE.PlaneGeometry(1, 2), b = new THREE.PlaneGeometry(1, 2); b.rotateY(Math.PI / 2);
+    const g = new THREE.BufferGeometry(), pa = a.attributes.position.array, pb = b.attributes.position.array, ua = a.attributes.uv.array, ub = b.attributes.uv.array;
+    const P = new Float32Array(pa.length + pb.length); P.set(pa); P.set(pb, pa.length);
+    const U = new Float32Array(ua.length + ub.length); U.set(ua); U.set(ub, ua.length); for (let i = 0; i < U.length; i += 2) U[i] = (U[i] + k) / VAR;
+    const ia = Array.from(a.index.array), ib = Array.from(b.index.array).map((v) => v + pa.length / 3);
+    g.setAttribute('position', new THREE.BufferAttribute(P, 3)); g.setAttribute('uv', new THREE.BufferAttribute(U, 2)); g.setIndex([...ia, ...ib]);
+    g.translate(0, 1, 0); g.computeVertexNormals();
+    return g;
   };
-  range(-175, 22, 30, '#7d8aa6', 1, 0.45); range(-260, 40, 52, '#8d98b4', 7, 0.6);
-  void haze;
-  // le grand mont, aligné derrière le torii puis derrière la pagode
-  const pts = []; for (let i = 0; i <= 40; i++) { const t = i / 40; pts.push(new THREE.Vector2(t < 0.96 ? 150 * Math.pow(1 - t, 1.75) + 6 : 6 * (1 - (t - 0.96) / 0.04) + 4, t * 78)); }
-  pts.push(new THREE.Vector2(0, 76));
-  const fuji = new THREE.LatheGeometry(pts, 120), fp = fuji.attributes.position, fc = new Float32Array(fp.count * 3), c3 = new THREE.Color(), rock2 = new THREE.Color('#8e98b5');
-  for (let i = 0; i < fp.count; i++) {
-    const x = fp.getX(i), y = fp.getY(i), z = fp.getZ(i), a = Math.atan2(z, x);
-    const line = 40 + 7 * Math.sin(a * 9) + 5 * (noise(a * 6 + 2, 1) - 0.5) * 2 + (noise(a * 23, 7) - 0.5) * 10 * smooth(30, 50, y);
-    c3.copy(rock2).lerp(SNOW, smooth(line - 2, line + 2, y));
-    const lit = 0.82 + 0.25 * Math.max(0, -Math.cos(a - 0.4)); c3.multiplyScalar(lit).lerp(HORIZON, 0.38 - 0.2 * smooth(30, 70, y));
-    fc[i * 3] = c3.r; fc[i * 3 + 1] = c3.g; fc[i * 3 + 2] = c3.b;
+  const N = small ? 1400 : 3600, m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0);
+  const per = Math.ceil(N / VAR);
+  for (let k = 0; k < VAR; k++) {
+    const im = new THREE.InstancedMesh(quads(k), firMat, per);
+    for (let i = 0; i < per; i++) {
+      let x, z; do { x = rr(-160, 420); z = -46 - Math.pow(rnd(), 0.8) * 110; } while (SUBJ.some((s) => Math.abs(x - s) < 6 && z > -52));
+      const s = rr(2.6, 5.2) * (1 + (-z - 46) / 160);
+      q.setFromAxisAngle(up, rr(0, Math.PI));
+      m4.compose(new THREE.Vector3(x, groundH(x, z) - 0.4, z), q, new THREE.Vector3(s * rr(0.85, 1.15), s, s * rr(0.85, 1.15)));
+      im.setMatrixAt(i, m4);
+    }
+    im.computeBoundingSphere(); world.add(im);
   }
-  fuji.setAttribute('color', new THREE.BufferAttribute(fc, 3)); fuji.computeVertexNormals();
-  const mount = new THREE.Mesh(fuji, new THREE.MeshBasicMaterial({ vertexColors: true, fog: false }));
-  mount.position.set(160, -10, -470); mount.scale.set(2.3, 2.3, 2.3); world.add(mount);
+  // bancs de brume entre les collines
+  const mistTex = canvasTex(64, 256, (x, w, h) => { const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.55, 'rgba(255,255,255,0.55)'); g.addColorStop(1, 'rgba(255,255,255,0.9)'); x.fillStyle = g; x.fillRect(0, 0, w, h); });
+  [[-62, 7, 0.55], [-92, 12, 0.6], [-128, 18, 0.7], [-160, 26, 0.75]].forEach(([z, h, o]) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(900, h), new THREE.MeshBasicMaterial({ map: mistTex, color: HORIZON, transparent: true, opacity: o, depthWrite: false, fog: false }));
+    m.position.set(130, groundH(130, z) + h * 0.32, z); m.renderOrder = 1; world.add(m);
+  });
+}
+
+/* ---------- les montagnes : un vrai relief calculé une fois au chargement (lancer de rayons sur un terrain),
+   neige selon la pente et l’altitude, ombres portées du soleil, forêts en contrebas, brume selon la distance ---------- */
+const PANO = { az: 1.3, el0: -0.06, el1: 0.44 };
+const PW = small ? 1536 : 3072, PH = Math.round(PW * 0.3125);
+const panoRT = new THREE.WebGLRenderTarget(PW, PH, { generateMipmaps: false });
+const panoMat = new THREE.ShaderMaterial({
+  depthTest: false, depthWrite: false,
+  uniforms: { sunDir: { value: SUN_DIR }, haze: { value: HORIZON.clone() }, sunCol: { value: new THREE.Color(1.0, 0.82, 0.66).multiplyScalar(2.1) }, A: { value: new THREE.Vector4(-PANO.az, PANO.az, PANO.el0, PANO.el1) } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `precision highp float;
+    uniform vec3 sunDir, haze, sunCol; uniform vec4 A; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
+    const mat2 R = mat2(1.6, 1.2, -1.2, 1.6);
+    float ridged(vec2 p, int oct){ float a = 0.5, s = 0.0, w = 1.0; for (int i = 0; i < 9; i++){ if (i >= oct) break; float n = 1.0 - abs(noise(p) * 2.0 - 1.0); n *= n; s += n * a * w; w = clamp(n * 1.7, 0.0, 1.0); p = R * p; a *= 0.5; } return s; }
+    float fbm(vec2 p, int oct){ float a = 0.5, s = 0.0; for (int i = 0; i < 7; i++){ if (i >= oct) break; s += a * noise(p); p = R * p; a *= 0.5; } return s; }
+    const vec2 FUJI = vec2(560.0, -3150.0);
+    float smax(float a, float b, float k){ float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0); return mix(b, a, h) + k * h * (1.0 - h); }
+    float terr(vec2 xz, int oct){
+      float d = -xz.y;
+      float m = ridged(xz * 0.00105 + vec2(3.1, 7.7), oct) * 720.0 * smoothstep(300.0, 1700.0, d);
+      m += fbm(xz * 0.0024 + 7.0, oct > 5 ? 5 : 3) * 170.0 * smoothstep(180.0, 800.0, d);
+      float r = length(xz - FUJI), ang = atan(xz.y - FUJI.y, xz.x - FUJI.x);
+      float f = min(1320.0 * pow(max(0.0, 1.0 - r / 2800.0), 1.8), 1250.0);
+      f -= (noise(vec2(ang * 34.0, r * 0.0032)) * 0.7 + noise(vec2(ang * 90.0, r * 0.01)) * 0.3) * 55.0 * smoothstep(220.0, 1900.0, r) * (1.0 - smoothstep(2300.0, 2800.0, r));
+      return smax(m, f, 120.0) - 90.0;
+    }
+    float softShadow(vec3 ro, vec3 rd){ float res = 1.0, t = 12.0; for (int i = 0; i < 30; i++){ vec3 p = ro + rd * t; float h = p.y - terr(p.xz, 4); res = min(res, 10.0 * h / t); if (res < 0.01 || p.y > 1500.0) break; t += clamp(h, 18.0, 300.0); } return clamp(res, 0.0, 1.0); }
+    void main(){
+      float az = mix(A.x, A.y, vUv.x), el = mix(A.z, A.w, vUv.y);
+      vec3 d = vec3(sin(az) * cos(el), sin(el), -cos(az) * cos(el));
+      vec3 ro = vec3(0.0, 25.0, 0.0);
+      float t = 260.0, dy = 1e9; bool hit = false;
+      for (int i = 0; i < 200; i++){ vec3 p = ro + d * t; dy = p.y - terr(p.xz, 4); if (dy < 0.0016 * t){ hit = true; break; } t += max(0.42 * dy, 0.003 * t); if (t > 11000.0) break; }
+      if (!hit){ gl_FragColor = vec4(0.0); return; }
+      vec3 p = ro + d * t;
+      float e = 0.0012 * t;
+      vec3 n = normalize(vec3(terr(p.xz - vec2(e, 0.0), 8) - terr(p.xz + vec2(e, 0.0), 8), 2.0 * e, terr(p.xz - vec2(0.0, e), 8) - terr(p.xz + vec2(0.0, e), 8)));
+      float nz = noise(p.xz * 0.012), nz2 = noise(p.xz * 0.06);
+      float snowLine = 120.0 + nz * 140.0;
+      float snow = smoothstep(0.42, 0.72, n.y + (nz2 - 0.5) * 0.3) * smoothstep(snowLine - 60.0, snowLine + 60.0, p.y);
+      snow = max(snow, smoothstep(0.8, 0.95, n.y) * 0.9);
+      vec3 rock = mix(vec3(0.12, 0.12, 0.15), vec3(0.24, 0.23, 0.27), nz2);
+      float forest = (1.0 - smoothstep(snowLine - 40.0, snowLine + 160.0, p.y)) * smoothstep(0.3, 0.55, n.y) * (0.6 + 0.4 * noise(p.xz * 0.03));
+      vec3 alb = mix(rock, vec3(0.05, 0.085, 0.08), forest);
+      alb = mix(alb, vec3(0.92, 0.94, 0.99), snow * (1.0 - forest * 0.55));
+      float sh = softShadow(p + n * 3.0, sunDir);
+      float dif = clamp(dot(n, sunDir), 0.0, 1.0) * sh;
+      vec3 amb = vec3(0.5, 0.58, 0.78) * (0.5 + 0.5 * n.y);
+      float back = clamp(dot(n, normalize(vec3(-sunDir.x, 0.0, -sunDir.z))), 0.0, 1.0);
+      vec3 col = alb * (sunCol * dif + amb * 0.9 + vec3(0.25, 0.22, 0.25) * back * 0.35);
+      float fa = 1.0 - exp(-t * 0.00022) * 0.97;
+      vec3 fc = haze * 1.02 + sunCol * 0.12 * pow(max(dot(d, sunDir), 0.0), 6.0);
+      col = mix(col, fc, fa);
+      float edge = clamp(1.0 - dy / (0.0016 * t), 0.0, 1.0);
+      gl_FragColor = vec4(col, 1.0);
+    }`,
+});
+async function renderPano() {
+  const qd = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), panoMat), sc = new THREE.Scene(); sc.add(qd);
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), strips = small ? 8 : 16, w = Math.ceil(PW / strips);
+  renderer.setRenderTarget(panoRT); renderer.setClearColor(0x000000, 0); renderer.clear();
+  panoRT.scissorTest = true;
+  for (let s = 0; s < strips; s++) {
+    panoRT.scissor.set(s * w, 0, w, PH);
+    renderer.setRenderTarget(panoRT); renderer.render(sc, cam);
+    await new Promise((r) => setTimeout(r, 0));
+  }
+  panoRT.scissorTest = false; renderer.setRenderTarget(null);
+  skyMat.uniforms.uPano.value = 1;
 }
 buildBatches();
 
@@ -755,10 +849,13 @@ function frame(ms) {
 /* ---------- départ : on arrive en roulant jusqu’au torii ---------- */
 resize();
 const hold = Q.has('at') ? +Q.get('at') : null;
-requestAnimationFrame(frame);
-setTimeout(() => {
-  d.classList.add('jr-ready');
-  if (hold !== null) { goTo(hold, true); } else goTo(0);
-}, 120);
+skyMat.uniforms.tPano.value = panoRT.texture;
+renderPano().catch((e) => console.warn('[jr] pano', e)).then(() => {
+  requestAnimationFrame(frame);
+  setTimeout(() => {
+    d.classList.add('jr-ready');
+    if (hold !== null) { goTo(hold, true); } else goTo(0);
+  }, 120);
+});
 
 window.__jr = { goTo, get x() { return camX; }, get frames() { return frames; }, pose(x, v = null) { camX = x; trip = null; forceV = v; }, trip: () => !!trip };

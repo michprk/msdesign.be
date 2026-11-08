@@ -49,7 +49,9 @@ diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arr
 **L’équipe** (`equipe.html`, page plein écran autonome) : un voyage en 3D dans un Japon d’hiver, entièrement
 modélisé dans `assets/js/journey.js` (Three.js, aucun modèle ni image) : neige qui tombe et pétales roses, cerisiers en
 fleurs (branches générées, bouquets de fleurs en instances), pins taillés sous la neige, lanternes de pierre et de
-papier allumées, collines de sapins, chaînes de montagnes et grand mont enneigé dans la brume rose. On avance **sur le
+papier allumées. Au loin, un vrai relief calculé au chargement (lancer de rayons sur un terrain, crêtes, neige selon
+la pente et l’altitude, ombres du soleil, forêts en contrebas, brume selon la distance, grand mont façon Fuji) et une
+forêt de 3 600 sapins enneigés dessinés branche par branche, avec des bancs de brume. On avance **sur le
 côté, comme en voiture** : un cran de molette (ou flèche, glisser, clic sur la route) = un trajet avec accélération
 franche, **flou de vitesse selon la profondeur** (le premier plan file, le lointain reste net), virage de la caméra, puis
 arrêt net avec un petit rebond. Cinq arrêts : l’entrée sous le torii, **Mamoudou** (le grand cerisier et ses lanternes
