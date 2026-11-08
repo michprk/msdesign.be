@@ -38,7 +38,7 @@ export function createSound() {
     const comp = ac.createDynamicsCompressor(); comp.threshold.value = -16; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = 0.004; comp.release.value = 0.22;
     out = ac.createGain(); out.gain.value = 0; out.connect(comp); comp.connect(ac.destination);
     verb = ac.createConvolver(); verb.buffer = impulse(); const vg = ac.createGain(); vg.gain.value = 0.42; verb.connect(vg); vg.connect(out);
-    sfx = ac.createGain(); sfx.gain.value = 0.9; sfx.connect(out);
+    sfx = ac.createGain(); sfx.gain.value = 0.8; sfx.connect(out);
     music = ac.createGain(); music.gain.value = 0.0; music.connect(out);
     const mv = ac.createGain(); mv.gain.value = 0.9; music.connect(mv); mv.connect(verb);
     const sr = ac.sampleRate; noiseBuf = ac.createBuffer(1, sr * 3, sr); { const d = noiseBuf.getChannelData(0); let b0 = 0, b1 = 0, b2 = 0; for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; b0 = 0.997 * b0 + w * 0.029; b1 = 0.985 * b1 + w * 0.032; b2 = 0.95 * b2 + w * 0.048; d[i] = (b0 + b1 + b2 + w * 0.12) * 1.6; } }
@@ -57,7 +57,7 @@ export function createSound() {
     const s = ac.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
     const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 380; lp.Q.value = 0.4;
     const lfo = ac.createOscillator(), lg = g(160); lfo.frequency.value = 0.07; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
-    const v = g(0.12); s.connect(lp); lp.connect(v); v.connect(sfx); s.start();
+    const v = g(0.04); s.connect(lp); lp.connect(v); v.connect(sfx); s.start();
   }
 
   /* la musique : une nappe qui change d’accord toutes les 12 s, et le koto */
@@ -150,7 +150,7 @@ export function createSound() {
     const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1200;
     const vo = g(0); env(vo.gain, [[t, 0], [t + d * 0.95, 0.06], [t + d + 0.03, 0]]); o.connect(lp); lp.connect(vo); send(vo, 0.3); o.start(t); o.stop(t + d + 0.1);
     setTimeout(arrive, d * 1000);
-    env(music.gain, [[t + d, 0], [t + d + 6, 0.55]]);
+    env(music.gain, [[t + d, 0], [t + d + 6, 0.3]]);
     chordAt = t + d; nextPluck = t + d + 2.2;
   }
 
@@ -159,6 +159,7 @@ export function createSound() {
       if (!init()) return false;
       if (ac.state === 'suspended') ac.resume();
       env(out.gain, [[now(), out.gain.value], [now() + 0.4, muted ? 0 : 1]]);
+      if (music.gain.value < 0.01) { env(music.gain, [[now(), 0], [now() + 4, 0.3]]); chordAt = now() + 0.2; nextPluck = now() + 1.5; }   // son activé plus tard : la musique arrive aussi
       clearInterval(timer); timer = setInterval(schedule, 250);
       return true;
     },
