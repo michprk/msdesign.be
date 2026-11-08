@@ -35,6 +35,14 @@ montent un à un, le bouton pastille « Notre méthode » et, derrière, **une f
 frémit au défilement, et se rembobine quand on remonte la page ; sur téléphone, sa boucle se pose à droite du bouton. Lien « Rencontrer l’équipe ». Partout : le texte des boutons et du
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 
+**La tempête** (`experience/`, page plein écran autonome, liée sous la vidéo de « M&S Studio » et dans le pied de
+page) : 12 000 pétales bleus en 3D (6 000 sur téléphone), éclairés et ombrés sur le fond crème (`experience/petales.js`,
+un seul InstancedMesh, matrices écrites à la main). Cinq formes : une fleur, le & de M&S, un écran de site, une planète
+avec son anneau qui tourne, « Vous ? » (un grand « ? » sur téléphone) avec le bouton de contact. Un cran de molette (ou
+flèche, ou glisser) = un tourbillon d’un tour, tous dans le même sens, vers la forme suivante ; la souris est le vent
+(les pétales s’écartent puis reviennent), un clic = une bourrasque en anneau. Souffle synthétisé très discret, lien
+« Couper le son ». Respecte « Réduire les animations ». Test : `_msdesign-src/probe-xp.mjs [base] [w] [h]`.
+
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
 
@@ -134,6 +142,7 @@ assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
 assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
 assets/js/flower3d.js     la fleur bleue 3D de la page Équipe
 equipe.html               l’équipe (Michal, Mamoudou, Adam)
+experience/               « La tempête », l’expérience 3D des pétales (page autonome)
 assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh

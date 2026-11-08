@@ -1,0 +1,40 @@
+/* M&S Design — « La tempête » : la page en plein écran autour des pétales 3D */
+@font-face { font-family: "Fraunces"; src: url("../assets/fonts/fraunces-normal-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "Fraunces"; src: url("../assets/fonts/fraunces-italic-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Instrument Sans"; src: url("../assets/fonts/instrument-sans-400-700-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+:root { --bg: #f5f1e9; --ink: #171717; --muted: #6e6a63; --blue: #155eef; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body.xp { margin: 0; overflow: hidden; background: radial-gradient(120% 90% at 50% 40%, #fbf8f2 0%, var(--bg) 55%, #ebe5d9 100%); color: var(--ink); font: 400 16px/1.5 "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; overscroll-behavior: none; touch-action: none; }
+.xp__gl { position: fixed; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s var(--ease); }
+.xp-ready .xp__gl { opacity: 1; }
+.xp__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.xp__top { position: fixed; inset: 0 0 auto; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 22px clamp(18px, 4vw, 48px); pointer-events: none; }
+.xp__top a { pointer-events: auto; color: var(--ink); text-decoration: none; }
+.xp__logo { font: 400 22px/1 "Fraunces", Georgia, serif; letter-spacing: 0.01em; }
+.xp__back { font: 500 14px/1 "Instrument Sans", sans-serif; padding: 10px 16px; border: 1px solid rgba(23, 23, 23, 0.16); border-radius: 999px; background: rgba(251, 249, 244, 0.7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: background-color 0.3s; }
+.xp__back:hover { background: #fff; }
+.xp__main { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+.xp__chapters { position: absolute; left: clamp(18px, 4vw, 48px); bottom: clamp(70px, 10vh, 110px); width: min(560px, calc(100vw - 36px)); margin: 0; padding: 0; list-style: none; }
+.xp__chapters li { position: absolute; left: 0; bottom: 0; width: 100%; opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.9s var(--ease); }
+.xp__chapters li.is-on { opacity: 1; transform: none; transition-delay: 0.45s; }
+.xp__kicker { margin: 0 0 10px; font: 600 12px/1.4 "Instrument Sans", sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); }
+.xp__title { margin: 0; font: 400 clamp(38px, 5vw, 72px)/1.02 "Fraunces", Georgia, serif; letter-spacing: -0.025em; }
+.xp__sub { margin: 14px 0 0; max-width: 30em; font-size: clamp(15px, 1.3vw, 18px); color: var(--muted); }
+.xp__cta { display: inline-flex; margin-top: 24px; padding: 15px 26px; border-radius: 999px; background: var(--blue); color: #fff; font: 600 16px/1 "Instrument Sans", sans-serif; text-decoration: none; pointer-events: auto; box-shadow: 0 18px 40px -18px rgba(21, 94, 239, 0.7); transition: transform 0.3s var(--ease), background-color 0.3s; }
+.xp__cta:hover { transform: translateY(-2px); background: #0f49c9; }
+.xp__chapters li:not(.is-on) .xp__cta { pointer-events: none; }
+.xp__dots { position: absolute; right: clamp(16px, 3vw, 40px); top: 50%; display: grid; gap: 12px; transform: translateY(-50%); pointer-events: auto; }
+.xp__dots button { width: 10px; height: 10px; padding: 0; border: 1.5px solid rgba(23, 23, 23, 0.35); border-radius: 50%; background: transparent; cursor: pointer; transition: background-color 0.3s, border-color 0.3s, transform 0.4s var(--ease); }
+.xp__dots button[aria-current="step"] { background: var(--blue); border-color: var(--blue); transform: scale(1.35); }
+.xp__foot { position: fixed; inset: auto 0 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px clamp(18px, 4vw, 48px); font-size: 13px; color: var(--muted); pointer-events: none; }
+.xp__foot p { margin: 0; }
+.xp__count { font: 600 12px/1 "Instrument Sans", sans-serif; letter-spacing: 0.14em; color: var(--ink); }
+.xp__sound { pointer-events: auto; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+@media (max-width: 700px) {
+  .xp__hint { display: none; }
+  .xp__chapters { bottom: 64px; }
+  .xp__title { font-size: 36px; }
+  .xp__dots { top: auto; bottom: 22px; right: 50%; grid-auto-flow: column; transform: translateX(50%); }
+}

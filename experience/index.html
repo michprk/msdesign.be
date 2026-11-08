@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>La tempête — M&amp;S Design, studio web à Bruxelles</title>
+<meta name="description" content="Une expérience en 3D signée M&amp;S Design : des milliers de pétales bleus dessinent une fleur, notre &amp;, un écran, une planète… La souris est le vent.">
+<meta property="og:title" content="La tempête — M&amp;S Design">
+<meta property="og:description" content="Des milliers de pétales bleus en 3D. La souris est le vent.">
+<meta property="og:image" content="https://michprk.github.io/msdesign.be/og.jpg">
+<meta name="theme-color" content="#f5f1e9">
+<link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/msdesign.be/assets/fonts/fraunces-italic-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="experience.css">
+<script type="module" src="petales.js"></script>
+</head>
+<body class="xp">
+<canvas class="xp__gl" aria-hidden="true"></canvas>
+<header class="xp__top">
+  <a class="xp__logo" href="/msdesign.be/">M&amp;S DESIGN</a>
+  <a class="xp__back" href="/msdesign.be/#le-studio">Retour au site</a>
+</header>
+<main class="xp__main">
+  <h1 class="xp__sr">La tempête, une expérience en 3D de M&amp;S Design</h1>
+  <ol class="xp__chapters">
+    <li data-ch="0" class="is-on"><p class="xp__kicker">M&amp;S Design présente</p><h2 class="xp__title" data-count-title>Des milliers de pétales.</h2><p class="xp__sub">Bougez la souris&nbsp;: le vent, c’est vous.</p></li>
+    <li data-ch="1"><p class="xp__kicker">Un seul signe</p><h2 class="xp__title">Le &amp; de M&amp;S.</h2><p class="xp__sub">Deux fondateurs, un studio, à Bruxelles.</p></li>
+    <li data-ch="2"><p class="xp__kicker">Votre site</p><h2 class="xp__title">Pétale par pétale.</h2><p class="xp__sub">Nous dessinons, animons et codons chaque page à la main.</p></li>
+    <li data-ch="3"><p class="xp__kicker">Mouvement &amp; 3D</p><h2 class="xp__title">Tout gravite autour de vous.</h2><p class="xp__sub">Des sites vivants, qui restent rapides sur téléphone.</p></li>
+    <li data-ch="4"><p class="xp__kicker">À votre tour</p><h2 class="xp__title">On commence quand&nbsp;?</h2><p class="xp__sub">Un appel de 30&nbsp;minutes, gratuit. La maquette arrive sous 5&nbsp;jours.</p><a class="xp__cta" href="/msdesign.be/#contact">Parlons de votre projet</a></li>
+  </ol>
+  <nav class="xp__dots" aria-label="Chapitres">
+    <button type="button" data-go="0" aria-label="La fleur" aria-current="step"></button>
+    <button type="button" data-go="1" aria-label="Le &amp;"></button>
+    <button type="button" data-go="2" aria-label="L’écran"></button>
+    <button type="button" data-go="3" aria-label="La planète"></button>
+    <button type="button" data-go="4" aria-label="Vous ?"></button>
+  </nav>
+</main>
+<footer class="xp__foot">
+  <p class="xp__count"><span data-num>01</span> / 05</p>
+  <p class="xp__hint">Molette ou flèches pour avancer · cliquez pour une bourrasque</p>
+  <button class="xp__sound" type="button" data-sound>Couper le son</button>
+</footer>
+</body>
+</html>
