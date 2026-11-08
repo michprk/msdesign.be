@@ -56,8 +56,12 @@ côté, comme en voiture** : un cran de molette (ou flèche, glisser, clic sur l
 franche, **flou de vitesse selon la profondeur** (le premier plan file, le lointain reste net), virage de la caméra, puis
 arrêt net avec un petit rebond. Cinq arrêts : l’entrée sous le torii, **Mamoudou** (le grand cerisier et ses lanternes
 rouges), **Michal** (la pagode, le mont derrière), **Adam** (le pont rouge sur l’étang gelé, avec un vrai reflet :
-monde retourné rendu sous la glace), la maison de thé illuminée (contact). Textes en HTML (lus aussi sans WebGL), son
-synthétisé très discret (vent, souffle du trajet, clochette à l’arrivée, « Couper le son »), « Réduire les animations »
+monde retourné rendu sous la glace), la maison de thé illuminée (contact). Écran d’entrée (chargement, « Entrer avec le son / sans le son »), bandes de cinéma pendant les trajets, prénom
+géant en filigrane, textes qui entrent et sortent dans le sens du trajet. Rendu : halo lumineux (bloom), aberration
+chromatique à la vitesse, étalonnage, paillettes sur la neige, fleurs lissées ; montagnes préparées une fois
+(`equipe.html?bakepano` → `assets/img/equipe-montagnes.webp`), ombres recalculées seulement quand on avance, résolution
+qui baisse toute seule si l’appareil peine. Son de motion design synthétisé (`assets/js/journey-sound.js`) : koto et
+nappe très doux, vent, whoosh qui traverse l’image, impact grave à l’arrêt, « tic » par lettre, swish, survols, « Réduire les animations »
 respecté (fondus au lieu des trajets). Test : `_msdesign-src/probe-jr.mjs [base] [w] [h] [arrêts]` et
 `probe-jr-wheel.mjs`. Lien dans le menu (« Équipe ») et le pied de page.
 

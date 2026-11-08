@@ -26,7 +26,22 @@
 <body class="jr">
 <canvas class="jr__gl" aria-hidden="true"></canvas>
 <div class="jr__flash" aria-hidden="true"></div>
-<div class="jr__veil" aria-hidden="true"><p>Le chemin se prépare…</p></div>
+<div class="jr__bars" aria-hidden="true"><i></i><i></i></div>
+<p class="jr__ghost" aria-hidden="true"></p>
+<div class="gate" data-gate role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate__in">
+    <p class="gate__kicker">M&amp;S Design · L’équipe</p>
+    <p class="gate__title" id="gate-title">Un voyage <em>sous la neige.</em></p>
+    <p class="gate__sub">Trois arrêts, trois personnes. Un Japon d’hiver entièrement modélisé en 3D.</p>
+    <div class="gate__load" aria-hidden="true"><span class="gate__num" data-load>000</span><span class="gate__track"><i></i></span></div>
+    <div class="gate__actions" data-gate-actions hidden>
+      <button class="gate__go" type="button" data-enter="1"><span class="gate__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Entrer avec le son</button>
+      <button class="gate__mute" type="button" data-enter="0">Entrer sans le son</button>
+    </div>
+    <p class="gate__hint">Casque conseillé · molette, flèches ou glisser pour avancer</p>
+  </div>
+</div>
+
 
 <header class="jr__top">
   <a class="jr__logo" href="/msdesign.be/">M&amp;S DESIGN</a>

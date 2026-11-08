@@ -7,6 +7,7 @@
    Tout est modélisé dans ce fichier : aucun modèle, aucune image.
    ========================================================================== */
 import * as THREE from '../vendor/three.module.min.js';
+import { createSound } from './journey-sound.js';
 
 const d = document.documentElement;
 const Q = new URLSearchParams(location.search);
@@ -46,11 +47,12 @@ function groundH(x, z) {
 const canvas = $('.jr__gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
 const DPR = Math.min(devicePixelRatio || 1, small ? 1.25 : 1.6);
-renderer.setPixelRatio(DPR);
+let PR = DPR; renderer.setPixelRatio(PR);                     // PR baisse tout seul si l’appareil peine
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.97;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.autoUpdate = false;                       // les ombres ne se recalculent que quand la caméra a avancé
 const scene = new THREE.Scene();
 const world = new THREE.Group(); scene.add(world);
 const HORIZON = new THREE.Color('#f0dee6');
@@ -73,7 +75,7 @@ const skyMat = new THREE.ShaderMaterial({
       if (h > 0.0) { vec2 p = d.xz / (h + 0.12) * 1.4; float cl = smoothstep(0.52, 0.86, fb(p * 0.6 + vec2(3.0, 1.0))) * smoothstep(0.0, 0.08, h) * (1.0 - smoothstep(0.25, 0.6, h));
         c = mix(c, mix(vec3(0.98, 0.9, 0.93), vec3(1.0, 0.92, 0.86), s), cl * 0.55); }
       if (uPano > 0.5) { float az = atan(d.x, -d.z), el = asin(clamp(d.y, -1.0, 1.0)); vec2 pu = vec2((az - A.x) / (A.y - A.x), (el - A.z) / (A.w - A.z));
-        if (pu.x > 0.0 && pu.x < 1.0 && pu.y > 0.0 && pu.y < 1.0) { vec4 m = texture2D(tPano, pu); c = mix(c, m.rgb, m.a); } }
+        if (pu.x > 0.0 && pu.x < 1.0 && pu.y > 0.0 && pu.y < 1.0) { vec3 m = texture2D(tPano, pu).rgb * 2.0; float k = smoothstep(1.0, 0.9, pu.y) * smoothstep(0.0, 0.03, pu.x) * smoothstep(1.0, 0.97, pu.x); c = mix(c, m, k); } }
       gl_FragColor = vec4(c, 1.0);
       #include <colorspace_fragment>
     }`,
@@ -471,7 +473,7 @@ fence(-60, -13, 1.4);
 /* ---------- les fleurs (une instance = un petit bouquet) ---------- */
 {
   const geo = new THREE.PlaneGeometry(1, 1);
-  const mat = new THREE.MeshStandardMaterial({ map: blossomTex, alphaTest: 0.42, side: THREE.DoubleSide, roughness: 0.8, emissive: '#ffb7c9', emissiveMap: blossomTex, emissiveIntensity: 0.32 });
+  const mat = new THREE.MeshStandardMaterial({ map: blossomTex, alphaTest: small ? 0.42 : 0.16, alphaToCoverage: !small, side: THREE.DoubleSide, roughness: 0.8, emissive: '#ffb7c9', emissiveMap: blossomTex, emissiveIntensity: 0.32 });
   const depthMat = new THREE.MeshDepthMaterial({ map: blossomTex, alphaTest: 0.42, depthPacking: THREE.RGBADepthPacking });
   const PAL = ['#ffffff', '#ffe6ee', '#ffd3df', '#ffc4d4', '#ffeef3'].map((c) => new THREE.Color(c));
   const byChunk = new Map(); BLOOM.forEach((b) => { const k = chunkOf(b.cx); if (!byChunk.has(k)) byChunk.set(k, []); byChunk.get(k).push(b); });
@@ -505,7 +507,18 @@ fence(-60, -13, 1.4);
     x.putImageData(im, 0, 0);
   }, false);
   nrm.wrapS = nrm.wrapT = THREE.RepeatWrapping; nrm.repeat.set(150, 72);
-  const ground = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, normalMap: nrm, normalScale: new THREE.Vector2(0.55, 0.55) }));
+  const gm = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, normalMap: nrm, normalScale: new THREE.Vector2(0.55, 0.55) });
+  gm.onBeforeCompile = (sh) => {                                    // paillettes : de minuscules cristaux qui scintillent quand on bouge
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP;').replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvWP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP;\nfloat jrH(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }').replace('#include <dithering_fragment>', `#include <dithering_fragment>
+      { vec2 cell = floor(vWP.xz * 24.0); float h = jrH(cell);
+        float tw = fract(h * 91.7 + dot(cameraPosition.xz, vec2(0.31, 0.17)) * 0.7);
+        float dist = length(vWP - cameraPosition);
+        vec2 f = fract(vWP.xz * 24.0) - 0.5;
+        float gl = step(0.9955, h) * smoothstep(0.8, 1.0, tw) * (1.0 - smoothstep(5.0, 24.0, dist)) * smoothstep(0.24, 0.0, length(f));
+        gl_FragColor.rgb += vec3(2.8, 2.7, 2.6) * gl; }`);
+  };
+  const ground = new THREE.Mesh(g, gm);
   ground.receiveShadow = true; world.add(ground);
 }
 
@@ -575,14 +588,23 @@ fence(-60, -13, 1.4);
 /* ---------- les montagnes : un vrai relief calculé une fois au chargement (lancer de rayons sur un terrain),
    neige selon la pente et l’altitude, ombres portées du soleil, forêts en contrebas, brume selon la distance ---------- */
 const PANO = { az: 1.3, el0: -0.06, el1: 0.44 };
-const PW = small ? 1536 : 3072, PH = Math.round(PW * 0.3125);
+const PW = Q.has('bakepano') ? 4096 : small ? 1536 : 3072, PH = Math.round(PW * 0.3125);
 const panoRT = new THREE.WebGLRenderTarget(PW, PH, { generateMipmaps: false });
 const panoMat = new THREE.ShaderMaterial({
   depthTest: false, depthWrite: false,
-  uniforms: { sunDir: { value: SUN_DIR }, haze: { value: HORIZON.clone() }, sunCol: { value: new THREE.Color(1.0, 0.82, 0.66).multiplyScalar(2.1) }, A: { value: new THREE.Vector4(-PANO.az, PANO.az, PANO.el0, PANO.el1) } },
+  uniforms: { top: skyMat.uniforms.top, mid: skyMat.uniforms.mid, hor: skyMat.uniforms.hor, sunSky: skyMat.uniforms.sunCol, uSS: { value: 1 }, uRes: { value: new THREE.Vector2(PW, PH) }, sunDir: { value: SUN_DIR }, haze: { value: HORIZON.clone() }, sunCol: { value: new THREE.Color(1.0, 0.82, 0.66).multiplyScalar(2.1) }, A: { value: new THREE.Vector4(-PANO.az, PANO.az, PANO.el0, PANO.el1) } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
   fragmentShader: `precision highp float;
-    uniform vec3 sunDir, haze, sunCol; uniform vec4 A; varying vec2 vUv;
+    uniform vec3 sunDir, haze, sunCol, top, mid, hor, sunSky; uniform vec4 A; uniform int uSS; uniform vec2 uRes; varying vec2 vUv;
+    float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y); }
+    float fb(vec2 p){ return vn(p) * 0.5 + vn(p * 2.03) * 0.28 + vn(p * 4.1) * 0.14 + vn(p * 8.3) * 0.08; }
+    vec3 skyCol(vec3 d){ float h = d.y;
+      vec3 c = mix(hor, mid, smoothstep(0.0, 0.16, h)); c = mix(c, top, smoothstep(0.16, 0.7, h)); c = mix(c, hor, smoothstep(0.0, -0.1, h));
+      float s = max(dot(d, sunDir), 0.0); c += sunSky * (pow(s, 900.0) * 2.0 + pow(s, 14.0) * 0.28 + pow(s, 3.0) * 0.06);
+      if (h > 0.0) { vec2 p = d.xz / (h + 0.12) * 1.4; float cl = smoothstep(0.52, 0.86, fb(p * 0.6 + vec2(3.0, 1.0))) * smoothstep(0.0, 0.08, h) * (1.0 - smoothstep(0.25, 0.6, h));
+        c = mix(c, mix(vec3(0.98, 0.9, 0.93), vec3(1.0, 0.92, 0.86), s), cl * 0.55); }
+      return c; }
     float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
     float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
     const mat2 R = mat2(1.6, 1.2, -1.2, 1.6);
@@ -600,13 +622,13 @@ const panoMat = new THREE.ShaderMaterial({
       return smax(m, f, 120.0) - 90.0;
     }
     float softShadow(vec3 ro, vec3 rd){ float res = 1.0, t = 12.0; for (int i = 0; i < 30; i++){ vec3 p = ro + rd * t; float h = p.y - terr(p.xz, 4); res = min(res, 10.0 * h / t); if (res < 0.01 || p.y > 1500.0) break; t += clamp(h, 18.0, 300.0); } return clamp(res, 0.0, 1.0); }
-    void main(){
-      float az = mix(A.x, A.y, vUv.x), el = mix(A.z, A.w, vUv.y);
+    vec3 shade(vec2 uv){
+      float az = mix(A.x, A.y, uv.x), el = mix(A.z, A.w, uv.y);
       vec3 d = vec3(sin(az) * cos(el), sin(el), -cos(az) * cos(el));
       vec3 ro = vec3(0.0, 25.0, 0.0);
       float t = 260.0, dy = 1e9; bool hit = false;
       for (int i = 0; i < 200; i++){ vec3 p = ro + d * t; dy = p.y - terr(p.xz, 4); if (dy < 0.0016 * t){ hit = true; break; } t += max(0.42 * dy, 0.003 * t); if (t > 11000.0) break; }
-      if (!hit){ gl_FragColor = vec4(0.0); return; }
+      if (!hit) return skyCol(d);
       vec3 p = ro + d * t;
       float e = 0.0012 * t;
       vec3 n = normalize(vec3(terr(p.xz - vec2(e, 0.0), 8) - terr(p.xz + vec2(e, 0.0), 8), 2.0 * e, terr(p.xz - vec2(0.0, e), 8) - terr(p.xz + vec2(0.0, e), 8)));
@@ -626,22 +648,49 @@ const panoMat = new THREE.ShaderMaterial({
       float fa = 1.0 - exp(-t * 0.00022) * 0.97;
       vec3 fc = haze * 1.02 + sunCol * 0.12 * pow(max(dot(d, sunDir), 0.0), 6.0);
       col = mix(col, fc, fa);
-      float edge = clamp(1.0 - dy / (0.0016 * t), 0.0, 1.0);
-      gl_FragColor = vec4(col, 1.0);
+      return col;
+    }
+    void main(){
+      vec3 acc = vec3(0.0); float n = 0.0;
+      for (int j = 0; j < 3; j++) { if (j >= uSS) break; for (int i = 0; i < 3; i++) { if (i >= uSS) break;
+        vec2 o = (vec2(float(i), float(j)) + 0.5) / float(uSS) - 0.5; acc += shade(vUv + o / uRes); n += 1.0; } }
+      gl_FragColor = vec4(acc / n * 0.5, 1.0);
     }`,
 });
 async function renderPano() {
   const qd = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), panoMat), sc = new THREE.Scene(); sc.add(qd);
-  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), strips = small ? 8 : 16, w = Math.ceil(PW / strips);
+  const bake = Q.has('bakepano'), cols = bake ? 64 : small ? 8 : 16, rows = bake ? 8 : 1, cw = Math.ceil(PW / cols), chh = Math.ceil(PH / rows);
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  panoMat.uniforms.uSS.value = bake ? 3 : 1;
   renderer.setRenderTarget(panoRT); renderer.setClearColor(0x000000, 0); renderer.clear();
   panoRT.scissorTest = true;
-  for (let s = 0; s < strips; s++) {
-    panoRT.scissor.set(s * w, 0, w, PH);
+  for (let s = 0; s < cols; s++) for (let r = 0; r < rows; r++) {
+    panoRT.scissor.set(s * cw, r * chh, cw, chh);
     renderer.setRenderTarget(panoRT); renderer.render(sc, cam);
-    await new Promise((r) => setTimeout(r, 0));
+    if (bake) { renderer.readRenderTargetPixels(panoRT, s * cw, r * chh, 1, 1, new Uint8Array(4)); document.title = 'tuile ' + (s * rows + r) + '/' + cols * rows; }
+    await new Promise((res) => setTimeout(res, 0));
   }
   panoRT.scissorTest = false; renderer.setRenderTarget(null);
   skyMat.uniforms.uPano.value = 1;
+}
+// le relief est préparé une fois pour toutes (outil : equipe.html?bakepano) et chargé comme une image : rien à calculer chez le visiteur
+async function bakePano() {
+  skyMat.uniforms.tPano.value = panoRT.texture; await renderPano();
+  const px = new Uint8Array(PW * PH * 4); renderer.readRenderTargetPixels(panoRT, 0, 0, PW, PH, px);
+  const c = document.createElement('canvas'); c.width = PW; c.height = PH; const x = c.getContext('2d'), im = x.createImageData(PW, PH);
+  for (let j = 0; j < PH; j++) im.data.set(px.subarray((PH - 1 - j) * PW * 4, (PH - j) * PW * 4), j * PW * 4);
+  x.putImageData(im, 0, 0);
+  const blob = await new Promise((r) => c.toBlob(r, 'image/webp', 0.88));
+  await fetch('/__save?path=' + encodeURIComponent('assets/img/equipe-montagnes.webp'), { method: 'POST', body: blob });
+  document.title = 'baked ' + blob.size;
+}
+async function loadPano() {
+  if (Q.has('bakepano')) return bakePano();
+  try {
+    const tex = await new THREE.TextureLoader().loadAsync('/msdesign.be/assets/img/equipe-montagnes.webp?v=2');
+    tex.colorSpace = THREE.NoColorSpace; tex.anisotropy = 4; tex.needsUpdate = true;
+    skyMat.uniforms.tPano.value = tex; skyMat.uniforms.uPano.value = 1;
+  } catch (e) { skyMat.uniforms.tPano.value = panoRT.texture; await renderPano(); }
 }
 buildBatches();
 
@@ -675,31 +724,79 @@ const flakes = (() => {
   return m;
 })();
 
-/* ---------- passe finale : flou de vitesse selon la profondeur, vignette, grain ---------- */
+/* ---------- passe finale : flou de vitesse, halo lumineux, aberration chromatique, étalonnage, grain ---------- */
 const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: small ? 0 : 4, depthTexture: new THREE.DepthTexture(1, 1) });
+const bA = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }), bB = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType });
+const FSV = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
+const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const passMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2)); passMesh.frustumCulled = false;
+const passScene = new THREE.Scene(); passScene.add(passMesh);
+const brightMat = new THREE.ShaderMaterial({
+  depthTest: false, depthWrite: false, toneMapped: false,
+  uniforms: { tColor: { value: rt.texture }, uTexel: { value: new THREE.Vector2(1, 1) } },
+  vertexShader: FSV,
+  fragmentShader: `uniform sampler2D tColor; uniform vec2 uTexel; varying vec2 vUv;
+    void main(){
+      vec3 c = (texture2D(tColor, vUv + uTexel * vec2(-1.0, -1.0)).rgb + texture2D(tColor, vUv + uTexel * vec2(1.0, -1.0)).rgb
+              + texture2D(tColor, vUv + uTexel * vec2(-1.0, 1.0)).rgb + texture2D(tColor, vUv + uTexel * vec2(1.0, 1.0)).rgb) * 0.25;
+      float l = max(c.r, max(c.g, c.b));
+      gl_FragColor = vec4(c * smoothstep(1.3, 2.6, l), 1.0);
+    }`,
+});
+const blurMat = new THREE.ShaderMaterial({
+  depthTest: false, depthWrite: false, toneMapped: false,
+  uniforms: { tColor: { value: null }, uDir: { value: new THREE.Vector2() } },
+  vertexShader: FSV,
+  fragmentShader: `uniform sampler2D tColor; uniform vec2 uDir; varying vec2 vUv;
+    void main(){
+      vec3 c = texture2D(tColor, vUv).rgb * 0.19648;
+      c += (texture2D(tColor, vUv + uDir * 1.41176).rgb + texture2D(tColor, vUv - uDir * 1.41176).rgb) * 0.29691;
+      c += (texture2D(tColor, vUv + uDir * 3.29412).rgb + texture2D(tColor, vUv - uDir * 3.29412).rgb) * 0.09447;
+      c += (texture2D(tColor, vUv + uDir * 5.17647).rgb + texture2D(tColor, vUv - uDir * 5.17647).rgb) * 0.01038;
+      gl_FragColor = vec4(c, 1.0);
+    }`,
+});
+function pass(mat, target) { passMesh.material = mat; renderer.setRenderTarget(target); renderer.render(passScene, postCam); }
+function renderBloom() {
+  pass(brightMat, bA);
+  const B = blurMat.uniforms;
+  B.tColor.value = bA.texture; B.uDir.value.set(1 / bA.width, 0); pass(blurMat, bB);
+  B.tColor.value = bB.texture; B.uDir.value.set(0, 1 / bA.height); pass(blurMat, bA);
+  B.tColor.value = bA.texture; B.uDir.value.set(2.2 / bA.width, 0); pass(blurMat, bB);
+  B.tColor.value = bB.texture; B.uDir.value.set(0, 2.2 / bA.height); pass(blurMat, bA);
+}
 const post = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
   depthTest: false, depthWrite: false,
-  uniforms: { tColor: { value: rt.texture }, tDepth: { value: rt.depthTexture }, cNear: { value: camera.near }, cFar: { value: camera.far }, uSpeed: { value: 0 }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2(1, 1) } },
-  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
-  fragmentShader: `uniform sampler2D tColor, tDepth; uniform float cNear, cFar, uSpeed, uTime; uniform vec2 uRes; varying vec2 vUv;
+  defines: { TAPS: small ? 5 : 10 },
+  uniforms: { tColor: { value: rt.texture }, tDepth: { value: rt.depthTexture }, tBloom: { value: bA.texture }, cNear: { value: camera.near }, cFar: { value: camera.far }, uSpeed: { value: 0 }, uTime: { value: 0 }, uCA: { value: 0.0008 }, uRes: { value: new THREE.Vector2(1, 1) } },
+  vertexShader: FSV,
+  fragmentShader: `uniform sampler2D tColor, tDepth, tBloom; uniform float cNear, cFar, uSpeed, uTime, uCA; uniform vec2 uRes; varying vec2 vUv;
+    vec3 tap(vec2 o, vec2 ca){ return vec3(texture2D(tColor, o - ca).r, texture2D(tColor, o).g, texture2D(tColor, o + ca).b); }
     void main(){
       float dz = texture2D(tDepth, vUv).x;
       float dist = (cNear * cFar) / (cFar - dz * (cFar - cNear));
       float b = clamp(uSpeed / max(dist, 0.6), 0.0, 0.07);
-      vec3 c = vec3(0.0); float w = 0.0;
-      float jit = fract(sin(dot(vUv * uRes, vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
-      for (int i = -10; i <= 10; i++) { float k = (float(i) + jit) / 10.0, wt = 1.0 - abs(k) * 0.5; c += texture2D(tColor, vUv + vec2(k * b * 0.5, 0.0)).rgb * wt; w += wt; }
-      c /= w;
-      vec2 q = vUv - 0.5; c *= 1.0 - dot(q, q) * 0.5;
-      c = mix(c, c * vec3(1.02, 0.99, 1.03), 0.5);
-      float n = fract(sin(dot(vUv * uRes + uTime * 61.0, vec2(12.9898, 78.233))) * 43758.5453); c += (n - 0.5) * 0.014;
+      vec2 dir = vUv - 0.5; vec2 ca = dir * uCA * (0.4 + dot(dir, dir) * 3.0);
+      vec3 c;
+      if (b < 0.0004) c = tap(vUv, ca);
+      else {
+        float w = 0.0, jit = fract(sin(dot(vUv * uRes, vec2(12.9898, 78.233))) * 43758.5453) - 0.5; c = vec3(0.0);
+        for (int i = -TAPS; i <= TAPS; i++) { float k = (float(i) + jit) / float(TAPS), wt = 1.0 - abs(k) * 0.5; c += tap(vUv + vec2(k * b * 0.5, 0.0), ca) * wt; w += wt; }
+        c /= w;
+      }
+      c += texture2D(tBloom, vUv).rgb * 0.8;
+      vec2 q = vUv - 0.5; c *= 1.0 - dot(q, q) * 0.55;
+      float n = fract(sin(dot(vUv * uRes + uTime * 61.0, vec2(12.9898, 78.233))) * 43758.5453); c += (n - 0.5) * 0.012;
       gl_FragColor = vec4(c, 1.0);
       #include <tonemapping_fragment>
+      { vec3 g = clamp(gl_FragColor.rgb, 0.0, 1.0); float L = dot(g, vec3(0.2126, 0.7152, 0.0722));
+        g = mix(g, g * g * (3.0 - 2.0 * g), 0.22);                                     // un peu de contraste
+        g += vec3(-0.012, -0.004, 0.022) * (1.0 - L) + vec3(0.022, 0.006, -0.012) * L;  // ombres froides, lumières chaudes
+        gl_FragColor.rgb = g; }
       #include <colorspace_fragment>
     }`,
 }));
 const postScene = new THREE.Scene(); postScene.add(post);
-const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
 /* ---------- caméra : le trajet ---------- */
 const prof = (() => {                                           // accélération franche, croisière, freinage net
@@ -718,7 +815,7 @@ function goTo(i, instant = false) {
   if (instant || reduced) { camX = STOPS[i]; stop = i; trip = null; fadeFlash(); setTimeout(() => setActive(i), reduced ? 250 : 0); updateRoute(); return; }
   const dist = Math.abs(STOPS[i] - camX);
   trip = { from: camX, to: STOPS[i], t0: now, dur: 2.0 + 1.25 * Math.min(3, dist / 60), target: i, shown: false };
-  whoosh(trip.dur);
+  d.classList.add('jr-moving'); sound.whoosh(trip.dur);
 }
 function fadeFlash() { const f = $('.jr__flash'); if (!f) return; f.classList.remove('is-on'); void f.offsetWidth; f.classList.add('is-on'); }
 
@@ -728,16 +825,30 @@ $$('[data-letters]').forEach((el) => {
   const txt = el.textContent.trim(); el.setAttribute('aria-label', txt); el.textContent = '';
   [...txt].forEach((ch, k) => { const s = document.createElement('span'); s.className = 'ch'; s.setAttribute('aria-hidden', 'true'); s.textContent = ch; s.style.setProperty('--i', k); el.appendChild(s); });
 });
+const ghost = $('.jr__ghost');
 function setActive(i) {
-  stopsEl.forEach((el, k) => { el.classList.toggle('is-on', k === i); el.setAttribute('aria-hidden', k === i ? 'false' : 'true'); });
+  stopsEl.forEach((el, k) => {
+    if (el.classList.contains('is-on') && k !== i) { el.classList.add('is-leaving'); setTimeout(() => el.classList.remove('is-leaving'), 900); }
+    el.classList.toggle('is-on', k === i); el.setAttribute('aria-hidden', k === i ? 'false' : 'true');
+  });
   routeBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'step' : 'false'));
   if (i >= 0) { const at = $('[data-at]'); if (at) at.textContent = String(i + 1).padStart(2, '0'); }
   d.classList.toggle('jr-end', i === STOPS.length - 1);
+  if (ghost) {                                                    // le prénom géant, en filigrane derrière le décor
+    const nm = i >= 0 ? stopsEl[i].querySelector('[data-letters]') : null;
+    ghost.classList.remove('is-on');
+    if (nm) { ghost.textContent = nm.getAttribute('aria-label'); void ghost.offsetWidth; ghost.classList.add('is-on'); }
+  }
+}
+function arrivalText(i) {
+  const nm = stopsEl[i] && stopsEl[i].querySelector('[data-letters]');
+  if (nm) sound.ticks(nm.querySelectorAll('.ch').length, 0.045, 0.1);
+  sound.swish(0.42);
 }
 function updateRoute() { const k = clamp(camX / STOPS[STOPS.length - 1]); if (marker) marker.style.setProperty('--k', k.toFixed(4)); if (fillEl) fillEl.style.setProperty('--k', k.toFixed(4)); }
 
 let lock = 0;
-const step = (dir) => { const t = performance.now(); if (t < lock) return; const target = (trip ? trip.target : stop) + dir; if (target < 0 || target >= STOPS.length) return; lock = t + 900; goTo(target); };
+const step = (dir) => { if (!entered) return; const t = performance.now(); if (t < lock) return; const target = (trip ? trip.target : stop) + dir; if (target < 0 || target >= STOPS.length) return; lock = t + 900; goTo(target); };
 addEventListener('wheel', (e) => { e.preventDefault(); const dlt = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX; if (Math.abs(dlt) > 4) step(dlt > 0 ? 1 : -1); }, { passive: false });
 addEventListener('keydown', (e) => {
   if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); step(1); }
@@ -750,49 +861,53 @@ routeBtns.forEach((b) => b.addEventListener('click', () => goTo(+b.dataset.go)))
 $$('[data-next]').forEach((b) => b.addEventListener('click', () => step(1)));
 addEventListener('pointermove', (e) => { mouse.tx = (e.clientX / innerWidth) * 2 - 1; mouse.ty = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
 
-// le son : un vent très bas, un souffle à chaque trajet, une petite cloche à l’arrivée
-let ac = null, master = null, muted = false;
+// le son : musique douce (koto, nappe), vent, et les effets de motion design (journey-sound.js)
+const sound = createSound();
+let muted = false, entered = false;
 try { muted = localStorage.getItem('ms_jr_sound') === 'off'; } catch (e) { /* rien */ }
 const soundBtn = $('[data-sound]');
 const label = () => { if (soundBtn) soundBtn.textContent = muted ? 'Activer le son' : 'Couper le son'; };
 label();
-function audio() {
-  if (ac || muted) return;
-  try {
-    ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = 0.2; master.connect(ac.destination);
-    const len = ac.sampleRate * 4, buf = ac.createBuffer(1, len, ac.sampleRate), ch = buf.getChannelData(0); let b = 0;
-    for (let i = 0; i < len; i++) { b = (b + 0.02 * (Math.random() * 2 - 1)) / 1.02; ch[i] = b * 3.5; }
-    const src = ac.createBufferSource(), lp = ac.createBiquadFilter(), g = ac.createGain(); src.buffer = buf; src.loop = true; lp.type = 'lowpass'; lp.frequency.value = 420; g.gain.value = 0.35;
-    src.connect(lp); lp.connect(g); g.connect(master); src.start();
-  } catch (e) { ac = null; }
+if (soundBtn) soundBtn.addEventListener('click', () => {
+  muted = !muted; try { localStorage.setItem('ms_jr_sound', muted ? 'off' : 'on'); } catch (e) { /* rien */ }
+  sound.setMuted(muted); if (!muted) sound.start(); label();
+});
+$$('a, button').forEach((el) => { el.addEventListener('pointerenter', () => sound.hover()); el.addEventListener('click', () => sound.click()); });
+
+/* ---------- l’écran d’entrée : chargement, puis « avec ou sans le son » ---------- */
+const gate = $('[data-gate]'), loadEl = $('[data-load]'), gateActions = $('[data-gate-actions]');
+let loadTarget = 0, loadShown = 0, gateReady = false;
+function setLoad(p) { loadTarget = Math.max(loadTarget, p); }
+function tickLoad() {
+  loadShown += (loadTarget - loadShown) * 0.1; if (loadTarget - loadShown < 0.5) loadShown = loadTarget;
+  if (loadEl) loadEl.textContent = String(Math.round(loadShown)).padStart(3, '0');
+  if (gate) gate.style.setProperty('--p', (loadShown / 100).toFixed(3));
+  if (loadShown >= 100 && !gateReady) { gateReady = true; d.classList.add('jr-loaded'); if (gateActions) { gateActions.hidden = false; const b = gateActions.querySelector('button'); if (b) b.focus({ preventScroll: true }); } }
+  if (!gateReady) requestAnimationFrame(tickLoad);
 }
-['pointerdown', 'keydown', 'touchend', 'wheel'].forEach((ev) => addEventListener(ev, () => { if (!muted) audio(); if (ac && ac.state === 'suspended') ac.resume(); }, { passive: true }));
-function whoosh(dur) {
-  if (!ac || muted) return;
-  const t = ac.currentTime, len = Math.floor(ac.sampleRate * dur), buf = ac.createBuffer(1, len, ac.sampleRate), ch = buf.getChannelData(0);
-  for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
-  const src = ac.createBufferSource(), bp = ac.createBiquadFilter(), g = ac.createGain(); src.buffer = buf; bp.type = 'bandpass'; bp.Q.value = 0.6;
-  bp.frequency.setValueAtTime(260, t); bp.frequency.linearRampToValueAtTime(1500, t + dur * 0.45); bp.frequency.linearRampToValueAtTime(320, t + dur);
-  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.45, t + dur * 0.4); g.gain.linearRampToValueAtTime(0.0001, t + dur);
-  src.connect(bp); bp.connect(g); g.connect(master); src.start(t); src.stop(t + dur);
+function enter(withSound) {
+  if (entered || !gateReady) return; entered = true;
+  muted = !withSound; try { localStorage.setItem('ms_jr_sound', muted ? 'off' : 'on'); } catch (e) { /* rien */ }
+  sound.setMuted(muted); if (withSound) { sound.start(); sound.enter(); }
+  label(); d.classList.add('jr-in');
+  setTimeout(() => goTo(0), reduced ? 0 : 900);
 }
-function bell() {
-  if (!ac || muted) return;
-  const t = ac.currentTime;
-  [[659.25, 0.12], [987.77, 0.05], [1318.5, 0.025]].forEach(([f, a]) => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(a, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.6); o.connect(g); g.connect(master); o.start(t); o.stop(t + 2.7); });
-}
-if (soundBtn) soundBtn.addEventListener('click', () => { muted = !muted; try { localStorage.setItem('ms_jr_sound', muted ? 'off' : 'on'); } catch (e) { /* rien */ } if (master) master.gain.value = muted ? 0 : 0.2; if (!muted) audio(); label(); });
+$$('[data-enter]').forEach((b) => b.addEventListener('click', () => enter(b.dataset.enter === '1')));
+addEventListener('keydown', (e) => { if (!entered && gateReady && e.key === 'Enter') { e.preventDefault(); enter(true); } });
 
 /* ---------- mise en page ---------- */
 function resize() {
   const w = innerWidth, h = innerHeight;
-  renderer.setSize(w, h, false); rt.setSize(Math.floor(w * DPR), Math.floor(h * DPR)); reflRT.setSize(Math.floor(w * DPR * 0.5), Math.floor(h * DPR * 0.5));
-  ice.material.uniforms.uRes.value.set(Math.floor(w * DPR), Math.floor(h * DPR));
+  renderer.setPixelRatio(PR); renderer.setSize(w, h, false);
+  const W = Math.floor(w * PR), H = Math.floor(h * PR);
+  rt.setSize(W, H); reflRT.setSize(Math.floor(W * 0.5), Math.floor(H * 0.5));
+  bA.setSize(Math.max(1, W >> 2), Math.max(1, H >> 2)); bB.setSize(Math.max(1, W >> 2), Math.max(1, H >> 2)); brightMat.uniforms.uTexel.value.set(1 / W, 1 / H);
+  ice.material.uniforms.uRes.value.set(W, H);
   narrow = w / h < 0.95;
   fovBase = narrow ? 58 : 42; camZ = narrow ? 14 : 8; offX = narrow ? 6.5 : 0;
   camera.aspect = w / h; camera.updateProjectionMatrix();
-  flakes.uniforms.uScale.value = (h * DPR * 0.5) / Math.tan(THREE.MathUtils.degToRad(fovBase / 2));
-  post.material.uniforms.uRes.value.set(w * DPR, h * DPR);
+  flakes.uniforms.uScale.value = (h * PR * 0.5) / Math.tan(THREE.MathUtils.degToRad(fovBase / 2));
+  post.material.uniforms.uRes.value.set(W, H);
 }
 addEventListener('resize', resize);
 
@@ -801,16 +916,23 @@ const hemiSky = hemi.color.clone(), hemiGround = hemi.groundColor.clone();
 function renderReflection() {
   world.scale.y = -1; world.position.y = 2 * ICE_Y; sky.scale.y = -1; ice.visible = false;
   const si = sun.intensity; sun.intensity = 0; hemi.color.copy(hemiGround); hemi.groundColor.copy(hemiSky); hemi.intensity = 1.25;
-  renderer.clippingPlanes = [clip]; renderer.shadowMap.autoUpdate = false;
+  const nu = renderer.shadowMap.needsUpdate; renderer.shadowMap.needsUpdate = false;  // le reflet ne recalcule pas les ombres
+  renderer.clippingPlanes = [clip];
   renderer.setRenderTarget(reflRT); renderer.render(scene, camera);
-  renderer.clippingPlanes = []; renderer.shadowMap.autoUpdate = true;
+  renderer.clippingPlanes = []; renderer.shadowMap.needsUpdate = nu;
   world.scale.y = 1; world.position.y = 0; sky.scale.y = 1; ice.visible = true;
   sun.intensity = si; hemi.color.copy(hemiSky); hemi.groundColor.copy(hemiGround); hemi.intensity = 1.05;
 }
 
 /* ---------- la boucle ---------- */
 const look = new THREE.Vector3();
-let last = 0, frames = 0;
+let last = 0, frames = 0, shadowKey = null, fAcc = 0, fN = 0;
+function adapt(dt) {                                              // qualité automatique : on baisse la résolution si l’appareil peine
+  fAcc += dt; fN++; if (fAcc < 2.5) return;
+  const fps = fN / fAcc; fAcc = 0; fN = 0;
+  if (fps < 42 && PR > DPR * 0.5 + 0.01) { PR = Math.max(DPR * 0.5, PR * 0.82); resize(); }
+  else if (fps > 57 && PR < DPR - 0.01) { PR = Math.min(DPR, PR * 1.12); resize(); }
+}
 function frame(ms) {
   requestAnimationFrame(frame);
   if (document.hidden) { last = 0; return; }
@@ -819,8 +941,8 @@ function frame(ms) {
   if (trip) {
     const u = (now - trip.t0) / trip.dur, [pp, vv] = prof(u);
     camX = lerp(trip.from, trip.to, pp); v = ((trip.to - trip.from) * vv) / trip.dur;
-    if (!trip.shown && u > 0.86) { trip.shown = true; setActive(trip.target); }
-    if (u >= 1) { stop = trip.target; camX = trip.to; trip = null; v = 0; bell(); bounceT = now; }
+    if (!trip.shown && u > 0.84) { trip.shown = true; d.classList.remove('jr-moving'); setActive(trip.target); arrivalText(trip.target); }
+    if (u >= 1) { stop = trip.target; camX = trip.to; trip = null; v = 0; sound.arrive(); bounceT = now; }
   }
   const a = (v - vel) / Math.max(dt, 1e-3); vel = v; acc += (a - acc) * Math.min(1, dt * 6);
   pitch += ((-acc * 0.0011) - pitch) * Math.min(1, dt * 5);
@@ -835,27 +957,29 @@ function frame(ms) {
   camera.rotateZ(-vel * 0.0009);
   sky.position.copy(camera.position);
   // l’ombre suit la caméra, calée sur la grille des texels (pas de scintillement)
-  const tg = Math.round((cx + 6) / 0.5) * 0.5;
-  sun.target.position.set(tg, 0, -14); sun.position.set(tg, 0, -14).addScaledVector(SUN_DIR, 110); sun.target.updateMatrixWorld();
+  const tg = Math.round((camX + offX + 6) / 0.5) * 0.5;
+  if (tg !== shadowKey) { shadowKey = tg; sun.target.position.set(tg, 0, -14); sun.position.set(tg, 0, -14).addScaledVector(SUN_DIR, 110); sun.target.updateMatrixWorld(); renderer.shadowMap.needsUpdate = true; }
   flakes.uniforms.uTime.value = now; flakes.uniforms.uCamX.value = cx;
   const U = post.material.uniforms;
   U.uSpeed.value = reduced ? 0 : (sp * 0.02) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect); U.uTime.value = now;
+  U.uCA.value = reduced ? 0.0008 : 0.0008 + spN * 0.0045;
   if (Math.abs(cx - POND.x) < 55) renderReflection();
   renderer.setRenderTarget(rt); renderer.render(scene, camera);
+  renderBloom();
   renderer.setRenderTarget(null); renderer.render(postScene, postCam);
-  updateRoute();
+  updateRoute(); adapt(dt);
+  if (frames === 4) setLoad(100);
 }
 
-/* ---------- départ : on arrive en roulant jusqu’au torii ---------- */
+/* ---------- départ : l’écran d’entrée, puis on arrive en roulant jusqu’au torii ---------- */
 resize();
+setLoad(58); requestAnimationFrame(tickLoad);
 const hold = Q.has('at') ? +Q.get('at') : null;
-skyMat.uniforms.tPano.value = panoRT.texture;
-renderPano().catch((e) => console.warn('[jr] pano', e)).then(() => {
+loadPano().catch((e) => console.warn('[jr] pano', e)).then(() => {
+  setLoad(86);
   requestAnimationFrame(frame);
-  setTimeout(() => {
-    d.classList.add('jr-ready');
-    if (hold !== null) { goTo(hold, true); } else goTo(0);
-  }, 120);
+  d.classList.add('jr-ready');
+  if (hold !== null) { loadTarget = loadShown = 100; gateReady = true; entered = true; d.classList.add('jr-loaded', 'jr-in'); goTo(hold, true); }   // captures et liens directs : sans écran d’entrée
 });
 
-window.__jr = { goTo, get x() { return camX; }, get frames() { return frames; }, pose(x, v = null) { camX = x; trip = null; forceV = v; }, trip: () => !!trip };
+window.__jr = { goTo, enter, get x() { return camX; }, get frames() { return frames; }, pose(x, v = null) { camX = x; trip = null; forceV = v; }, trip: () => !!trip };
