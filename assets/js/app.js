@@ -424,6 +424,48 @@
     io.observe(root);
   });
 
+  /* ---------- Fin de page, façon Lusion : on continue à descendre, le cercle se remplit, on entre dans « La tempête » ---------- */
+  safe('next', () => {
+    const sec = $('[data-next]');
+    if (!sec) return;
+    const fill = $('[data-next-fill]', sec), pct = $('[data-next-pct]', sec), link = $('[data-next-link]', sec), video = $('[data-next-video]', sec);
+    const C = 2 * Math.PI * 54;
+    let p = 0, lastIn = 0, raf = 0, going = false;
+    const atEnd = () => sec.getBoundingClientRect().bottom - window.innerHeight < 6;      // tout en bas de la page
+    const draw = () => {
+      fill.style.strokeDashoffset = (C * (1 - p)).toFixed(1);
+      pct.textContent = p > 0.01 ? Math.round(p * 100) + ' %' : 'Entrer';
+      sec.classList.toggle('is-loading', p > 0.01);
+    };
+    const go = () => {
+      if (going) return; going = true; p = 1; draw();
+      sec.classList.add('is-go'); track('xp_enter', { via: 'scroll' });
+      setTimeout(() => { location.href = link.href; }, reduced ? 0 : 950);
+    };
+    const loop = () => {
+      raf = 0;
+      if (!going && performance.now() - lastIn > 380) p = Math.max(0, p - 0.014);     // on lâche : le cercle redescend
+      draw();
+      if (p >= 1) { go(); return; }
+      if (p > 0 && !going) raf = requestAnimationFrame(loop);
+    };
+    const push = (amt) => { if (going || !atEnd()) return; p = Math.min(1, p + amt); lastIn = performance.now(); if (!raf) raf = requestAnimationFrame(loop); };
+    window.addEventListener('wheel', (e) => { if (e.deltaY > 0) push(Math.min(e.deltaY, 160) / 700); }, { passive: true });
+    let ty = null;
+    window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchmove', (e) => { if (ty === null) return; const dy = ty - e.touches[0].clientY; ty = e.touches[0].clientY; if (dy > 0) push(dy / 420); }, { passive: true });
+    window.addEventListener('keydown', (e) => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) push(0.18); });
+    link.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); go(); });
+    window.addEventListener('pageshow', () => { going = false; p = 0; sec.classList.remove('is-go'); draw(); });   // retour arrière
+    if (video && 'IntersectionObserver' in window && !reduced) {
+      new IntersectionObserver((entries) => entries.forEach((en) => {
+        if (en.isIntersecting) { if (video.preload !== 'auto') { video.preload = 'auto'; video.load(); } const pr = video.play(); if (pr) pr.catch(() => {}); }
+        else video.pause();
+      }), { rootMargin: '200px 0px' }).observe(video);
+    }
+    window.__msNext = { get p() { return p; }, get going() { return going; } };
+  });
+
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
   safe('ribbon', () => {
     const host = $('[data-ribbon]');

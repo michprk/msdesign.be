@@ -36,7 +36,9 @@ frémit au défilement, et se rembobine quand on remonte la page ; sur télépho
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 
 **La tempête** (`experience/`, page plein écran autonome, liée sous la vidéo de « M&S Studio » et dans le pied de
-page) : 12 000 pétales bleus en 3D (6 000 sur téléphone), éclairés et ombrés sur le fond crème (`experience/petales.js`,
+page) et, tout en bas de l’accueil, façon Lusion : une section plein écran avec la vidéo des pétales
+(`assets/video/tempete.mp4`, 10 s en boucle, enregistrée par `experience/?rec=1`) ; si l’on continue à descendre, un cercle
+se remplit (molette, glisser, flèche), puis un rond bleu couvre l’écran et on entre dans l’expérience. Aussi dans le menu : 12 000 pétales bleus en 3D (6 000 sur téléphone), éclairés et ombrés sur le fond crème (`experience/petales.js`,
 un seul InstancedMesh, matrices écrites à la main). Cinq formes : une fleur, le & de M&S, un écran de site, une planète
 avec son anneau qui tourne, « Vous ? » (un grand « ? » sur téléphone) avec le bouton de contact. Un cran de molette (ou
 flèche, ou glisser) = un tourbillon d’un tour, tous dans le même sens, vers la forme suivante ; la souris est le vent

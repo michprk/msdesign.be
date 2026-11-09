@@ -9,7 +9,8 @@ import * as THREE from '../assets/vendor/three.module.min.js';
 const d = document.documentElement;
 let reduced = /[?&]motion=reduce/.test(location.search);
 try { if (localStorage.getItem('ms_motion') === 'reduce') reduced = true; } catch (e) { /* rien */ }
-const small = Math.min(innerWidth, innerHeight) < 700 || (navigator.hardwareConcurrency || 8) <= 4;
+const REC = /[?&]rec=1/.test(location.search);                    // outil : enregistre la vidéo d’aperçu de l’accueil
+const small = !REC && (Math.min(innerWidth, innerHeight) < 700 || (navigator.hardwareConcurrency || 8) <= 4);
 const N = small ? 6000 : 12000;
 const CH = 5, DUR = 2.1;
 const $ = (s) => document.querySelector(s), $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -200,6 +201,7 @@ function resize() {
   const wide = camera.aspect > 1.15;
   const fit = wide ? Math.min(0.92, (visW * 0.66) / 9.6, (visH * 0.8) / 8.4) : Math.min(1, (visW * 0.94) / 9.6, (visH * 0.5) / 8.4);
   OX = wide ? visW * 0.14 : 0; OY = wide ? visH * 0.035 : visH * 0.16;
+  if (REC) { OX = 0; OY = 0; }
   PS = clamp(fit / 0.82, 0.36, 1) / (small ? 1.25 : 1);              // pétales à l’échelle de la forme (sinon, sur téléphone, on ne lit plus rien)
   wall.position.z = wide ? -3.2 : -1.4;
   buildForms(fit, !wide);
@@ -255,5 +257,41 @@ resize();
 addEventListener('resize', () => { resize(); });
 goTo(0, 0.25, true);
 d.classList.add('xp-ready');
-requestAnimationFrame(frame);
+if (REC) record(); else requestAnimationFrame(frame);
+
+/* ---------- outil : la vidéo d’aperçu (10 s en boucle : fleur → coup de vent → & → fleur), image par image ---------- */
+async function record() {
+  window.requestAnimationFrame = () => 0;                       // c’est nous qui faisons avancer le temps
+  const { Muxer, ArrayBufferTarget } = await import('/_msdesign-src/video/vendor/mp4-muxer.mjs');
+  const W = 1280, H = 720, FPS = 30, T = 10, PRE = 3.2;
+  const out = document.createElement('canvas'); out.width = W; out.height = H; const x = out.getContext('2d');
+  const bg = x.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.5, W * 0.72);
+  bg.addColorStop(0, '#fbf8f2'); bg.addColorStop(0.55, '#f5f1e9'); bg.addColorStop(1, '#ebe5d9');
+  const save = (p, b) => fetch('/__save?path=' + encodeURIComponent(p), { method: 'POST', body: b });
+  const muxer = new Muxer({ target: new ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: FPS }, fastStart: 'in-memory' });
+  let err = null; const enc = new VideoEncoder({ output: (c, m) => muxer.addVideoChunk(c, m), error: (e) => { err = e; } });
+  enc.configure({ codec: 'avc1.640028', width: W, height: H, bitrate: 1800000, framerate: FPS, latencyMode: 'quality', avc: { format: 'avc' } });
+  const r = canvas.getBoundingClientRect(), wx = (u) => r.left + u * r.width, wy = (v) => r.top + v * r.height;
+  let ms = 0;
+  for (let f = 0; f < PRE * FPS; f++) { ms += 1000 / FPS; frame(ms); }      // la fleur se forme avant l’enregistrement
+  const t0 = now;
+  for (let f = 0; f < T * FPS; f++) {
+    const t = f / FPS;
+    if (t >= 0.35 && t < 1.05) dispatchEvent(new PointerEvent('pointermove', { clientX: wx(0.3 + (t - 0.35) * 0.62), clientY: wy(0.52 + Math.sin(t * 5) * 0.05) }));
+    if (Math.abs(t - 1.1) < 0.5 / FPS) document.dispatchEvent(new PointerEvent('pointerleave'));
+    if (Math.abs(t - 1.8) < 0.5 / FPS) goTo(1, t0 + t);
+    if (Math.abs(t - 5.6) < 0.5 / FPS) goTo(0, t0 + t);
+    ms += 1000 / FPS; frame(ms);
+    x.fillStyle = bg; x.fillRect(0, 0, W, H); x.drawImage(canvas, 0, 0, W, H);
+    if (f === 0) await save('assets/img/tempete-poster.webp', await new Promise((res) => out.toBlob(res, 'image/webp', 0.84)));
+    const vf = new VideoFrame(out, { timestamp: Math.round(f * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+    enc.encode(vf, { keyFrame: f % 60 === 0 }); vf.close();
+    while (enc.encodeQueueSize > 6) await new Promise((res) => setTimeout(res, 5));
+    if (err) throw err;
+    if (f % 30 === 0) document.title = 'frame ' + f;
+  }
+  await enc.flush(); muxer.finalize();
+  await save('assets/video/tempete.mp4', new Blob([muxer.target.buffer], { type: 'video/mp4' }));
+  document.title = 'done ' + (muxer.target.buffer.byteLength / 1e6).toFixed(2) + ' MB';
+}
 window.__xp = { goTo, get chapter() { return chapter; }, N };
