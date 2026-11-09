@@ -189,9 +189,6 @@ strong { font-weight: 600; }
 .win--a { left: 0; top: 6%; width: 49.5%; z-index: 1; }
 .win--b { left: 52%; top: 0; width: 48%; z-index: 1; }
 .win--c { left: 27%; top: 41%; width: 58.5%; z-index: 2; }
-.hero__stack:hover .win--a { transform: translate(-6px, -4px); }
-.hero__stack:hover .win--b { transform: translate(6px, -6px); }
-.hero__stack:hover .win--c { transform: translateY(6px); }
 .badge { position: absolute; right: -3%; top: 53%; z-index: 3; display: grid; place-content: center; width: clamp(84px, 7.6vw, 112px); aspect-ratio: 1; border-radius: 50%; background: var(--blue); color: #fff; text-align: center; font: 600 10.5px/1.6 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; box-shadow: 0 16px 30px -14px rgba(21, 94, 239, 0.7); }
 .badge span { display: block; }
 /* trois atouts sous les boutons, séparés par un filet */

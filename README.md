@@ -102,6 +102,7 @@ Bruxelles, chacun avec un bandeau « Exemple de site fictif » et un lien de ret
   `&at=section`, `&plan=uccle`, `&gate=1`, `&menu=1`), `export.mjs` (copie autonome publiée dans le
   dépôt [michprk/strate](https://github.com/michprk/strate)). Polices Gloock, Hanken Grotesk, DM Mono (OFL).
 
+Dans le héros, les trois fenêtres sont des images fixes (ni lien, ni mouvement au survol), à la demande du client.
 Les quatre premiers partagent une feuille de style (`exemples/exemples.css`), sans JavaScript. Les captures des fenêtres
 sont faites par `_msdesign-src/cap-ex.sh <slug>` (1440 × 936) puis rognées par l’outil `#exshots`.
 Les photos (plantes, pain, maison, escalier) viennent de captures de sites envoyées par le client
