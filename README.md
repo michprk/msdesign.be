@@ -35,15 +35,20 @@ montent un à un, le bouton pastille « Notre méthode » et, derrière, **une f
 frémit au défilement, et se rembobine quand on remonte la page ; sur téléphone, sa boucle se pose à droite du bouton. Lien « Rencontrer l’équipe ». Partout : le texte des boutons et du
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 
-**La tempête** (`experience/`, page plein écran autonome, liée sous la vidéo de « M&S Studio » et dans le pied de
-page) et, tout en bas de l’accueil, façon Lusion : une section plein écran avec la vidéo des pétales
-(`assets/video/tempete.mp4`, 10 s en boucle, enregistrée par `experience/?rec=1`) ; si l’on continue à descendre, un cercle
-se remplit (molette, glisser, flèche), puis un rond bleu couvre l’écran et on entre dans l’expérience. Aussi dans le menu : 12 000 pétales bleus en 3D (6 000 sur téléphone), éclairés et ombrés sur le fond crème (`experience/petales.js`,
-un seul InstancedMesh, matrices écrites à la main). Cinq formes : une fleur, le & de M&S, un écran de site, une planète
-avec son anneau qui tourne, « Vous ? » (un grand « ? » sur téléphone) avec le bouton de contact. Un cran de molette (ou
-flèche, ou glisser) = un tourbillon d’un tour, tous dans le même sens, vers la forme suivante ; la souris est le vent
-(les pétales s’écartent puis reviennent), un clic = une bourrasque en anneau. Souffle synthétisé très discret, lien
-« Couper le son ». Respecte « Réduire les animations ». Test : `_msdesign-src/probe-xp.mjs [base] [w] [h]`.
+**Sous la surface** (`experience/`, page plein écran autonome) : une plongée en 3D (`experience/dive.js`, Three.js, aucun
+modèle ni image). Écran d’entrée « Plonger avec le son / sans le son » ; on arrive juste sous la surface (gouttes qui
+tombent, ronds vus d’en dessous, nénuphars), on descend, et au fond une **fleur de lotus bleue** s’ouvre : 34 pétales
+modélisés un à un (creux, veines, lumière qui les traverse), étamines, tige, rosette de feuilles. Sa tige est une chaîne
+physique : on **attrape la fleur** et on la tire jusqu’au sable, on la pousse en approchant la souris, un clic dans
+l’eau envoie une onde, un clic sur la fleur la fait « respirer » ; l’eau la freine et elle revient toujours. Autour :
+sable ridé, caustiques, rayons de lumière, herbiers qui suivent le courant, rochers, bulles, particules, profondeur de
+champ. Son synthétisé (`experience/dive-sound.js`) : gouttes, plongeon, bulles, grondement de l’eau, nappe douce.
+Enchaînement façon Lusion : tout en bas de l’accueil, une section plein écran montre la fleur en vidéo
+(`assets/video/plongee.mp4`, 10 s en boucle, enregistrée par `experience/?rec=1`) ; on continue à descendre (une dizaine
+de crans), un cercle se remplit, et on plonge. Sous l’eau, on continue encore à descendre (ou on maintient le cercle,
+sur téléphone) : on remonte vers la lumière et **la page Équipe** s’ouvre directement, sans écran d’entrée
+(`sessionStorage ms_from_dive`, `assets/js/journey-boot.js`). Liens : sous la vidéo de « M&S Studio », menu, pied de
+page. Tests : `_msdesign-src/probe-dive.mjs [base] [w] [h] [gate|live|all]`, `probe-dive-audio.mjs`, `probe-next.mjs`.
 
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
@@ -64,7 +69,7 @@ chromatique à la vitesse, étalonnage, paillettes sur la neige, fleurs lissées
 (`equipe.html?bakepano` → `assets/img/equipe-montagnes.webp`), ombres recalculées seulement quand on avance, résolution
 qui baisse toute seule si l’appareil peine. Son de motion design synthétisé (`assets/js/journey-sound.js`) : koto et
 nappe très doux, vent, whoosh qui traverse l’image, impact grave à l’arrêt, « tic » par lettre, swish, survols, « Réduire les animations »
-respecté (fondus au lieu des trajets). Test : `_msdesign-src/probe-jr.mjs [base] [w] [h] [arrêts]` et
+respecté (fondus au lieu des trajets). Réalisme : mise au point photographique (le premier plan est flou, le flou déborde des silhouettes), grain du bois et de la pierre calculé dans les matières, rochers et pierres de chemin arrondis, touffes d’aiguilles enneigées sur les pins, corde sacrée et papiers pliés sur le torii, pagode détaillée (panneaux de plâtre, rambardes, arêtes de toit, clochettes). Test : `_msdesign-src/probe-jr.mjs [base] [w] [h] [arrêts]` et
 `probe-jr-wheel.mjs`. Lien dans le menu (« Équipe ») et le pied de page.
 
 **Tarifs** : pas de grille affichée d’entrée (« Un prix sur mesure, fixé avant de commencer »). Une scène 3D
@@ -157,7 +162,7 @@ assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
 assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Tarifs
 assets/js/journey.js      le voyage 3D de la page Équipe (Japon d’hiver)
 equipe.html               l’équipe (Michal, Mamoudou, Adam)
-experience/               « La tempête », l’expérience 3D des pétales (page autonome)
+experience/               « Sous la surface », la plongée 3D et sa fleur (page autonome)
 assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
 scripts/                  build.sh, check-links.sh, export-hostinger.sh

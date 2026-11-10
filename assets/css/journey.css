@@ -129,3 +129,8 @@ html.reduced-motion .stop > *, html.reduced-motion .jr__ghost { transition: none
 .jr__main::before { transition: opacity 0.8s var(--ease); }
 .jr-moving .jr__main::before { opacity: 0; }
 .jr__bars i { z-index: 9; }
+
+/* ---------- arrivée depuis « Sous la surface » : pas d’écran d’entrée, on sort de l’eau dans la lumière ---------- */
+.jr-from-dive .gate { display: none; }
+.jr-from-dive body::before { content: ""; position: fixed; inset: 0; z-index: 35; background: #eef9ff; pointer-events: none; transition: opacity 1.8s var(--ease); }
+.jr-from-dive.jr-in body::before { opacity: 0; }

@@ -165,6 +165,7 @@ export function createSound() {
     },
     setMuted(m) { muted = m; if (ac) env(out.gain, [[now(), out.gain.value], [now() + 0.35, m ? 0 : 1]]); },
     get ready() { return !!ac; },
+    get running() { return !!ac && ac.state === 'running'; },
     get muted() { return muted; },
     whoosh, arrive, ticks, swish, hover, click, enter,
   };

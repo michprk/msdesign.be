@@ -424,7 +424,7 @@
     io.observe(root);
   });
 
-  /* ---------- Fin de page, façon Lusion : on continue à descendre, le cercle se remplit, on entre dans « La tempête » ---------- */
+  /* ---------- Fin de page, façon Lusion : on continue à descendre, le cercle se remplit, on plonge « Sous la surface » ---------- */
   safe('next', () => {
     const sec = $('[data-next]');
     if (!sec) return;
@@ -434,7 +434,7 @@
     const atEnd = () => sec.getBoundingClientRect().bottom - window.innerHeight < 6;      // tout en bas de la page
     const draw = () => {
       fill.style.strokeDashoffset = (C * (1 - p)).toFixed(1);
-      pct.textContent = p > 0.01 ? Math.round(p * 100) + ' %' : 'Entrer';
+      pct.textContent = p > 0.01 ? Math.round(p * 100) + ' %' : 'Plonger';
       sec.classList.toggle('is-loading', p > 0.01);
     };
     const go = () => {
@@ -450,11 +450,11 @@
       if (p > 0 && !going) raf = requestAnimationFrame(loop);
     };
     const push = (amt) => { if (going || !atEnd()) return; p = Math.min(1, p + amt); lastIn = performance.now(); if (!raf) raf = requestAnimationFrame(loop); };
-    window.addEventListener('wheel', (e) => { if (e.deltaY > 0) push(Math.min(e.deltaY, 160) / 700); }, { passive: true });
+    window.addEventListener('wheel', (e) => { if (e.deltaY > 0) push(Math.min(e.deltaY, 160) / 1150); }, { passive: true });
     let ty = null;
     window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
-    window.addEventListener('touchmove', (e) => { if (ty === null) return; const dy = ty - e.touches[0].clientY; ty = e.touches[0].clientY; if (dy > 0) push(dy / 420); }, { passive: true });
-    window.addEventListener('keydown', (e) => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) push(0.18); });
+    window.addEventListener('touchmove', (e) => { if (ty === null) return; const dy = ty - e.touches[0].clientY; ty = e.touches[0].clientY; if (dy > 0) push(dy / 700); }, { passive: true });
+    window.addEventListener('keydown', (e) => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) push(0.12); });
     link.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); go(); });
     window.addEventListener('pageshow', () => { going = false; p = 0; sec.classList.remove('is-go'); draw(); });   // retour arrière
     if (video && 'IntersectionObserver' in window && !reduced) {

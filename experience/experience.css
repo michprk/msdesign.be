@@ -1,40 +1,94 @@
-/* M&S Design — « La tempête » : la page en plein écran autour des pétales 3D */
+/* M&S Design — « Sous la surface » : la page en plein écran autour de la scène 3D */
 @font-face { font-family: "Fraunces"; src: url("../assets/fonts/fraunces-normal-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
 @font-face { font-family: "Fraunces"; src: url("../assets/fonts/fraunces-italic-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: italic; font-display: swap; }
 @font-face { font-family: "Instrument Sans"; src: url("../assets/fonts/instrument-sans-400-700-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
-:root { --bg: #f5f1e9; --ink: #171717; --muted: #6e6a63; --blue: #155eef; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+:root { --ink: #f2fbff; --ink-2: rgba(232, 247, 255, 0.76); --aqua: #8fe3ff; --deep: #072b42; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; }
-body.xp { margin: 0; overflow: hidden; background: radial-gradient(120% 90% at 50% 40%, #fbf8f2 0%, var(--bg) 55%, #ebe5d9 100%); color: var(--ink); font: 400 16px/1.5 "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; overscroll-behavior: none; touch-action: none; }
-.xp__gl { position: fixed; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s var(--ease); }
-.xp-ready .xp__gl { opacity: 1; }
-.xp__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.xp__top { position: fixed; inset: 0 0 auto; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 22px clamp(18px, 4vw, 48px); pointer-events: none; }
-.xp__top a { pointer-events: auto; color: var(--ink); text-decoration: none; }
-.xp__logo { font: 400 22px/1 "Fraunces", Georgia, serif; letter-spacing: 0.01em; }
-.xp__back { font: 500 14px/1 "Instrument Sans", sans-serif; padding: 10px 16px; border: 1px solid rgba(23, 23, 23, 0.16); border-radius: 999px; background: rgba(251, 249, 244, 0.7); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: background-color 0.3s; }
-.xp__back:hover { background: #fff; }
-.xp__main { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
-.xp__chapters { position: absolute; left: clamp(18px, 4vw, 48px); bottom: clamp(70px, 10vh, 110px); width: min(560px, calc(100vw - 36px)); margin: 0; padding: 0; list-style: none; }
-.xp__chapters li { position: absolute; left: 0; bottom: 0; width: 100%; opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.9s var(--ease); }
-.xp__chapters li.is-on { opacity: 1; transform: none; transition-delay: 0.45s; }
-.xp__kicker { margin: 0 0 10px; font: 600 12px/1.4 "Instrument Sans", sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); }
-.xp__title { margin: 0; font: 400 clamp(38px, 5vw, 72px)/1.02 "Fraunces", Georgia, serif; letter-spacing: -0.025em; }
-.xp__sub { margin: 14px 0 0; max-width: 30em; font-size: clamp(15px, 1.3vw, 18px); color: var(--muted); }
-.xp__cta { display: inline-flex; margin-top: 24px; padding: 15px 26px; border-radius: 999px; background: var(--blue); color: #fff; font: 600 16px/1 "Instrument Sans", sans-serif; text-decoration: none; pointer-events: auto; box-shadow: 0 18px 40px -18px rgba(21, 94, 239, 0.7); transition: transform 0.3s var(--ease), background-color 0.3s; }
-.xp__cta:hover { transform: translateY(-2px); background: #0f49c9; }
-.xp__chapters li:not(.is-on) .xp__cta { pointer-events: none; }
-.xp__dots { position: absolute; right: clamp(16px, 3vw, 40px); top: 50%; display: grid; gap: 12px; transform: translateY(-50%); pointer-events: auto; }
-.xp__dots button { width: 10px; height: 10px; padding: 0; border: 1.5px solid rgba(23, 23, 23, 0.35); border-radius: 50%; background: transparent; cursor: pointer; transition: background-color 0.3s, border-color 0.3s, transform 0.4s var(--ease); }
-.xp__dots button[aria-current="step"] { background: var(--blue); border-color: var(--blue); transform: scale(1.35); }
-.xp__foot { position: fixed; inset: auto 0 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px clamp(18px, 4vw, 48px); font-size: 13px; color: var(--muted); pointer-events: none; }
-.xp__foot p { margin: 0; }
-.xp__count { font: 600 12px/1 "Instrument Sans", sans-serif; letter-spacing: 0.14em; color: var(--ink); }
-.xp__sound { pointer-events: auto; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
-@media (max-width: 700px) {
-  .xp__hint { display: none; }
-  .xp__chapters { bottom: 64px; }
-  .xp__title { font-size: 36px; }
-  .xp__dots { top: auto; bottom: 22px; right: 50%; grid-auto-flow: column; transform: translateX(50%); }
+body.dv { margin: 0; overflow: hidden; background: #0b4263; color: var(--ink); font: 400 16px/1.55 "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+.dv__gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; opacity: 0; transition: opacity 1.2s var(--ease); }
+.dv-ready .dv__gl { opacity: 1; }
+.dv__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.dv__flash { position: fixed; inset: 0; z-index: 40; background: #eef9ff; opacity: 0; pointer-events: none; }
+.dv-go .dv__flash { opacity: 1; transition: opacity 0.9s cubic-bezier(0.6, 0, 0.3, 1); }
+
+.dv__top { position: fixed; inset: 0 0 auto; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 22px clamp(18px, 4vw, 52px); pointer-events: none; }
+.dv__top a { pointer-events: auto; color: var(--ink); text-decoration: none; }
+.dv__logo { font: 400 22px/1 "Fraunces", Georgia, serif; }
+.dv__back { padding: 10px 16px; border-radius: 999px; background: rgba(7, 43, 66, 0.4); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px rgba(232, 247, 255, 0.28); font: 500 14px/1 "Instrument Sans", sans-serif; transition: background-color 0.3s; }
+.dv__back:hover { background: rgba(7, 43, 66, 0.7); }
+
+/* l’écran d’entrée */
+.gate { --p: 0; position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; background: radial-gradient(90% 70% at 50% 45%, rgba(7, 43, 66, 0.25) 0%, rgba(4, 28, 44, 0.72) 100%); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: opacity 1.4s var(--ease), visibility 1.4s; }
+.dv-in .gate { opacity: 0; visibility: hidden; pointer-events: none; }
+.gate__in { width: min(640px, 100%); text-align: center; }
+.gate__in > * { opacity: 0; transform: translateY(18px); animation: gate-in 1.2s var(--ease) forwards; }
+.gate__in > :nth-child(2) { animation-delay: 0.12s; } .gate__in > :nth-child(3) { animation-delay: 0.24s; } .gate__in > :nth-child(4) { animation-delay: 0.36s; } .gate__in > :nth-child(6) { animation-delay: 0.5s; }
+@keyframes gate-in { to { opacity: 1; transform: none; } }
+.gate__kicker { margin: 0 0 18px; font: 600 12px/1.3 "Instrument Sans", sans-serif; letter-spacing: 0.24em; text-transform: uppercase; color: var(--aqua); }
+.gate__title { margin: 0; font: 400 clamp(52px, 8vw, 108px)/0.98 "Fraunces", Georgia, serif; letter-spacing: -0.03em; text-shadow: 0 6px 40px rgba(2, 20, 34, 0.5); }
+.gate__title em { font-style: italic; color: var(--aqua); }
+.gate__sub { margin: 20px auto 0; max-width: 28em; font-size: 17px; color: var(--ink-2); }
+.gate__load { display: flex; align-items: center; gap: 16px; width: min(340px, 100%); margin: 36px auto 0; }
+.gate__num { font: 500 13px/1 "Instrument Sans", sans-serif; letter-spacing: 0.12em; font-variant-numeric: tabular-nums; }
+.gate__num::after { content: " %"; color: var(--ink-2); }
+.gate__track { position: relative; flex: 1; height: 1.5px; background: rgba(232, 247, 255, 0.22); overflow: hidden; }
+.gate__track i { position: absolute; inset: 0; background: var(--aqua); transform: scaleX(var(--p)); transform-origin: left; }
+.dv-loaded .gate__load { visibility: hidden; height: 0; margin-top: 0; transition: visibility 0s 0.25s, height 0.5s var(--ease) 0.25s, margin 0.5s var(--ease) 0.25s; }
+.gate__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 18px; margin-top: 34px; }
+.gate__actions:not([hidden]) { animation: gate-in 1s var(--ease) both; }
+.gate__go { display: inline-flex; align-items: center; gap: 12px; padding: 18px 30px; border: 0; border-radius: 999px; background: #f2fbff; color: #072b42; font: 600 16px/1 "Instrument Sans", sans-serif; cursor: pointer; box-shadow: 0 20px 50px -20px rgba(143, 227, 255, 0.9); transition: transform 0.4s var(--ease), background-color 0.3s; }
+.gate__go:hover { transform: translateY(-2px); background: var(--aqua); }
+.gate__eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.gate__eq i { width: 2px; height: 100%; border-radius: 1px; background: currentColor; transform-origin: bottom; animation: eq 1s ease-in-out infinite; }
+.gate__eq i:nth-child(2) { animation-delay: -0.3s; } .gate__eq i:nth-child(3) { animation-delay: -0.55s; } .gate__eq i:nth-child(4) { animation-delay: -0.8s; }
+@keyframes eq { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+.gate__mute { padding: 17px 10px; border: 0; background: none; color: var(--ink-2); font: 500 15px/1 "Instrument Sans", sans-serif; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.gate__mute:hover { color: var(--ink); }
+.gate__hint { margin: 28px 0 0; font-size: 12.5px; letter-spacing: 0.06em; color: var(--ink-2); }
+
+/* une fois au fond */
+.dv__main { position: fixed; inset: 0; z-index: 8; pointer-events: none; }
+.dv__intro { position: absolute; left: clamp(18px, 4vw, 52px); bottom: clamp(30px, 6vh, 60px); width: min(430px, calc(100vw - 36px)); opacity: 0; transform: translateY(16px); transition: opacity 1.2s var(--ease) 0.5s, transform 1.4s var(--ease) 0.5s; }
+.dv-live .dv__intro { opacity: 1; transform: none; }
+.dv__kicker { margin: 0 0 10px; font: 600 12px/1.4 "Instrument Sans", sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: var(--aqua); }
+.dv__title { margin: 0; font: 400 clamp(34px, 3.8vw, 54px)/1.04 "Fraunces", Georgia, serif; letter-spacing: -0.02em; text-shadow: 0 4px 30px rgba(2, 20, 34, 0.55); }
+.dv__title em { font-style: italic; color: var(--aqua); }
+.dv__tips { display: grid; gap: 6px; margin: 18px 0 0; padding: 0; list-style: none; font-size: 14.5px; color: var(--ink-2); transition: opacity 1.2s var(--ease); }
+.dv__tips li { position: relative; padding-left: 16px; }
+.dv__tips li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: var(--aqua); }
+.dv__tips b { font-weight: 600; color: var(--ink); }
+.dv-touched .dv__tips { opacity: 0.45; }
+
+.dv__next { position: absolute; left: 50%; bottom: clamp(24px, 5vh, 48px); display: grid; justify-items: center; gap: 12px; transform: translateX(-50%) translateY(16px); opacity: 0; transition: opacity 1.2s var(--ease) 1.6s, transform 1.4s var(--ease) 1.6s; }
+.dv-live .dv__next { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
+.ring { position: relative; display: grid; place-items: center; width: 104px; height: 104px; padding: 0; border: 0; border-radius: 50%; background: rgba(7, 43, 66, 0.42); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--ink); cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; transition: transform 0.5s var(--ease); }
+.ring:hover { transform: scale(1.06); }
+.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring__track { fill: none; stroke: rgba(232, 247, 255, 0.25); stroke-width: 2; }
+.ring__fill { fill: none; stroke: var(--aqua); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; }
+.ring__pct { position: relative; font: 600 12.5px/1 "Instrument Sans", sans-serif; letter-spacing: 0.08em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.dv__hint { margin: 0; padding: 7px 14px; border-radius: 999px; background: rgba(7, 43, 66, 0.42); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font: 500 13px/1.4 "Instrument Sans", sans-serif; letter-spacing: 0.03em; text-align: center; }
+.dv__foot { position: fixed; right: clamp(18px, 4vw, 52px); bottom: 26px; z-index: 10; }
+.dv__sound { padding: 0; border: 0; background: none; color: var(--ink-2); font: 400 13px/1 "Instrument Sans", sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.dv__nogl { display: none; position: fixed; inset: 0; z-index: 50; margin: 0; place-content: center; padding: 24px; text-align: center; background: #072b42; }
+.dv__nogl a { color: var(--aqua); }
+.dv-nogl .dv__nogl { display: grid; }
+.dv-nogl .gate, .dv-nogl .dv__main { display: none; }
+:focus-visible { outline: 2px solid var(--aqua); outline-offset: 3px; }
+
+@media (max-width: 760px) {
+  .dv__intro { bottom: auto; top: 76px; }
+  .dv__title { font-size: 32px; }
+  .dv__tips { font-size: 13.5px; }
+  .dv__next { bottom: 22px; }
+  .ring { width: 92px; height: 92px; }
+  .dv__foot { top: 66px; right: 18px; bottom: auto; }
+}
+
+/* le cercle « L’équipe » : en bas à droite sur ordinateur (il ne cache pas la plante), au centre sur téléphone */
+@media (min-width: 761px) {
+  .dv__next { left: auto; right: clamp(18px, 4vw, 52px); bottom: 62px; justify-items: end; transform: translateY(16px); }
+  .dv-live .dv__next { transform: none; }
+  .dv__hint { text-align: right; }
 }

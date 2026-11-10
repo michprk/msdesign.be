@@ -20,6 +20,9 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 let seed = 20261108; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 const rr = (a, b) => a + (b - a) * rnd();
+let seed2 = 4242; const rnd2 = () => { seed2 = (seed2 * 16807) % 2147483647; return seed2 / 2147483647; };
+const rr2 = (a, b) => a + (b - a) * rnd2();
+const TAU = Math.PI * 2;
 function hash2(x, y) { let h = Math.imul(x | 0, 374761393) ^ Math.imul(y | 0, 668265263); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
 function noise(x, y) {
   const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
@@ -119,9 +122,27 @@ function add(kind, geo, m, color, snow = 0, x = 0, opt = {}) {
   }
   batch(kind, x).parts.push({ p: p.array, n: n.array, c: col });
 }
+function grain(mat, k) {
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.uGrain = { value: k };
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWP;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvWP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
+      varying vec3 vWP; uniform float uGrain;
+      float jrH3(vec3 p){ return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }
+      float jrN3(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+        return mix(mix(mix(jrH3(i), jrH3(i + vec3(1, 0, 0)), f.x), mix(jrH3(i + vec3(0, 1, 0)), jrH3(i + vec3(1, 1, 0)), f.x), f.y),
+                   mix(mix(jrH3(i + vec3(0, 0, 1)), jrH3(i + vec3(1, 0, 1)), f.x), mix(jrH3(i + vec3(0, 1, 1)), jrH3(i + vec3(1, 1, 1)), f.x), f.y), f.z); }`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+      float jrG = jrN3(vWP * 5.0) * 0.45 + jrN3(vWP * 21.0) * 0.3 + jrN3(vec3(vWP.x * 3.0, vWP.y * 44.0, vWP.z * 3.0)) * 0.25;      // taches, grain fin, fil du bois
+      { float snowy = smoothstep(0.6, 0.88, dot(diffuseColor.rgb, vec3(0.3333)));
+        diffuseColor.rgb *= mix(1.0 - uGrain * 0.5 + uGrain * jrG, 0.975 + 0.05 * jrG, snowy); }`)
+      .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\n      roughnessFactor = clamp(roughnessFactor + (jrG - 0.5) * uGrain * 0.8, 0.06, 1.0);');
+  };
+  return mat;
+}
 const MATS = {
-  solid: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.88, metalness: 0 }),
-  gloss: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.42, metalness: 0, envMapIntensity: 0.7 }),
+  solid: grain(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.88, metalness: 0 }), 0.42),
+  gloss: grain(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.42, metalness: 0, envMapIntensity: 0.7 }), 0.2),
   glow: new THREE.MeshBasicMaterial({ vertexColors: true }),
 };
 function buildBatches() {
@@ -222,6 +243,14 @@ function sakura(x, z, s = 1, depthMax = 3, lean = 0) {
 
 /* ---------- les pins noirs (coussins de neige) ---------- */
 const PAD = (() => { const g = new THREE.SphereGeometry(1, 16, 9); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const k = 1 + (noise(p.getX(i) * 3 + 5, p.getZ(i) * 3) - 0.5) * 0.35; p.setXYZ(i, p.getX(i) * k, p.getY(i) * k, p.getZ(i) * k); } g.computeVertexNormals(); return g; })();
+const NEEDLE = [];
+function tufts(cx, cy, cz, ax, ay, az, x0) {                  // des touffes d’aiguilles sur le dessus et les côtés d’un coussin
+  const n = small ? 5 : 11;
+  for (let k = 0; k < n; k++) {
+    const a = rnd2() * TAU, el = Math.acos(1 - rnd2() * 1.12), sx = Math.sin(el) * Math.cos(a), sy = Math.cos(el), sz = Math.sin(el) * Math.sin(a);
+    NEEDLE.push({ x: cx + sx * ax * 0.98, y: cy + sy * ay * 1.05 + 0.04, z: cz + sz * az * 0.98, size: rr2(0.62, 0.95) * (ax + az) * 0.42, cx: x0 });
+  }
+}
 function pine(x, z, s = 1) {
   const y0 = groundH(x, z) - 0.1, lean = rr(-0.5, 0.5);
   const pts = [new THREE.Vector3(x, y0, z), new THREE.Vector3(x + lean * 0.4 * s, y0 + 1.6 * s, z), new THREE.Vector3(x + lean * 1.1 * s, y0 + 3.2 * s, z + rr(-0.3, 0.3)), new THREE.Vector3(x + lean * 0.8 * s, y0 + 4.6 * s, z)];
@@ -233,13 +262,21 @@ function pine(x, z, s = 1) {
     const end = a.clone().add(new THREE.Vector3(side * reach, rr(0.1, 0.5) * s, rr(-0.6, 0.6) * s));
     add('solid', taperTube([a, a.clone().lerp(end, 0.5).add(new THREE.Vector3(0, 0.25 * s, 0)), end], 0.07 * s, 0.03 * s, 5, 5), null, '#3a302c', 0.6, x);
     const ps = (1.15 - t * 0.45) * s;
-    for (let c = 0; c < 3; c++) add('solid', PAD, mx(end.x + rr(-0.5, 0.5) * ps, end.y + rr(-0.05, 0.12) * ps, end.z + rr(-0.4, 0.4) * ps, 0, rr(0, 3), 0, ps * rr(0.7, 1.0), ps * rr(0.3, 0.4), ps * rr(0.6, 0.85)), '#33503f', 1, x, { vary: 0.08 });
+    for (let c = 0; c < 3; c++) {
+      const px = end.x + rr(-0.5, 0.5) * ps, py = end.y + rr(-0.05, 0.12) * ps, pz = end.z + rr(-0.4, 0.4) * ps, ro = rr(0, 3), ax = ps * rr(0.7, 1.0), ay = ps * rr(0.3, 0.4), az = ps * rr(0.6, 0.85);
+      add('solid', PAD, mx(px, py, pz, 0, ro, 0, ax, ay, az), '#2c4737', 1, x, { vary: 0.08 }); tufts(px, py, pz, ax, ay, az, x);
+    }
   }
-  add('solid', PAD, mx(pts[3].x, pts[3].y + 0.2 * s, pts[3].z, 0, rr(0, 3), 0, 0.9 * s, 0.4 * s, 0.8 * s), '#33503f', 1, x, { vary: 0.08 });
+  add('solid', PAD, mx(pts[3].x, pts[3].y + 0.2 * s, pts[3].z, 0, rr(0, 3), 0, 0.9 * s, 0.4 * s, 0.8 * s), '#2c4737', 1, x, { vary: 0.08 });
+  tufts(pts[3].x, pts[3].y + 0.2 * s, pts[3].z, 0.9 * s, 0.4 * s, 0.8 * s, x);
 }
 
 /* ---------- pierres, lanternes de pierre, lanternes de papier ---------- */
-const ROCK = (() => { const g = new THREE.IcosahedronGeometry(1, 2); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new THREE.Vector3().fromBufferAttribute(p, i), k = 0.75 + noise(v.x * 2 + 9, v.y * 2 + v.z) * 0.5; p.setXYZ(i, v.x * k, v.y * k * 0.7, v.z * k); } g.computeVertexNormals(); return g; })();
+const ROCK = (() => {
+  const g = new THREE.SphereGeometry(1, 24, 15), p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), k = 0.74 + 0.4 * noise(x * 1.5 + 9, y * 1.5 + z * 1.2) + 0.14 * noise(x * 4.2 + z * 3, y * 4.2 + 2); p.setXYZ(i, x * k, y * k * 0.7, z * k); }
+  g.computeVertexNormals(); return g;
+})();
 function rock(x, z, s = 1) { add('solid', ROCK, mx(x, groundH(x, z) + 0.15 * s, z, 0, rr(0, 6), 0, s * rr(0.8, 1.3), s * rr(0.6, 0.9), s), '#77736f', 1, x, { vary: 0.1 }); }
 const STONE = '#8d8984';
 function toro(x, z, s = 1, lit = true) {
@@ -310,6 +347,14 @@ function torii(x, z, s = 1) {
   beam(H + 0.05 * s, 0.42 * s, 0.6 * s, half * 2 + 3.2 * s, RED, 0, 0.45 * s);          // shimaki
   beam(H + 0.42 * s, 0.34 * s, 0.75 * s, half * 2 + 3.8 * s, DARK, 1, 0.62 * s);        // kasagi, noir, sous la neige
   beam(H + 0.66 * s, 0.14 * s, 0.7 * s, half * 2 + 3.5 * s, '#f6f7fb', 0, 0.62 * s);     // la neige posée dessus
+  // la corde de paille (shimenawa) et ses papiers blancs pliés en zigzag
+  const ropeY = y + H * 0.665, rp = [];
+  for (let i = 0; i <= 12; i++) { const t = i / 12; rp.push(new THREE.Vector3(x - half + t * half * 2, ropeY - Math.sin(t * Math.PI) * 0.42 * s, z + 0.36 * s)); }
+  add('solid', taperTube(rp, 0.085 * s, 0.085 * s, 8, 36), null, '#cbb07a', 0.45, x, { vary: 0.1 });
+  [0.2, 0.4, 0.6, 0.8].forEach((t) => {
+    const px = x - half + t * half * 2, py = ropeY - Math.sin(t * Math.PI) * 0.42 * s;
+    for (let j = 0; j < 3; j++) add('solid', BOX, mx(px + (j % 2 ? 0.07 : -0.07) * s, py - (0.2 + j * 0.2) * s, z + 0.38 * s, 0, 0, j % 2 ? -0.55 : 0.55, 0.2 * s, 0.2 * s, 0.012), '#f6f6f0', 0, x);
+  });
 }
 function pagoda(x, z) {
   const y = groundH(x, z);
@@ -322,9 +367,26 @@ function pagoda(x, z) {
     add('gloss', BOX, mx(x, yy + bh * 0.45, z + w / 2 + 0.012, 0, 0, 0, w * 0.34, bh * 0.66, 0.03), '#8e2f22', 0, x);
     [-1, 1].forEach((k) => add('solid', BOX, mx(x + k * (w / 2 - 0.06), yy + bh / 2, z + w / 2 + 0.02, 0, 0, 0, 0.1, bh, 0.06), '#5a2a1f', 0, x));
     add('solid', BOX, mx(x, yy + bh + 0.06, z, 0, 0, 0, w + 0.5, 0.12, w + 0.5), '#3a2a24', 0.3, x);       // la corniche
+    [-1, 1].forEach((k) => {                                                       // panneaux de plâtre et croisillons, de part et d’autre de la porte
+      add('solid', BOX, mx(x + k * w * 0.31, yy + bh * 0.5, z + w / 2 + 0.012, 0, 0, 0, w * 0.2, bh * 0.52, 0.03), '#efe5d3', 0, x);
+      add('solid', BOX, mx(x + k * w * 0.31, yy + bh * 0.5, z + w / 2 + 0.03, 0, 0, 0, 0.03, bh * 0.52, 0.02), '#5a2a1f', 0, x);
+      add('solid', BOX, mx(x + k * w * 0.31, yy + bh * 0.5, z + w / 2 + 0.03, 0, 0, 0, w * 0.2, 0.03, 0.02), '#5a2a1f', 0, x);
+      add('solid', BOX, mx(x + k * (w / 2 + 0.012), yy + bh * 0.5, z, 0, 0, 0, 0.03, bh * 0.52, w * 0.5), '#efe5d3', 0, x);
+    });
+    if (i > 0) {                                                                   // le balcon : une rambarde laquée
+      const rwid = w + 0.42, ry = yy + 0.3;
+      [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([ax, az]) => add('gloss', BOX, mx(x + ax * rwid / 2, ry, z + az * rwid / 2, 0, 0, 0, ax ? 0.05 : rwid, 0.05, az ? 0.05 : rwid), RED, 0.6, x));
+      [[1, 1], [1, -1], [-1, 1], [-1, -1], [0, 1], [1, 0], [-1, 0]].forEach(([sx, sz]) => add('gloss', BOX, mx(x + sx * rwid / 2, ry - 0.14, z + sz * rwid / 2, 0, 0, 0, 0.06, 0.34, 0.06), RED, 0.5, x));
+    }
     yy += bh;
-    const rw = w * 0.5 + 1.55, rh = 0.62;
-    add('solid', roofGeo(rw, w * 0.3, rh, 0.55), mx(x, yy + rh / 2, z), '#2f2a2a', 1, x);
+    const rw = w * 0.5 + 1.55, rh = 0.62, rtop = w * 0.3;
+    add('solid', roofGeo(rw, rtop, rh, 0.55), mx(x, yy + rh / 2, z), '#2f2a2a', 1, x);
+    [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([sx, sz]) => {                   // les arêtes du toit, et une clochette à chaque coin
+      const pts = []; for (let k = 0; k <= 8; k++) { const t = k / 8, want = rtop + (rw - rtop) * Math.pow(1 - t, 1.9); pts.push(new THREE.Vector3(x + sx * want, yy + t * rh + 0.55 * Math.pow(1 - t, 3) + 0.03, z + sz * want)); }
+      add('solid', taperTube(pts, 0.085, 0.05, 6, 16), null, '#262222', 1, x);
+      add('solid', cyl(0.007, 0.007, 0.22, 4), mx(pts[0].x, pts[0].y - 0.13, pts[0].z), '#2a2222', 0, x);
+      add('gloss', new THREE.SphereGeometry(0.075, 10, 8), mx(pts[0].x, pts[0].y - 0.27, pts[0].z, 0, 0, 0, 1, 1.25, 1), '#c9973c', 0, x);
+    });
     yy += rh * 0.5;
   }
   add('solid', cyl(0.06, 0.09, 3.6, 8), mx(x, yy + 1.8, z), '#6b5a3a', 0, x);
@@ -435,7 +497,11 @@ teahouse(SUBJ[4] + 1, -15);
 sakura(SUBJ[4] - 9, -17, 1.4, 4, 0.2); pine(SUBJ[4] + 12, -14, 1.2);
 
 // des pierres plates qui mènent à chaque lieu, et des buissons ronds sous la neige
-const STEP = (() => { const g = new THREE.CylinderGeometry(0.42, 0.46, 0.12, 11, 1); const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const a = Math.atan2(p.getZ(i), p.getX(i)), k = 0.82 + noise(a * 1.6 + 3, 1) * 0.36; p.setX(i, p.getX(i) * k); p.setZ(i, p.getZ(i) * k); } g.computeVertexNormals(); return g; })();
+const STEP = (() => {                                          // une pierre plate aux bords usés
+  const g = new THREE.SphereGeometry(1, 22, 12), p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), a = Math.atan2(z, x), k = 0.4 * (0.84 + noise(a * 1.6 + 3, 1) * 0.34); p.setXYZ(i, x * k, Math.sign(y) * Math.pow(Math.abs(y), 0.42) * 0.075 + (noise(x * 4, z * 4) - 0.5) * 0.02, z * k); }
+  g.computeVertexNormals(); return g;
+})();
 SUBJ.forEach((sx, i) => {
   const tz = [-10, -9, -15, -5, -10][i];
   for (let k = 0; k < 8; k++) {
@@ -470,21 +536,38 @@ STOPS.forEach((s, i) => {
 });
 fence(-60, -13, 1.4);
 
-/* ---------- les fleurs (une instance = un petit bouquet) ---------- */
-{
+/* ---------- les fleurs et les aiguilles (une instance = un petit bouquet) ---------- */
+const needleTex = canvasTex(256, 256, (x, w, h) => {            // une touffe d’aiguilles vue de côté, la neige posée dessus
+  const ox = w / 2, oy = h * 0.74;
+  for (let k = 0; k < 150; k++) {
+    const a = -Math.PI * (0.03 + 0.94 * rnd2()), L = w * (0.24 + 0.24 * rnd2()), g = 52 + Math.floor(rnd2() * 62);
+    x.strokeStyle = `rgb(${Math.floor(g * 0.38)},${g},${Math.floor(g * 0.6)})`; x.lineWidth = 1.6 + rnd2() * 1.5; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(ox + rr2(-9, 9), oy + rr2(-5, 5)); x.quadraticCurveTo(ox + Math.cos(a) * L * 0.5, oy + Math.sin(a) * L * 0.5 - 7, ox + Math.cos(a) * L, oy + Math.sin(a) * L); x.stroke();
+  }
+  for (let k = 0; k < 16; k++) { const a = Math.PI * (0.1 + 0.8 * rnd2()), L = w * (0.1 + 0.12 * rnd2()); x.strokeStyle = 'rgb(20,48,32)'; x.lineWidth = 2; x.beginPath(); x.moveTo(ox, oy); x.lineTo(ox + Math.cos(a) * L, oy + Math.sin(a) * L); x.stroke(); }
+  for (let k = 0; k < 26; k++) {                                // la neige : des paquets posés sur le haut de la touffe
+    const a = -Math.PI * (0.2 + 0.6 * rnd2()), r = w * (0.2 + 0.2 * rnd2()), px = ox + Math.cos(a) * r, py = oy + Math.sin(a) * r;
+    x.fillStyle = 'rgba(201,212,232,0.9)'; x.beginPath(); x.ellipse(px, py + 3, rr2(13, 23), rr2(6, 10), rr2(-0.4, 0.4), 0, TAU); x.fill();
+    x.fillStyle = 'rgba(250,251,255,0.97)'; x.beginPath(); x.ellipse(px, py, rr2(12, 22), rr2(5, 9), rr2(-0.4, 0.4), 0, TAU); x.fill();
+  }
+});
+function cards(list, tex, pal, { emissive = null, shadow = true, orient, rng } = {}) {
   const geo = new THREE.PlaneGeometry(1, 1);
-  const mat = new THREE.MeshStandardMaterial({ map: blossomTex, alphaTest: small ? 0.42 : 0.16, alphaToCoverage: !small, side: THREE.DoubleSide, roughness: 0.8, emissive: '#ffb7c9', emissiveMap: blossomTex, emissiveIntensity: 0.32 });
-  const depthMat = new THREE.MeshDepthMaterial({ map: blossomTex, alphaTest: 0.42, depthPacking: THREE.RGBADepthPacking });
-  const PAL = ['#ffffff', '#ffe6ee', '#ffd3df', '#ffc4d4', '#ffeef3'].map((c) => new THREE.Color(c));
-  const byChunk = new Map(); BLOOM.forEach((b) => { const k = chunkOf(b.cx); if (!byChunk.has(k)) byChunk.set(k, []); byChunk.get(k).push(b); });
+  const mat = new THREE.MeshStandardMaterial({ map: tex, alphaTest: small ? 0.42 : 0.16, alphaToCoverage: !small, side: THREE.DoubleSide, roughness: 0.8 });
+  if (emissive) { mat.emissive = new THREE.Color(emissive); mat.emissiveMap = tex; mat.emissiveIntensity = 0.32; }
+  const depthMat = shadow ? new THREE.MeshDepthMaterial({ map: tex, alphaTest: 0.42, depthPacking: THREE.RGBADepthPacking }) : null;
+  const PAL = pal.map((c) => new THREE.Color(c));
+  const byChunk = new Map(); list.forEach((b) => { const k = chunkOf(b.cx); if (!byChunk.has(k)) byChunk.set(k, []); byChunk.get(k).push(b); });
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
-  byChunk.forEach((list) => {
-    const im = new THREE.InstancedMesh(geo, mat, list.length);
-    list.forEach((b, i) => { e.set(rr(0, 6.3), rr(0, 6.3), rr(0, 6.3)); q.setFromEuler(e); m4.compose(new THREE.Vector3(b.x, b.y, b.z), q, new THREE.Vector3(b.size, b.size, b.size)); im.setMatrixAt(i, m4); im.setColorAt(i, PAL[Math.floor(rnd() * PAL.length)]); });
-    im.castShadow = true; im.receiveShadow = true; im.customDepthMaterial = depthMat;
+  byChunk.forEach((l) => {
+    const im = new THREE.InstancedMesh(geo, mat, l.length);
+    l.forEach((b, i) => { orient(e); q.setFromEuler(e); m4.compose(new THREE.Vector3(b.x, b.y, b.z), q, new THREE.Vector3(b.size, b.size, b.size)); im.setMatrixAt(i, m4); im.setColorAt(i, PAL[Math.floor(rng() * PAL.length)]); });
+    im.castShadow = shadow; im.receiveShadow = true; if (depthMat) im.customDepthMaterial = depthMat;
     im.computeBoundingSphere(); world.add(im);
   });
 }
+cards(BLOOM, blossomTex, ['#ffffff', '#ffe6ee', '#ffd3df', '#ffc4d4', '#ffeef3'], { emissive: '#ffb7c9', orient: (e) => e.set(rr(0, 6.3), rr(0, 6.3), rr(0, 6.3)), rng: rnd });
+cards(NEEDLE, needleTex, ['#ffffff', '#e6f2e4', '#d3e6d2', '#f2f7ee'], { shadow: false, orient: (e) => e.set(rr2(-0.45, 0.25), rr2(-1.05, 1.05), rr2(-0.5, 0.5), 'YXZ'), rng: rnd2 });
 
 /* ---------- le sol de neige (pétales tombés sous les cerisiers) ---------- */
 {
@@ -757,6 +840,36 @@ const blurMat = new THREE.ShaderMaterial({
     }`,
 });
 function pass(mat, target) { passMesh.material = mat; renderer.setRenderTarget(target); renderer.render(passScene, postCam); }
+// la mise au point : une copie floue de l’image, avec dans le canal alpha « à quel point ce pixel est trop près » ;
+// comme ce canal est flouté lui aussi, le flou du premier plan déborde de sa silhouette, comme avec un vrai objectif
+const dA = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }), dB = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType });
+const cocMat = new THREE.ShaderMaterial({
+  depthTest: false, depthWrite: false, toneMapped: false,
+  uniforms: { tColor: { value: rt.texture }, tDepth: { value: rt.depthTexture }, cNear: { value: camera.near }, cFar: { value: camera.far }, uFocus: { value: 22 } },
+  vertexShader: FSV,
+  fragmentShader: `uniform sampler2D tColor, tDepth; uniform float cNear, cFar, uFocus; varying vec2 vUv;
+    void main(){ float dz = texture2D(tDepth, vUv).x, dist = (cNear * cFar) / (cFar - dz * (cFar - cNear));
+      gl_FragColor = vec4(texture2D(tColor, vUv).rgb, smoothstep(uFocus * 0.5, uFocus * 0.16, dist)); }`,
+});
+const blurMatA = new THREE.ShaderMaterial({
+  depthTest: false, depthWrite: false, toneMapped: false,
+  uniforms: { tColor: { value: null }, uDir: { value: new THREE.Vector2() } },
+  vertexShader: FSV,
+  fragmentShader: `uniform sampler2D tColor; uniform vec2 uDir; varying vec2 vUv;
+    void main(){ vec4 c = texture2D(tColor, vUv) * 0.19648;
+      c += (texture2D(tColor, vUv + uDir * 1.41176) + texture2D(tColor, vUv - uDir * 1.41176)) * 0.29691;
+      c += (texture2D(tColor, vUv + uDir * 3.29412) + texture2D(tColor, vUv - uDir * 3.29412)) * 0.09447;
+      c += (texture2D(tColor, vUv + uDir * 5.17647) + texture2D(tColor, vUv - uDir * 5.17647)) * 0.01038;
+      gl_FragColor = c; }`,
+});
+function renderSoft() {
+  pass(cocMat, dA);
+  const B = blurMatA.uniforms;
+  B.tColor.value = dA.texture; B.uDir.value.set(1.2 / dA.width, 0); pass(blurMatA, dB);
+  B.tColor.value = dB.texture; B.uDir.value.set(0, 1.2 / dA.height); pass(blurMatA, dA);
+  B.tColor.value = dA.texture; B.uDir.value.set(2.4 / dA.width, 0); pass(blurMatA, dB);
+  B.tColor.value = dB.texture; B.uDir.value.set(0, 2.4 / dA.height); pass(blurMatA, dA);
+}
 function renderBloom() {
   pass(brightMat, bA);
   const B = blurMat.uniforms;
@@ -768,9 +881,9 @@ function renderBloom() {
 const post = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
   depthTest: false, depthWrite: false,
   defines: { TAPS: small ? 5 : 10 },
-  uniforms: { tColor: { value: rt.texture }, tDepth: { value: rt.depthTexture }, tBloom: { value: bA.texture }, cNear: { value: camera.near }, cFar: { value: camera.far }, uSpeed: { value: 0 }, uTime: { value: 0 }, uCA: { value: 0.0008 }, uRes: { value: new THREE.Vector2(1, 1) } },
+  uniforms: { tColor: { value: rt.texture }, tDepth: { value: rt.depthTexture }, tBloom: { value: bA.texture }, tSoft: { value: dA.texture }, uFocus: { value: 22 }, uDof: { value: small ? 0 : 1 }, cNear: { value: camera.near }, cFar: { value: camera.far }, uSpeed: { value: 0 }, uTime: { value: 0 }, uCA: { value: 0.0008 }, uRes: { value: new THREE.Vector2(1, 1) } },
   vertexShader: FSV,
-  fragmentShader: `uniform sampler2D tColor, tDepth, tBloom; uniform float cNear, cFar, uSpeed, uTime, uCA; uniform vec2 uRes; varying vec2 vUv;
+  fragmentShader: `uniform sampler2D tColor, tDepth, tBloom, tSoft; uniform float cNear, cFar, uSpeed, uTime, uCA, uFocus, uDof; uniform vec2 uRes; varying vec2 vUv;
     vec3 tap(vec2 o, vec2 ca){ return vec3(texture2D(tColor, o - ca).r, texture2D(tColor, o).g, texture2D(tColor, o + ca).b); }
     void main(){
       float dz = texture2D(tDepth, vUv).x;
@@ -784,6 +897,9 @@ const post = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMater
         for (int i = -TAPS; i <= TAPS; i++) { float k = (float(i) + jit) / float(TAPS), wt = 1.0 - abs(k) * 0.5; c += tap(vUv + vec2(k * b * 0.5, 0.0), ca) * wt; w += wt; }
         c /= w;
       }
+      if (uDof > 0.0) { vec4 soft = texture2D(tSoft, vUv);
+        float cn = max(smoothstep(uFocus * 0.5, uFocus * 0.16, dist), soft.a * 1.25), cf = smoothstep(uFocus * 3.0, uFocus * 11.0, dist) * 0.12;
+        c = mix(c, soft.rgb, clamp(max(cn, cf), 0.0, 1.0) * uDof); }
       c += texture2D(tBloom, vUv).rgb * 0.8;
       vec2 q = vUv - 0.5; c *= 1.0 - dot(q, q) * 0.55;
       float n = fract(sin(dot(vUv * uRes + uTime * 61.0, vec2(12.9898, 78.233))) * 43758.5453); c += (n - 0.5) * 0.012;
@@ -864,6 +980,9 @@ addEventListener('pointermove', (e) => { mouse.tx = (e.clientX / innerWidth) * 2
 // le son : musique douce (koto, nappe), vent, et les effets de motion design (journey-sound.js)
 const sound = createSound();
 let muted = false, entered = false;
+let fromDive = null;                                             // '1' : on arrive de « Sous la surface » avec le son, '0' : sans
+try { fromDive = sessionStorage.getItem('ms_from_dive'); sessionStorage.removeItem('ms_from_dive'); } catch (e) { /* rien */ }
+if (Q.has('at')) fromDive = null;
 try { muted = localStorage.getItem('ms_jr_sound') === 'off'; } catch (e) { /* rien */ }
 const soundBtn = $('[data-sound]');
 const label = () => { if (soundBtn) soundBtn.textContent = muted ? 'Activer le son' : 'Couper le son'; };
@@ -882,16 +1001,23 @@ function tickLoad() {
   loadShown += (loadTarget - loadShown) * 0.1; if (loadTarget - loadShown < 0.5) loadShown = loadTarget;
   if (loadEl) loadEl.textContent = String(Math.round(loadShown)).padStart(3, '0');
   if (gate) gate.style.setProperty('--p', (loadShown / 100).toFixed(3));
-  if (loadShown >= 100 && !gateReady) { gateReady = true; d.classList.add('jr-loaded'); if (gateActions) { gateActions.hidden = false; const b = gateActions.querySelector('button'); if (b) b.focus({ preventScroll: true }); } }
+  if (loadShown >= 100 && !gateReady) {
+    gateReady = true; d.classList.add('jr-loaded');
+    if (fromDive !== null) enter(fromDive === '1');
+    else if (gateActions) { gateActions.hidden = false; const b = gateActions.querySelector('button'); if (b) b.focus({ preventScroll: true }); }
+  }
   if (!gateReady) requestAnimationFrame(tickLoad);
 }
 function enter(withSound) {
   if (entered || !gateReady) return; entered = true;
   muted = !withSound; try { localStorage.setItem('ms_jr_sound', muted ? 'off' : 'on'); } catch (e) { /* rien */ }
-  sound.setMuted(muted); if (withSound) { sound.start(); sound.enter(); }
+  sound.setMuted(muted);
+  if (withSound) { sound.start(); if (fromDive === null) sound.enter(); else setTimeout(() => { if (sound.running) sound.enter(); }, 250); }
   label(); d.classList.add('jr-in');
-  setTimeout(() => goTo(0), reduced ? 0 : 900);
+  setTimeout(() => goTo(0), reduced ? 0 : fromDive !== null ? 350 : 900);
 }
+// si le navigateur a retenu le son (arrivée depuis la plongée, sans clic sur cette page), il démarre au premier geste
+['pointerdown', 'keydown', 'touchend'].forEach((ev) => addEventListener(ev, () => { if (entered && !muted && !sound.running) sound.start(); }, { passive: true }));
 $$('[data-enter]').forEach((b) => b.addEventListener('click', () => enter(b.dataset.enter === '1')));
 addEventListener('keydown', (e) => { if (!entered && gateReady && e.key === 'Enter') { e.preventDefault(); enter(true); } });
 
@@ -902,6 +1028,7 @@ function resize() {
   const W = Math.floor(w * PR), H = Math.floor(h * PR);
   rt.setSize(W, H); reflRT.setSize(Math.floor(W * 0.5), Math.floor(H * 0.5));
   bA.setSize(Math.max(1, W >> 2), Math.max(1, H >> 2)); bB.setSize(Math.max(1, W >> 2), Math.max(1, H >> 2)); brightMat.uniforms.uTexel.value.set(1 / W, 1 / H);
+  dA.setSize(Math.max(1, W >> 1), Math.max(1, H >> 1)); dB.setSize(Math.max(1, W >> 1), Math.max(1, H >> 1));
   ice.material.uniforms.uRes.value.set(W, H);
   narrow = w / h < 0.95;
   fovBase = narrow ? 58 : 42; camZ = narrow ? 14 : 8; offX = narrow ? 6.5 : 0;
@@ -926,7 +1053,8 @@ function renderReflection() {
 
 /* ---------- la boucle ---------- */
 const look = new THREE.Vector3();
-let last = 0, frames = 0, shadowKey = null, fAcc = 0, fN = 0;
+let last = 0, frames = 0, shadowKey = null, fAcc = 0, fN = 0, focus = 24;
+const FOCUS = [19, 22, 30, 21, 23];                              // distance du sujet de chaque arrêt
 function adapt(dt) {                                              // qualité automatique : on baisse la résolution si l’appareil peine
   fAcc += dt; fN++; if (fAcc < 2.5) return;
   const fps = fN / fAcc; fAcc = 0; fN = 0;
@@ -963,9 +1091,10 @@ function frame(ms) {
   const U = post.material.uniforms;
   U.uSpeed.value = reduced ? 0 : (sp * 0.02) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect); U.uTime.value = now;
   U.uCA.value = reduced ? 0.0008 : 0.0008 + spN * 0.0045;
+  focus += ((trip ? 30 : FOCUS[stop] + camZ - 8) - focus) * Math.min(1, dt * 2.2); U.uFocus.value = focus; cocMat.uniforms.uFocus.value = focus;
   if (Math.abs(cx - POND.x) < 55) renderReflection();
   renderer.setRenderTarget(rt); renderer.render(scene, camera);
-  renderBloom();
+  renderBloom(); if (!small) renderSoft();
   renderer.setRenderTarget(null); renderer.render(postScene, postCam);
   updateRoute(); adapt(dt);
   if (frames === 4) setLoad(100);
