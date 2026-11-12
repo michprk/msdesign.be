@@ -35,20 +35,29 @@ montent un à un, le bouton pastille « Notre méthode » et, derrière, **une f
 frémit au défilement, et se rembobine quand on remonte la page ; sur téléphone, sa boucle se pose à droite du bouton. Lien « Rencontrer l’équipe ». Partout : le texte des boutons et du
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 
-**Sous la surface** (`experience/`, page plein écran autonome) : une plongée en 3D (`experience/dive.js`, Three.js, aucun
-modèle ni image). Écran d’entrée « Plonger avec le son / sans le son » ; on arrive juste sous la surface (gouttes qui
-tombent, ronds vus d’en dessous, nénuphars), on descend, et au fond une **fleur de lotus bleue** s’ouvre : 34 pétales
-modélisés un à un (creux, veines, lumière qui les traverse), étamines, tige, rosette de feuilles. Sa tige est une chaîne
-physique : on **attrape la fleur** et on la tire jusqu’au sable, on la pousse en approchant la souris, un clic dans
-l’eau envoie une onde, un clic sur la fleur la fait « respirer » ; l’eau la freine et elle revient toujours. Autour :
-sable ridé, caustiques, rayons de lumière, herbiers qui suivent le courant, rochers, bulles, particules, profondeur de
-champ. Son synthétisé (`experience/dive-sound.js`) : gouttes, plongeon, bulles, grondement de l’eau, nappe douce.
-Enchaînement façon Lusion : tout en bas de l’accueil, une section plein écran montre la fleur en vidéo
-(`assets/video/plongee.mp4`, 10 s en boucle, enregistrée par `experience/?rec=1`) ; on continue à descendre (une dizaine
-de crans), un cercle se remplit, et on plonge. Sous l’eau, on continue encore à descendre (ou on maintient le cercle,
-sur téléphone) : on remonte vers la lumière et **la page Équipe** s’ouvre directement, sans écran d’entrée
-(`sessionStorage ms_from_dive`, `assets/js/journey-boot.js`). Liens : sous la vidéo de « M&S Studio », menu, pied de
-page. Tests : `_msdesign-src/probe-dive.mjs [base] [w] [h] [gate|live|all]`, `probe-dive-audio.mjs`, `probe-next.mjs`.
+**Sous la surface** (`experience/`, page plein écran autonome) : une expérience en 3D (`experience/dive.js`, Three.js).
+**La fleur est un lotus modélisé dans Blender** (connecteur MCP for Blender, `_msdesign-src/blender/lotus.blend`, rendu
+`lotus-rendu.png`) : pétale épais et creusé à bord ondulé (deux niveaux de détail), cœur du lotus avec ses graines, feuille
+ronde nervurée. Export dans un format maison (`experience/models/lotus.bin` + `lotus.json` : sommets entrelacés
+position/normale/uv, index ; repère Blender x, y, z → three.js x, z, −y), lu au chargement ; si le modèle manque, la
+fleur dessinée par le code prend le relais. **Entrée** : du noir (« on ne voit rien »), compteur, « Entrer avec le son /
+sans le son », puis **le passage « espace-temps »** dans la passe finale : une fente de lumière s’ouvre, des traînées
+filent de plus en plus vite avec des coups qui accélèrent (bam… bam…), impact, onde de choc qui ouvre l’image sur
+l’eau (pshh). Au fond : le lotus bleu (31 pétales qui se replient fermés, étamines, cœur qui grandit en s’ouvrant),
+4 feuilles de lotus sur leur tige, deux boutons, un banc de poissons qui tourne ensemble et fuit la main. **Les jeux** :
+attraper la fleur et la tirer jusqu’au sable (tige = chaîne physique), un clic sur la fleur la fait respirer, **un
+geste brusque près d’elle la referme d’un coup** (fleur timide, comme le mimosa), **un clic sur le sable plante une
+graine** (un petit lotus rose, blanc ou bleu sort en rebondissant puis s’ouvre ; 6 au plus, 3 sur téléphone), un clic
+dans l’eau envoie une onde, **le bouton « Nuit »** (ou N) éteint la lumière : l’eau devient noire, la lune remplace
+le soleil, la fleur s’allume et respire de la lumière, le plancton brille quand la main passe. Son synthétisé
+(`experience/dive-sound.js`) : gouttes, passage, plongeon, bulles, fleur timide, graine, nuit, nappe douce.
+Enchaînement façon Lusion : tout en bas de l’accueil, une section noire « Continuez à descendre. » avec une ligne et un
+compteur 000 → 100 ; à 100 % le texte s’efface, une fente de lumière s’ouvre au milieu du noir, et la page suivante
+continue le passage sans écran d’entrée (`sessionStorage ms_to_dive`, `experience/dive-boot.js` ; si le navigateur
+refuse de lancer le son tout seul, « Activer le son » et le premier geste l’allume). Sous l’eau, on continue encore à
+descendre (ou on maintient le cercle, sur téléphone) : on remonte vers la lumière et **la page Équipe** s’ouvre
+directement (`sessionStorage ms_from_dive`, `assets/js/journey-boot.js`). Tests : `_msdesign-src/probe-lotus.mjs
+[base] [w] [h] [live|warp|home|all]`, `dbg-lotus.mjs`, `probe-dive.mjs`, `probe-dive-audio.mjs`.
 
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.

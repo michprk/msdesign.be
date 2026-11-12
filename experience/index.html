@@ -6,16 +6,17 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="robots" content="noindex, nofollow">
 <title>Sous la surface — M&amp;S Design, studio web à Bruxelles</title>
-<meta name="description" content="Une expérience en 3D signée M&amp;S Design : on plonge, et au fond de l’eau une fleur modélisée en 3D s’ouvre. Attrapez-la, poussez-la : elle revient toujours.">
+<meta name="description" content="Une expérience en 3D signée M&amp;S Design : un passage à travers l’espace-temps, puis, au fond de l’eau, un lotus modélisé dans Blender. Attrapez-le, plantez-en d’autres, éteignez la lumière.">
 <meta property="og:title" content="Sous la surface — M&amp;S Design">
-<meta property="og:description" content="Une fleur en 3D qui vit sous l’eau. Attrapez-la.">
+<meta property="og:description" content="Un lotus en 3D qui vit sous l’eau. Attrapez-le.">
 <meta property="og:image" content="https://michprk.github.io/msdesign.be/og.jpg">
-<meta name="theme-color" content="#0b3a55">
+<meta name="theme-color" content="#000000">
 <link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-italic-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="experience.css?v=2">
-<script type="module" src="dive.js?v=2"></script>
+<link rel="stylesheet" href="experience.css?v=3">
+<script src="dive-boot.js?v=3"></script>
+<script type="module" src="dive.js?v=3"></script>
 </head>
 <body class="dv">
 <canvas class="dv__gl" aria-hidden="true"></canvas>
@@ -30,11 +31,11 @@
   <div class="gate__in">
     <p class="gate__kicker">M&amp;S Design · Expérience 3D</p>
     <p class="gate__title" id="gate-title">Sous <em>la surface.</em></p>
-    <p class="gate__sub">Au fond de l’eau, une fleur modélisée en 3D vous attend. Vous pourrez l’attraper.</p>
+    <p class="gate__sub">Un lotus modélisé en 3D vit au fond de l’eau.</p>
     <div class="gate__load" aria-hidden="true"><span class="gate__num" data-load>000</span><span class="gate__track"><i></i></span></div>
     <div class="gate__actions" data-gate-actions hidden>
-      <button class="gate__go" type="button" data-enter="1"><span class="gate__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Plonger avec le son</button>
-      <button class="gate__mute" type="button" data-enter="0">Plonger sans le son</button>
+      <button class="gate__go" type="button" data-enter="1"><span class="gate__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Entrer avec le son</button>
+      <button class="gate__mute" type="button" data-enter="0">Entrer sans le son</button>
     </div>
     <p class="gate__hint">Casque conseillé</p>
   </div>
@@ -47,8 +48,9 @@
     <p class="dv__title">Elle vit <em>sous la surface.</em></p>
     <ul class="dv__tips">
       <li><b>Attrapez-la</b> et tirez-la jusqu’au sable</li>
-      <li><b>Approchez</b>&nbsp;: l’eau la repousse</li>
-      <li><b>Cliquez</b>&nbsp;: elle respire</li>
+      <li><b>Effleurez-la vite</b>&nbsp;: elle se referme</li>
+      <li><b data-touch="Touchez le sable">Cliquez sur le sable</b>&nbsp;: une graine pousse</li>
+      <li><b>Éteignez la lumière</b>&nbsp;: elle brille</li>
     </ul>
   </div>
   <div class="dv__next">
@@ -60,7 +62,10 @@
   </div>
 </main>
 
-<footer class="dv__foot"><button class="dv__sound" type="button" data-sound>Couper le son</button></footer>
+<footer class="dv__foot">
+  <button class="dv__tool" type="button" data-night aria-pressed="false" aria-label="Éteindre la lumière"><span class="dv__moon" aria-hidden="true"></span>Nuit</button>
+  <button class="dv__sound" type="button" data-sound>Couper le son</button>
+</footer>
 <p class="dv__nogl">Votre navigateur n’affiche pas la 3D. <a href="/msdesign.be/equipe.html">Rencontrer l’équipe</a></p>
 </body>
 </html>

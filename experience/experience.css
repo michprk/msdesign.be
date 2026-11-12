@@ -5,40 +5,43 @@
 :root { --ink: #f2fbff; --ink-2: rgba(232, 247, 255, 0.76); --aqua: #8fe3ff; --deep: #072b42; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; }
-body.dv { margin: 0; overflow: hidden; background: #0b4263; color: var(--ink); font: 400 16px/1.55 "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+body.dv { margin: 0; overflow: hidden; background: #000; color: var(--ink); font: 400 16px/1.55 "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
 .dv__gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; opacity: 0; transition: opacity 1.2s var(--ease); }
 .dv-ready .dv__gl { opacity: 1; }
 .dv__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .dv__flash { position: fixed; inset: 0; z-index: 40; background: #eef9ff; opacity: 0; pointer-events: none; }
 .dv-go .dv__flash { opacity: 1; transition: opacity 0.9s cubic-bezier(0.6, 0, 0.3, 1); }
 
-.dv__top { position: fixed; inset: 0 0 auto; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 22px clamp(18px, 4vw, 52px); pointer-events: none; }
+.dv__top { position: fixed; inset: 0 0 auto; z-index: 31; display: flex; justify-content: space-between; align-items: center; padding: 22px clamp(18px, 4vw, 52px); pointer-events: none; transition: opacity 0.9s var(--ease); }
+.dv-warp .dv__top, .dv-warp .dv__foot, .dv-from-home:not(.dv-in) .dv__top, .dv-from-home:not(.dv-in) .dv__foot { opacity: 0; }
+.dv-warp .dv__top a, .dv-warp .dv__foot button { pointer-events: none; }
 .dv__top a { pointer-events: auto; color: var(--ink); text-decoration: none; }
 .dv__logo { font: 400 22px/1 "Fraunces", Georgia, serif; }
 .dv__back { padding: 10px 16px; border-radius: 999px; background: rgba(7, 43, 66, 0.4); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1px rgba(232, 247, 255, 0.28); font: 500 14px/1 "Instrument Sans", sans-serif; transition: background-color 0.3s; }
 .dv__back:hover { background: rgba(7, 43, 66, 0.7); }
 
-/* l’écran d’entrée */
-.gate { --p: 0; position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; background: radial-gradient(90% 70% at 50% 45%, rgba(7, 43, 66, 0.25) 0%, rgba(4, 28, 44, 0.72) 100%); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: opacity 1.4s var(--ease), visibility 1.4s; }
+/* l’écran d’entrée : du noir, presque rien, comme avant une salle de cinéma */
+.gate { --p: 0; position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; background: #000; transition: opacity 0.7s var(--ease), visibility 0.7s; }
 .dv-in .gate { opacity: 0; visibility: hidden; pointer-events: none; }
-.gate__in { width: min(640px, 100%); text-align: center; }
-.gate__in > * { opacity: 0; transform: translateY(18px); animation: gate-in 1.2s var(--ease) forwards; }
-.gate__in > :nth-child(2) { animation-delay: 0.12s; } .gate__in > :nth-child(3) { animation-delay: 0.24s; } .gate__in > :nth-child(4) { animation-delay: 0.36s; } .gate__in > :nth-child(6) { animation-delay: 0.5s; }
+.dv-from-home .gate { display: none; }
+.gate__in { width: min(560px, 100%); text-align: center; }
+.gate__in > * { opacity: 0; transform: translateY(14px); animation: gate-in 1.4s var(--ease) forwards; }
+.gate__in > :nth-child(2) { animation-delay: 0.14s; } .gate__in > :nth-child(3) { animation-delay: 0.28s; } .gate__in > :nth-child(4) { animation-delay: 0.4s; } .gate__in > :nth-child(6) { animation-delay: 0.55s; }
 @keyframes gate-in { to { opacity: 1; transform: none; } }
-.gate__kicker { margin: 0 0 18px; font: 600 12px/1.3 "Instrument Sans", sans-serif; letter-spacing: 0.24em; text-transform: uppercase; color: var(--aqua); }
-.gate__title { margin: 0; font: 400 clamp(52px, 8vw, 108px)/0.98 "Fraunces", Georgia, serif; letter-spacing: -0.03em; text-shadow: 0 6px 40px rgba(2, 20, 34, 0.5); }
+.gate__kicker { margin: 0 0 22px; font: 600 11.5px/1.3 "Instrument Sans", sans-serif; letter-spacing: 0.26em; text-transform: uppercase; color: rgba(242, 251, 255, 0.55); }
+.gate__title { margin: 0; font: 300 clamp(44px, 6.4vw, 88px)/1 "Fraunces", Georgia, serif; letter-spacing: -0.03em; }
 .gate__title em { font-style: italic; color: var(--aqua); }
-.gate__sub { margin: 20px auto 0; max-width: 28em; font-size: 17px; color: var(--ink-2); }
-.gate__load { display: flex; align-items: center; gap: 16px; width: min(340px, 100%); margin: 36px auto 0; }
+.gate__sub { margin: 18px auto 0; max-width: 26em; font-size: 15.5px; color: rgba(242, 251, 255, 0.6); }
+.gate__load { display: flex; align-items: center; gap: 16px; width: min(320px, 100%); margin: 40px auto 0; }
 .gate__num { font: 500 13px/1 "Instrument Sans", sans-serif; letter-spacing: 0.12em; font-variant-numeric: tabular-nums; }
 .gate__num::after { content: " %"; color: var(--ink-2); }
-.gate__track { position: relative; flex: 1; height: 1.5px; background: rgba(232, 247, 255, 0.22); overflow: hidden; }
-.gate__track i { position: absolute; inset: 0; background: var(--aqua); transform: scaleX(var(--p)); transform-origin: left; }
+.gate__track { position: relative; flex: 1; height: 1px; background: rgba(232, 247, 255, 0.18); overflow: hidden; }
+.gate__track i { position: absolute; inset: 0; background: #f2fbff; transform: scaleX(var(--p)); transform-origin: left; }
 .dv-loaded .gate__load { visibility: hidden; height: 0; margin-top: 0; transition: visibility 0s 0.25s, height 0.5s var(--ease) 0.25s, margin 0.5s var(--ease) 0.25s; }
 .gate__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 18px; margin-top: 34px; }
 .gate__actions:not([hidden]) { animation: gate-in 1s var(--ease) both; }
-.gate__go { display: inline-flex; align-items: center; gap: 12px; padding: 18px 30px; border: 0; border-radius: 999px; background: #f2fbff; color: #072b42; font: 600 16px/1 "Instrument Sans", sans-serif; cursor: pointer; box-shadow: 0 20px 50px -20px rgba(143, 227, 255, 0.9); transition: transform 0.4s var(--ease), background-color 0.3s; }
-.gate__go:hover { transform: translateY(-2px); background: var(--aqua); }
+.gate__go { display: inline-flex; align-items: center; gap: 12px; padding: 17px 28px; border: 0; border-radius: 999px; background: #f2fbff; color: #000; font: 600 15.5px/1 "Instrument Sans", sans-serif; cursor: pointer; transition: transform 0.4s var(--ease), background-color 0.3s, box-shadow 0.4s var(--ease); }
+.gate__go:hover { transform: translateY(-2px); background: #fff; box-shadow: 0 0 40px -6px rgba(143, 227, 255, 0.55); }
 .gate__eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
 .gate__eq i { width: 2px; height: 100%; border-radius: 1px; background: currentColor; transform-origin: bottom; animation: eq 1s ease-in-out infinite; }
 .gate__eq i:nth-child(2) { animation-delay: -0.3s; } .gate__eq i:nth-child(3) { animation-delay: -0.55s; } .gate__eq i:nth-child(4) { animation-delay: -0.8s; }
@@ -61,7 +64,8 @@ body.dv { margin: 0; overflow: hidden; background: #0b4263; color: var(--ink); f
 .dv-touched .dv__tips { opacity: 0.45; }
 
 .dv__next { position: absolute; left: 50%; bottom: clamp(24px, 5vh, 48px); display: grid; justify-items: center; gap: 12px; transform: translateX(-50%) translateY(16px); opacity: 0; transition: opacity 1.2s var(--ease) 1.6s, transform 1.4s var(--ease) 1.6s; }
-.dv-live .dv__next { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
+.dv-live .dv__next { opacity: 1; transform: translateX(-50%); }
+.dv-live .dv__next .ring { pointer-events: auto; }                 /* seul le cercle se clique : le sable autour reste à la fleur */
 .ring { position: relative; display: grid; place-items: center; width: 104px; height: 104px; padding: 0; border: 0; border-radius: 50%; background: rgba(7, 43, 66, 0.42); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--ink); cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; transition: transform 0.5s var(--ease); }
 .ring:hover { transform: scale(1.06); }
 .ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -69,7 +73,14 @@ body.dv { margin: 0; overflow: hidden; background: #0b4263; color: var(--ink); f
 .ring__fill { fill: none; stroke: var(--aqua); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; }
 .ring__pct { position: relative; font: 600 12.5px/1 "Instrument Sans", sans-serif; letter-spacing: 0.08em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
 .dv__hint { margin: 0; padding: 7px 14px; border-radius: 999px; background: rgba(7, 43, 66, 0.42); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font: 500 13px/1.4 "Instrument Sans", sans-serif; letter-spacing: 0.03em; text-align: center; }
-.dv__foot { position: fixed; right: clamp(18px, 4vw, 52px); bottom: 26px; z-index: 10; }
+.dv__foot { position: fixed; right: clamp(18px, 4vw, 52px); bottom: 26px; z-index: 10; display: flex; align-items: center; gap: 18px; transition: opacity 0.9s var(--ease); }
+/* le bouton « Nuit » : une petite lune ; le jour revenu, un petit soleil */
+.dv__tool { display: inline-flex; align-items: center; gap: 9px; padding: 9px 15px 9px 12px; border: 0; border-radius: 999px; background: rgba(7, 43, 66, 0.42); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(232, 247, 255, 0.28); color: var(--ink); font: 500 13px/1 "Instrument Sans", sans-serif; cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 1s var(--ease) 1.8s, visibility 0s 1.8s, background-color 0.3s; }
+.dv-live .dv__tool { opacity: 1; visibility: visible; }
+.dv__tool:hover { background: rgba(7, 43, 66, 0.72); }
+.dv__moon { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset -3.5px -2px 0 0 #dff4ff; transform: rotate(-20deg); transition: box-shadow 0.5s var(--ease), background-color 0.5s; }
+.dv__tool[aria-pressed="true"] .dv__moon { background: #ffd98a; box-shadow: 0 0 10px 2px rgba(255, 217, 138, 0.55); }
+.dv-night .dv__back, .dv-night .ring, .dv-night .dv__hint, .dv-night .dv__tool { background: rgba(2, 12, 22, 0.55); }
 .dv__sound { padding: 0; border: 0; background: none; color: var(--ink-2); font: 400 13px/1 "Instrument Sans", sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .dv__nogl { display: none; position: fixed; inset: 0; z-index: 50; margin: 0; place-content: center; padding: 24px; text-align: center; background: #072b42; }
 .dv__nogl a { color: var(--aqua); }
@@ -83,7 +94,9 @@ body.dv { margin: 0; overflow: hidden; background: #0b4263; color: var(--ink); f
   .dv__tips { font-size: 13.5px; }
   .dv__next { bottom: 22px; }
   .ring { width: 92px; height: 92px; }
-  .dv__foot { top: 66px; right: 18px; bottom: auto; }
+  .dv__foot { top: 66px; right: 18px; bottom: auto; flex-direction: column; align-items: flex-end; gap: 12px; }
+  .dv__intro { width: calc(100vw - 150px); }
+  .dv-touched .dv__tips { opacity: 0; }                              /* sur téléphone, les astuces laissent la place à la fleur dès le premier geste */
 }
 
 /* le cercle « L’équipe » : en bas à droite sur ordinateur (il ne cache pas la plante), au centre sur téléphone */

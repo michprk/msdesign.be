@@ -107,10 +107,59 @@ export function createDiveSound() {
     const a = noise(t, 0.9), hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800;
     const v = g(0); env(v.gain, [[t, 0], [t + 0.03, 0.5], [t + 0.9, 0.0001, 'exp']]); a.connect(hp); hp.connect(v); send(v, 0.5);
   }
+  // le passage « espace-temps » : une fente de lumière, une montée qui accélère (bam… bam…), l’impact, puis l’eau (pshh)
+  const WARP_HIT = 2.55;
+  function warp() {
+    if (!ac) return; const t = now() + 0.03;
+    [1760, 2637, 3520].forEach((f, k) => { const o = ac.createOscillator(); o.type = 'sine'; o.frequency.value = f; const v = g(0); env(v.gain, [[t, 0], [t + 0.02, 0.05 / (k + 1)], [t + 1.3, 0.0001, 'exp']]); o.connect(v); send(v, 0.8, (k - 1) * 0.4); o.start(t); o.stop(t + 1.4); });
+    const d = WARP_HIT - 0.35, t1 = t + 0.35;
+    const a = noise(t1, d), bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.3; env(bp.frequency, [[t1, 180], [t1 + d, 7000, 'exp']]);
+    const va = g(0); env(va.gain, [[t1, 0], [t1 + d * 0.9, 0.42, 'exp'], [t1 + d, 0.0001, 'exp']]); a.connect(bp); bp.connect(va); send(va, 0.3);
+    const o = ac.createOscillator(); o.type = 'sawtooth'; env(o.frequency, [[t1, 55], [t1 + d, 330, 'exp']]);
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; env(lp.frequency, [[t1, 300], [t1 + d, 2600, 'exp']]);
+    const vo = g(0); env(vo.gain, [[t1, 0], [t1 + d * 0.95, 0.09], [t1 + d, 0]]); o.connect(lp); lp.connect(vo); send(vo, 0.25); o.start(t1); o.stop(t1 + d + 0.05);
+    [0.55, 1.2, 1.68, 2.02, 2.27, 2.43].forEach((s, k) => {                  // les coups qui accélèrent
+      const tk = t + s, ok = ac.createOscillator(); ok.type = 'sine'; env(ok.frequency, [[tk, 120 + k * 12], [tk + 0.28, 42, 'exp']]);
+      const vk = g(0); env(vk.gain, [[tk, 0], [tk + 0.004, 0.32 + k * 0.06], [tk + 0.32, 0.0001, 'exp']]); ok.connect(vk); send(vk, 0.15); ok.start(tk); ok.stop(tk + 0.35);
+    });
+    const th = t + WARP_HIT;                                                     // l’impact
+    const ob = ac.createOscillator(); ob.type = 'sine'; env(ob.frequency, [[th, 130], [th + 1.2, 28, 'exp']]);
+    const vb = g(0); env(vb.gain, [[th, 0], [th + 0.006, 1.0], [th + 1.6, 0.0001, 'exp']]); ob.connect(vb); send(vb, 0.15); ob.start(th); ob.stop(th + 1.7);
+    const cr = noise(th, 0.25), hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2200;
+    const vc = g(0); env(vc.gain, [[th, 0.5], [th + 0.22, 0.0001, 'exp']]); cr.connect(hp); hp.connect(vc); send(vc, 0.5);
+    setTimeout(() => plunge(), (WARP_HIT + 0.03) * 1000);
+  }
+  // la fleur timide se referme : un frisson de feuilles et une note qui descend
+  function shy() {
+    if (!ac || muted) return; const t = now() + 0.01;
+    const a = noise(t, 0.5), bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 2; env(bp.frequency, [[t, 3200], [t + 0.45, 900, 'exp']]);
+    const v = g(0); env(v.gain, [[t, 0], [t + 0.05, 0.14], [t + 0.5, 0.0001, 'exp']]); a.connect(bp); bp.connect(v); send(v, 0.4);
+    [659.25, 493.88].forEach((f, k) => { const o = ac.createOscillator(); o.type = 'triangle'; o.frequency.value = f; const vv = g(0), tk = t + k * 0.13; env(vv.gain, [[tk, 0], [tk + 0.01, 0.07], [tk + 0.9, 0.0001, 'exp']]); o.connect(vv); send(vv, 0.7); o.start(tk); o.stop(tk + 1); });
+  }
+  // une graine qui pousse : un petit « plop » qui monte, puis une pluie de notes claires
+  function sprout(pan = 0) {
+    if (!ac || muted) return; const t = now() + 0.01;
+    const o = ac.createOscillator(); o.type = 'sine'; env(o.frequency, [[t, 180], [t + 0.12, 520, 'exp']]);
+    const v = g(0); env(v.gain, [[t, 0], [t + 0.01, 0.22], [t + 0.25, 0.0001, 'exp']]); o.connect(v); send(v, 0.4, pan); o.start(t); o.stop(t + 0.3);
+    [587.33, 739.99, 880, 1174.66].forEach((f, k) => { const tk = t + 0.9 + k * 0.16, ok = ac.createOscillator(); ok.type = 'sine'; ok.frequency.value = f; const vk = g(0); env(vk.gain, [[tk, 0], [tk + 0.01, 0.06], [tk + 1.6, 0.0001, 'exp']]); ok.connect(vk); send(vk, 0.8, pan); ok.start(tk); ok.stop(tk + 1.7); });
+    bubbles(6, 0.6, 0.7, pan);
+  }
+  // la nuit : la nappe descend d’une octave et s’assombrit, une note grave tenue
+  function night(on) {
+    if (!ac) return; const t = now();
+    env(muffle.frequency, [[t, muffle.frequency.value], [t + 2.5, on ? 900 : 2600, 'exp']]);
+    if (!muted && on) [73.42, 110, 164.81].forEach((f, k) => { const o = ac.createOscillator(); o.type = 'sine'; o.frequency.value = f; const v = g(0); env(v.gain, [[t, 0], [t + 2, 0.06 / (k + 1)], [t + 7, 0.0001, 'exp']]); o.connect(v); send(v, 0.8); o.start(t); o.stop(t + 7.2); });
+  }
+  // le son allumé après coup (déjà au fond) : directement l’ambiance du fond, sans le plongeon
+  function settle(nightOn) {
+    if (!ac) return; const t = now();
+    env(muffle.frequency, [[t, muffle.frequency.value], [t + 1.5, nightOn ? 900 : 2600, 'exp']]); env(pad.gain, [[t, pad.gain.value], [t + 3, 0.45]]);
+  }
   return {
+    get running() { return !!ac && ac.state === 'running'; },
     start() { if (!init()) return false; if (ac.state === 'suspended') ac.resume(); env(out.gain, [[now(), out.gain.value], [now() + 0.5, muted ? 0 : 1]]); return true; },
     setMuted(m) { muted = m; if (ac) env(out.gain, [[now(), out.gain.value], [now() + 0.35, m ? 0 : 1]]); },
     get ready() { return !!ac; }, get muted() { return muted; },
-    drop, bubbles, plunge, grab, release, breathe, rise, surface,
+    drop, bubbles, plunge, grab, release, breathe, rise, surface, warp, shy, sprout, night, settle, WARP_HIT,
   };
 }
