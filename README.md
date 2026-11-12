@@ -35,29 +35,28 @@ montent un à un, le bouton pastille « Notre méthode » et, derrière, **une f
 frémit au défilement, et se rembobine quand on remonte la page ; sur téléphone, sa boucle se pose à droite du bouton. Lien « Rencontrer l’équipe ». Partout : le texte des boutons et du
 menu roule vers le haut au survol, la flèche ↗ sort par le coin et revient.
 
-**Sous la surface** (`experience/`, page plein écran autonome) : une expérience en 3D (`experience/dive.js`, Three.js).
-**La fleur est un lotus modélisé dans Blender** (connecteur MCP for Blender, `_msdesign-src/blender/lotus.blend`, rendu
-`lotus-rendu.png`) : pétale épais et creusé à bord ondulé (deux niveaux de détail), cœur du lotus avec ses graines, feuille
-ronde nervurée. Export dans un format maison (`experience/models/lotus.bin` + `lotus.json` : sommets entrelacés
-position/normale/uv, index ; repère Blender x, y, z → three.js x, z, −y), lu au chargement ; si le modèle manque, la
-fleur dessinée par le code prend le relais. **Entrée** : du noir (« on ne voit rien »), compteur, « Entrer avec le son /
-sans le son », puis **le passage « espace-temps »** dans la passe finale : une fente de lumière s’ouvre, des traînées
-filent de plus en plus vite avec des coups qui accélèrent (bam… bam…), impact, onde de choc qui ouvre l’image sur
-l’eau (pshh). Au fond : le lotus bleu (31 pétales qui se replient fermés, étamines, cœur qui grandit en s’ouvrant),
-4 feuilles de lotus sur leur tige, deux boutons, un banc de poissons qui tourne ensemble et fuit la main. **Les jeux** :
-attraper la fleur et la tirer jusqu’au sable (tige = chaîne physique), un clic sur la fleur la fait respirer, **un
-geste brusque près d’elle la referme d’un coup** (fleur timide, comme le mimosa), **un clic sur le sable plante une
-graine** (un petit lotus rose, blanc ou bleu sort en rebondissant puis s’ouvre ; 6 au plus, 3 sur téléphone), un clic
-dans l’eau envoie une onde, **le bouton « Nuit »** (ou N) éteint la lumière : l’eau devient noire, la lune remplace
-le soleil, la fleur s’allume et respire de la lumière, le plancton brille quand la main passe. Son synthétisé
-(`experience/dive-sound.js`) : gouttes, passage, plongeon, bulles, fleur timide, graine, nuit, nappe douce.
-Enchaînement façon Lusion : tout en bas de l’accueil, une section noire « Continuez à descendre. » avec une ligne et un
-compteur 000 → 100 ; à 100 % le texte s’efface, une fente de lumière s’ouvre au milieu du noir, et la page suivante
-continue le passage sans écran d’entrée (`sessionStorage ms_to_dive`, `experience/dive-boot.js` ; si le navigateur
-refuse de lancer le son tout seul, « Activer le son » et le premier geste l’allume). Sous l’eau, on continue encore à
-descendre (ou on maintient le cercle, sur téléphone) : on remonte vers la lumière et **la page Équipe** s’ouvre
-directement (`sessionStorage ms_from_dive`, `assets/js/journey-boot.js`). Tests : `_msdesign-src/probe-lotus.mjs
-[base] [w] [h] [live|warp|home|all]`, `dbg-lotus.mjs`, `probe-dive.mjs`, `probe-dive-audio.mjs`.
+**Sous la surface** (`experience/`, page plein écran autonome, v31) : une expérience en 3D (`experience/dive.js`, Three.js).
+**Tout ce qui vit dans l’eau est modélisé dans Blender** (connecteur MCP for Blender, `_msdesign-src/blender/lotus.blend`) : le
+lotus (pétale large et creusé, bord ondulé, deux niveaux de détail, cœur avec ses 20 graines, feuille ronde nervurée) et
+**trois carpes koï** (corps, yeux, barbillons, nageoires fines). Export dans un format maison (`experience/models/lotus.bin`
++ `lotus.json` : sommets entrelacés position/normale/uv, index ; repère Blender x, y, z → three.js x, z, −y ; le JSON contient
+aussi le contour exact du pétale). **L’entrée, façon ORYZO (Lusion)** : dans le noir, un dessin technique du lotus vu de
+dessus se trace au rythme du chargement (axes et cercles de construction, contour de chaque pétale en pointillés, poignées de
+Bézier bleues, cotes et étiquettes) ; ce dessin est en vraie 3D, posé exactement sur la fleur ; les pétales se remplissent
+comme une jauge, puis le dessin se remplit de réalité (dévoilement circulaire) et devient le lotus. « Entrer avec le son » :
+la fleur s’ouvre, la caméra plonge dans son cœur, traverse les pétales, et l’eau apparaît autour (brouillard qui s’éclaircit,
+bulles) jusqu’à la vue d’ensemble. **La tige** : chaîne physique à pas fixe (1/120 s, images interpolées), main lissée, tête
+sans inertie quand on la tient, poussée de la souris sans à-coup ; mesure (`probe-v31.mjs jitter`) : tremblement moyen
+0,03 px contre 0,89 px en v30. **Les jeux** : attraper la fleur, un clic dessus = elle souffle un **anneau de bulles** qui
+monte crever la surface, **double-clic dans l’eau = granulés** que les carpes viennent manger, souris immobile = une carpe
+curieuse s’approche, clic dans l’eau = onde (les carpes fuient), clic sur le sable = une graine pousse, geste brusque près
+d’elle = elle se referme, bouton « Nuit ». Une seule astuce à la fois (en bas), elle change quand on l’a essayée. **Le son**
+(`experience/dive-sound.js`, tout synthétisé, façon motion design) : souffle inversé, whoosh qui traverse les pétales,
+plongeon grave, accord de cloches de verre (FM) à l’arrivée, nappe chaude et cloches rares avec écho ping-pong, gouttes et
+bulles réalistes (résonance de Minnaert), saturation douce et compresseur. Fin de l’accueil : section noire « Continuez à
+descendre. », compteur 000 → 100, puis une ligne de construction en pointillés traverse le noir et la page du lotus s’ouvre.
+Sous l’eau, on continue à descendre (ou on maintient le cercle) : **la page Équipe** (`sessionStorage ms_from_dive`).
+Tests : `_msdesign-src/probe-v31.mjs [base] [w] [h] [intro|live|jitter|all]`, `probe-dive-audio.mjs`, `probe-dive.mjs`.
 
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.

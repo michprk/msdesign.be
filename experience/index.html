@@ -14,9 +14,8 @@
 <link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/msdesign.be/assets/fonts/fraunces-italic-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="experience.css?v=3">
-<script src="dive-boot.js?v=3"></script>
-<script type="module" src="dive.js?v=3"></script>
+<link rel="stylesheet" href="experience.css?v=4">
+<script type="module" src="dive.js?v=4"></script>
 </head>
 <body class="dv">
 <canvas class="dv__gl" aria-hidden="true"></canvas>
@@ -28,15 +27,15 @@
 </header>
 
 <div class="gate" data-gate role="dialog" aria-modal="true" aria-labelledby="gate-title">
-  <div class="gate__in">
+  <div class="gate__head">
     <p class="gate__kicker">M&amp;S Design · Expérience 3D</p>
     <p class="gate__title" id="gate-title">Sous <em>la surface.</em></p>
-    <p class="gate__sub">Un lotus modélisé en 3D vit au fond de l’eau.</p>
-    <div class="gate__load" aria-hidden="true"><span class="gate__num" data-load>000</span><span class="gate__track"><i></i></span></div>
-    <div class="gate__actions" data-gate-actions hidden>
-      <button class="gate__go" type="button" data-enter="1"><span class="gate__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Entrer avec le son</button>
-      <button class="gate__mute" type="button" data-enter="0">Entrer sans le son</button>
-    </div>
+    <p class="gate__sub">Un lotus modélisé dans Blender, des carpes koï, l’eau. Entrez dans la fleur.</p>
+  </div>
+  <div class="gate__load" aria-hidden="true"><span class="gate__num" data-load>000</span><span class="gate__lbl">Modèle 3D · Lotus</span><span class="gate__track"><i></i></span></div>
+  <div class="gate__actions" data-gate-actions hidden>
+    <button class="gate__go" type="button" data-enter="1"><span class="gate__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Entrer avec le son</button>
+    <button class="gate__mute" type="button" data-enter="0">Entrer sans le son</button>
     <p class="gate__hint">Casque conseillé</p>
   </div>
 </div>
@@ -46,12 +45,7 @@
   <div class="dv__intro">
     <p class="dv__kicker">Expérience 3D · M&amp;S Design</p>
     <p class="dv__title">Elle vit <em>sous la surface.</em></p>
-    <ul class="dv__tips">
-      <li><b>Attrapez-la</b> et tirez-la jusqu’au sable</li>
-      <li><b>Effleurez-la vite</b>&nbsp;: elle se referme</li>
-      <li><b data-touch="Touchez le sable">Cliquez sur le sable</b>&nbsp;: une graine pousse</li>
-      <li><b>Éteignez la lumière</b>&nbsp;: elle brille</li>
-    </ul>
+    <p class="dv__tip" data-tip aria-live="polite"><b data-tip-n>01</b><span data-tip-t>Attrapez la fleur et tirez-la jusqu’au sable</span></p>
   </div>
   <div class="dv__next">
     <button class="ring" type="button" data-ring aria-label="Continuer vers l’équipe">

@@ -436,10 +436,9 @@
       pct.textContent = String(Math.round(p * 100)).padStart(3, '0');
       sec.classList.toggle('is-loading', p > 0.01);
     };
-    // 100 % : une fente de lumière s’ouvre au milieu du noir… et la page suivante continue le passage (sans écran d’entrée)
+    // 100 % : une ligne de construction en pointillés traverse le noir… et la page suivante commence le dessin du lotus
     const go = (via) => {
       if (going) return; going = true; p = 1; draw();
-      try { sessionStorage.setItem('ms_to_dive', '1'); } catch (e) { /* rien */ }
       sec.classList.add('is-go'); track('xp_enter', { via });
       setTimeout(() => { location.href = link.href; }, reduced ? 0 : 650);
     };
