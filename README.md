@@ -62,8 +62,22 @@ Tests : `_msdesign-src/probe-v31.mjs [base] [w] [h] [intro|live|jitter|all]`, `p
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
 
-**L’équipe** (`equipe.html`, page plein écran autonome) : un voyage en 3D dans un Japon d’hiver, entièrement
-modélisé dans `assets/js/journey.js` (Three.js, aucun modèle ni image) : neige qui tombe et pétales roses, cerisiers en
+**L’équipe** (`equipe.html`, page plein écran autonome) : un voyage en 3D dans un Japon d’hiver.
+**Depuis la v33, les grands éléments sont modélisés dans Blender** (connecteur MCP for Blender, scripts reproductibles
+`_msdesign-src/blender/jp_lib.py` + `jp_torii.py`, `jp_toro.py`, `jp_pont.py`, `jp_pagode.py`, `jp_maison.py`, `jp_rochers.py`,
+tout relancer : `jp_all.py`) : le **torii** (piliers galbés et inclinés, cales, linteaux courbes biseautés, plaque dorée « M & S »,
+corde de paille torsadée, papiers pliés), la **lanterne de pierre** hexagonale (kasuga-dōrō : volutes aux angles, joyau, treillis),
+la **lanterne de papier** (cerceaux de bambou, anneaux laqués, gland), le **pont en arc** (84 planches, poteaux à pommeaux de
+bronze, trois lisses, piles contreventées), la **pagode à cinq étages** (consoles, chevrons à bouts blancs, fenêtres à barreaux
+verts, balcons, tuiles d’égout, clochettes, flèche de bronze à neuf anneaux ; un quart seulement est stocké, le site le répète
+quatre fois), la **maison de thé** (toit de chaume à quatre pans, faîtage à bois croisés, glaçons, cloisons de papier à
+croisillons, véranda, fenêtre ronde, bassin de pierre, bûches) et trois **rochers** taillés. Chaque modèle porte sa neige
+(bourrelets irréguliers) et, par sommet, **l’occlusion ambiante cuite** (ombres de contact) et **l’exposition au ciel** (la
+neige teinte seulement ce que le ciel voit : rien sous les avant-toits). Export compact `assets/models/japon.bin` + `japon.json`
+(positions sur 16 bits, normales et occlusion sur 8 bits, index sur 16 bits : 1,5 Mo, ≈ 0,75 Mo compressé), lu par
+`journey.js` qui range les pièces dans ses lots par matière ; si le fichier manque, l’ancien décor dessiné par le code prend
+le relais (`_msdesign-src/dbg-jr-fallback.mjs`). Les lanternes de papier se balancent au vent, la flamme des lanternes de
+pierre vacille. Le reste est construit dans `assets/js/journey.js` (Three.js) : neige qui tombe et pétales roses, cerisiers en
 fleurs (branches générées, bouquets de fleurs en instances), pins taillés sous la neige, lanternes de pierre et de
 papier allumées. Au loin, un vrai relief calculé au chargement (lancer de rayons sur un terrain, crêtes, neige selon
 la pente et l’altitude, ombres du soleil, forêts en contrebas, brume selon la distance, grand mont façon Fuji) et une

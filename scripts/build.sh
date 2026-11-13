@@ -17,7 +17,7 @@ cd "$(dirname "$0")/.."
 BOOT=$(cat assets/js/boot.js)
 case "$BOOT" in *"<"*) echo "boot.js ne doit contenir aucun caractère « < »" >&2; exit 1 ;; esac
 HASH=$(printf '%s' "$BOOT" | openssl dgst -sha256 -binary | openssl base64 -A)
-VER=$( { cat assets/css/main.css assets/js/app.js assets/js/amp.js assets/vendor/lenis.min.js; } | openssl dgst -md5 | awk '{print substr($NF,1,10)}')
+VER=$( { cat assets/css/main.css assets/js/app.js assets/js/amp.js assets/vendor/lenis.min.js assets/css/journey.css assets/js/journey.js assets/js/journey-sound.js assets/js/journey-boot.js assets/models/japon.bin; } | openssl dgst -md5 | awk '{print substr($NF,1,10)}')
 # API des formulaires (Cloudflare Workers) et mesure d’audience (Google Analytics 4, après accord)
 CSP="default-src 'self'; script-src 'self' 'sha256-$HASH' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.workers.dev; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
 CSP_HEADER="$CSP; frame-ancestors 'none'; upgrade-insecure-requests"

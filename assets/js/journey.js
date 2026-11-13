@@ -4,7 +4,8 @@
    La caméra accélère (flou de vitesse selon la profondeur), puis s’arrête net
    devant un lieu : le torii, le grand cerisier (Mamoudou), la pagode (Michal),
    le pont sur l’étang gelé (Adam), la maison de thé (contact).
-   Tout est modélisé dans ce fichier : aucun modèle, aucune image.
+   Les grands éléments (torii, lanternes, pont, pagode, maison de thé, rochers) sont modélisés dans Blender
+   (assets/models/japon.bin, scripts dans _msdesign-src/blender/jp_*.py) ; le reste est construit ici.
    ========================================================================== */
 import * as THREE from '../vendor/three.module.min.js';
 import { createSound } from './journey-sound.js';
@@ -29,6 +30,35 @@ function noise(x, y) {
   return lerp(lerp(hash2(xi, yi), hash2(xi + 1, yi), u), lerp(hash2(xi, yi + 1), hash2(xi + 1, yi + 1), u), v);
 }
 const fbm = (x, y) => noise(x, y) * 0.55 + noise(x * 2.1, y * 2.1) * 0.3 + noise(x * 4.3, y * 4.3) * 0.15;
+
+/* ---------- les modèles faits dans Blender : on lance le téléchargement tout de suite, le compteur avance déjà ---------- */
+let preLoad = 0;
+const preTimer = setInterval(() => {
+  preLoad = Math.min(42, preLoad + 0.8 + Math.random() * 1.6);
+  const el = $('[data-load]'), g = $('[data-gate]'); if (el) el.textContent = String(Math.round(preLoad)).padStart(3, '0'); if (g) g.style.setProperty('--p', (preLoad / 100).toFixed(3));
+}, 60);
+// format compact : par pièce, positions sur 16 bits dans sa boîte englobante, normales sur 8 bits, (occlusion, ciel) sur 8 bits, index sur 16 bits
+async function loadModels() {
+  try {
+    const base = new URL('../models/', import.meta.url), ver = new URL(import.meta.url).search || '?v=1', get = (f, k) => fetch(new URL(f + ver, base)).then((r) => { if (!r.ok) throw new Error(f); return r[k](); });
+    const [j, buf] = await Promise.all([get('japon.json', 'json'), get('japon.bin', 'arrayBuffer')]), out = {};
+    for (const [key, p] of Object.entries(j.parts)) {
+      const [model, rest] = key.split(':'), mat = rest.split('#')[0];
+      const q = new Int16Array(buf, p.p, p.n * 3), nq = new Int8Array(buf, p.nr, p.n * 3), a = new Uint8Array(buf, p.a, p.n * 2);
+      const pos = new Float32Array(p.n * 3), nor = new Float32Array(p.n * 3), uv = new Float32Array(p.n * 2);
+      for (let i = 0; i < p.n; i++) {
+        for (let k = 0; k < 3; k++) { pos[i * 3 + k] = p.c[k] + (q[i * 3 + k] / 32767) * p.h[k]; nor[i * 3 + k] = nq[i * 3 + k] / 127; }
+        uv[i * 2] = (a[i * 2] / 255) * 1.6; uv[i * 2 + 1] = a[i * 2 + 1] / 255;
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+      g.setIndex(new THREE.BufferAttribute(new Uint16Array(buf, p.i, p.ic), 1));
+      (out[model] = out[model] || []).push({ mat, geo: g });
+    }
+    return ['Torii', 'Toro', 'Chochin', 'Pont', 'Pagode', 'PagodeQ', 'Maison', 'Rocher1'].every((k) => out[k]) ? out : null;
+  } catch (e) { return null; }                                  // sans les modèles, le décor dessiné par le code prend le relais
+}
+const modelsP = loadModels();
 
 /* ---------- le parcours ---------- */
 const STOPS = [0, 60, 120, 180, 240];
@@ -104,23 +134,35 @@ const chunkOf = (x) => Math.floor((x + 30) / 60);
 const batches = new Map();
 function batch(kind, x) { const k = kind + ':' + chunkOf(x); if (!batches.has(k)) batches.set(k, { kind, parts: [] }); return batches.get(k); }
 const _c = new THREE.Color();
-function add(kind, geo, m, color, snow = 0, x = 0, opt = {}) {
+function colored(geo, m, color, snow = 0, opt = {}) {
   let g = geo.clone(); if (m) g.applyMatrix4(m);
   if (!g.attributes.normal) g.computeVertexNormals();
   if (g.index) g = g.toNonIndexed();
   const p = g.attributes.position, n = g.attributes.normal, col = new Float32Array(p.count * 3), base = new THREE.Color(color);
+  const bk = opt.baked && g.attributes.uv ? g.attributes.uv : null, aoK = opt.aoK === undefined ? 1 : opt.aoK;
   for (let i = 0; i < p.count; i++) {
     const px = p.getX(i), py = p.getY(i), pz = p.getZ(i);
     let s = 0;
     if (snow) s = smooth(0.38, 0.74, n.getY(i) + (noise(px * 3.1 + pz, py * 3.1) - 0.5) * 0.35) * snow;
+    if (bk && s) s *= smooth(0.12, 0.7, bk.getY(i));           // la neige ne se pose que là où le ciel est visible (pas sous les avant-toits)
     if (opt.hs) s = Math.max(s, smooth(opt.hs[0], opt.hs[1], py + (noise(px * 0.2, pz * 0.2) - 0.5) * opt.hs[2]));
     _c.copy(base);
     if (opt.vary) _c.offsetHSL(0, 0, (hash2(px * 13, pz * 13) - 0.5) * opt.vary);
     _c.lerp(SNOW, s);
+    if (bk) _c.multiplyScalar(opt.glow ? bk.getX(i) : lerp(1, 0.4 + 0.6 * smooth(0.0, 0.9, bk.getX(i)), aoK * (1 - 0.5 * s)));   // ombres de contact cuites dans Blender
     if (opt.mul) _c.multiplyScalar(opt.mul);
     col[i * 3] = _c.r; col[i * 3 + 1] = _c.g; col[i * 3 + 2] = _c.b;
   }
-  batch(kind, x).parts.push({ p: p.array, n: n.array, c: col });
+  return { p: p.array, n: n.array, c: col };
+}
+function add(kind, geo, m, color, snow = 0, x = 0, opt = {}) { batch(kind, x).parts.push(colored(geo, m, color, snow, opt)); }
+function geoOf(parts) {                                         // plusieurs pièces colorées → une seule géométrie
+  let n = 0; parts.forEach((q) => { n += q.p.length; });
+  const P = new Float32Array(n), N = new Float32Array(n), C = new Float32Array(n); let o = 0;
+  parts.forEach((q) => { P.set(q.p, o); N.set(q.n, o); C.set(q.c, o); o += q.p.length; });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(P, 3)); g.setAttribute('normal', new THREE.BufferAttribute(N, 3)); g.setAttribute('color', new THREE.BufferAttribute(C, 3));
+  g.computeBoundingSphere(); return g;
 }
 function grain(mat, k) {
   mat.onBeforeCompile = (sh) => {
@@ -277,10 +319,19 @@ const ROCK = (() => {
   for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i), z = p.getZ(i), k = 0.74 + 0.4 * noise(x * 1.5 + 9, y * 1.5 + z * 1.2) + 0.14 * noise(x * 4.2 + z * 3, y * 4.2 + 2); p.setXYZ(i, x * k, y * k * 0.7, z * k); }
   g.computeVertexNormals(); return g;
 })();
-function rock(x, z, s = 1) { add('solid', ROCK, mx(x, groundH(x, z) + 0.15 * s, z, 0, rr(0, 6), 0, s * rr(0.8, 1.3), s * rr(0.6, 0.9), s), '#77736f', 1, x, { vary: 0.1 }); }
 const STONE = '#8d8984';
+function rock(x, z, s = 1) {
+  const ry = rr(0, 6), sx = s * rr(0.8, 1.3), sy = s * rr(0.6, 0.9);                     // (mêmes tirages qu’avant : le décor ne bouge pas)
+  if (JP) { addModel('Rocher' + (1 + Math.floor(hash2(x * 7.3, z * 3.1) * 3)), mx(x, groundH(x, z) - 0.03 * s, z, 0, ry, 0, sx * 0.95, sy * 1.3, s * 0.95), x, { pierre: ['solid', '#77736f', 1, { vary: 0.1 }] }); return; }
+  add('solid', ROCK, mx(x, groundH(x, z) + 0.15 * s, z, 0, ry, 0, sx, sy, s), '#77736f', 1, x, { vary: 0.1 });
+}
 function toro(x, z, s = 1, lit = true) {
   const y = groundH(x, z);
+  if (JP) {                                                    // la lanterne de pierre modélisée (kasuga-dōrō), tournée un peu différemment à chaque fois
+    const k = s * 0.92; addModel('Toro', mx(x, y - 0.02, z, 0, 0.3 + hash2(x * 3.7, z * 9.1) * 1.05, 0, k), x);
+    if (lit) FLICKER.push({ s: glow(x, y + 1.5 * k, z + 0.05, 1.8 * s, '#ffa860', 0.55), o: 0.55, ph: x * 1.7 + z });
+    return;
+  }
   add('solid', cyl(0.42, 0.5, 0.22, 6), mx(x, y + 0.11 * s, z, 0, 0.3, 0, s), STONE, 1, x);
   add('solid', cyl(0.13, 0.16, 0.9, 10), mx(x, y + 0.67 * s, z, 0, 0, 0, s), STONE, 1, x);
   add('solid', cyl(0.42, 0.3, 0.18, 6), mx(x, y + 1.2 * s, z, 0, 0.3, 0, s), STONE, 1, x);
@@ -301,10 +352,13 @@ function paperLanterns(x0, x1, z, h, n, color = '#ff5b3a') {
   const curve = new THREE.CatmullRomCurve3(pts);
   for (let i = 0; i < n; i++) {
     const t = (i + 0.5) / n, p = curve.getPointAt(t), cy = p.y - 0.55, col = i % 3 === 1 ? '#ffd9a2' : color;
-    add('solid', cyl(0.004, 0.004, 0.3, 3), mx(p.x, p.y - 0.15, p.z), '#2a2222', 0, p.x);
-    add('glow', new THREE.SphereGeometry(0.27, 16, 12), mx(p.x, cy, p.z, 0, 0, 0, 1, 1.3, 1), col, 0, p.x, { mul: 2.6 });
-    add('solid', cyl(0.17, 0.17, 0.07, 12), mx(p.x, cy + 0.36, p.z), '#1d1717', 1, p.x);
-    add('solid', cyl(0.17, 0.17, 0.07, 12), mx(p.x, cy - 0.36, p.z), '#1d1717', 0, p.x);
+    if (JP) { hang(p.x, cy, p.z, i * 1.7, 1, col, col === color ? '#ff6a3a' : '#ffbe70', 2.4, 0.75); continue; }
+    else {
+      add('solid', cyl(0.004, 0.004, 0.3, 3), mx(p.x, p.y - 0.15, p.z), '#2a2222', 0, p.x);
+      add('glow', new THREE.SphereGeometry(0.27, 16, 12), mx(p.x, cy, p.z, 0, 0, 0, 1, 1.3, 1), col, 0, p.x, { mul: 2.6 });
+      add('solid', cyl(0.17, 0.17, 0.07, 12), mx(p.x, cy + 0.36, p.z), '#1d1717', 1, p.x);
+      add('solid', cyl(0.17, 0.17, 0.07, 12), mx(p.x, cy - 0.36, p.z), '#1d1717', 0, p.x);
+    }
     glow(p.x, cy, p.z + 0.1, 2.4, col === color ? '#ff6a3a' : '#ffbe70', 0.75);
   }
 }
@@ -330,7 +384,30 @@ function roofGeo(bottom, top, h, lift = 0.4) {
 
 /* ---------- les grands lieux ---------- */
 const RED = '#c2412d', DARK = '#2b211e', WOOD = '#4a3429';
+// chaque pièce d’un modèle porte le nom de sa matière : [lot, couleur, neige, options]
+const PM = {
+  rouge: ['gloss', RED, 0.55], noir: ['solid', DARK, 0.9], pierre: ['solid', STONE, 1, { vary: 0.07 }], paille: ['solid', '#cbb07a', 0.45, { vary: 0.1 }],
+  papier: ['solid', '#f6f6f0', 0], or: ['gloss', '#c9973c', 0.15], bronze: ['gloss', '#8a6f3e', 0.45], neige: ['solid', '#f6f7fb', 0, { aoK: 0.4 }],
+  bois: ['solid', WOOD, 0.9], bois_clair: ['solid', '#8a6a48', 0.8, { vary: 0.08 }], plancher: ['solid', WOOD, 0.8, { vary: 0.07 }], platre: ['solid', '#efe5d3', 0.25],
+  porte: ['gloss', '#7a2a1e', 0], vert: ['solid', '#3f6b54', 0], tuile: ['solid', '#2f2a2a', 1], chaume: ['solid', '#6a5a46', 1, { vary: 0.08 }],
+  glace: ['gloss', '#cfe6f5', 0, { aoK: 0.3 }], lumiere: ['glow', '#ffc77a', 0, { mul: 2.4, glow: true }],
+};
+function addModel(name, m, x, over = {}) {
+  for (const part of JP[name]) { const [kind, color, snow, opt] = over[part.mat] || PM[part.mat] || PM.pierre; add(kind, part.geo, m, color, snow, x, { ...(opt || {}), baked: true }); }
+}
+const SWAY = [], FLICKER = [];
+function hang(x, y, z, ry, s, col, glowCol, glowSize, glowOp) { // une lanterne de papier suspendue à son fil : elle se balance doucement au vent
+  const grp = new THREE.Group(), by = {}; grp.position.set(x, y + 0.56 * s, z);
+  for (const part of JP.Chochin) {
+    const [kind, color, snow, opt] = part.mat === 'lumiere' ? ['glow', col, 0, { mul: 2.6, glow: true }] : PM[part.mat];
+    (by[kind] = by[kind] || []).push(colored(part.geo, mx(0, -0.56 * s, 0, 0, ry, 0, s), color, snow, { ...(opt || {}), baked: true }));
+  }
+  for (const kind in by) { const m = new THREE.Mesh(geoOf(by[kind]), MATS[kind]); m.castShadow = kind !== 'glow'; grp.add(m); }
+  const sp = glow(0, 0, 0, glowSize, glowCol, glowOp); sp.position.set(0, -0.56 * s, 0.1); grp.add(sp);
+  world.add(grp); SWAY.push({ grp, ph: x * 0.37 + z * 0.11 });
+}
 function torii(x, z, s = 1) {
+  if (JP) { addModel('Torii', mx(x, Math.min(groundH(x - 2.6 * s, z), groundH(x + 2.6 * s, z)), z, 0, 0, 0, s), x); return; }
   const y = groundH(x, z), H = 6.2 * s, half = 2.6 * s;
   [-1, 1].forEach((k) => {
     add('gloss', cyl(0.3 * s, 0.36 * s, H, 20), mx(x + k * half, y + H / 2, z), RED, 0.4, x);
@@ -357,6 +434,12 @@ function torii(x, z, s = 1) {
   });
 }
 function pagoda(x, z) {
+  if (JP) {                                                    // la pagode modélisée : un socle et une flèche, plus un quart répété quatre fois
+    const S = 0.84, y0 = groundH(x, z + 3.1);
+    addModel('Pagode', mx(x, y0, z, 0, 0, 0, S), x);
+    for (let q = 0; q < 4; q++) addModel('PagodeQ', mx(x, y0, z, 0, (q * Math.PI) / 2, 0, S), x);
+    return;
+  }
   const y = groundH(x, z);
   add('solid', BOX, mx(x, y + 0.35, z, 0, 0, 0, 7.4, 1.0, 7.4), '#7d7873', 1, x);                     // socle de pierre
   for (let k = 0; k < 4; k++) add('solid', BOX, mx(x, y - 0.1 + k * 0.2, z + 4.3 + (3 - k) * 0.45, 0, 0, 0, 3, 0.2, 0.45), '#8a8580', 1, x);   // marches
@@ -394,6 +477,7 @@ function pagoda(x, z) {
   add('solid', new THREE.SphereGeometry(0.14, 10, 8), mx(x, yy + 3.65, z), '#9a7c40', 0, x);
 }
 function bridge(x, z) {
+  if (JP) { addModel('Pont', mx(x, -0.25, z), x); return; }
   const L = 17.4, W = 2.4, H = 2.7, y = -0.25;
   const arch = (u) => H * (1 - u * u);
   const deck = new THREE.BoxGeometry(L, 0.28, W, 40, 1, 1), p = deck.attributes.position;
@@ -423,6 +507,14 @@ const shojiTex = canvasTex(512, 256, (x, w, h) => {
   for (let i = 0; i < 16; i++) x.fillRect((i * w) / 16 - 1, 0, 2, h);
 });
 function teahouse(x, z) {
+  if (JP) {                                                    // la maison de thé modélisée, une lanterne de papier sous l’avant-toit
+    const y0 = Math.min(groundH(x - 4.5, z + 3), groundH(x + 4.5, z + 3), groundH(x - 4.5, z - 3), groundH(x + 4.5, z - 3), groundH(x, z + 4.3));
+    addModel('Maison', mx(x, y0, z), x, { lumiere: ['glow', '#ffdcae', 0, { mul: 1.9, glow: true }] });
+    hang(x + 5.3, y0 + 2.08, z + 3.95, 0.4, 0.95, '#ffd9a2', '#ffbe70', 2.2, 0.7);
+    glow(x, y0 + 1.9, z + 3.6, 9, '#ffb56a', 0.35);
+    toro(x - 7.4, z + 3.2, 0.9); toro(x + 6.7, z + 4.4, 0.9);
+    return;
+  }
   const y = groundH(x, z), W = 9, D = 6, H = 2.6;
   add('solid', BOX, mx(x, y + 0.3, z, 0, 0, 0, W + 1.2, 0.6, D + 1.2), '#77726c', 1, x);
   add('solid', BOX, mx(x, y + 0.62, z + D / 2 + 0.45, 0, 0, 0, W + 0.6, 0.12, 0.9), WOOD, 1, x);            // engawa
@@ -447,6 +539,8 @@ function fence(x0, x1, z) {
 }
 
 /* ---------- le décor : les cinq arrêts, puis ce qu’il y a entre ---------- */
+const JP = await modelsP;
+clearInterval(preTimer);
 // 0 · l’entrée
 torii(SUBJ[0], -11, 1);
 [[SUBJ[0] - 4.2, -8.5], [SUBJ[0] + 4.2, -8.5], [SUBJ[0] - 2.4, -18], [SUBJ[0] + 2.4, -18], [SUBJ[0] - 2.2, -27], [SUBJ[0] + 2.2, -27]].forEach(([a, b]) => toro(a, b, 0.95));
@@ -995,7 +1089,7 @@ $$('a, button').forEach((el) => { el.addEventListener('pointerenter', () => soun
 
 /* ---------- l’écran d’entrée : chargement, puis « avec ou sans le son » ---------- */
 const gate = $('[data-gate]'), loadEl = $('[data-load]'), gateActions = $('[data-gate-actions]');
-let loadTarget = 0, loadShown = 0, gateReady = false;
+let loadTarget = preLoad, loadShown = preLoad, gateReady = false;
 function setLoad(p) { loadTarget = Math.max(loadTarget, p); }
 function tickLoad() {
   loadShown += (loadTarget - loadShown) * 0.1; if (loadTarget - loadShown < 0.5) loadShown = loadTarget;
@@ -1088,6 +1182,8 @@ function frame(ms) {
   const tg = Math.round((camX + offX + 6) / 0.5) * 0.5;
   if (tg !== shadowKey) { shadowKey = tg; sun.target.position.set(tg, 0, -14); sun.position.set(tg, 0, -14).addScaledVector(SUN_DIR, 110); sun.target.updateMatrixWorld(); renderer.shadowMap.needsUpdate = true; }
   flakes.uniforms.uTime.value = now; flakes.uniforms.uCamX.value = cx;
+  if (!reduced) for (const L of SWAY) { L.grp.rotation.z = Math.sin(now * 1.05 + L.ph) * 0.05 + Math.sin(now * 0.37 + L.ph * 0.3) * 0.035; L.grp.rotation.x = Math.cos(now * 0.8 + L.ph) * 0.028; }
+  for (const f of FLICKER) f.s.material.opacity = f.o * (0.84 + 0.16 * noise(now * 3.3 + f.ph, f.ph * 0.7) + 0.06 * Math.sin(now * 17 + f.ph));
   const U = post.material.uniforms;
   U.uSpeed.value = reduced ? 0 : (sp * 0.02) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect); U.uTime.value = now;
   U.uCA.value = reduced ? 0.0008 : 0.0008 + spN * 0.0045;
@@ -1111,4 +1207,4 @@ loadPano().catch((e) => console.warn('[jr] pano', e)).then(() => {
   if (hold !== null) { loadTarget = loadShown = 100; gateReady = true; entered = true; d.classList.add('jr-loaded', 'jr-in'); goTo(hold, true); }   // captures et liens directs : sans écran d’entrée
 });
 
-window.__jr = { goTo, enter, get x() { return camX; }, get frames() { return frames; }, pose(x, v = null) { camX = x; trip = null; forceV = v; }, trip: () => !!trip };
+window.__jr = { goTo, enter, get models() { return !!JP; }, get x() { return camX; }, get frames() { return frames; }, pose(x, v = null) { camX = x; trip = null; forceV = v; }, trip: () => !!trip };
