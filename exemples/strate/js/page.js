@@ -1,5 +1,6 @@
 /* Strate — défilement par chapitres, arche, révélations, plans, calendrier.
    Un cran de molette = une animation entière (pas de défilement « au pas à pas »). */
+import Lenis from 'lenis';
 import { createAmbience } from './sound.js';
 const root = document.documentElement;
 const qs = (s, el = document) => el.querySelector(s), qsa = (s, el = document) => [...el.querySelectorAll(s)];
@@ -31,7 +32,7 @@ function measure() {
 measure();
 
 /* ---------- défilement amorti (Lenis) et chapitres ---------- */
-const Lenis = window.Lenis;
+// Lenis (défilement amorti) vient de npm, Vite l'intègre au fichier final.
 let lenis = null, lockUntil = 0, lastWheel = 0, lastDir = 0;
 const chapterY = (i) => (i <= 0 ? 0 : storyTop + i * vh);
 const currentScroll = () => (lenis ? lenis.targetScroll : scrollY);

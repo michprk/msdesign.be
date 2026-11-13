@@ -6,9 +6,11 @@
 #   bash scripts/export-hostinger.sh                 # pour https://www.msdesign.be
 #   bash scripts/export-hostinger.sh autre.be        # pour un autre domaine
 #
-# Résultat : dist/msdesign-hostinger.zip, à extraire dans public_html.
-# Ce que le script change par rapport à la version GitHub Pages :
-#   - adresses /msdesign.be/… → /… et https://michprk.github.io/msdesign.be → https://domaine
+# Résultat : dist-hostinger/msdesign-hostinger.zip, à extraire dans public_html.
+# Vite construit le site pour la racine du domaine (base « / » au lieu de
+# « /msdesign.be/ ») : il écrit lui-même les bonnes adresses des fichiers et des liens.
+# Ce que le script change en plus par rapport à la version GitHub Pages :
+#   - https://michprk.github.io/msdesign.be → https://domaine (et /msdesign.be/ dans public/)
 #   - le site devient visible sur Google (plus de « noindex », sauf la page 404)
 #   - les mentions « maquette de démonstration » disparaissent
 #   - les formulaires envoient les demandes à api/contact.php (e-mail côté serveur)
@@ -16,24 +18,23 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 DOMAIN="${1:-www.msdesign.be}"
-OUT="dist/public_html"
-ZIP="dist/msdesign-hostinger.zip"
+OUT="dist-hostinger/public_html"
+ZIP="dist-hostinger/msdesign-hostinger.zip"
 
-bash scripts/build.sh > /dev/null
-rm -rf dist
+# 1. construire le site pour la racine du domaine
+rm -rf dist-hostinger
+# (MSYS_NO_PATHCONV : sous Windows, Git Bash transformerait sinon « / » en « C:/Program Files/Git/ »)
+MSYS_NO_PATHCONV=1 npx vite build --base=/ --outDir "$OUT" --emptyOutDir --logLevel warn
+# 2. la réception du formulaire (PHP), qui n’existe pas sur GitHub Pages
 mkdir -p "$OUT/api"
-cp -r ./*.html etudes robots.txt sitemap.xml site.webmanifest favicon.svg favicon.ico favicon-32.png \
-      apple-touch-icon.png icon-192.png icon-512.png icon-maskable-512.png og.jpg .htaccess .well-known assets licenses "$OUT"/
 cp api/contact.php api/.htaccess "$OUT/api/"
-rm -f "$OUT/assets/js/boot.js"
 
+# 3. adresses du domaine, site visible sur Google, plus de mentions de démonstration
 export DOMAIN
 find "$OUT" -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt' -o -name '*.webmanifest' -o -name '*.js' -o -name '*.css' \) -print0 |
   xargs -0 perl -0pi -e '
     s{https://michprk\.github.io/msdesign.be}{__SITE__}g;
     s{/msdesign.be/}{/}g;
-    s{"/msdesign.be"}{""}g;
-    s{data-base="/msdesign.be"}{data-base=""}g;
     s{__SITE__}{https://$ENV{DOMAIN}}g;
     s{\n<!-- Maquette de démonstration[^\n]*-->}{}g;
     s{\n<meta name="robots" content="noindex, nofollow">}{}g unless $ARGV =~ m{404\.html$};
@@ -42,11 +43,7 @@ find "$OUT" -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt' -o -name
     s{\s*<p class="demo-note">.*?</p>}{}gs;
     s{GitHub Pages — GitHub, Inc\., 88 Colin P\. Kelly Jr\. Street, San Francisco, CA 94107, États-Unis \(phase de démonstration\)\.}{Hostinger International Ltd., 61 Lordou Vironos Street, 6023 Larnaca, Chypre.}g;
     s{GitHub Pages pendant la phase de démonstration, puis l’hébergeur du nom de domaine}{Hostinger International Ltd., Chypre}g;
-    s{<!--#include [a-z-]+-->\n}{}g;
-    s{<!--/include-->}{}g;
   '
-# robots.txt : à la racine du domaine, les chemins n’ont plus de préfixe
-perl -pi -e 's{^Disallow: /(partials|scripts)/}{Disallow: /$1/}' "$OUT/robots.txt"
 
 # Contrôles : plus aucune trace de l’adresse GitHub ni du mode démonstration
 # (la page 404 garde volontairement son « noindex »)

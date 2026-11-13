@@ -8,6 +8,8 @@
    d’audience après accord, barre d’action mobile, page 404.
    Chaque bloc est isolé : si l’un échoue, le reste du site fonctionne.
    ========================================================================== */
+import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
+
 (() => {
   'use strict';
   const d = document.documentElement;
@@ -23,7 +25,6 @@
   const EMAIL = 'mck.honorable@msdesign.be';
   const PHONE = '+32 486 61 11 59';
   const KEY = 'ms_';
-  const VER = ((document.currentScript && document.currentScript.src) || '').split('?v=')[1] || '';
   const euro = (n) => new Intl.NumberFormat('fr-BE', { maximumFractionDigits: 2 }).format(n) + ' €';
 
   /* ---------- Mesure d’audience (Google Analytics 4, uniquement après accord) ---------- */
@@ -117,8 +118,8 @@
   const heroInput = { wheel: null, touch: null };
   let lenis = null;
   safe('lenis', () => {
-    if (reduced || typeof window.Lenis !== 'function') return;
-    lenis = new window.Lenis({
+    if (reduced || typeof Lenis !== 'function') return;
+    lenis = new Lenis({
       lerp: 0.1, smoothWheel: true, syncTouch: false, autoRaf: true, respectReducedMotion: false,
       virtualScroll: (data) => {
         const ev = data.event;
@@ -305,7 +306,7 @@
     const loader = new IntersectionObserver((entries) => {
       if (!entries.some((e) => e.isIntersecting)) return;
       loader.disconnect();
-      import('/msdesign.be/assets/js/devis3d.js?v=' + VER).then(async (m) => {
+      import('./devis3d.js').then(async (m) => {
         steps.forEach((li, i) => li.style.setProperty('--dur', ((m.STEPS[i + 1] || m.END) - m.STEPS[i]).toFixed(2) + 's'));
         api = await m.createDevis3D(stage, {
           reduced,
@@ -399,31 +400,6 @@
     v.addEventListener('ended', close);
   });
 
-  /* ---------- L’équipe : la fleur bleue en 3D, un pétale par personne (chargée à l’approche) ---------- */
-  safe('bloom', () => {
-    const root = $('[data-bloom]'), stage = $('[data-bloom-stage]');
-    if (!root || !stage || !('IntersectionObserver' in window)) return;
-    const cards = $$('[data-person]', root);
-    const light = (i) => cards.forEach((c, k) => c.classList.toggle('is-on', k === i));
-    const io = new IntersectionObserver((entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
-      io.disconnect();
-      const people = cards.map((c) => ({ name: $('.person__name', c).textContent.trim(), suit: $('.person__suit', c).textContent.trim().toUpperCase() }));
-      import('/msdesign.be/assets/js/flower3d.js?v=' + VER)
-        .then((m) => m.createBloom(stage, { people, reduced, onHover: light }))
-        .then((api) => {
-          if (!api) return;
-          root.classList.add('is-3d'); window.__msBloom = api;
-          cards.forEach((c, i) => {                                      // survol d’une fiche : son pétale se soulève
-            c.addEventListener('pointerenter', () => { api.setFocus(i); light(i); });
-            c.addEventListener('pointerleave', () => { api.setFocus(-1); light(-1); });
-          });
-        })
-        .catch((err) => console.warn('[ms] bloom', err));
-    }, { rootMargin: '600px 0px' });
-    io.observe(root);
-  });
-
   /* ---------- Fin de page, façon Lusion : on continue à descendre, le cercle se remplit, on plonge « Sous la surface » ---------- */
   safe('next', () => {
     const sec = $('[data-next]');
@@ -467,7 +443,7 @@
     const io = new IntersectionObserver((entries) => {
       if (!entries.some((e) => e.isIntersecting)) return;
       io.disconnect();
-      import('/msdesign.be/assets/js/ribbon.js?v=' + VER)
+      import('./ribbon.js')
         .then((m) => { window.__msRibbon = m.createRibbon(host, { reduced, grid: $('[data-ribbon-grid]', host), lenis: () => lenis }); })
         .catch((err) => console.warn('[ms] ribbon', err));
     }, { rootMargin: '500px 0px' });
@@ -674,7 +650,7 @@
       const p = PLANS[data.formule];
       track('generate_lead', { form_type: 'devis', projet: data.projet, value: p ? p.price : 0, currency: 'EUR', method: viaMail ? 'mailto' : 'api' });
       if (!viaMail) form.reset();
-      setTimeout(() => { window.location.href = form.getAttribute('action') || ((d.dataset.base || '') + '/merci.html'); }, viaMail ? 900 : 0);
+      setTimeout(() => { window.location.href = form.getAttribute('action') || (import.meta.env.BASE_URL + 'merci.html'); }, viaMail ? 900 : 0);
     }
 
     form.addEventListener('submit', async (e) => {
@@ -799,7 +775,7 @@
     if (PAGE !== '404') return;
     track('page_404', { path: location.pathname });
     const path = decodeURIComponent(location.pathname.toLowerCase());
-    const base = d.dataset.base || '';
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');   // « /msdesign.be », donné par Vite (réglage base)
     const code = $('[data-path]');
     if (code) code.textContent = location.host + location.pathname;
     const guesses = [

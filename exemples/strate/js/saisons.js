@@ -1,6 +1,7 @@
 /* Strate — la page Saisons : l'étang du Bois de la Cambre, le même lieu aux quatre saisons.
    Un cran de molette = une saison ; la photo suivante se dévoile par un balayage doux, de gauche à droite.
    Aussi : un curseur, les boutons, les flèches du clavier, ou la photo qu'on fait glisser. */
+import Lenis from 'lenis';
 const root = document.documentElement;
 const qs = (s, el = document) => el.querySelector(s), qsa = (s, el = document) => [...el.querySelectorAll(s)];
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -63,7 +64,7 @@ function paint() {
 }
 
 /* défilement : un cran = une saison */
-const Lenis = window.Lenis;
+// Lenis (défilement amorti) vient de npm, Vite l'intègre au fichier final.
 let lenis = null, lockUntil = 0, lastWheel = 0, lastDir = 0;
 const stepY = (i) => top + i * vh;
 function goSeason(i, fast = false) {

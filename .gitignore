@@ -1,3 +1,5 @@
-_lab/
+node_modules/
 dist/
+dist-hostinger/
+_lab/
 api/.data/

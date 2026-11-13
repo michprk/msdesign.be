@@ -7,7 +7,7 @@
    Les grands éléments (torii, lanternes, pont, pagode, maison de thé, rochers) sont modélisés dans Blender
    (assets/models/japon.bin, scripts dans _msdesign-src/blender/jp_*.py) ; le reste est construit ici.
    ========================================================================== */
-import * as THREE from '../vendor/three.module.min.js';
+import * as THREE from 'three';
 import { createSound } from './journey-sound.js';
 
 const d = document.documentElement;
@@ -40,8 +40,11 @@ const preTimer = setInterval(() => {
 // format compact : par pièce, positions sur 16 bits dans sa boîte englobante, normales sur 8 bits, (occlusion, ciel) sur 8 bits, index sur 16 bits
 async function loadModels() {
   try {
-    const base = new URL('../models/', import.meta.url), ver = new URL(import.meta.url).search || '?v=1', get = (f, k) => fetch(new URL(f + ver, base)).then((r) => { if (!r.ok) throw new Error(f); return r[k](); });
-    const [j, buf] = await Promise.all([get('japon.json', 'json'), get('japon.bin', 'arrayBuffer')]), out = {};
+    // Vite repère ces deux adresses : il copie les fichiers dans dist/ sous un nom unique (empreinte du contenu)
+    // et réécrit l'adresse ici. Plus besoin de « ?v= » pour vider le cache quand on réexporte depuis Blender.
+    const urlJson = new URL('../models/japon.json', import.meta.url), urlBin = new URL('../models/japon.bin', import.meta.url);
+    const get = (u, k) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r[k](); });
+    const [j, buf] = await Promise.all([get(urlJson, 'json'), get(urlBin, 'arrayBuffer')]), out = {};
     for (const [key, p] of Object.entries(j.parts)) {
       const [model, rest] = key.split(':'), mat = rest.split('#')[0];
       const q = new Int16Array(buf, p.p, p.n * 3), nq = new Int8Array(buf, p.nr, p.n * 3), a = new Uint8Array(buf, p.a, p.n * 2);
@@ -864,7 +867,7 @@ async function bakePano() {
 async function loadPano() {
   if (Q.has('bakepano')) return bakePano();
   try {
-    const tex = await new THREE.TextureLoader().loadAsync('/msdesign.be/assets/img/equipe-montagnes.webp?v=2');
+    const tex = await new THREE.TextureLoader().loadAsync(new URL('../img/equipe-montagnes.webp', import.meta.url).href);
     tex.colorSpace = THREE.NoColorSpace; tex.anisotropy = 4; tex.needsUpdate = true;
     skyMat.uniforms.tPano.value = tex; skyMat.uniforms.uPano.value = 1;
   } catch (e) { skyMat.uniforms.tPano.value = panoRT.texture; await renderPano(); }

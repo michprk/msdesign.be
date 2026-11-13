@@ -179,6 +179,8 @@ cgu.html                  mentions légales, conditions d’utilisation et de pr
 confidentialite.html      RGPD + cookies
 404.html                  page introuvable, qui propose la bonne section
 partials/                 blocs communs (head, en-tête, pied de page, cookies, icônes)
+assets/css/, assets/js/   le code du site (travaillé par Vite : compacté, noms de fichiers uniques)
+assets/js/boot.js         petit script collé dans chaque page, exécuté avant le premier affichage
 assets/js/amp.js          le « & » du logo, vectorisé
 assets/js/app.js          héros, voile de transition, formulaire, merci, cookies, FAQ, barre mobile, 404
 assets/js/ribbon.js       la ficelle bleue en 3D de la section « Le studio »
@@ -186,22 +188,66 @@ assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Ta
 assets/js/journey.js      le voyage 3D de la page Équipe (Japon d’hiver)
 equipe.html               l’équipe (Michal, Mamoudou, Adam)
 experience/               « Sous la surface », la plongée 3D et sa fleur (page autonome)
-assets/video/             le film M&S (msdesign-film.mp4) et son extrait en boucle (reel-studio.mp4)
+public/                   fichiers copiés tels quels, à adresse fixe : icônes, manifeste, og.jpg,
+                          robots.txt, sitemap.xml, licences, _headers, .htaccess, security.txt,
+                          vidéos (public/assets/video/) et l’image citée dans le plan du site
 api/                      réception du formulaire : contact.php (Hostinger) ou Cloudflare Worker
-scripts/                  build.sh, check-links.sh, export-hostinger.sh
+package.json              les paquets du projet (Vite, Three.js, Lenis) et les commandes npm
+vite.config.js            la configuration de Vite (commentée)
+scripts/vite-msdesign.js  le plugin du site : blocs communs, scripts collés, liens, CSP
+scripts/check-links.mjs   vérifie qu’aucun lien ni fichier n’est cassé dans dist/
+scripts/export-hostinger.sh  la version « nom de domaine » (Hostinger)
+.github/workflows/deploy.yml  la publication automatique sur GitHub Pages
 ```
 
-## Après chaque modification
+## Travailler sur le site (Node.js + Vite)
+
+Le site est construit avec [Vite](https://vite.dev) : on écrit le code normalement (HTML, CSS,
+JavaScript, Three.js installé avec npm) et Vite fabrique une version finale optimisée dans `dist/`.
+
+La première fois sur un ordinateur (Node.js 22 ou plus) :
 
 ```bash
-bash scripts/build.sh        # blocs communs, empreinte CSP, versions ?v=
-bash scripts/check-links.sh  # aucun lien ni fichier cassé (--web pour les liens externes)
+npm install          # télécharge Vite, Three.js et Lenis dans node_modules/ (jamais envoyé sur GitHub)
 ```
+
+Ensuite :
+
+```bash
+npm run dev          # serveur local : la page se met à jour à chaque enregistrement
+npm run build        # version finale dans dist/ (JavaScript et CSS compactés, noms uniques)
+npm run preview      # affiche dist/ comme en ligne, pour vérifier avant de publier
+npm run check        # construit puis vérifie qu’aucun lien n’est cassé
+```
+
+Astuce : garder le projet (et donc `node_modules/`, des milliers de petits fichiers) **hors de
+OneDrive**, par exemple dans `C:\dev\msdesign.be`.
+
+**Mise en ligne** : il suffit d’envoyer sur la branche `main` (`git push`). GitHub Actions
+(`.github/workflows/deploy.yml`) installe les paquets, construit le site, vérifie les liens et
+publie `dist/` sur GitHub Pages en une minute environ. Le résultat s’affiche dans l’onglet
+*Actions* du dépôt. Sur une autre branche, il construit et vérifie seulement, sans publier.
+
+Bon à savoir :
+
+- dans le code, les adresses commencent par `/` (`/assets/css/main.css`, `<a href="/etudes/">`) :
+  Vite ajoute le préfixe `/msdesign.be/` de GitHub Pages (réglage `base` de `vite.config.js`).
+  En JavaScript, ce préfixe s’écrit `import.meta.env.BASE_URL` ;
+- plus de `?v=` à changer : Vite donne à chaque fichier un nom qui change avec son contenu
+  (ex. `app-CBXFnhVJ.js`), le navigateur ne garde donc jamais une ancienne version ;
+- un bloc commun s’écrit `<!--#include header-->` (fichier `partials/header.html`) et un petit
+  script à exécuter avant l’affichage `<!--#inline assets/js/boot.js-->`. Le plugin
+  `scripts/vite-msdesign.js` les colle dans la page, ajoute `aria-current` au lien de la page
+  courante et calcule la politique de sécurité (CSP) avec l’empreinte de chaque script collé ;
+- Three.js et Lenis viennent de npm (`import * as THREE from 'three'`) : Vite ne garde que les
+  parties de Three.js réellement utilisées ;
+- les modèles 3D se chargent avec `new URL('../models/japon.bin', import.meta.url)` : Vite les
+  copie sous un nom unique, rien à changer après un nouvel export depuis Blender.
 
 ## Mise en ligne sur le domaine
 
 ```bash
-bash scripts/export-hostinger.sh   # → dist/msdesign-hostinger.zip, à extraire dans public_html
+bash scripts/export-hostinger.sh   # → dist-hostinger/msdesign-hostinger.zip, à extraire dans public_html
 ```
 
 **À compléter avant l’ouverture** (en jaune dans les pages légales) :
@@ -223,8 +269,9 @@ bash scripts/export-hostinger.sh   # → dist/msdesign-hostinger.zip, à extrair
   - `sitemap.xml` avec images, `robots.txt`, canonical.
 - **Icônes** : favicon SVG, ICO et PNG, icônes iOS et Android, manifeste.
 - **Images** : WebP compressées, `srcset`, chargement différé, textes alternatifs descriptifs.
-- **Vitesse** : polices et scripts hébergés sur le site. La 3D ne se dessine que lorsque quelque
-  chose bouge.
+- **Vitesse** : site construit par Vite (JavaScript et CSS compactés, Three.js réduit aux parties
+  utilisées, modules préchargés). Polices et scripts hébergés sur le site. La 3D ne se dessine
+  que lorsque quelque chose bouge.
 - **Accessibilité** : contrastes AA, focus visibles, onglets du Mac utilisables au clavier,
   « Réduire les animations », « Couper le son ».
 - **Formulaire** : validé dans le navigateur et sur le serveur, anti-spam, correction des fautes

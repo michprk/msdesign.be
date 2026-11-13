@@ -11,17 +11,15 @@
 <meta property="og:description" content="Un lotus en 3D qui vit sous l’eau. Attrapez-le.">
 <meta property="og:image" content="https://michprk.github.io/msdesign.be/og.jpg">
 <meta name="theme-color" content="#000000">
-<link rel="icon" href="/msdesign.be/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/msdesign.be/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/msdesign.be/assets/fonts/fraunces-italic-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="experience.css?v=5">
-<link rel="modulepreload" href="/msdesign.be/assets/vendor/three.module.min.js">
-<link rel="modulepreload" href="dive-sound.js?v=32">
-<link rel="preload" href="models/lotus.json?v=32" as="fetch" crossorigin>
-<link rel="preload" href="models/lotus.bin?v=32" as="fetch" crossorigin>
-<link rel="preload" href="models/decor.json?v=32" as="fetch" crossorigin>
-<link rel="preload" href="models/decor.bin?v=32" as="fetch" crossorigin>
-<script type="module" src="dive.js?v=5"></script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/fraunces-italic-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="experience.css">
+<link rel="preload" href="models/lotus.json" as="fetch" crossorigin>
+<link rel="preload" href="models/lotus.bin" as="fetch" crossorigin>
+<link rel="preload" href="models/decor.json" as="fetch" crossorigin>
+<link rel="preload" href="models/decor.bin" as="fetch" crossorigin>
+<script type="module" src="dive.js"></script>
 </head>
 <body class="dv">
 <canvas class="dv__gl" aria-hidden="true"></canvas>
@@ -29,8 +27,8 @@
 <div class="dv__flash" aria-hidden="true"></div>
 
 <header class="dv__top">
-  <a class="dv__logo" href="/msdesign.be/">M&amp;S DESIGN</a>
-  <a class="dv__back" href="/msdesign.be/">Retour au site</a>
+  <a class="dv__logo" href="/">M&amp;S DESIGN</a>
+  <a class="dv__back" href="/">Retour au site</a>
 </header>
 
 <div class="gate" data-gate role="dialog" aria-modal="true" aria-labelledby="gate-title">
@@ -67,6 +65,6 @@
   <button class="dv__tool" type="button" data-night aria-pressed="false" aria-label="Éteindre la lumière"><span class="dv__moon" aria-hidden="true"></span>Nuit</button>
   <button class="dv__sound" type="button" data-sound>Couper le son</button>
 </footer>
-<p class="dv__nogl">Votre navigateur n’affiche pas la 3D. <a href="/msdesign.be/equipe.html">Rencontrer l’équipe</a></p>
+<p class="dv__nogl">Votre navigateur n’affiche pas la 3D. <a href="/equipe.html">Rencontrer l’équipe</a></p>
 </body>
 </html>

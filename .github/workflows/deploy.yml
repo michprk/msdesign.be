@@ -1,0 +1,75 @@
+# =============================================================================
+# Publication automatique du site sur GitHub Pages.
+#
+# À chaque envoi (git push), GitHub lance un ordinateur Linux qui :
+#   1. récupère le code du dépôt ;
+#   2. installe Node.js et les paquets (npm ci = exactement les versions notées
+#      dans package-lock.json, pour un résultat identique à chaque fois) ;
+#   3. construit le site (npm run build → dossier dist/) ;
+#   4. vérifie qu'aucun lien n'est cassé ;
+#   5. sur la branche main seulement : met dist/ en ligne sur
+#      https://michprk.github.io/msdesign.be/
+#
+# Sur une autre branche, seules les étapes 1 à 4 tournent : on sait si tout
+# fonctionne avant de fusionner, sans toucher au site en ligne.
+# Le résultat s'affiche dans l'onglet « Actions » du dépôt sur github.com.
+# =============================================================================
+name: Publier le site
+
+on:
+  push:
+  workflow_dispatch:          # bouton « Run workflow » dans l'onglet Actions, pour relancer à la main
+
+permissions:
+  contents: read              # par défaut, le robot peut seulement lire le code
+
+# Deux envois rapprochés sur la même branche : le plus récent remplace celui qui attend.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    name: Construire et vérifier
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v7
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm            # garde les paquets téléchargés d'une fois sur l'autre (plus rapide)
+
+      - name: Installer les paquets
+        run: npm ci
+
+      - name: Construire le site
+        run: npm run build
+
+      - name: Vérifier les liens
+        run: node scripts/check-links.mjs
+
+      - name: Préparer la mise en ligne
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+          include-hidden-files: true   # garde .well-known/security.txt (contact sécurité)
+
+  publier:
+    name: Mettre en ligne
+    if: github.ref == 'refs/heads/main'
+    needs: construire
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write              # le droit de publier sur GitHub Pages
+      id-token: write           # preuve que la demande vient bien de ce dépôt
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Publier sur GitHub Pages
+        id: deploiement
+        uses: actions/deploy-pages@v5

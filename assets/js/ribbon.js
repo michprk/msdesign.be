@@ -5,7 +5,7 @@
    ondule doucement, s’écarte de la souris et frémit au défilement. Purement décoratif.
    Options : path (tracé sur mesure, en px), color, trigger (hauteur d’écran où il se dessine).
    ========================================================================== */
-import * as THREE from '../vendor/three.module.min.js';
+import * as THREE from 'three';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);

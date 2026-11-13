@@ -2,7 +2,7 @@
    Un jardin de ville bruxellois découpé net comme une coupe de géomètre : on y entre par la pelouse,
    on descend dans le sol (terre, limon, argile, sable, nappe), puis on remonte voir ses étages s'écarter.
    Three.js r160, tout est généré par le code : aucun modèle, aucune photo. */
-import * as THREE from '../../../assets/vendor/three.module.min.js';
+import * as THREE from 'three';
 
 const TAU = Math.PI * 2;
 const W = 12, D = 14, DEPTH = 6, TURF = 0.1;          // bloc : 12 m de large, 14 m de long, 6 m de sol

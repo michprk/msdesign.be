@@ -10,8 +10,8 @@
    Si l’on continue à descendre la molette, on remonte vers la lumière et
    la page de l’équipe se charge.
    ========================================================================== */
-import * as THREE from '../assets/vendor/three.module.min.js';
-import { createDiveSound } from './dive-sound.js?v=32';
+import * as THREE from 'three';
+import { createDiveSound } from './dive-sound.js';
 
 const d = document.documentElement, Q = new URLSearchParams(location.search);
 const AT = Q.has('at');                                       // at : captures sans écran d’entrée
@@ -39,10 +39,16 @@ const boot = { p: 0, cap: 34, done: null }, loadEl = $('[data-load]'), gateEl = 
   if (gateEl) gateEl.style.setProperty('--p', (boot.p / 100).toFixed(3));
   if (boot.p < 100) setTimeout(count, 34); else if (boot.done) boot.done();
 })();
+// Les modèles exportés de Blender. Vite repère ces adresses : il copie les fichiers dans dist/ sous un nom unique
+// (empreinte du contenu) et réécrit l'adresse ici. Plus besoin de « ?v= » pour vider le cache après un nouvel export.
+const MODELES = {
+  lotus: [new URL('./models/lotus.json', import.meta.url), new URL('./models/lotus.bin', import.meta.url)],
+  decor: [new URL('./models/decor.json', import.meta.url), new URL('./models/decor.bin', import.meta.url)],
+};
 async function loadParts(name) {                              // format maison : sommets entrelacés (position, normale, uv) + index, décrits par un .json
   try {
-    const base = new URL('models/', import.meta.url), get = (f, k) => fetch(new URL(f + '?v=32', base)).then((r) => { if (!r.ok) throw new Error(f); return r[k](); });
-    const [j, buf] = await Promise.all([get(name + '.json', 'json'), get(name + '.bin', 'arrayBuffer')]), out = {};
+    const [urlJson, urlBin] = MODELES[name], get = (u, k) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r[k](); });
+    const [j, buf] = await Promise.all([get(urlJson, 'json'), get(urlBin, 'arrayBuffer')]), out = {};
     for (const [part, p] of Object.entries(j.parts)) {
       const n = p.vertexCount, f = new Float32Array(buf, p.vertexOffset, n * 8), pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2);
       for (let i = 0; i < n; i++) { pos[i * 3] = f[i * 8]; pos[i * 3 + 1] = f[i * 8 + 1]; pos[i * 3 + 2] = f[i * 8 + 2]; nor[i * 3] = f[i * 8 + 3]; nor[i * 3 + 1] = f[i * 8 + 4]; nor[i * 3 + 2] = f[i * 8 + 5]; uv[i * 2] = f[i * 8 + 6]; uv[i * 2 + 1] = f[i * 8 + 7]; }
@@ -1283,7 +1289,7 @@ function leave() {
   if (load.going) return; load.going = true; phase = 'leave'; load.p = 1; ring(1); sound.surface();
   try { sessionStorage.setItem('ms_from_dive', muted ? '0' : '1'); } catch (e) { /* rien */ }
   d.classList.add('dv-go');
-  setTimeout(() => { location.href = '/msdesign.be/equipe.html'; }, reduced ? 50 : 1000);
+  setTimeout(() => { location.href = import.meta.env.BASE_URL + 'equipe.html'; }, reduced ? 50 : 1000);
 }
 addEventListener('pageshow', (e) => { if (e.persisted) { load.going = false; load.p = 0; if (phase === 'leave') phase = 'live'; d.classList.remove('dv-go'); ring(0); } });
 

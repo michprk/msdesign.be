@@ -7,7 +7,7 @@
    resserre, une feuille glisse et le tampon « Prix fixe » s’y pose.
    Tout est une fonction du temps : on peut sauter à une étape ou rejouer.
    ========================================================================== */
-import * as THREE from '../vendor/three.module.min.js';
+import * as THREE from 'three';
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const seg = (t, a, b) => clamp((t - a) / (b - a));
