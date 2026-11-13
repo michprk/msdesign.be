@@ -41,6 +41,8 @@ export default defineConfig({
     emptyOutDir: true,
     rolldownOptions: {
       input: pages,
+      // (Les licences de Three.js et de Lenis sont publiées dans public/licenses/,
+      //  avec un lien dans le pied de page : le code compacté n'a pas besoin de les répéter.)
     },
     // Les modèles 3D (.json, .bin) restent toujours des fichiers séparés. Sans cette règle,
     // Vite colle les fichiers de moins de 4 Ko dans le code (en « data: »), et notre
