@@ -82,14 +82,14 @@ export function createDiveSound() {
   /* ---------- les briques ---------- */
   // une cloche de verre (synthèse FM) : attaque nette, longue résonance, un peu d’écho
   function bell(t, f, vol = 0.05, p = 0, bus = music, echo = 0.35) {
-    const c = osc('sine', f, t, 3.2), m = osc('sine', f * 3.5, t, 3.2), mi = g(0); env(mi.gain, [[t, f * 2.2], [t + 0.9, f * 0.05, 'exp']]);
+    const c = osc('sine', f, t, 3.2), m = osc('sine', f * 3.5, t, 3.2), mi = g(0); env(mi.gain, [[t, f * 1.1], [t + 0.7, f * 0.03, 'exp']]);
     m.connect(mi); mi.connect(c.frequency);
-    const v = g(0); env(v.gain, [[t, 0], [t + 0.004, vol], [t + 3, 0.0001, 'exp']]); c.connect(v); to(v, bus, { wet: 0.5, echo, p });
+    const v = g(0); env(v.gain, [[t, 0], [t + 0.006, vol], [t + 0.25, vol * 0.55], [t + 3, 0.0001, 'exp']]); c.connect(v); to(v, bus, { wet: 0.55, echo, p });
   }
   // une bulle (résonance de Minnaert) : la note monte en une fraction de seconde
   function bubble(t, f, vol, p = 0, bus = water) {
     const o = osc('sine', f, t, 0.16); env(o.frequency, [[t, f], [t + 0.05, f * 1.7, 'exp']]);
-    const v = g(0); env(v.gain, [[t, 0], [t + 0.003, vol], [t + 0.09, 0.0001, 'exp']]); o.connect(v); to(v, bus, { wet: 0.25, p });
+    const v = g(0), dk = 0.05 + Math.random() * 0.09; env(v.gain, [[t, 0], [t + 0.003, vol], [t + dk, 0.0001, 'exp']]); o.connect(v); to(v, bus, { wet: 0.25, p });
   }
   // un souffle filtré qui balaie le spectre et traverse l’image (whoosh)
   function swoosh(t, d, f0, f1, f2, vol, p0 = -0.8, p1 = 0.8, bus = ui, wet = 0.3) {
@@ -115,17 +115,19 @@ export function createDiveSound() {
     ch.forEach((n, k) => {
       [-7, 7].forEach((cents) => {
         const o = osc('sawtooth', N[n] * (k === 0 ? 0.5 : 1), t, 14.4); o.detune.value = cents + (Math.random() - 0.5) * 4;
+        const lf = osc('sine', 0.1 + Math.random() * 0.12, t, 14.4), lg = g(4); lf.connect(lg); lg.connect(o.detune);
         const lp = filt('lowpass', 520 + k * 90, 0.4), v = g(0); env(v.gain, [[t, 0], [t + 4.5, 0.016 / (1 + k * 0.4)], [t + 10, 0.016 / (1 + k * 0.4)], [t + 14.2, 0]]);
         o.connect(lp); lp.connect(v); to(v, music, { p: cents < 0 ? -0.35 : 0.35 });
       });
     });
+    const air = noise(t, 14.2), abp = filt('bandpass', 650 + Math.random() * 300, 0.6), av = g(0); env(av.gain, [[t, 0], [t + 6, 0.016], [t + 14, 0]]); air.connect(abp); abp.connect(av); to(av, music, { p: (Math.random() - 0.5) * 0.6 });
     const s = osc('sine', N[ch[0]] * 0.25, t, 14.4), vs = g(0); env(vs.gain, [[t, 0], [t + 5, 0.05], [t + 10, 0.05], [t + 14.2, 0]]); s.connect(vs); vs.connect(music);
   }
   function schedule() {
     if (!ac || ac.state !== 'running' || !playing) return;
     const t = now();
     if (t + 0.5 > chordAt) { pad(chordAt); chordAt += 12; }
-    while (nextBell < t + 0.6) { bell(nextBell, N[BELLS[Math.floor(Math.random() * BELLS.length)]] * (nightOn ? 0.5 : 1), 0.022 + Math.random() * 0.02, (Math.random() - 0.5) * 0.9); nextBell += [3.6, 4.8, 6, 7.2][Math.floor(Math.random() * 4)]; }
+    while (nextBell < t + 0.6) { bell(nextBell, N[BELLS[Math.floor(Math.random() * BELLS.length)]] * (nightOn ? 0.5 : 1), 0.015 + Math.random() * 0.013, (Math.random() - 0.5) * 0.9); nextBell += [4.8, 6, 7.2, 9.6][Math.floor(Math.random() * 4)]; }
   }
   function underwater(t) {                                       // on est dans l’eau : tout se feutre, la musique arrive
     env(muffle.frequency, [[t, muffle.frequency.value], [t + 0.35, 1800, 'exp'], [t + 3, nightOn ? 1100 : 2800, 'exp']]);

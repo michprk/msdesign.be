@@ -8,6 +8,14 @@ html, body { height: 100%; }
 body.dv { margin: 0; overflow: hidden; background: #000; color: var(--ink); font: 400 16px/1.55 "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
 .dv__gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; opacity: 0; transition: opacity 1.2s var(--ease); }
 .dv-ready .dv__gl { opacity: 1; }
+/* tout de suite, avant la 3D : les deux axes de construction en pointillés (le dessin commence) */
+.dv__boot { position: fixed; inset: 0; z-index: 1; pointer-events: none; transition: opacity 0.9s var(--ease) 0.2s; }
+.dv-ready .dv__boot { opacity: 0; }
+.dv__boot i { position: absolute; left: 50%; top: 52%; }
+.dv__boot i:first-child { width: 120vw; height: 1px; margin-left: -60vw; background: repeating-linear-gradient(90deg, rgba(238, 246, 255, 0.42) 0 7px, transparent 7px 13px); transform: scaleX(0); animation: boot-x 1.1s var(--ease) forwards; }
+.dv__boot i:last-child { width: 1px; height: 120vh; margin-top: -60vh; background: repeating-linear-gradient(180deg, rgba(238, 246, 255, 0.42) 0 7px, transparent 7px 13px); transform: scaleY(0); animation: boot-y 1.1s var(--ease) 0.15s forwards; }
+@keyframes boot-x { to { transform: scaleX(1); } }
+@keyframes boot-y { to { transform: scaleY(1); } }
 .dv__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .dv__flash { position: fixed; inset: 0; z-index: 40; background: #eef9ff; opacity: 0; pointer-events: none; }
 .dv-go .dv__flash { opacity: 1; transition: opacity 0.9s cubic-bezier(0.6, 0, 0.3, 1); }
@@ -89,7 +97,8 @@ html:not(.dv-in) .dv__foot { opacity: 0; pointer-events: none; }
 :focus-visible { outline: 2px solid var(--aqua); outline-offset: 3px; }
 
 @media (max-width: 760px) {
-  .bp__l { max-width: 34vw; white-space: normal; font-size: 9.5px; }
+  .bp__l { font-size: 9.5px; }
+  .bp__l:not(:nth-child(3)) { display: none; }                     /* sur téléphone, seule l’étiquette du cœur (les autres sortiraient de l’écran) */
   .dv__intro { bottom: auto; top: 76px; }
   .dv__title { font-size: 32px; }
   .dv__next { bottom: 22px; }
