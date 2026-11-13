@@ -113,17 +113,20 @@ export function msdesign() {
         // on enlève la CSP pour ne pas les bloquer. Elle est bien là dans la version finale.
         if (ctx.server) return html.replace(meta, '');
 
-        // 5. ordre de chargement : Vite place son CSS et ses scripts tout en bas du <head>, donc
-        // après les gros modèles 3D préchargés (plus d'1 Mo). Sur un téléphone, le CSS attendait
-        // alors derrière eux. On remonte les balises de Vite juste avant le premier modèle
-        // préchargé (ou avant le premier script collé) : le CSS et le code passent en premier.
+        // 5. ordre de chargement des pages 3D : Vite place son CSS et ses scripts tout en bas du
+        // <head>, donc après les modèles 3D préchargés (plus d'1 Mo). Sur un téléphone, le CSS et
+        // le code attendaient alors derrière eux. On remonte les balises de Vite juste avant le
+        // premier modèle préchargé (as="fetch") : le CSS et le code passent en premier.
+        // Sur les autres pages, on garde l'ordre de Vite (CSS en bas) : mesuré sur l'accueil,
+        // le script collé n'attend pas le CSS et la page est utilisable deux fois plus tôt.
         const deVite = /^[ \t]*<(?:script type="module" crossorigin src="[^"]+"><\/script>|link rel="(?:modulepreload|stylesheet)" crossorigin href="[^"]+">)\n/gm;
-        const balises = html.slice(0, html.indexOf('</head>')).match(deVite) || [];
+        const finHead = html.indexOf('</head>');
+        const balises = html.slice(0, finHead).match(deVite) || [];
         balises.sort((a, b) => /stylesheet/.test(b) - /stylesheet/.test(a));   // le CSS d'abord
-        const repere = /<link rel="preload"[^>]*\sas="fetch"|<script>/.exec(html);
-        if (balises.length && repere && repere.index < html.indexOf('</head>')) {
+        const modele = /<link rel="preload"[^>]*\sas="fetch"/.exec(html);
+        if (balises.length && modele && modele.index < finHead) {
           html = html.replace(deVite, '');
-          const ici = html.search(/<link rel="preload"[^>]*\sas="fetch"|<script>/);
+          const ici = html.search(/<link rel="preload"[^>]*\sas="fetch"/);
           html = html.slice(0, ici) + balises.map((b) => b.trimStart()).join('') + html.slice(ici);
         }
 
