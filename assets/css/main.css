@@ -972,3 +972,21 @@ html.reduced .gantt .gantt__bar { transform: none !important; }
 .studio__sketch .note { color: var(--blue); }
 .step__day { color: var(--orange-2); }
 .faq summary::after { color: var(--orange); }
+
+/* ---------- Services : en-tête en deux colonnes, cartes claires avec icône ----------
+   Grand titre serif à gauche (la deuxième moitié en italique orange), texte à droite ;
+   chaque carte a son icône bleue, un titre serif, et deux liens : bleu, puis orange. */
+.services__head { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); grid-template-areas: "label label" "titre texte"; column-gap: clamp(32px, 6vw, 110px); align-items: center; max-width: none; }
+.services__label { grid-area: label; color: var(--orange-2); }
+.services__title { grid-area: titre; font-size: clamp(44px, 6vw, 96px); line-height: 1; }
+.services__head .lead { grid-area: texte; margin-top: 0; max-width: 30em; }
+.tile { box-shadow: 0 0 0 1px var(--line), 0 24px 48px -36px rgba(23, 23, 23, 0.18); }
+.tile .tile__title { display: flex; align-items: center; gap: 14px; font: 400 clamp(26px, 2.2vw, 34px)/1.15 var(--display); letter-spacing: -0.02em; }
+.tile__icon { flex: none; width: 30px; height: 30px; color: var(--blue); }
+.tile__links .more::after { content: "→"; font-size: 1em; transform: none; }
+.tile__links .more:hover::after { transform: translateX(3px); }
+.tile__links .more:nth-child(2) { color: var(--orange-2); }
+@media (max-width: 760px) {
+  .services__head { grid-template-columns: minmax(0, 1fr); grid-template-areas: "label" "titre" "texte"; }
+  .services__head .lead { margin-top: 20px; }
+}
