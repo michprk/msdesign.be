@@ -2,7 +2,7 @@
    M&S Design — feuille de style
    Direction artistique éditoriale : trois couleurs qui vont ensemble,
    bleu électrique #155EEF, beige crème #F5F1E9 et orange brûlé #D2570F,
-   avec quelques traits et mots « bombés » à la façon d’un graffiti.
+   les mots forts des grands titres en orange.
    Fond crème #F5F1E9, titres en Fraunces
    (serif), petites étiquettes en capitales espacées bleu électrique, textes en
    Instrument Sans ; bleu électrique #155EEF pour les actions, orange brûlé
@@ -89,7 +89,7 @@ strong { font-weight: 600; }
 .label, .eyebrow { display: block; font: 600 12px/1.4 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue); margin-bottom: 18px; }
 .label--light { color: var(--sage); }
 .display { font: 400 clamp(42px, 5vw, 76px)/1.04 var(--display); letter-spacing: -0.025em; text-wrap: balance; }
-.h2 { font: 400 clamp(34px, 4vw, 58px)/1.08 var(--display); letter-spacing: -0.022em; text-wrap: balance; }
+.h2 { font: 400 clamp(40px, 5.2vw, 78px)/1.04 var(--display); letter-spacing: -0.022em; text-wrap: balance; }
 .h3 { font: 600 clamp(20px, 1.6vw, 24px)/1.25 var(--sans); letter-spacing: -0.02em; }
 .lead { font: 400 clamp(17px, 1.3vw, 19px)/1.65 var(--sans); color: var(--ink-2); text-wrap: pretty; }
 .muted { color: var(--muted); }
@@ -228,7 +228,7 @@ html.hero-in .hero__stack { transition-delay: 0.2s; }
    ========================================================================== */
 .sec.projects { padding-top: clamp(44px, 7vh, 80px); }
 .projects__head { margin-bottom: clamp(30px, 5vh, 56px); }
-.projects__head .h2 { font-size: clamp(32px, 3.4vw, 52px); }
+.projects__head .h2 { font-size: clamp(38px, 4.6vw, 70px); }
 .projects__grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.6fr) minmax(210px, 0.5fr); align-items: center; gap: clamp(24px, 3.4vw, 56px); }
 .projects__intro .h2 { font-size: clamp(34px, 3.3vw, 50px); }
 .projects__intro .lead { margin-top: 18px; font-size: 16.5px; }
@@ -353,7 +353,7 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .tarifs > .wrap { position: relative; }
 .tarifs__flower { position: absolute; z-index: -1; right: calc(min(82vw, 1300px) * -0.5 + 12.5vw); top: clamp(-120px, -5vw, -40px); width: min(82vw, 1300px); height: auto; pointer-events: none; transform: rotate(-6deg); user-select: none; }
 .tarifs__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px 48px; margin-bottom: clamp(44px, 7vh, 72px); }
-.tarifs__head .h2 { font-size: clamp(40px, 4.6vw, 72px); }
+.tarifs__head .h2 { font-size: clamp(44px, 5.6vw, 88px); }
 .tarifs__head .lead { margin-top: 16px; max-width: 32em; }
 .h2 em { font-style: italic; }
 .tarifs__note { flex: none; padding: 7px 14px; border-radius: 999px; background: rgba(245, 241, 233, 0.72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font: 600 11px/1.4 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); }
@@ -408,7 +408,7 @@ a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .contact { background: var(--bg); }
 .sec.contact { padding-bottom: clamp(36px, 6vh, 72px); }
 .contact__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(40px, 5vw, 88px); align-items: center; margin-bottom: clamp(64px, 10vh, 112px); }
-.contact__title { font: 400 clamp(46px, 5.4vw, 86px)/1.02 var(--display); letter-spacing: -0.03em; }
+.contact__title { font: 400 clamp(52px, 6.6vw, 108px)/1 var(--display); letter-spacing: -0.03em; }
 .contact__title span { display: block; }
 .accent { color: var(--blue); }
 .contact__copy .lead { margin-top: 24px; max-width: 30em; }
@@ -843,7 +843,7 @@ a:hover > .roll > span + span, a:focus-visible > .roll > span + span { transform
 /* ---------- Tarifs : « Un prix sur mesure », un site se construit en 3D jusqu’au devis ---------- */
 .devis { display: grid; grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr); grid-template-areas: "head stage" "body stage"; gap: 0 clamp(36px, 5.5vw, 96px); align-items: start; }
 .devis__head { grid-area: head; }
-.devis__head .h2 { font-size: clamp(40px, 4.4vw, 68px); }
+.devis__head .h2 { font-size: clamp(44px, 5vw, 78px); }
 .devis__head .lead { margin-top: 18px; max-width: 30em; }
 .devis__stage { grid-area: stage; position: sticky; top: calc(var(--hdr) + 28px); align-self: start; aspect-ratio: 900 / 760; border-radius: 24px; overflow: hidden; background: radial-gradient(120% 90% at 30% 20%, #fbf9f4 0%, #f1ece2 70%, #ebe5d9 100%); box-shadow: inset 0 0 0 1px rgba(23, 23, 23, 0.05); }
 .devis__poster, .devis__gl { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -899,9 +899,9 @@ html.reduced .devis__steps span { max-height: none; opacity: 1; margin-top: 4px;
 .film__close svg { width: 20px; height: 20px; transform: rotate(45deg); }
 
 /* ---------- La promesse : le planning en semaines, bleu et beige ---------- */
-.promise { --beige: #e9dcc3; background: var(--orange-2); color: var(--ecru); }
+.promise { --beige: #e9dcc3; background: var(--blue); color: var(--ecru); }
 .promise__top { display: flex; justify-content: space-between; gap: 20px; font: 500 14px/1.4 var(--sans); color: rgba(245, 241, 233, 0.86); }
-.promise__title { margin: clamp(30px, 5vw, 60px) 0 clamp(40px, 6vw, 76px); text-align: center; font: 400 clamp(52px, 8.4vw, 132px)/1 var(--display); letter-spacing: -0.03em; color: #fbf9f4; }
+.promise__title { margin: clamp(30px, 5vw, 60px) 0 clamp(40px, 6vw, 76px); text-align: center; font: 400 clamp(56px, 9.6vw, 156px)/1 var(--display); letter-spacing: -0.03em; color: #fbf9f4; }
 .promise__dot { color: var(--beige); }
 .gantt { max-width: 980px; margin: 0 auto; }
 .gantt__head { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid rgba(245, 241, 233, 0.55); border-bottom: 1px solid rgba(245, 241, 233, 0.55); }
@@ -961,59 +961,14 @@ html.reduced .gantt .gantt__bar { transform: none !important; }
 .endxp.is-go .endxp__slit { opacity: 1; transform: scaleX(1); transition: transform 0.55s cubic-bezier(0.7, 0, 0.2, 1) 0.05s, opacity 0.2s; }
 
 /* ==========================================================================
-   Orange brûlé et graffitis
-   - les mots forts des grands titres passent en orange ;
-   - des traits « bombés » (soulignés, cercle) se tracent quand le titre apparaît ;
-   - quelques mots tagués à la bombe (FAIT MAIN, PROMIS., BXL) s’y peignent de
-     gauche à droite, puis la peinture coule.
-   Tout se rembobine quand on remonte la page, et se repeint dès qu’on redescend.
-   Le grain de bombe vient du filtre SVG #spray (partials/sprite.html).
+   Trois couleurs, des mots plus grands
+   Bleu électrique, beige crème et orange brûlé : les grands titres grandissent,
+   leurs mots forts passent en orange, et les petits dessins prennent l'autre couleur
+   que le texte qui les accompagne (titre bleu → dessin orange).
    ========================================================================== */
 .contact__title .accent { color: var(--orange); }
-.contact__title .bombe { display: inline-block; }
-.gantt__bar { color: var(--orange-2); }
-
-/* --- les traits à la bombe sous un mot ou autour d’un chiffre --- */
-.bombe { position: relative; display: inline-block; white-space: nowrap; }
-.trait { position: absolute; max-width: none; pointer-events: none; overflow: visible; fill: none; stroke: var(--orange); stroke-linecap: round; stroke-linejoin: round; }
-.trait path { stroke-dasharray: 1 1; stroke-dashoffset: 0; }
-.trait--souligne { left: -3%; right: -4%; bottom: -0.2em; width: 107%; height: 0.38em; stroke-width: 7; }
-.trait--cercle { left: -22%; top: -14%; width: 144%; height: 128%; stroke: currentColor; stroke-width: 5; }
-html.js .trait path { stroke-dashoffset: 1; transition: stroke-dashoffset 0.45s cubic-bezier(0.6, 0, 0.4, 1); }
-html.js .is-in .trait path, html.hero-in .hero__title .trait path { stroke-dashoffset: 0; transition: stroke-dashoffset 0.9s cubic-bezier(0.55, 0, 0.25, 1) 0.45s; }
-html.hero-in .hero__title .trait path { transition-delay: 0.9s; }
-
-/* --- les mots tagués --- */
-.graff { position: absolute; z-index: 2; max-width: none; height: auto; overflow: visible; pointer-events: none; }
-.graff text { font: 900 100px/1 "Archivo", var(--sans); font-stretch: 62%; letter-spacing: 0; fill: var(--orange); }
-.graff .coulure { fill: none; stroke: var(--orange); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
-.graff--encre text { fill: var(--ink); }
-.graff--encre .coulure { stroke: var(--ink); }
-/* un tag se peint quand son titre (ou son bloc) apparaît : .is-in ~ .graff, .is-in > .graff */
-html.js .graff { clip-path: inset(-40% 104% -80% -6%); transition: clip-path 0.4s cubic-bezier(0.6, 0, 0.4, 1); }
-html.js .is-in ~ .graff, html.js .is-in > .graff { clip-path: inset(-40% -6% -80% -6%); transition: clip-path 0.85s cubic-bezier(0.65, 0, 0.3, 1) 0.4s; }
-html.js .graff .coulure { stroke-dashoffset: 1; transition: stroke-dashoffset 0.3s ease-in; }
-html.js .is-in ~ .graff .coulure, html.js .is-in > .graff .coulure { stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s cubic-bezier(0.3, 0, 0.2, 1) 1.25s; }
-html.js .is-in ~ .graff .coulure:nth-of-type(2), html.js .is-in > .graff .coulure:nth-of-type(2) { transition-delay: 1.5s; transition-duration: 2.1s; }
-html.js .is-in ~ .graff .coulure:nth-of-type(3), html.js .is-in > .graff .coulure:nth-of-type(3) { transition-delay: 1.75s; }
-
-/* où se posent les tags */
-.projects__head { position: relative; }
-.graff--projets { right: calc(var(--pad) - 4px); top: -12px; width: clamp(150px, 19vw, 280px); }
-.promise .wrap { position: relative; }
-.promise__title .bombe { color: #fbf9f4; }
-.graff--promis { right: clamp(0px, 4vw, 60px); top: clamp(56px, 9vw, 120px); width: clamp(120px, 14vw, 210px); }
-.graff--bxl { left: -14px; top: -26px; width: clamp(96px, 10vw, 150px); }
-
-@media (max-width: 760px) {
-  /* sur téléphone, les tags se posent sous leur titre au lieu de le chevaucher */
-  .graff--projets, .graff--promis { position: relative; display: block; top: auto; right: auto; bottom: auto; }
-  .graff--projets { width: 132px; margin: 4px 4px -14px auto; }
-  .graff--promis { width: 124px; margin: -14px auto 20px; }
-  .graff--bxl { left: -6px; top: -22px; width: 92px; }
-}
-
-/* animations réduites : tout est déjà peint */
-html.reduced .graff { clip-path: none !important; }
-html.reduced .trait path, html.reduced .graff .coulure { stroke-dashoffset: 0 !important; }
-@media print { .graff, .trait { display: none !important; } }
+.studio__copy .h2 { color: var(--blue); font-size: clamp(44px, 5vw, 80px); line-height: 1.02; }
+.studio__sketch { color: var(--orange); }
+.studio__sketch .note { color: var(--blue); }
+.step__day { color: var(--orange-2); }
+.faq summary::after { color: var(--orange); }
