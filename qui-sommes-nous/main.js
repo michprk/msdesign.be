@@ -80,7 +80,7 @@ function demarrer() {
   fenetre.addEventListener('pointerenter', () => { lueurCible = 1; });
   fenetre.addEventListener('pointerleave', () => { lueurCible = etat === 'vol' ? 0.4 : 0; });
   fenetre.addEventListener('focus', () => { lueurCible = 1; });
-  fenetre.addEventListener('blur', () => { lueurCible = 0.4; });
+  fenetre.addEventListener('blur', () => { lueurCible = etat === 'vol' ? 0.4 : 0; });
   fenetre.addEventListener('click', entrer);
 
   function entrer() {
@@ -203,6 +203,7 @@ function demarrer() {
       }
     }
     if (etat === 'studio' || etat === 'chapitre') for (const b of $$('[data-objet]')) { const o = OBJETS[b.dataset.objet]; placer(b, o.x, o.y); }
+    if (etat !== 'vol') lueurCible = 0;                                   // la baie ne brille que vue de dehors
     lueur += (lueurCible - lueur) * 0.08; halo += (haloCible - halo) * 0.1;
     ecran.u.uLueur.value = lueur; ecran.u.uObjet.value = halo;
     vapeur += ((etat === 'studio' ? 1 : 0) - vapeur) * 0.04; ecran.u.uVapeur.value = vapeur;

@@ -13,8 +13,8 @@ export const IMAGE = { largeur: 1280, hauteur: 720 };
 // image 240 = devant la baie (on clique), images 241 → 312 = l'entrée dans le studio.
 export const FILM = { dossier: 'vol', debut: 1, fin: 312, heros: 240 };
 
-// La baie du studio dans l'image 240 (coin haut gauche, coin bas droit).
-export const BAIE = { gauche: 0.4055, haut: 0.659, droite: 0.596, bas: 0.336 };
+// La baie du studio dans l'image 240 (coin haut gauche, coin bas droit) ; le bas s'arrête au parapet de la terrasse.
+export const BAIE = { gauche: 0.4055, haut: 0.659, droite: 0.596, bas: 0.393 };
 
 // Les objets du studio dans la dernière image (vue d'ensemble), un par chapitre.
 export const OBJETS = {
