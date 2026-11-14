@@ -52,7 +52,7 @@ a { color: inherit; }
 .qs__titres { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
 .qs__titre { position: absolute; margin: 0; opacity: var(--o, 0); transform: translateY(calc((1 - var(--o, 0)) * 18px)); text-shadow: 0 2px 30px rgba(0, 0, 0, .35); }
 .qs__titre span { display: block; font-weight: 400; font-size: 15px; letter-spacing: .01em; margin-top: 10px; color: rgba(255, 255, 255, .82); }
-.qs__titre--debut { left: 50%; top: 46%; transform: translate(-50%, calc((1 - var(--o, 0)) * 18px)); text-align: center; font: 600 clamp(30px, 5vw, 64px)/1.05 "Instrument Sans", sans-serif; letter-spacing: -.02em; }
+.qs__titre--debut { left: 50%; top: 46%; width: max-content; max-width: calc(100vw - 32px); transform: translate(-50%, calc((1 - var(--o, 0)) * 18px)); text-align: center; font: 600 clamp(30px, 5vw, 64px)/1.05 "Instrument Sans", sans-serif; letter-spacing: -.02em; }
 .qs__titre--grand { left: 50%; top: 50%; transform: translate(-50%, -50%) scale(calc(.96 + var(--o, 0) * .04)); font: 700 clamp(48px, 13vw, 210px)/.9 "Instrument Sans", sans-serif; letter-spacing: -.03em; white-space: nowrap; }
 .qs__titre--bas { left: clamp(16px, 5vw, 72px); bottom: clamp(90px, 14vh, 140px); font: 600 clamp(34px, 6vw, 86px)/1 "Instrument Sans", sans-serif; letter-spacing: -.025em; max-width: 14ch; }
 
@@ -60,7 +60,7 @@ a { color: inherit; }
 .qs__fenetre { position: fixed; z-index: 6; border: 0; padding: 0; background: transparent; border-radius: 6px; cursor: pointer; display: none; }
 .qs.is-heros .qs__fenetre { display: block; }
 .qs__fenetre:disabled { cursor: default; }
-.qs__invite { position: fixed; z-index: 6; left: 50%; bottom: 34px; transform: translate(-50%, 10px); margin: 0; padding: 10px 18px; border-radius: 999px; background: rgba(10, 14, 28, .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 14px; opacity: 0; transition: opacity .6s var(--doux), transform .6s var(--doux); pointer-events: none; }
+.qs__invite { position: fixed; z-index: 6; left: 50%; bottom: 34px; white-space: nowrap; transform: translate(-50%, 10px); margin: 0; padding: 10px 18px; border-radius: 999px; background: rgba(10, 14, 28, .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 14px; opacity: 0; transition: opacity .6s var(--doux), transform .6s var(--doux); pointer-events: none; }
 .qs.is-heros .qs__invite { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------- le studio : objets cliquables ---------- */
@@ -124,6 +124,7 @@ a { color: inherit; }
 .qs--texte .qs__haut { position: absolute; }
 
 @media (max-width: 640px) {
+  .qs__invite { bottom: 74px; }
   .qs__haut-actions [data-passer] { display: none; }
   .qs.is-vol .qs__haut-actions [data-passer], .qs.is-entree .qs__haut-actions [data-passer] { display: inline-flex; }
   .qs__haut-actions a.qs__btn { display: none; }
