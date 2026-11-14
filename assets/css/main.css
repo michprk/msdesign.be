@@ -907,6 +907,12 @@ html.reduced .gantt .gantt__bar { transform: none !important; }
 
 
 /* ---------- Lien vers « Sous la surface » sous la vidéo du studio ---------- */
+.reel__xp { margin-top: 18px; }
+.reel__xp a { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px 10px 14px; border-radius: 999px; background: var(--white); box-shadow: 0 0 0 1px var(--line), 0 12px 30px -20px rgba(21, 94, 239, 0.5); color: var(--ink); font: 400 14.5px/1.2 var(--sans); text-decoration: none; transition: box-shadow 0.4s var(--ease), transform 0.4s var(--ease); }
+.reel__xp a:hover { transform: translateY(-2px); box-shadow: 0 0 0 1.5px var(--blue), 0 16px 34px -20px rgba(21, 94, 239, 0.65); }
+.reel__xp b { font-weight: 600; color: var(--blue); }
+.reel__xp-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); animation: xp-pulse 2s ease-in-out infinite; }
+@keyframes xp-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(21, 94, 239, 0.5); } 50% { box-shadow: 0 0 0 6px rgba(21, 94, 239, 0); } }
 
 /* ---------- Fin de page, façon Lusion : du noir, on continue à descendre, la ligne se remplit… et on passe « Sous la surface » ---------- */
 .endxp { position: relative; display: grid; place-items: center; height: 100vh; height: 100svh; min-height: 520px; overflow: hidden; isolation: isolate; background: #000; color: #f2fbff; text-align: center; }
@@ -1060,30 +1066,4 @@ html.js .projet[data-reveal].is-in:hover .projet__win { box-shadow: calc(var(--d
 @media (max-width: 760px) {
   .projet { --dx: 10px; }
   .projet:nth-of-type(even) { --dx: -10px; }
-}
-
-/* ---------- L'aperçu de « Sous la surface » sous le film ----------
-   Une carte bleu nuit (la couleur de l'expérience) : la fleur 3D qui respire doucement,
-   « Nouveau · expérience 3D » en orange, le titre en serif avec « la surface » en italique,
-   et une flèche dans un rond crème. Au survol : la carte se soulève, la fleur tourne un peu. */
-.reel__xp { margin-top: 18px; }
-.xp-carte { display: flex; align-items: center; gap: 18px; padding: 10px 18px 10px 10px; border-radius: 16px; background: #070b1f; color: #f5f1e9; text-decoration: none; box-shadow: 0 24px 48px -30px rgba(7, 11, 31, 0.7); transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
-.xp-carte:hover { transform: translateY(-3px); box-shadow: 0 30px 60px -30px rgba(21, 94, 239, 0.55); }
-.xp-carte__vignette { flex: none; width: 104px; height: 104px; border-radius: 10px; overflow: hidden; background: #050817; }
-.xp-carte__vignette img { display: block; width: 100%; height: 100%; object-fit: cover; animation: fleur-respire 6s ease-in-out infinite; transition: rotate 1.2s var(--ease); }
-.xp-carte:hover .xp-carte__vignette img { rotate: 14deg; }
-@keyframes fleur-respire { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.06); filter: brightness(1.12); } }
-.xp-carte__texte { display: grid; gap: 3px; min-width: 0; }
-.xp-carte__label { font: 600 11px/1.4 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: #ff9a5c; }
-.xp-carte__titre { font: 400 clamp(24px, 2vw, 30px)/1.1 var(--display); letter-spacing: -0.02em; }
-.xp-carte__titre em { font-style: italic; color: #9fc0ff; }
-.xp-carte__sous { font: 400 14px/1.45 var(--sans); color: rgba(245, 241, 233, 0.72); }
-.xp-carte__fleche { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-left: auto; border-radius: 50%; background: #f5f1e9; color: #070b1f; transition: transform 0.4s var(--ease); }
-.xp-carte__fleche svg { width: 16px; height: 16px; }
-.xp-carte:hover .xp-carte__fleche { transform: translate(2px, -2px) rotate(-8deg); }
-@media (max-width: 520px) {
-  .xp-carte { gap: 14px; padding-right: 14px; }
-  .xp-carte__vignette { width: 84px; height: 84px; }
-  .xp-carte__sous { display: none; }
-  .xp-carte__label { font-size: 10px; letter-spacing: 0.1em; white-space: nowrap; }
 }
