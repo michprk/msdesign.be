@@ -62,25 +62,8 @@ Tests : `_msdesign-src/probe-v31.mjs [base] [w] [h] [intro|live|jitter|all]`, `p
 **La promesse** (`#promesse`) : sur fond bleu, « En ligne en 21 jours. » et un planning en semaines façon
 diagramme (Avant / Semaine 1 / 2 / 3), barres beige qui s’allongent à l’arrivée : Maquette, Conception, Mise en ligne.
 
-**Qui sommes-nous** (`qui-sommes-nous/`, page plein écran autonome, onglet du menu) : un film qu’on fait défiler, comme
-un générique de cinéma. On part au-dessus des nuages au crépuscule, on descend sur un Manhattan de gratte-ciel de toutes
-tailles (fenêtres allumées, balises rouges, réservoirs d’eau en bois, avenues et phares), jusqu’à la tour Art déco de
-M&S Design où **une seule baie est allumée**, au 25e étage. Le défilement fait avancer **et reculer** le film. Devant la baie,
-elle s’illumine au survol ; un clic (ou Entrée) fait passer par-dessus la terrasse et à travers les portes-fenêtres jusque
-dans le studio. Là, quatre objets sont cliquables, un par chapitre de l’histoire (le carnet : l’idée ; l’ordinateur : fait
-main ; la tasse : la méthode ; le figuier : demain) : la caméra s’approche de l’objet et le texte apparaît par-dessus l’image.
-Menu des chapitres, « Sortir » (on ressort par la fenêtre), « Passer l’animation », Échap et flèches au clavier, son très
-discret (vent, rumeur de la ville, ambiance du studio, une note par chapitre) avec « Couper le son ». Les textes sont du vrai
-HTML (lisibles par Google et les lecteurs d’écran) ; **texte provisoire, à remplacer** dans `qui-sommes-nous/index.html`.
-Avec « Réduire les animations » ou sans WebGL, la page affiche l’image de la tour et l’histoire en texte.
-Les images sont **calculées dans Blender** (Cycles, carte graphique) à partir de scripts reproductibles dans
-`_msdesign-src/blender/qs_*.py` (`qs_tout.py` reconstruit tout : `qs_newyork.py` la ville et la tour, `qs_studio_ny.py` et
-`qs_piece.py` le studio, `qs_ville.py` les nuages, `qs_ambiance.py` le ciel et les lumières, `qs_camera.py` le trajet,
-`qs_anim.py` les plans des chapitres), puis rendues en ligne de commande (`C:devqs-renderendu2.py`). Elles sont dans
-`public/qui-sommes-nous/images/` (`vol/` : 312 images 1280 × 720 ; `chapitres/<objet>/` : 40 images chacun). Le site les
-charge du plus grossier au plus fin (1 image sur 8, puis 4, 2, 1) et les affiche avec Three.js (`qui-sommes-nous/js/ecran.js` :
-fondu entre deux images, lueur de la baie, halo sur l’objet survolé, grain et vignettage). Après un nouveau rendu, changer
-`VERSION` dans `qui-sommes-nous/js/donnees.js` (et les positions de la baie et des objets si le cadrage a changé).
+**Qui sommes-nous** : retirée du site le 14/11/2026 (le rendu Blender n’était pas assez réaliste) ; elle reviendra avec un film
+généré par IA. Son code et ses images sont gardés sur la branche `qui-sommes-nous-v1`.
 
 **L’équipe** (`equipe.html`, page plein écran autonome) : un voyage en 3D dans un Japon d’hiver.
 **Depuis la v33, les grands éléments sont modélisés dans Blender** (connecteur MCP for Blender, scripts reproductibles
@@ -208,7 +191,6 @@ assets/js/devis3d.js      la scène 3D « Un prix sur mesure » de la section Ta
 assets/js/journey.js      le voyage 3D de la page Équipe (Japon d’hiver)
 equipe.html               l’équipe (Michal, Mamoudou, Adam)
 experience/               « Sous la surface », la plongée 3D et sa fleur (page autonome)
-qui-sommes-nous/          « Qui sommes-nous » : le film des nuages jusqu’au studio (images rendues dans Blender)
 public/                   fichiers copiés tels quels, à adresse fixe : icônes, manifeste, og.jpg,
                           robots.txt, sitemap.xml, licences, _headers, .htaccess, security.txt,
                           vidéos (public/assets/video/) et l’image citée dans le plan du site
