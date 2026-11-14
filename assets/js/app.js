@@ -201,33 +201,6 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     requestAnimationFrame(() => setTimeout(() => d.classList.add('hero-in'), reduced ? 0 : 80));
   });
 
-  // la sélection de projets : un projet à la fois (flèches, clavier, glissé au doigt)
-  safe('projects', () => {
-    const slides = $$('[data-slide]');
-    if (slides.length < 2) return;
-    const infos = $$('[data-slide-info]');
-    const num = $('[data-slide-num]');
-    let i = 0;
-    const show = (n) => {
-      i = (n + slides.length) % slides.length;
-      slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
-      infos.forEach((s, k) => { s.hidden = k !== i; s.classList.toggle('is-on', k === i); });
-      if (num) num.textContent = String(i + 1).padStart(2, '0');
-    };
-    const prev = $('[data-slide-prev]'), next = $('[data-slide-next]');
-    if (prev) prev.addEventListener('click', () => show(i - 1));
-    if (next) next.addEventListener('click', () => show(i + 1));
-    const view = slides[0].parentElement;
-    let x0 = null;
-    view.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
-    view.addEventListener('touchend', (e) => {
-      if (x0 == null) return;
-      const dx = e.changedTouches[0].clientX - x0;
-      if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
-      x0 = null;
-    }, { passive: true });
-  });
-
   /* ---------- Ancres douces + présélection du formulaire ---------- */
   const formApi = {};
   safe('anchors', () => {

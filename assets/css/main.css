@@ -227,28 +227,7 @@ html.hero-in .hero__stack { transition-delay: 0.2s; }
    Sélection de projets : l’introduction, la fenêtre du projet, la légende
    ========================================================================== */
 .sec.projects { padding-top: clamp(44px, 7vh, 80px); }
-.projects__head { margin-bottom: clamp(30px, 5vh, 56px); }
-.projects__head .h2 { font-size: clamp(38px, 4.6vw, 70px); }
-.projects__grid { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.6fr) minmax(210px, 0.5fr); align-items: center; gap: clamp(24px, 3.4vw, 56px); }
-.projects__intro .h2 { font-size: clamp(34px, 3.3vw, 50px); }
-.projects__intro .lead { margin-top: 18px; font-size: 16.5px; }
-.projects__view { position: relative; }
-.win--big { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; transform: translateY(12px) scale(0.985); transition: opacity 0.7s var(--ease), transform 0.9s var(--ease); pointer-events: none; }
-.win--big.is-on { position: relative; opacity: 1; transform: none; pointer-events: auto; }
-.win--big .win__bar { height: 28px; }
-.projects__side { align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding-left: clamp(20px, 2.4vw, 36px); border-left: 1px solid var(--line); }
-.projects__count { font: 500 13px/1 var(--sans); letter-spacing: 0.16em; color: var(--muted); }
-.projects__info .projects__kind { font: 600 11px/1.4 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
-.projects__info .projects__open { margin-top: 18px; }
 a.win:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
-.projects__info .h3 { font: 600 19px/1.3 var(--sans); letter-spacing: -0.01em; }
-.projects__info p { margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--muted); }
-.projects__info .more { margin-top: 14px; }
-.projects__nav { display: flex; gap: 8px; }
-.projects__nav button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-2); background: transparent; color: var(--ink); transition: border-color 0.2s, color 0.2s; }
-.projects__nav button:hover { border-color: var(--blue); color: var(--blue); }
-.projects__nav button:first-child svg { transform: rotate(180deg); }
-.projects__nav svg { width: 18px; height: 18px; }
 
 /* ==========================================================================
    Sections
@@ -686,9 +665,6 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; transition: opacity 1
   .hero__stack { max-width: 720px; width: 100%; margin: 8px auto 0; }
   .hero__title .hl--caps { font-size: clamp(40px, 9vw, 96px); }
   .hero__title .hl--serif { font-size: clamp(54px, 12vw, 130px); }
-  .projects__grid { grid-template-columns: minmax(0, 1fr); }
-  .projects__side { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 22px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px 24px; }
-  .projects__info { grid-column: 2; }
 }
 @media (max-width: 640px) {
   .hero__title .hl--caps { font-size: 11.2vw; }
@@ -697,13 +673,9 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; transition: opacity 1
   .hero__feats, .feats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .hero__feats li, .feats li { flex-direction: column; align-items: flex-start; gap: 8px; padding: 0 10px; font-size: 12.5px; }
   .hero__stack { width: 90%; }
-  .projects__head { margin-bottom: 10px; }
   .badge { right: 0; width: 76px; font-size: 9px; }
   .hdr__end .btn { display: none; }
   .logo { font-size: 21px; }
-  .projects__side { grid-template-columns: 1fr auto; }
-  .projects__count { grid-column: 1 / -1; }
-  .projects__info { grid-column: 1; }
 }
 @media (max-width: 640px) {
   body { font-size: 17px; }
@@ -989,4 +961,55 @@ html.reduced .gantt .gantt__bar { transform: none !important; }
 @media (max-width: 760px) {
   .services__head { grid-template-columns: minmax(0, 1fr); grid-template-areas: "label" "titre" "texte"; }
   .services__head .lead { margin-top: 20px; }
+}
+
+/* ---------- Réalisations : le titre et les cinq exemples en grille ----------
+   Première ligne : le titre (avec « du sens » en italique orange) puis deux sites ;
+   deuxième ligne : trois sites. Chaque carte : la fenêtre du site, le métier en bleu,
+   le nom en serif avec sa flèche, une phrase. Les colonnes sont légèrement décalées. */
+.projets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(44px, 6vw, 88px) clamp(24px, 3vw, 44px); align-items: start; }
+.projets__head { padding-top: 4px; }
+.projets__title { font-size: clamp(40px, 3.9vw, 62px); line-height: 1.04; }
+.projets__head .lead { margin-top: 22px; max-width: 26em; font-size: 16.5px; }
+.projet { display: flex; flex-direction: column; gap: 6px; color: inherit; text-decoration: none; }
+.projet:nth-of-type(2), .projet:nth-of-type(4) { margin-top: clamp(20px, 2.4vw, 36px); }
+.projet__win { position: relative; display: block; margin-bottom: 18px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -40px rgba(23, 23, 23, 0.45); transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease); }
+.projet__win img { display: block; width: 100%; height: auto; }
+.projet:hover .projet__win { transform: translateY(-6px); box-shadow: 0 0 0 1px var(--line-2), 0 40px 70px -40px rgba(23, 23, 23, 0.55); }
+.projet__genre { font: 600 11.5px/1.4 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); }
+.projet__nom { display: flex; align-items: center; gap: 10px; font: 400 clamp(22px, 1.8vw, 28px)/1.2 var(--display); letter-spacing: -0.015em; }
+.projet__nom svg { width: 18px; height: 18px; flex: none; transition: transform 0.4s var(--ease); }
+.projet:hover .projet__nom svg { transform: translate(3px, -3px); }
+.projet__texte { max-width: 34em; font: 400 15.5px/1.55 var(--sans); color: var(--muted); }
+@media (max-width: 1000px) {
+  .projets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .projets__head { grid-column: 1 / -1; }
+  .projet:nth-of-type(n) { margin-top: 0; }
+  .projet:nth-of-type(odd) { margin-top: clamp(20px, 3vw, 36px); }
+}
+@media (max-width: 640px) {
+  .projets { grid-template-columns: minmax(0, 1fr); }
+  .projet:nth-of-type(odd) { margin-top: 0; }
+}
+
+/* ---------- Le point du « j » de « projets », qui tombe comme dans un dessin animé ----------
+   Le « j » garde sa forme mais son propre point est masqué (découpe juste sous le point) ;
+   un petit rond orange tombe à sa place, s'écrase, rebondit deux fois et se pose.
+   Mesures prises sur Fraunces : point centré à 0,61 em au-dessus de la ligne de base, 0,13 em de large. */
+.j-point { position: relative; }
+.j-point__j { display: inline-block; line-height: 1; padding: 0 0.12em 0.3em; margin: 0 -0.12em -0.3em; clip-path: inset(0.356em 0 0 0); }
+.j-point__pt { position: absolute; left: 0.065em; top: 0.302em; width: 0.13em; height: 0.13em; border-radius: 50%; background: var(--orange); transform-origin: 50% 100%; opacity: 0; pointer-events: none; }
+html.js .is-in .j-point__pt { animation: j-chute 1.2s 0.55s both; }
+html:not(.js) .j-point__pt, html.reduced .j-point__pt { opacity: 1; animation: none !important; }
+@keyframes j-chute {
+  0% { opacity: 0; transform: translateY(-2.4em) scale(0.92, 1.12); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  8% { opacity: 1; }
+  32% { transform: translateY(0) scale(0.92, 1.12); animation-timing-function: linear; }
+  38% { transform: translateY(0) scale(1.5, 0.6); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1); }
+  54% { transform: translateY(-0.6em) scale(0.9, 1.12); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  68% { transform: translateY(0) scale(0.95, 1.05); animation-timing-function: linear; }
+  72% { transform: translateY(0) scale(1.25, 0.8); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1); }
+  82% { transform: translateY(-0.14em) scale(0.98, 1.03); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
+  90% { transform: translateY(0) scale(1.06, 0.94); }
+  100% { opacity: 1; transform: none; }
 }
