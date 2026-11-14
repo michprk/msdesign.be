@@ -1,0 +1,124 @@
+/* =============================================================================
+   M&S Design — « Qui sommes-nous » : le film de la descente dans la tour, puis le studio.
+   Les couleurs et les polices sont celles du site (crème, bleu vif, noir).
+   ============================================================================= */
+@font-face { font-family: "Instrument Sans"; src: url("../assets/fonts/instrument-sans-400-700-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Fraunces"; src: url("../assets/fonts/fraunces-normal-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+
+:root {
+  --creme: #f5f1e9;
+  --blanc: #fbf9f4;
+  --encre: #171717;
+  --bleu: #155eef;
+  --nuit: #0b1020;
+  --chaud: #ffb35c;                 /* la lumière de la fenêtre */
+  --doux: cubic-bezier(.22, .61, .36, 1);
+  --rayon: 18px;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--nuit); color: var(--blanc); -webkit-text-size-adjust: 100%; }
+body.qs { margin: 0; font: 400 16px/1.55 "Instrument Sans", system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
+button { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* ---------- le film (WebGL) et l'image d'attente ---------- */
+.qs__gl, .qs__affiche { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+.qs__gl { z-index: 0; opacity: 0; transition: opacity .8s var(--doux); }
+.qs__affiche { z-index: 0; object-fit: cover; }
+.qs.is-pret .qs__gl { opacity: 1; }
+.qs.is-pret .qs__affiche { opacity: 0; transition: opacity .8s var(--doux) .2s; }
+
+/* ---------- en-tête ---------- */
+.qs__haut { position: fixed; z-index: 20; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 22px clamp(16px, 3.5vw, 48px); pointer-events: none; }
+.qs__haut > * { pointer-events: auto; }
+.qs__logo { font: 600 19px/1 "Fraunces", Georgia, serif; letter-spacing: .02em; text-decoration: none; }
+.qs__haut-actions { display: flex; gap: 10px; }
+.qs__btn { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .35); background: rgba(10, 14, 28, .28); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); text-decoration: none; font-weight: 500; font-size: 14px; cursor: pointer; transition: background .3s var(--doux), border-color .3s var(--doux); }
+.qs__btn:hover { background: rgba(10, 14, 28, .5); border-color: rgba(255, 255, 255, .6); }
+.qs__btn--ghost { background: transparent; }
+.qs__btn[hidden] { display: none; }
+:focus-visible { outline: 2px solid var(--chaud); outline-offset: 3px; }
+
+/* ---------- chargement ---------- */
+.qs__chargement { position: fixed; inset: 0; z-index: 30; display: grid; place-content: center; text-align: center; gap: 10px; background: var(--nuit); transition: opacity .9s var(--doux), visibility 0s linear .9s; }
+.qs__chargement-titre { margin: 0; font: 600 clamp(26px, 4vw, 40px)/1 "Fraunces", Georgia, serif; }
+.qs__chargement-texte { margin: 0; font-size: 14px; color: rgba(255, 255, 255, .7); }
+.qs__chargement-barre { width: min(260px, 60vw); height: 2px; background: rgba(255, 255, 255, .15); border-radius: 2px; overflow: hidden; margin: 8px auto 0; }
+.qs__chargement-barre span { display: block; height: 100%; width: 0; background: var(--blanc); transition: width .3s linear; }
+.qs.is-pret .qs__chargement { opacity: 0; visibility: hidden; }
+
+/* ---------- titres du vol ---------- */
+.qs__titres { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.qs__titre { position: absolute; margin: 0; opacity: var(--o, 0); transform: translateY(calc((1 - var(--o, 0)) * 18px)); text-shadow: 0 2px 30px rgba(0, 0, 0, .35); }
+.qs__titre span { display: block; font-weight: 400; font-size: 15px; letter-spacing: .01em; margin-top: 10px; color: rgba(255, 255, 255, .82); }
+.qs__titre--debut { left: 50%; top: 46%; transform: translate(-50%, calc((1 - var(--o, 0)) * 18px)); text-align: center; font: 600 clamp(30px, 5vw, 64px)/1.05 "Instrument Sans", sans-serif; letter-spacing: -.02em; }
+.qs__titre--grand { left: 50%; top: 50%; transform: translate(-50%, -50%) scale(calc(.96 + var(--o, 0) * .04)); font: 700 clamp(48px, 13vw, 210px)/.9 "Instrument Sans", sans-serif; letter-spacing: -.03em; white-space: nowrap; }
+.qs__titre--bas { left: clamp(16px, 5vw, 72px); bottom: clamp(90px, 14vh, 140px); font: 600 clamp(34px, 6vw, 86px)/1 "Instrument Sans", sans-serif; letter-spacing: -.025em; max-width: 14ch; }
+
+/* ---------- la fenêtre allumée ---------- */
+.qs__fenetre { position: fixed; z-index: 6; border: 0; padding: 0; background: transparent; border-radius: 6px; cursor: pointer; display: none; }
+.qs.is-heros .qs__fenetre { display: block; }
+.qs__fenetre:disabled { cursor: default; }
+.qs__invite { position: fixed; z-index: 6; left: 50%; bottom: 34px; transform: translate(-50%, 10px); margin: 0; padding: 10px 18px; border-radius: 999px; background: rgba(10, 14, 28, .45); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 14px; opacity: 0; transition: opacity .6s var(--doux), transform .6s var(--doux); pointer-events: none; }
+.qs.is-heros .qs__invite { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- le studio : objets cliquables ---------- */
+.qs__objets { position: fixed; inset: 0; z-index: 6; pointer-events: none; }
+.qs__objet { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 0; background: transparent; cursor: pointer; pointer-events: auto; opacity: 0; transition: opacity .6s var(--doux); }
+.qs.is-studio .qs__objet { opacity: 1; }
+.qs__objet::before { content: ""; position: absolute; inset: 14px; border-radius: 50%; background: var(--blanc); box-shadow: 0 0 0 0 rgba(255, 255, 255, .6); animation: qs-pouls 2.4s var(--doux) infinite; }
+.qs__objet span { position: absolute; left: 50%; bottom: 46px; transform: translate(-50%, 6px); white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: var(--blanc); color: var(--encre); font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .4s var(--doux), transform .4s var(--doux); }
+.qs__objet:hover span, .qs__objet:focus-visible span { opacity: 1; transform: translate(-50%, 0); }
+@keyframes qs-pouls { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .55); } 70% { box-shadow: 0 0 0 16px rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+.qs.is-chapitre .qs__objet { opacity: 0; pointer-events: none; }
+
+/* ---------- menu des chapitres ---------- */
+.qs__menu { position: fixed; z-index: 15; left: 50%; bottom: 26px; transform: translate(-50%, 16px); display: flex; gap: 4px; padding: 6px; border-radius: 999px; background: rgba(251, 249, 244, .92); color: var(--encre); box-shadow: 0 12px 40px rgba(0, 0, 0, .3); opacity: 0; transition: opacity .7s var(--doux), transform .7s var(--doux); max-width: calc(100vw - 32px); overflow-x: auto; scrollbar-width: none; }
+.qs__menu[hidden] { display: flex; visibility: hidden; }
+.qs.is-studio .qs__menu { opacity: 1; transform: translate(-50%, 0); visibility: visible; }
+.qs__menu button { border: 0; background: transparent; padding: 10px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background .3s var(--doux), color .3s var(--doux); }
+.qs__menu button:hover { background: rgba(23, 23, 23, .06); }
+.qs__menu button[aria-current="true"] { background: var(--encre); color: var(--blanc); }
+.qs__menu .qs__menu-sortir { color: var(--bleu); }
+
+/* ---------- l'histoire (vrai texte) ---------- */
+.qs__histoire { position: fixed; z-index: 10; left: clamp(16px, 5vw, 72px); bottom: clamp(96px, 15vh, 150px); width: min(560px, calc(100vw - 32px)); pointer-events: none; }
+.qs__intro { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.qs__chapitre { display: none; }
+.qs__chapitre.is-ouvert { display: block; pointer-events: auto; animation: qs-entre .9s var(--doux) both; }
+.qs__chapitre h2 { margin: 0 0 14px; font: 700 clamp(46px, 7.5vw, 112px)/.92 "Instrument Sans", sans-serif; letter-spacing: -.035em; text-shadow: 0 2px 40px rgba(0, 0, 0, .4); }
+.qs__chapitre p { margin: 0 0 10px; max-width: 40ch; font-size: clamp(15px, 1.25vw, 17px); color: rgba(255, 255, 255, .9); text-shadow: 0 1px 18px rgba(0, 0, 0, .55); }
+.qs__lien { display: inline-flex; margin-top: 8px; padding: 12px 20px; border-radius: 999px; background: var(--bleu); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; text-shadow: none; }
+@keyframes qs-entre { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+/* voile sombre en bas à gauche, pour que le texte reste lisible sur l'image */
+.qs__histoire::before { content: ""; position: fixed; inset: auto auto 0 0; width: 70vw; height: 70vh; background: radial-gradient(ellipse at 0% 100%, rgba(5, 8, 18, .72), rgba(5, 8, 18, 0) 70%); z-index: -1; opacity: 0; transition: opacity .8s var(--doux); pointer-events: none; }
+.qs.is-chapitre .qs__histoire::before { opacity: 1; }
+
+.qs__son { position: fixed; z-index: 15; right: clamp(16px, 3.5vw, 48px); bottom: 26px; border: 0; background: none; padding: 8px 0; font-size: 13px; color: rgba(255, 255, 255, .75); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.qs.is-studio .qs__son { bottom: 90px; }
+
+/* ---------- hauteur de défilement (le vol) ---------- */
+.qs__defilement { height: 720vh; }
+.qs.is-studio .qs__defilement, .qs.is-entree .qs__defilement { height: 100vh; }
+.qs.is-verrou { overflow: hidden; }
+
+/* ---------- version texte : « Réduire les animations », pas de WebGL, ou erreur ---------- */
+.qs--texte .qs__gl, .qs--texte .qs__titres, .qs--texte .qs__fenetre, .qs--texte .qs__invite, .qs--texte .qs__objets,
+.qs--texte .qs__menu, .qs--texte .qs__chargement, .qs--texte .qs__defilement, .qs--texte [data-passer], .qs--texte .qs__son { display: none !important; }
+.qs--texte .qs__affiche { position: relative; height: 62vh; opacity: 1 !important; }
+.qs--texte .qs__histoire { position: static; width: auto; max-width: 720px; margin: 0 auto; padding: 48px 16px 96px; pointer-events: auto; }
+.qs--texte .qs__histoire::before { display: none; }
+.qs--texte .qs__intro { position: static; width: auto; height: auto; clip: auto; margin-bottom: 40px; }
+.qs--texte .qs__intro h1 { font: 700 clamp(40px, 6vw, 72px)/1 "Instrument Sans", sans-serif; letter-spacing: -.03em; margin: 0 0 16px; }
+.qs--texte .qs__chapitre { display: block; margin-bottom: 44px; }
+.qs--texte .qs__chapitre h2 { font-size: clamp(32px, 4.5vw, 52px); }
+.qs--texte .qs__haut { position: absolute; }
+
+@media (max-width: 640px) {
+  .qs__haut-actions [data-passer] { display: none; }
+  .qs.is-vol .qs__haut-actions [data-passer], .qs.is-entree .qs__haut-actions [data-passer] { display: inline-flex; }
+  .qs__haut-actions a.qs__btn { display: none; }
+  .qs__histoire { bottom: 96px; }
+  .qs__menu button { padding: 9px 12px; font-size: 13px; }
+}
