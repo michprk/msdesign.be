@@ -1013,3 +1013,7 @@ html:not(.js) .j-point__pt, html.reduced .j-point__pt { opacity: 1; animation: n
   90% { transform: translateY(0) scale(1.06, 0.94); }
   100% { opacity: 1; transform: none; }
 }
+
+/* ---------- « En ligne en 21 jours » : une photo au-dessus de chaque étape ----------
+   Photos Unsplash (licence Unsplash : usage commercial autorisé), recadrées en 4:3. */
+.promise__img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; margin: 0 0 24px; border-radius: 14px; box-shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.55); }
