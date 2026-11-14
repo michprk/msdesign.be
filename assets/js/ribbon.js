@@ -3,14 +3,11 @@
    Un tube 3D (Three.js) qui serpente derrière la section « Le studio ».
    Il se dessine quand la section arrive, se rembobine quand on remonte la page,
    ondule doucement, s’écarte de la souris et frémit au défilement. Purement décoratif.
-   Options : path (tracé sur mesure, en px), color, color2 (si donnée : la ficelle passe
-   doucement de color à color2 sur sa longueur, la boucle finit donc en color2),
-   trigger (hauteur d’écran où il se dessine).
+   Options : path (tracé sur mesure, en px), color, trigger (hauteur d’écran où il se dessine).
    ========================================================================== */
 import * as THREE from 'three';
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const TS_ = 260, RS_ = 14;                                                   // finesse du tube : segments en longueur, en tour
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /* Le tracé, en unités de la grille (0 → 1 = largeur et hauteur de la grille de la section).
@@ -51,7 +48,7 @@ function studioPath({ rel, W, gx, gy, gw, gh }) {
   }) };
 }
 
-export function createRibbon(host, { reduced = false, grid = null, lenis = () => null, path = studioPath, color = 0x1d5cf5, color2 = null, trigger = 0.62, light = null } = {}) {
+export function createRibbon(host, { reduced = false, grid = null, lenis = () => null, path = studioPath, color = 0x1d5cf5, trigger = 0.62, light = null } = {}) {
   const canvas = document.createElement('canvas');
   canvas.className = 'ribbon__gl';
   canvas.setAttribute('aria-hidden', 'true');
@@ -74,26 +71,12 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
   const rim = new THREE.DirectionalLight(0x9fb6ff, 0.9);
   rim.position.set(0.6, -0.8, 0.4);
   scene.add(rim);
-  const degrade = color2 !== null;
-  const cA = new THREE.Color(color), cB = new THREE.Color(degrade ? color2 : color), cTmp = new THREE.Color();
-  // la teinte à une position de la ficelle (0 = début, 1 = bout) : bleu, puis passage court vers l’orange (sans virer au violet)
-  const teinte = (u) => { const t = clamp((u - 0.52) / 0.045, 0, 1); return cTmp.lerpColors(cA, cB, t * t * (3 - 2 * t)); };
-  const mat = new THREE.MeshStandardMaterial({ color: degrade ? 0xffffff : color, vertexColors: degrade, roughness: 0.36, metalness: 0 });
+  const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.36, metalness: 0 });
   const mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat);
-  const capMat = degrade ? new THREE.MeshStandardMaterial({ color, roughness: 0.36, metalness: 0 }) : mat;
-  const cap = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), capMat);
-  // les couleurs de chaque sommet du tube, calculées une fois (le tube garde toujours le même nombre de sommets)
-  let couleurs = null;
-  if (degrade) {
-    couleurs = new Float32Array((TS_ + 1) * (RS_ + 1) * 3);
-    for (let i = 0; i <= TS_; i++) {
-      const c = teinte(i / TS_);
-      for (let j = 0; j <= RS_; j++) couleurs.set([c.r, c.g, c.b], (i * (RS_ + 1) + j) * 3);
-    }
-  }
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), mat);
   scene.add(mesh, cap);
 
-  const N = 110, TS = TS_, RS = RS_;
+  const N = 110, TS = 260, RS = 14;
   const rest = Array.from({ length: N }, () => new THREE.Vector3());
   const off = Array.from({ length: N }, () => ({ x: 0, y: 0, vx: 0, vy: 0 }));
   const pts = Array.from({ length: N }, () => new THREE.Vector3());
@@ -148,12 +131,11 @@ export function createRibbon(host, { reduced = false, grid = null, lenis = () =>
     for (let i = 0; i < N; i++) pts[i].set(rest[i].x + off[i].x, rest[i].y + off[i].y, rest[i].z);
     const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
     const geo = new THREE.TubeGeometry(curve, TS, radius, RS, false);
-    if (couleurs) geo.setAttribute('color', new THREE.BufferAttribute(couleurs, 3));
     const seg = Math.floor(TS * draw);
     geo.setDrawRange(0, seg * RS * 6);
     mesh.geometry.dispose(); mesh.geometry = geo;
     cap.visible = draw > 0.002 && draw < 0.999;
-    if (cap.visible) { cap.position.copy(curve.getPointAt(seg / TS)); cap.scale.setScalar(radius); if (degrade) capMat.color.copy(teinte(seg / TS)); }
+    if (cap.visible) { cap.position.copy(curve.getPointAt(seg / TS)); cap.scale.setScalar(radius); }
   }
 
   function frame(now) {

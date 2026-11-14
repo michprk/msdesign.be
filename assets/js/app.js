@@ -444,7 +444,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (!entries.some((e) => e.isIntersecting)) return;
       io.disconnect();
       import('./ribbon.js')
-        .then((m) => { window.__msRibbon = m.createRibbon(host, { reduced, grid: $('[data-ribbon-grid]', host), lenis: () => lenis, color2: 0xd2570f }); })
+        .then((m) => { window.__msRibbon = m.createRibbon(host, { reduced, grid: $('[data-ribbon-grid]', host), lenis: () => lenis }); })
         .catch((err) => console.warn('[ms] ribbon', err));
     }, { rootMargin: '500px 0px' });
     io.observe(host);
