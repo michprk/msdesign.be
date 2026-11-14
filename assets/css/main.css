@@ -1025,16 +1025,12 @@ html:not(.js) .j-point__pt, html.reduced .j-point__pt { opacity: 1; animation: n
 .steps .step__day { padding-top: 16px; border-top: 1px solid var(--line-2); }
 #methode .sec-head { max-width: 1040px; }
 
-/* ---------- Méthode : les photos tombent et rebondissent sur un aplat orange ou bleu ----------
-   Derrière chaque photo, un aplat de couleur décalé (orange, bleu, orange, bleu ; décalé à droite
-   puis à gauche). Quand l'étape apparaît, la photo tombe, s'écrase un peu, rebondit et se pose,
-   comme le point du « j » des réalisations ; à l'impact, l'aplat jaillit de derrière.
-   Le tout se rejoue quand on revient sur la section. */
-.step__photo { position: relative; display: block; margin-bottom: 22px; --dx: 12px; --couleur: var(--orange); }
-.step:nth-child(even) .step__photo { --dx: -12px; --couleur: var(--blue); }
-.step__photo::before { content: ""; position: absolute; inset: 0; border-radius: 12px; background: var(--couleur); transform: translate(var(--dx), 12px); }
-.step__photo .step__img { position: relative; margin-bottom: 0; box-shadow: 0 0 0 1px var(--line); transform-origin: 50% 100%; transition: transform 0.5s var(--ease); }
-.step:hover .step__photo .step__img { transform: translate(calc(var(--dx) * -0.35), -5px); }
+/* ---------- Méthode : les photos tombent et rebondissent ----------
+   Quand l'étape apparaît, la photo tombe, s'écrase un peu, rebondit et se pose, comme le point
+   du « j » des réalisations. Le tout se rejoue quand on revient sur la section. */
+.step__photo { position: relative; display: block; margin-bottom: 22px; }
+.step__photo .step__img { position: relative; margin-bottom: 0; transform-origin: 50% 100%; transition: transform 0.5s var(--ease); }
+.step:hover .step__photo .step__img { transform: translateY(-5px); }
 
 /* l'étape apparaît d'un coup (pas de glissement) : c'est la photo qui fait le mouvement */
 html.js .steps .step[data-reveal], html.js .steps .step[data-reveal].is-in { transform: none; }
@@ -1044,7 +1040,6 @@ html.js .steps .step[data-reveal].is-in { transition: opacity 0.3s ease var(--sa
 .steps .step:nth-child(3) { --saut: 0.32s; }
 .steps .step:nth-child(4) { --saut: 0.48s; }
 html.js .steps .step.is-in .step__img { animation: photo-saut 1.15s var(--saut, 0s) backwards; }
-html.js .steps .step.is-in .step__photo::before { animation: aplat-jaillit 0.7s calc(var(--saut, 0s) + 0.36s) backwards; }
 @keyframes photo-saut {
   0% { opacity: 0; transform: translateY(-80px) scale(0.97, 1.04); animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45); }
   8% { opacity: 1; }
@@ -1056,12 +1051,19 @@ html.js .steps .step.is-in .step__photo::before { animation: aplat-jaillit 0.7s 
   92% { transform: translateY(0) scale(1.005, 0.995); }
   100% { opacity: 1; transform: none; }
 }
-@keyframes aplat-jaillit {
-  0% { opacity: 0; transform: translate(0, 0) scale(0.92); }
-  55% { opacity: 1; transform: translate(calc(var(--dx) * 1.35), 16px) scale(1.01); }
-  100% { opacity: 1; transform: translate(var(--dx), 12px) scale(1); }
-}
+
+/* ---------- Réalisations : un aplat orange ou bleu derrière chaque site ----------
+   Une « ombre pleine » décalée suit les coins arrondis de la fenêtre : orange décalé à droite,
+   puis bleu décalé à gauche, en alternance. Elle sort de derrière la fenêtre quand la carte
+   apparaît, et rentre quand on remonte. Au survol, le site se soulève et l'aplat s'écarte. */
+.projet { --dx: 14px; --couleur: var(--orange); }
+.projet:nth-of-type(even) { --dx: -14px; --couleur: var(--blue); }
+.projet__win { box-shadow: var(--dx) 14px 0 0 var(--couleur), 0 0 0 1px var(--line); }
+.projet:hover .projet__win { transform: translate(calc(var(--dx) * -0.3), -6px); box-shadow: calc(var(--dx) * 1.4) 20px 0 0 var(--couleur), 0 0 0 1px var(--line-2); }
+html.js .projet[data-reveal] .projet__win { box-shadow: 0 0 0 0 var(--couleur), 0 0 0 1px var(--line); transition: box-shadow 0.4s var(--ease), transform 0.6s var(--ease); }
+html.js .projet[data-reveal].is-in .projet__win { box-shadow: var(--dx) 14px 0 0 var(--couleur), 0 0 0 1px var(--line); transition: box-shadow 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d, 0s) + 0.45s), transform 0.6s var(--ease); }
+html.js .projet[data-reveal].is-in:hover .projet__win { box-shadow: calc(var(--dx) * 1.4) 20px 0 0 var(--couleur), 0 0 0 1px var(--line-2); transition: box-shadow 0.5s var(--ease), transform 0.6s var(--ease); }
 @media (max-width: 760px) {
-  .step__photo { --dx: 10px; }
-  .step:nth-child(even) .step__photo { --dx: -10px; }
+  .projet { --dx: 10px; }
+  .projet:nth-of-type(even) { --dx: -10px; }
 }
