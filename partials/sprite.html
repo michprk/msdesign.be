@@ -25,4 +25,17 @@
 <symbol id="i-euro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M17.5 6.5A7 7 0 1 0 17.5 17.5"/><path d="M4.5 10h9M4.5 14h8"/></symbol>
 <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20s-7.5-4.5-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.5 12 20 12 20z"/></symbol>
 <symbol id="i-cursor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M5 3.5v15.5l4.2-4 2.8 6.4 2.7-1.2-2.8-6.3H18z"/></symbol>
+<!-- La bombe de peinture : bords rongés, halo de pulvérisation et petits postillons autour du trait -->
+<filter id="spray" x="-20%" y="-40%" width="140%" height="190%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="7" result="bruit"/>
+<feDisplacementMap in="SourceGraphic" in2="bruit" scale="3.5" xChannelSelector="R" yChannelSelector="G" result="trait"/>
+<feGaussianBlur in="trait" stdDeviation="2.6" result="flou"/>
+<feComponentTransfer in="flou" result="halo"><feFuncA type="linear" slope="0.42"/></feComponentTransfer>
+<feTurbulence type="fractalNoise" baseFrequency="1.9" numOctaves="1" seed="3" result="grain"/>
+<feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 16 -10.2" result="points"/>
+<feGaussianBlur in="trait" stdDeviation="8" result="large"/>
+<feComposite in="large" in2="points" operator="in" result="postillons0"/>
+<feComponentTransfer in="postillons0" result="postillons"><feFuncA type="linear" slope="3.2"/></feComponentTransfer>
+<feMerge><feMergeNode in="postillons"/><feMergeNode in="halo"/><feMergeNode in="trait"/></feMerge>
+</filter>
 </svg>

@@ -444,13 +444,16 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (!entries.some((e) => e.isIntersecting)) return;
       io.disconnect();
       import('./ribbon.js')
-        .then((m) => { window.__msRibbon = m.createRibbon(host, { reduced, grid: $('[data-ribbon-grid]', host), lenis: () => lenis }); })
+        .then((m) => { window.__msRibbon = m.createRibbon(host, { reduced, grid: $('[data-ribbon-grid]', host), lenis: () => lenis, color2: 0xd2570f }); })
         .catch((err) => console.warn('[ms] ribbon', err));
     }, { rootMargin: '500px 0px' });
     io.observe(host);
   });
 
-  /* ---------- Apparitions à l’entrée dans l’écran ---------- */
+  /* ---------- Apparitions à l’entrée dans l’écran ----------
+     Un élément apparaît quand son haut passe au-dessus de la ligne (88 % de la hauteur d’écran).
+     Quand on remonte la page et qu’il repasse sous cette ligne, il s’efface ; dès qu’on
+     redescend, il réapparaît aussitôt. Ceux qu’on a dépassés vers le bas restent affichés. */
   safe('reveal', () => {
     const groups = new Map();
     $$('[data-reveal]').forEach((el) => {
@@ -463,11 +466,10 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     if (!('IntersectionObserver' in window)) { targets.forEach((el) => el.classList.add('is-in')); return; }
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-in');
-        io.unobserve(entry.target);
+        if (entry.isIntersecting) entry.target.classList.add('is-in');
+        else if (entry.boundingClientRect.top > 0) entry.target.classList.remove('is-in');   // reparti sous la ligne : on remonte
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
     targets.forEach((el) => io.observe(el));
   });
 
