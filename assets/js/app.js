@@ -481,7 +481,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       det.addEventListener('toggle', () => {
         if (!det.open) return;
         items.forEach((o) => { if (o !== det) o.open = false; });
-        track('faq_open', { question: $('summary', det).textContent.trim().slice(0, 80) });
+        track('faq_open', { question: ($('.faq__q', det) || $('summary', det)).textContent.trim().slice(0, 80) });
       });
     });
   });
