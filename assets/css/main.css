@@ -13,6 +13,8 @@
    ========================================================================== */
 @font-face { font-family: "Fraunces"; src: url("../fonts/fraunces-normal-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Fraunces"; src: url("../fonts/fraunces-italic-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("../fonts/inter-400-800-latin.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Junicode"; src: url("../fonts/junicode-vf-subset.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Hanken Grotesk"; src: url("../fonts/hanken-grotesk-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Instrument Sans"; src: url("../fonts/instrument-sans-400-700-latin.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
 
@@ -208,9 +210,11 @@ html.intro-on, html.intro-on body { overflow: hidden; }
 html.sans-menu .hdr { transform: translateY(-105%); opacity: 0; pointer-events: none; }
 html.sans-menu .dock { transform: translateY(130%); opacity: 0; pointer-events: none; }
 .hero__eyebrow { margin-bottom: clamp(16px, 2vw, 24px); }
-.hero__title { font: 300 clamp(44px, 6.4vw, 108px)/1.02 var(--display); letter-spacing: -0.03em; color: var(--ink); }
+/* le titre en deux polices : « Un seul studio. » en Inter très grasse, « Toute votre image. » en Junicode */
+.hero__title { color: var(--ink); }
 .hero__title .hl { display: block; }
-.hero__title em { font-style: italic; color: var(--orange); }
+.hero__title .hl:first-child { font: 800 clamp(40px, 6vw, 100px)/1 "Inter", var(--sans); letter-spacing: -0.045em; }
+.hero__title em { display: inline-block; margin-top: 0.06em; font: 400 clamp(48px, 7.4vw, 124px)/1 "Junicode", Georgia, serif; font-style: normal; letter-spacing: -0.012em; word-spacing: -0.08em; color: var(--orange); }
 .anneau { --l: 180px; position: relative; height: calc(var(--l) * 1.25 + 40px); margin: clamp(26px, 4vw, 56px) 0 clamp(22px, 3vw, 40px); perspective: 1600px; cursor: grab; touch-action: pan-y; user-select: none; }
 .anneau.is-tire { cursor: grabbing; }
 .anneau__scene { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
