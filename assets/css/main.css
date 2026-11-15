@@ -1057,22 +1057,6 @@ html.js .steps .step.is-in .step__img { animation: photo-saut 1.15s var(--saut, 
   100% { opacity: 1; transform: none; }
 }
 
-/* ---------- Réalisations : un aplat orange ou bleu derrière chaque site ----------
-   Une « ombre pleine » décalée suit les coins arrondis de la fenêtre : orange décalé à droite,
-   puis bleu décalé à gauche, en alternance. Elle sort de derrière la fenêtre quand la carte
-   apparaît, et rentre quand on remonte. Au survol, le site se soulève et l'aplat s'écarte. */
-.projet { --dx: 14px; --couleur: var(--orange); }
-.projet:nth-of-type(even) { --dx: -14px; --couleur: var(--blue); }
-.projet__win { box-shadow: var(--dx) 14px 0 0 var(--couleur), 0 0 0 1px var(--line); }
-.projet:hover .projet__win { transform: translate(calc(var(--dx) * -0.3), -6px); box-shadow: calc(var(--dx) * 1.4) 20px 0 0 var(--couleur), 0 0 0 1px var(--line-2); }
-html.js .projet[data-reveal] .projet__win { box-shadow: 0 0 0 0 var(--couleur), 0 0 0 1px var(--line); transition: box-shadow 0.4s var(--ease), transform 0.6s var(--ease); }
-html.js .projet[data-reveal].is-in .projet__win { box-shadow: var(--dx) 14px 0 0 var(--couleur), 0 0 0 1px var(--line); transition: box-shadow 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d, 0s) + 0.45s), transform 0.6s var(--ease); }
-html.js .projet[data-reveal].is-in:hover .projet__win { box-shadow: calc(var(--dx) * 1.4) 20px 0 0 var(--couleur), 0 0 0 1px var(--line-2); transition: box-shadow 0.5s var(--ease), transform 0.6s var(--ease); }
-@media (max-width: 760px) {
-  .projet { --dx: 10px; }
-  .projet:nth-of-type(even) { --dx: -10px; }
-}
-
 /* ---------- Questions fréquentes : titre en deux temps, liste numérotée ----------
    Le grand titre en haut (« devez savoir. » en italique orange), le texte à gauche,
    la liste à droite : numéros 01 à 06 en serif clair, questions en serif, bouton rond
