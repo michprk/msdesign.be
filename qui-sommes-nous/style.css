@@ -106,14 +106,12 @@ a { color: inherit; }
 .qs__btn--sombre { margin-top: 22px; background: var(--encre); color: var(--blanc); border-color: var(--encre); }
 .qs__btn--sombre:hover { background: #000; border-color: #000; }
 
-/* ---------- hauteur de défilement (le vol) ---------- */
-.qs__defilement { height: 640vh; }
-.qs.is-studio .qs__defilement, .qs.is-entree .qs__defilement { height: 100vh; }
-.qs.is-verrou { overflow: hidden; }
+/* ---------- le film se joue dans un seul écran : rien ne défile ---------- */
+.qs:not(.qs--texte) { overflow: hidden; overscroll-behavior: none; }
 
 /* ---------- version texte : « Réduire les animations », pas de WebGL, ou erreur ---------- */
 .qs--texte .qs__gl, .qs--texte .qs__titres, .qs--texte .qs__fenetre, .qs--texte .qs__invite, .qs--texte .qs__objets,
-.qs--texte .qs__menu, .qs--texte .qs__chargement, .qs--texte .qs__defilement, .qs--texte [data-passer], .qs--texte .qs__son { display: none !important; }
+.qs--texte .qs__menu, .qs--texte .qs__chargement, .qs--texte [data-passer], .qs--texte .qs__son { display: none !important; }
 .qs--texte .qs__affiche { position: relative; height: 62vh; opacity: 1 !important; }
 .qs--texte .qs__histoire { position: static; width: auto; max-width: 720px; margin: 0 auto; padding: 48px 16px 96px; pointer-events: auto; }
 .qs--texte .qs__histoire::before { display: none; }
