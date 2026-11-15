@@ -201,7 +201,8 @@ html.intro-on, html.intro-on body { overflow: hidden; }
    fictifs — qui tourne lentement en 3D et qu’on peut faire tourner à la main ;
    enfin une phrase et la demande « Décrivez votre projet », qui mène au formulaire.
    ========================================================================== */
-.hero { position: relative; overflow-x: clip; background-color: var(--bg); background-image: radial-gradient(circle at 1px 1px, rgba(23, 23, 23, 0.09) 1px, transparent 0); background-size: 22px 22px; }
+/* fond enduit : un plâtre en relief dessiné par le navigateur (bruit + lumière rasante, aucun fichier), qui s’efface en bas */
+.hero { position: relative; overflow-x: clip; background-color: var(--bg); background-image: linear-gradient(to bottom, rgba(245, 241, 233, 0) 76%, var(--bg)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035' numOctaves='6' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='%23f7f2ea' surfaceScale='2.6' diffuseConstant='1.1'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); background-size: 100% 100%, 600px 600px; }
 .hero { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
 .hero__haut { padding-top: clamp(96px, 13vh, 140px); text-align: center; }
 .hero__marque { position: absolute; top: clamp(22px, 3.4vh, 34px); left: 0; right: 0; margin: 0; text-align: center; font: 500 21px/1 "Hanken Grotesk", var(--sans); letter-spacing: -0.035em; color: var(--ink); }
@@ -791,9 +792,10 @@ html.reduced .hero__scroll, html.no-3d .hero__scroll { display: none; }
 
 /* ---------- Le studio : mini-vidéo bleue + ficelle 3D (esprit « studio de mouvement ») ---------- */
 .manifeste { position: relative; padding: clamp(36px, 6vw, 96px) 0 clamp(90px, 11vw, 170px); isolation: isolate; }
-.ribbon__gl { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
-.manifeste__grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr); gap: clamp(36px, 6.5vw, 120px); align-items: start; }
-.reel { margin: clamp(110px, 12vw, 190px) 0 0; }
+.ribbon__gl { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
+/* le ruban passe devant la vidéo (z 1) mais derrière le texte (z 3) */
+.manifeste__grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr); gap: clamp(36px, 6.5vw, 120px); align-items: start; }
+.reel { position: relative; z-index: 1; margin: clamp(110px, 12vw, 190px) 0 0; }
 .reel__link { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 10; background: #c3cffc; box-shadow: 0 34px 70px -40px rgba(21, 94, 239, 0.55); transform: translateZ(0); }
 .reel__video { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.001); transition: transform 1.4s var(--ease); }
 .reel__link:hover .reel__video, .reel__link:focus-visible .reel__video { transform: scale(1.04); }
@@ -802,7 +804,7 @@ html.reduced .hero__scroll, html.no-3d .hero__scroll { display: none; }
 .reel__tag svg { width: 13px; height: 13px; }
 .reel__link:hover .reel__tag, .reel__link:focus-visible .reel__tag { opacity: 1; transform: none; }
 @media (hover: none) { .reel__tag { opacity: 1; transform: none; } }
-.manifeste__copy { padding-top: clamp(8px, 2vw, 28px); }
+.manifeste__copy { position: relative; z-index: 3; padding-top: clamp(8px, 2vw, 28px); }
 .manifeste__copy .label { margin: 0 0 22px; }
 .manifeste__text { margin: 0 0 clamp(30px, 3.2vw, 46px); max-width: 23em; font: 400 clamp(21px, 2vw, 30px)/1.38 var(--sans); letter-spacing: -0.012em; color: var(--ink); text-wrap: pretty; }
 /* les mots montent un à un derrière un masque */
