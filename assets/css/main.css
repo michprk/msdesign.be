@@ -203,7 +203,7 @@ html.intro-on, html.intro-on body { overflow: hidden; }
    ========================================================================== */
 .hero { position: relative; overflow-x: clip; background-color: var(--bg); background-image: radial-gradient(circle at 1px 1px, rgba(23, 23, 23, 0.09) 1px, transparent 0); background-size: 22px 22px; }
 .hero { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
-.hero__haut { padding-top: clamp(84px, 11vh, 120px); text-align: center; }
+.hero__haut { padding-top: clamp(96px, 13vh, 140px); text-align: center; }
 .hero__marque { position: absolute; top: clamp(22px, 3.4vh, 34px); left: 0; right: 0; margin: 0; text-align: center; font: 500 21px/1 "Hanken Grotesk", var(--sans); letter-spacing: -0.035em; color: var(--ink); }
 .hero__marque sup { font-size: 0.32em; letter-spacing: 0; vertical-align: top; margin-left: 0.1em; }
 /* la première page est un écran à part : le menu n’arrive qu’une fois le héros passé */
@@ -214,7 +214,7 @@ html.sans-menu .dock { transform: translateY(130%); opacity: 0; pointer-events: 
 .hero__title { color: var(--ink); }
 .hero__title .hl { display: block; }
 .hero__title .hl:first-child { font: 800 clamp(40px, 6vw, 100px)/1 "Inter", var(--sans); letter-spacing: -0.045em; }
-.hero__title em { display: inline-block; margin-top: 0.06em; font: 400 clamp(48px, 7.4vw, 124px)/1 "Junicode", Georgia, serif; font-style: normal; letter-spacing: -0.012em; word-spacing: -0.08em; color: var(--orange); }
+.hero__title em { display: inline-block; margin-top: 0.06em; font: 400 clamp(48px, 7.4vw, 124px)/1 "Junicode", Georgia, serif; font-style: normal; letter-spacing: -0.012em; word-spacing: -0.08em; color: var(--blue); }
 .anneau { --l: 180px; position: relative; height: calc(var(--l) * 1.25 + 40px); margin: clamp(26px, 4vw, 56px) 0 clamp(22px, 3vw, 40px); perspective: 1600px; cursor: grab; touch-action: pan-y; user-select: none; }
 .anneau.is-tire { cursor: grabbing; }
 .anneau__scene { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
