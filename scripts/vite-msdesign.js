@@ -24,7 +24,7 @@ import crypto from 'node:crypto';
 
 // La politique de sécurité commune à toutes les pages du site principal.
 // « HASHES » est remplacé par les empreintes des scripts collés dans la page.
-// Une page peut garder sa propre politique (ex. experience/) : il suffit qu'elle
+// Une page peut garder sa propre politique (ex. une page 3D) : il suffit qu'elle
 // écrive la sienne dans <meta http-equiv="Content-Security-Policy" content="…">.
 // Si le content est vide (""), c'est celle-ci qui est utilisée.
 const CSP = [

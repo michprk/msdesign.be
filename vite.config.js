@@ -16,7 +16,7 @@ import { msdesign } from './scripts/vite-msdesign.js';
 
 // Toutes les pages du site : chaque fichier .html devient une page construite par Vite.
 // On ignore les dossiers qui ne sont pas des pages (blocs communs, fichiers publics, outils…).
-// Chaque page reçoit un nom lisible (ex. « experience-index ») : on le retrouve dans le nom
+// Chaque page reçoit un nom lisible (ex. « equipe ») : on le retrouve dans le nom
 // de son fichier JavaScript dans dist/assets/.
 const IGNORES = /^(node_modules|dist|dist-hostinger|public|partials|scripts|api|_lab|\.git|\.github)$/;
 const pages = Object.fromEntries(

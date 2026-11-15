@@ -82,29 +82,23 @@
 
 <!-- Héros : la promesse à gauche, trois projets en fenêtres de navigateur à droite -->
 <section class="hero" id="top" data-hero aria-labelledby="hero-title">
-  <div class="wrap hero__grid">
-    <div class="hero__copy">
-      <p class="eyebrow" data-hero-in>Studio web indépendant · Bruxelles</p>
-      <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl hl--caps">Des sites</span> <span class="hl hl--caps">qui vous</span> <span class="hl hl--caps">ramènent</span> <span class="hl hl--serif"><em>des</em> clients.</span></h1>
-      <p class="hero__lede" data-hero-in>Des sites web sur mesure pour les indépendants, commerces et petites entreprises à Bruxelles. Un design soigné, une expérience mobile fluide et un prix fixé avant le début du projet.</p>
-      <div class="hero__actions" data-hero-in>
-        <a class="btn btn--lg" href="/#etudes" data-track="cta_hero_projects">Voir les réalisations<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
-        <a class="btn btn--line btn--lg" href="/#contact" data-track="cta_hero">Demander un devis</a>
+  <!-- Le haut de l’accueil : la promesse en grand sur toute la largeur, puis le texte et un seul site d’exemple -->
+  <div class="wrap hero__inner">
+    <p class="eyebrow hero__eyebrow" data-hero-in>Studio web indépendant · Bruxelles</p>
+    <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Des sites qui vous</span> <span class="hl"><em>ramènent des clients.</em></span></h1>
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="hero__lede" data-hero-in>Des sites web sur mesure pour les indépendants, commerces et petites entreprises à Bruxelles. Un design soigné, une expérience mobile fluide et un prix fixé avant le début du projet.</p>
+        <div class="hero__actions" data-hero-in>
+          <a class="btn btn--lg" href="/#etudes" data-track="cta_hero_projects">Voir les réalisations<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+          <a class="btn btn--line btn--lg" href="/#contact" data-track="cta_hero">Demander un devis</a>
+        </div>
+        <ul class="hero__preuves" data-hero-in><li>Design sur mesure</li><li>Pensé pour le mobile</li><li>Prix fixé à l’avance</li></ul>
       </div>
-      <ul class="hero__feats" data-hero-in>
-        <li><svg aria-hidden="true"><use href="#i-pen"/></svg><span>Design moderne<br>et sur mesure</span></li>
-        <li><svg aria-hidden="true"><use href="#i-devices"/></svg><span>Site responsive<br>mobile &amp; tablette</span></li>
-        <li><svg aria-hidden="true"><use href="#i-tag"/></svg><span>Prix fixe<br>sans surprise</span></li>
-      </ul>
-    </div>
-    <div class="hero__stack" data-hero-in>
-      <img class="deco deco--top" src="/assets/img/deco-leaves-top.webp" width="344" height="112" alt="" aria-hidden="true" decoding="async">
-      <img class="deco deco--left" src="/assets/img/deco-leaves-left.webp" width="188" height="232" alt="" aria-hidden="true" decoding="async">
-      <img class="deco deco--flowers" src="/assets/img/deco-flowers.webp" width="130" height="317" alt="" aria-hidden="true" decoding="async">
-      <div class="win win--a"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-verdane-720.webp" srcset="/assets/img/concept-verdane-720.webp 720w, /assets/img/concept-verdane-1440.webp 1440w" sizes="(max-width: 900px) 60vw, 26vw" width="1440" height="900" alt="Exemple de site : Verdane, plantes d’intérieur, « Des plantes d’intérieur pour des pièces calmes et modernes »." fetchpriority="high" decoding="async"></div>
-      <div class="win win--b"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-fournil-720.webp" srcset="/assets/img/concept-fournil-720.webp 720w, /assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 900px) 56vw, 24vw" width="1440" height="900" alt="Exemple de site : Le Fournil, boulangerie, « Du bon pain, cuit chaque jour »." decoding="async"></div>
-      <div class="win win--c"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-veritas-720.webp" srcset="/assets/img/concept-veritas-720.webp 720w, /assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 900px) 64vw, 28vw" width="1440" height="900" alt="Exemple de site : Atelier Véritas, architecture, « Une architecture qui a du sens »." decoding="async"></div>
-      <p class="badge" aria-hidden="true"><span>Design</span><span>web</span><span>Bruxelles</span></p>
+      <figure class="hero__visuel" data-hero-in>
+        <a class="win hero__win" href="/exemples/strate/" target="_blank" rel="noopener" data-track="example_open"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-strate-1440.webp" srcset="/assets/img/concept-strate-720.webp 720w, /assets/img/concept-strate-1440.webp 1440w" sizes="(max-width: 900px) 92vw, 48vw" width="1440" height="900" alt="L’accueil du site Strate, paysagiste : « Un beau jardin commence sous terre » sur une photo de massif d’automne." fetchpriority="high" decoding="async"></a>
+        <figcaption class="hero__legende"><span>Exemple de site</span>Strate, paysagiste à Bruxelles</figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -119,7 +113,6 @@
         </video>
         <span class="reel__tag reel__tag--play"><svg aria-hidden="true"><use href="#i-play"/></svg>Voir le film · 34 s</span>
       </a>
-      <figcaption class="reel__xp"><a href="/experience/"><span class="reel__xp-dot" aria-hidden="true"></span><span>Nouveau · <b>Sous la surface</b>, une fleur vivante en 3D</span><svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></figcaption>
     </figure>
     <dialog class="film" aria-label="Le film M&amp;S Design" data-film>
       <div class="film__box">
