@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr-BE" data-page="equipe">
+<html lang="fr-BE" data-api="" data-ga="" data-page="equipe">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>L’équipe — M&amp;S Design, studio de design web à Bruxelles</title>
-<meta name="description" content="Un voyage en 3D dans un Japon d’hiver, modélisé dans Blender, pour rencontrer l’équipe de M&amp;S Design : Mamoudou, directeur artistique, Michal, développeur, et Adam, designer 3D.">
+<meta name="description" content="L’équipe de M&amp;S Design à Bruxelles : Mamoudou, directeur artistique, Michal, développeur web, et Adam, designer 3D. Trois profils, un seul studio, du premier croquis au dernier réglage.">
 <!-- Maquette de démonstration : non indexée avant l’ouverture du studio -->
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://michprk.github.io/msdesign.be/equipe.html">
@@ -12,95 +12,113 @@
 <meta property="og:locale" content="fr_BE">
 <meta property="og:site_name" content="M&amp;S Design">
 <meta property="og:title" content="L’équipe — M&amp;S Design">
-<meta property="og:description" content="Un voyage en 3D sous les cerisiers en fleurs, dans la neige, pour rencontrer l’équipe.">
+<meta property="og:description" content="Trois profils, un même chemin : ceux qui dessinent, codent et modélisent vos sites, à Bruxelles.">
 <meta property="og:url" content="https://michprk.github.io/msdesign.be/equipe.html">
 <meta property="og:image" content="https://michprk.github.io/msdesign.be/og.jpg">
-<meta http-equiv="Content-Security-Policy" content="">
-<meta name="theme-color" content="#e9e4ec">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/assets/fonts/fraunces-normal-300-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/instrument-sans-400-700-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/models/japon.json" as="fetch" crossorigin>
-<link rel="preload" href="/assets/models/japon.bin" as="fetch" crossorigin>
-<link rel="stylesheet" href="/assets/css/journey.css">
-<!--#inline assets/js/journey-boot.js-->
-<script type="module" src="/assets/js/journey.js"></script>
+<meta name="twitter:card" content="summary_large_image">
+<!--#include head-->
 </head>
-<body class="jr">
-<canvas class="jr__gl" aria-hidden="true"></canvas>
-<div class="jr__flash" aria-hidden="true"></div>
-<div class="jr__bars" aria-hidden="true"><i></i><i></i></div>
-<p class="jr__ghost" aria-hidden="true"></p>
-<div class="gate" data-gate role="dialog" aria-modal="true" aria-labelledby="gate-title">
-  <div class="gate__in">
-    <p class="gate__kicker">M&amp;S Design · L’équipe</p>
-    <p class="gate__title" id="gate-title">Un voyage <em>sous la neige.</em></p>
-    <p class="gate__sub">Trois arrêts, trois personnes. Un Japon d’hiver entièrement modélisé en 3D.</p>
-    <div class="gate__load" aria-hidden="true"><span class="gate__num" data-load>000</span><span class="gate__track"><i></i></span></div>
-    <div class="gate__actions" data-gate-actions hidden>
-      <button class="gate__go" type="button" data-enter="1"><span class="gate__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Entrer avec le son</button>
-      <button class="gate__mute" type="button" data-enter="0">Entrer sans le son</button>
+<body>
+<!--#include header-->
+
+<main id="main" class="equipe">
+
+  <!-- L’ouverture : le titre en deux temps et une phrase -->
+  <section class="sec equipe__haut" aria-labelledby="equipe-titre">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Fil d’Ariane"><ol><li><a href="/">Accueil</a></li><li aria-current="page">L’équipe</li></ol></nav>
+      <p class="label" data-reveal>L’équipe</p>
+      <h1 class="h2 equipe__titre" id="equipe-titre" data-reveal>Trois profils,<br> <em>un même chemin.</em></h1>
+      <p class="lead equipe__intro" data-reveal>Ceux qui dessinent, codent et modélisent vos sites, à Bruxelles. Un seul studio, du premier croquis au dernier réglage.</p>
     </div>
-    <p class="gate__hint">Casque conseillé · molette, flèches ou glisser pour avancer</p>
-  </div>
-</div>
+  </section>
 
+  <!-- Les trois personnes : le dessin de leur métier dans un aplat de couleur, puis qui ils sont et ce qu’ils font.
+       À l’arrivée, les aplats tombent l’un après l’autre et rebondissent, puis les dessins se tracent. -->
+  <section class="sec equipe__gens" aria-label="Les membres de l’équipe">
+    <div class="wrap personnes">
 
-<header class="jr__top">
-  <a class="jr__logo" href="/">M&amp;S DESIGN</a>
-  <p class="jr__where"><span data-at>01</span> / 05 · L’équipe</p>
-  <a class="jr__back" href="/">Retour au site</a>
-</header>
+      <article class="personne personne--orange" data-reveal>
+        <div class="personne__dessin" aria-hidden="true">
+          <!-- direction artistique : trois nuanciers en éventail et un crayon -->
+          <svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="rotate(-20 120 196)"><rect class="carte trace" x="92" y="64" width="56" height="132" rx="8" pathLength="1"/><path class="trace" d="M92 152h56" pathLength="1"/></g>
+            <g transform="rotate(20 120 196)"><rect class="carte trace" x="92" y="64" width="56" height="132" rx="8" pathLength="1"/><path class="trace" d="M92 152h56" pathLength="1"/></g>
+            <rect class="carte trace" x="92" y="58" width="56" height="138" rx="8" pathLength="1"/>
+            <path class="trace" d="M92 152h56" pathLength="1"/>
+            <rect class="dessin__plein" x="101" y="68" width="38" height="38" rx="4"/>
+            <g transform="rotate(34 180 120)"><path class="carte trace" d="M170 34h20v118l-10 20-10-20z" pathLength="1"/><path class="trace" d="M170 142h20M175 162h10" pathLength="1"/></g>
+          </svg>
+        </div>
+        <p class="personne__num" aria-hidden="true">01</p>
+        <p class="personne__role">Direction artistique</p>
+        <h2 class="personne__nom">Mamoudou</h2>
+        <p class="personne__titre">Cofondateur · Directeur artistique</p>
+        <p class="personne__texte">Il imagine l’univers de chaque site&nbsp;: les couleurs, les typographies, les photos et l’identité. Son regard donne une âme à chaque page.</p>
+        <ul class="personne__liste"><li>Direction artistique</li><li>Identité visuelle et logos</li><li>Design d’interfaces</li><li>Photos sur place</li></ul>
+      </article>
 
-<main class="jr__main">
-  <article class="stop stop--intro is-on" data-stop="0">
-    <p class="stop__kicker">L’équipe M&amp;S Design</p>
-    <h1 class="stop__title">Trois profils, <em>un même chemin.</em></h1>
-    <p class="stop__bio">Un voyage dans un Japon d’hiver, entièrement modélisé en 3D, pour vous présenter ceux qui dessinent et construisent vos sites.</p>
-    <button class="stop__go" type="button" data-next>Faites défiler, on vous emmène<span aria-hidden="true">→</span></button>
-  </article>
-  <article class="stop" data-stop="1" aria-hidden="true">
-    <p class="stop__kicker"><b>01</b> Direction artistique</p>
-    <h2 class="stop__name" data-letters>Mamoudou</h2>
-    <p class="stop__role">Cofondateur · Directeur artistique</p>
-    <p class="stop__bio">Il imagine l’univers de chaque site&nbsp;: les couleurs, les typographies, les photos et l’identité. Son regard donne une âme à chaque page.</p>
-    <ul class="stop__list"><li>Direction artistique</li><li>Identité visuelle et logos</li><li>Design d’interfaces</li><li>Photos sur place</li></ul>
-  </article>
-  <article class="stop" data-stop="2" aria-hidden="true">
-    <p class="stop__kicker"><b>02</b> Développement</p>
-    <h2 class="stop__name" data-letters>Michal</h2>
-    <p class="stop__role">Cofondateur · Développeur web</p>
-    <p class="stop__bio">Il code chaque site à la main&nbsp;: rapide, solide et bien référencé. C’est lui qui donne vie aux animations et à la 3D de nos sites.</p>
-    <ul class="stop__list"><li>Sites codés sur mesure</li><li>Animations et 3D temps réel</li><li>Vitesse et référencement</li><li>Formulaires et automatisations</li></ul>
-  </article>
-  <article class="stop" data-stop="3" aria-hidden="true">
-    <p class="stop__kicker"><b>03</b> Design 3D</p>
-    <h2 class="stop__name" data-letters>Adam</h2>
-    <p class="stop__role">Designer 3D</p>
-    <p class="stop__bio">Il modélise ce qui ne se photographie pas&nbsp;: un produit, un lieu, une scène qui bouge. Matières, lumières, mouvement&nbsp;: tout est pensé pour le web.</p>
-    <ul class="stop__list"><li>Modélisation 3D</li><li>Matières et lumières</li><li>Animation 3D</li><li>Scènes pour le web</li></ul>
-  </article>
-  <article class="stop stop--end" data-stop="4" aria-hidden="true">
-    <p class="stop__kicker">Fin du chemin</p>
-    <h2 class="stop__title">Votre projet mérite <em>la bonne équipe.</em></h2>
-    <p class="stop__bio">Un appel de 30&nbsp;minutes, gratuit. La maquette et le prix arrivent sous 5&nbsp;jours.</p>
-    <p class="stop__actions"><a class="stop__cta" href="/#contact">Parlons de votre projet</a><a class="stop__link" href="/etudes/">Nos exemples de sites</a></p>
-  </article>
+      <article class="personne personne--bleu" data-reveal>
+        <div class="personne__dessin" aria-hidden="true">
+          <!-- développement : un ordinateur portable, une balise de code et le curseur qui clignote -->
+          <svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect class="trace" x="48" y="54" width="144" height="98" rx="8" pathLength="1"/>
+            <path class="trace" d="M32 166h176l-12 18H44z" pathLength="1"/>
+            <path class="trace" d="M48 152l-16 14M192 152l16 14" pathLength="1"/>
+            <path class="trace" d="M96 86 78 103l18 17" pathLength="1"/>
+            <path class="trace" d="M144 86l18 17-18 17" pathLength="1"/>
+            <path class="trace" d="M128 80l-16 46" pathLength="1"/>
+            <path class="dessin__curseur" d="M172 112v14"/>
+          </svg>
+        </div>
+        <p class="personne__num" aria-hidden="true">02</p>
+        <p class="personne__role">Développement</p>
+        <h2 class="personne__nom">Michal</h2>
+        <p class="personne__titre">Cofondateur · Développeur web</p>
+        <p class="personne__texte">Il code chaque site à la main&nbsp;: rapide, solide et bien référencé. C’est lui qui donne vie aux animations et à la 3D de nos sites.</p>
+        <ul class="personne__liste"><li>Sites codés sur mesure</li><li>Animations et 3D temps réel</li><li>Vitesse et référencement</li><li>Formulaires et automatisations</li></ul>
+      </article>
+
+      <article class="personne personne--sable" data-reveal>
+        <div class="personne__dessin" aria-hidden="true">
+          <!-- design 3D : un cube en fil de fer et une petite planète sur son orbite -->
+          <svg viewBox="0 0 240 240" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse class="trace" cx="120" cy="114" rx="98" ry="32" transform="rotate(-16 120 114)" pathLength="1"/>
+            <path class="carte trace" d="M120 46l62 34v70l-62 34-62-34V80z" pathLength="1"/>
+            <path class="trace" d="M58 80l62 34 62-34M120 114v70" pathLength="1"/>
+            <circle class="dessin__plein" cx="206" cy="86" r="8"/>
+          </svg>
+        </div>
+        <p class="personne__num" aria-hidden="true">03</p>
+        <p class="personne__role">Design 3D</p>
+        <h2 class="personne__nom">Adam</h2>
+        <p class="personne__titre">Designer 3D</p>
+        <p class="personne__texte">Il modélise ce qui ne se photographie pas&nbsp;: un produit, un lieu, une scène qui bouge. Matières, lumières, mouvement&nbsp;: tout est pensé pour le web.</p>
+        <ul class="personne__liste"><li>Modélisation 3D</li><li>Matières et lumières</li><li>Animation 3D</li><li>Scènes pour le web</li></ul>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Notre façon de travailler : trois engagements numérotés -->
+  <section class="sec equipe__facon" aria-labelledby="facon-titre">
+    <div class="wrap facon">
+      <div class="facon__head">
+        <p class="label" data-reveal>Notre façon de travailler</p>
+        <h2 class="h2" id="facon-titre" data-reveal>Une petite équipe,<br> <em>et c’est voulu.</em></h2>
+      </div>
+      <ol class="facon__liste">
+        <li data-reveal><span class="facon__num" aria-hidden="true">01</span><h3>Un seul interlocuteur</h3><p>Du premier appel à la mise en ligne, vous parlez aux personnes qui font votre site. Personne entre vous et nous.</p></li>
+        <li data-reveal><span class="facon__num" aria-hidden="true">02</span><h3>Tout est fait main</h3><p>Le design est dessiné pour votre métier, le code écrit ligne par ligne, la 3D modélisée pour vous. Rien ne sort d’un modèle tout fait.</p></li>
+        <li data-reveal><span class="facon__num" aria-hidden="true">03</span><h3>On reste après la mise en ligne</h3><p>Hébergement, sauvegardes, petites modifications&nbsp;: nous restons joignables, par téléphone comme par message.</p></li>
+      </ol>
+    </div>
+  </section>
+
 </main>
 
-<nav class="route" aria-label="Le chemin">
-  <div class="route__track" aria-hidden="true"><span class="route__fill"></span><span class="route__marker"></span></div>
-  <ol class="route__stops">
-    <li><button type="button" data-go="0" aria-current="step">Entrée</button></li>
-    <li><button type="button" data-go="1">Mamoudou</button></li>
-    <li><button type="button" data-go="2">Michal</button></li>
-    <li><button type="button" data-go="3">Adam</button></li>
-    <li><button type="button" data-go="4">Contact</button></li>
-  </ol>
-</nav>
-<footer class="jr__foot">
-  <p>Molette, flèches ou glisser pour avancer</p>
-  <button class="jr__sound" type="button" data-sound>Couper le son</button>
-</footer>
+<!--#include footer-->
+<!--#include cookie-->
+<!--#include sprite-->
 </body>
 </html>

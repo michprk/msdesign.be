@@ -75,7 +75,7 @@ export function msdesign() {
       server.watcher.add(path.join(racine, 'partials'));
       server.watcher.on('change', (fichier) => {
         const f = fichier.replace(/\\/g, '/');
-        if (f.includes('/partials/') || /\/assets\/js\/(boot|journey-boot)\.js$/.test(f)) server.ws.send({ type: 'full-reload' });
+        if (f.includes('/partials/') || /\/assets\/js\/boot\.js$/.test(f)) server.ws.send({ type: 'full-reload' });
       });
     },
 
