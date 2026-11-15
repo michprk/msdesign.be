@@ -195,10 +195,109 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
   /* ==========================================================================
      Le héros et les projets
      ========================================================================== */
-  // le titre apparaît tout de suite, ligne par ligne
+  /* ---------- L’ouverture : écran bleu, petit chargement, le nom s’allume, le point du « i » tombe, puis la page s’ouvre ---------- */
+  let ouverture = Promise.resolve();
+  safe('ouverture', () => {
+    const o = $('[data-ouverture]');
+    if (!o) return;
+    if (!d.classList.contains('intro-on')) { o.remove(); return; }
+    if (lenis) lenis.stop();
+    const pct = $('[data-ouverture-pct]', o), barre = $('[data-ouverture-barre]', o);
+    const CHARGE = 2100, t0 = performance.now();
+    const tic = (t) => {
+      const k = Math.min(1, (t - t0) / CHARGE), e = 1 - Math.pow(1 - k, 3);
+      pct.textContent = String(Math.round(e * 100)).padStart(3, '0');
+      barre.style.transform = 'scaleX(' + e.toFixed(3) + ')';
+      if (k < 1) requestAnimationFrame(tic);
+    };
+    requestAnimationFrame(tic);
+    ouverture = new Promise((pret) => {
+      setTimeout(() => o.classList.add('is-allume'), CHARGE);            // le nom s’allume
+      setTimeout(() => o.classList.add('is-point'), CHARGE + 350);       // le point tombe sur le « i » et rebondit
+      setTimeout(() => { o.classList.add('is-part'); pret(); }, 4700);   // pshou : l’écran file vers le haut
+      setTimeout(() => {
+        d.classList.remove('intro-on'); o.remove();
+        if (lenis) lenis.start();
+        try { sessionStorage.setItem('ms_intro', 'seen'); } catch (err) { /* navigation privée */ }
+      }, 5700);
+    });
+  });
+
+  // le titre apparaît ligne par ligne (après l’ouverture, s’il y en a une)
   safe('hero-in', () => {
     if (!hero) return;
-    requestAnimationFrame(() => setTimeout(() => d.classList.add('hero-in'), reduced ? 0 : 80));
+    ouverture.then(() => requestAnimationFrame(() => setTimeout(() => d.classList.add('hero-in'), reduced ? 0 : 80)));
+  });
+
+  /* ---------- L’anneau de logos : il tourne lentement en 3D, on peut le faire tourner à la main ----------
+     Les cartes sont posées sur l’intérieur d’un grand cylindre : celles des bords se rapprochent
+     et se tournent vers le centre. En sortant d’un côté, une carte revient de l’autre. */
+  safe('anneau', () => {
+    const el = $('[data-anneau]');
+    if (!el) return;
+    const cartes = $$('.anneau__carte', el), N = cartes.length;
+    if (!N) return;
+    let base = 0, vit = 0, tire = false, x0 = 0, b0 = 0, dernier = 0, R = 800, pas = 14, L = 180, visible = false, tourne = false;
+    const mesurer = () => {
+      const W = el.clientWidth;
+      L = Math.max(118, Math.min(210, W * 0.13)); R = Math.max(440, W * 0.55);
+      pas = (L * 1.12 / R) * 180 / Math.PI;
+      el.style.setProperty('--l', L.toFixed(1) + 'px');
+    };
+    const placer = () => {
+      const arc = N * pas;
+      cartes.forEach((c, i) => {
+        const a = ((((i * pas + base) % arc) + arc) % arc) - arc / 2, r = a * Math.PI / 180;
+        const x = Math.sin(r) * R, z = (1 - Math.cos(r)) * R * 0.85;
+        c.style.transform = 'translate3d(' + x.toFixed(1) + 'px, 0, ' + z.toFixed(1) + 'px) rotateY(' + (-a).toFixed(2) + 'deg)';
+        c.style.opacity = Math.abs(a) > arc / 2 - pas * 0.6 ? '0' : '1';
+      });
+    };
+    const boucle = (t) => {
+      const dt = Math.min(0.05, dernier ? (t - dernier) / 1000 : 0.016); dernier = t;
+      if (!tire) { vit += ((reduced ? 0 : 3.4) - vit) * Math.min(1, dt * 1.6); base += vit * dt; }
+      placer();
+      if (visible) requestAnimationFrame(boucle); else { tourne = false; dernier = 0; }
+    };
+    mesurer(); placer();
+    new IntersectionObserver(([en]) => {
+      visible = en.isIntersecting;
+      if (visible && !tourne) { tourne = true; requestAnimationFrame(boucle); }
+    }).observe(el);
+    window.addEventListener('resize', () => { mesurer(); placer(); });
+    el.addEventListener('pointerdown', (ev) => { tire = true; x0 = ev.clientX; b0 = base; vit = 0; el.setPointerCapture(ev.pointerId); el.classList.add('is-tire'); });
+    el.addEventListener('pointermove', (ev) => { if (!tire) return; const nb = b0 + (ev.clientX - x0) * (pas / L) * 0.9; vit = (nb - base) / 0.016; base = nb; });
+    const lacher = () => { if (!tire) return; tire = false; el.classList.remove('is-tire'); vit = Math.max(-70, Math.min(70, vit)); };
+    el.addEventListener('pointerup', lacher); el.addEventListener('pointercancel', lacher);
+  });
+
+  /* ---------- La demande en une phrase : des idées qui s’écrivent toutes seules, puis le formulaire ---------- */
+  safe('demande', () => {
+    const f = $('[data-demande]');
+    if (!f) return;
+    const champ = $('input', f);
+    const idees = ['Un site pour mon salon de thé à Ixelles…', 'Un logo pour ma boulangerie…', 'Refaire le site de mon cabinet d’architecte…', 'Une boutique en ligne pour mes céramiques…'];
+    if (!reduced) {
+      let i = 0, n = 0, sens = 1;
+      const ecrire = () => {
+        if (document.activeElement === champ || champ.value) { setTimeout(ecrire, 700); return; }
+        const t = idees[i]; n += sens; champ.placeholder = t.slice(0, Math.max(0, n));
+        if (n >= t.length) { sens = -1; setTimeout(ecrire, 1900); return; }
+        if (n <= 0) { sens = 1; i = (i + 1) % idees.length; }
+        setTimeout(ecrire, sens > 0 ? 42 : 16);
+      };
+      ouverture.then(() => setTimeout(ecrire, 1600));
+    }
+    f.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const txt = champ.value.trim(), msg = $('#f-message'), cible = document.getElementById('contact');
+      if (msg && txt) msg.value = txt;
+      track('demande_hero', { rempli: Boolean(txt) });
+      if (!cible) return;
+      history.replaceState(null, '', '#contact');
+      scrollToY(targetY(cible), 1.4);
+      setTimeout(() => { const n = $('#contact-form [name="name"]'); if (n && fine) n.focus({ preventScroll: true }); }, reduced ? 0 : 1400);
+    });
   });
 
   /* ---------- Ancres douces + présélection du formulaire ---------- */

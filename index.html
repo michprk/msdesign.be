@@ -76,30 +76,44 @@
 </script>
 </head>
 <body>
+<!-- L’ouverture (une fois par visite) : l’écran bleu électrique, un petit chargement, le nom s’allume,
+     le point du « i » tombe dessus… puis la page s’ouvre. Décoratif : masqué aux lecteurs d’écran. -->
+<div class="ouverture" data-ouverture aria-hidden="true">
+  <p class="ouverture__logo">M&amp;S Des<span class="ouverture__i">ı<span class="ouverture__point"></span></span>gn<sup>™</sup></p>
+  <p class="ouverture__compte"><span data-ouverture-pct>000</span><span class="ouverture__barre"><i data-ouverture-barre></i></span></p>
+</div>
 <!--#include header-->
 
 <main id="main">
 
-<!-- Héros : la promesse à gauche, trois projets en fenêtres de navigateur à droite -->
+<!-- Le haut de l’accueil : le titre centré, l’anneau de logos inventés qui tourne, et la demande en une phrase -->
 <section class="hero" id="top" data-hero aria-labelledby="hero-title">
-  <!-- Le haut de l’accueil : la promesse en grand sur toute la largeur, puis le texte et un seul site d’exemple -->
-  <div class="wrap hero__inner">
-    <p class="eyebrow hero__eyebrow" data-hero-in>Studio web indépendant · Bruxelles</p>
-    <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Des sites qui vous</span> <span class="hl"><em>ramènent des clients.</em></span></h1>
-    <div class="hero__grid">
-      <div class="hero__copy">
-        <p class="hero__lede" data-hero-in>Des sites web sur mesure pour les indépendants, commerces et petites entreprises à Bruxelles. Un design soigné, une expérience mobile fluide et un prix fixé avant le début du projet.</p>
-        <div class="hero__actions" data-hero-in>
-          <a class="btn btn--lg" href="/#etudes" data-track="cta_hero_projects">Voir les réalisations<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
-          <a class="btn btn--line btn--lg" href="/#contact" data-track="cta_hero">Demander un devis</a>
-        </div>
-        <ul class="hero__preuves" data-hero-in><li>Design sur mesure</li><li>Pensé pour le mobile</li><li>Prix fixé à l’avance</li></ul>
-      </div>
-      <figure class="hero__visuel" data-hero-in>
-        <a class="win hero__win" href="/exemples/strate/" target="_blank" rel="noopener" data-track="example_open"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-strate-1440.webp" srcset="/assets/img/concept-strate-720.webp 720w, /assets/img/concept-strate-1440.webp 1440w" sizes="(max-width: 900px) 92vw, 48vw" width="1440" height="900" alt="L’accueil du site Strate, paysagiste : « Un beau jardin commence sous terre » sur une photo de massif d’automne." fetchpriority="high" decoding="async"></a>
-        <figcaption class="hero__legende"><span>Exemple de site</span>Strate, paysagiste à Bruxelles</figcaption>
-      </figure>
+  <div class="wrap hero__haut">
+    <p class="eyebrow hero__eyebrow" data-hero-in>Studio web &amp; identité · Bruxelles</p>
+    <h1 class="hero__title" id="hero-title" data-hero-in><span class="hl">Un seul studio.</span> <span class="hl"><em>Toute votre image.</em></span></h1>
+  </div>
+  <div class="anneau" data-anneau data-hero-in role="img" aria-label="Cinq logos imaginés par le studio pour des commerces fictifs : un disquaire, un bar à vins nature, une salle d’escalade, un atelier céramique et un atelier vélo.">
+    <div class="anneau__scene">
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-sillon-moutarde.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-ferment-bordeaux.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-halde-citron.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-ondine-argile.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-rayon-canard.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-sillon-sapin.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-ferment-rose.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-halde-anthracite.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-ondine-sauge.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
+      <figure class="anneau__carte"><img src="/assets/img/logos/logo-rayon-rouge.webp" width="600" height="750" alt="" decoding="async" draggable="false"></figure>
     </div>
+  </div>
+  <div class="wrap hero__bas">
+    <p class="hero__lede" data-hero-in>Logo, site, photos&nbsp;: nous dessinons l’identité de votre commerce et le site qui va avec. Codé à la main à Bruxelles, à un prix fixé avant de commencer.</p>
+    <form class="demande" action="/#contact" data-demande data-hero-in>
+      <label class="sr-only" for="demande-texte">Votre projet en une phrase</label>
+      <svg class="demande__icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pen"/></svg>
+      <input id="demande-texte" name="demande" type="text" autocomplete="off" maxlength="300" placeholder="Décrivez votre projet en une phrase">
+      <button type="submit" aria-label="Continuer vers le formulaire de contact"><svg aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+    </form>
   </div>
 </section>
 
