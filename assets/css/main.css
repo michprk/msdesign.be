@@ -200,7 +200,13 @@ html.intro-on, html.intro-on body { overflow: hidden; }
    enfin une phrase et la demande « Décrivez votre projet », qui mène au formulaire.
    ========================================================================== */
 .hero { position: relative; overflow-x: clip; background-color: var(--bg); background-image: radial-gradient(circle at 1px 1px, rgba(23, 23, 23, 0.09) 1px, transparent 0); background-size: 22px 22px; }
-.hero__haut { padding-top: calc(var(--hdr) + clamp(36px, 8vh, 96px)); text-align: center; }
+.hero { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; }
+.hero__haut { padding-top: clamp(84px, 11vh, 120px); text-align: center; }
+.hero__marque { position: absolute; top: clamp(22px, 3.4vh, 34px); left: 0; right: 0; margin: 0; text-align: center; font: 500 21px/1 "Hanken Grotesk", var(--sans); letter-spacing: -0.035em; color: var(--ink); }
+.hero__marque sup { font-size: 0.32em; letter-spacing: 0; vertical-align: top; margin-left: 0.1em; }
+/* la première page est un écran à part : le menu n’arrive qu’une fois le héros passé */
+html.sans-menu .hdr { transform: translateY(-105%); opacity: 0; pointer-events: none; }
+html.sans-menu .dock { transform: translateY(130%); opacity: 0; pointer-events: none; }
 .hero__eyebrow { margin-bottom: clamp(16px, 2vw, 24px); }
 .hero__title { font: 300 clamp(44px, 6.4vw, 108px)/1.02 var(--display); letter-spacing: -0.03em; color: var(--ink); }
 .hero__title .hl { display: block; }

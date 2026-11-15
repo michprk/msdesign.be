@@ -146,7 +146,11 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
   const hero = $('[data-hero]');
   safe('header', () => {
     if (!header) return;
-    const update = () => header.classList.toggle('is-solid', window.scrollY > 8 || !hero);
+    // sur l’accueil, le haut de page est un écran à part : le menu n’apparaît qu’une fois le héros passé
+    const update = () => {
+      header.classList.toggle('is-solid', window.scrollY > 8 || !hero);
+      if (hero) d.classList.toggle('sans-menu', window.scrollY < hero.offsetHeight * 0.55);
+    };
     update();
     window.addEventListener('scroll', update, { passive: true });
     const links = $$('.hdr__nav a[data-nav]');
@@ -250,7 +254,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         const a = ((((i * pas + base) % arc) + arc) % arc) - arc / 2, r = a * Math.PI / 180;
         const x = Math.sin(r) * R, z = (1 - Math.cos(r)) * R * 0.85;
         c.style.transform = 'translate3d(' + x.toFixed(1) + 'px, 0, ' + z.toFixed(1) + 'px) rotateY(' + (-a).toFixed(2) + 'deg)';
-        c.style.opacity = Math.abs(a) > arc / 2 - pas * 0.6 ? '0' : '1';
+        c.style.opacity = Math.abs(a) > Math.min(arc / 2 - pas * 0.6, 78) ? '0' : '1';
       });
     };
     const boucle = (t) => {
