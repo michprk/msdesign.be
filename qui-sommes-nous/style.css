@@ -127,5 +127,7 @@ a { color: inherit; }
   .qs.is-vol .qs__haut-actions [data-passer], .qs.is-entree .qs__haut-actions [data-passer] { display: inline-flex; }
   .qs__haut-actions a.qs__btn { display: none; }
   .qs__histoire { bottom: 96px; }
-  .qs__menu button { padding: 9px 12px; font-size: 13px; }
+  /* les cinq boutons tiennent sur la largeur d'un téléphone (« Sortir » ne doit pas être coupé) */
+  .qs__menu { gap: 0; padding: 4px; }
+  .qs__menu button { padding: 9px 7px; font-size: 12.5px; }
 }
