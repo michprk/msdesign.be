@@ -25,7 +25,7 @@ export const BAIE = { gauche: 0.485, haut: 0.515, droite: 0.5215, bas: 0.476 };
 // x, y : où se trouve l'objet dans la photo du studio (même repère que plus haut).
 export const STUDIO = { image: 'studio.webp' };
 export const OBJETS = {
-  carnet: { x: 0.67, y: 0.19, image: null },       // le carnet de croquis ouvert sur la grande table
+  carnet: { x: 0.67, y: 0.19, image: 'carnet.webp' },       // le carnet de croquis ouvert sur la grande table
   ordinateur: { x: 0.155, y: 0.43, image: null },  // l'écran avec le code, sur le bureau à gauche
   tasse: { x: 0.73, y: 0.27, image: null },        // la tasse de café sur la table
   plante: { x: 0.665, y: 0.58, image: null },      // le figuier, au fond
