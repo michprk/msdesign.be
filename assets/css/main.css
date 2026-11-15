@@ -216,11 +216,14 @@ html.sans-menu .dock { transform: translateY(130%); opacity: 0; pointer-events: 
 .hero__title .hl { display: block; }
 .hero__title .hl:first-child { font: 800 clamp(40px, 6vw, 100px)/1 "Inter", var(--sans); letter-spacing: -0.045em; }
 .hero__title em { display: inline-block; margin-top: 0.06em; font: 400 clamp(48px, 7.4vw, 124px)/1 "Junicode", Georgia, serif; font-style: normal; letter-spacing: -0.012em; word-spacing: -0.08em; color: var(--blue); }
-.anneau { --l: 180px; position: relative; height: calc(var(--l) * 1.25 + 40px); margin: clamp(26px, 4vw, 56px) 0 clamp(22px, 3vw, 40px); perspective: 1600px; cursor: grab; touch-action: pan-y; user-select: none; }
+.anneau { --l: 180px; position: relative; height: calc(var(--l) * 1.25 + 40px); margin: clamp(26px, 4vw, 56px) 0 clamp(22px, 3vw, 40px); perspective: 1150px; perspective-origin: 50% 30%; cursor: grab; touch-action: pan-y; user-select: none; }
 .anneau.is-tire { cursor: grabbing; }
-.anneau__scene { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
+/* l’anneau vu d’un peu au-dessus : les cartes proches descendent et basculent, les lointaines remontent */
+.anneau__scene { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: rotateX(-9deg); }
 .anneau__carte { position: absolute; left: calc(var(--l) / -2); top: calc(var(--l) * -0.625); width: var(--l); margin: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 30px 50px -32px rgba(23, 23, 23, 0.55); backface-visibility: hidden; will-change: transform; }
 .anneau__carte img { display: block; width: 100%; height: auto; pointer-events: none; }
+/* une carte qui se détourne de nous passe dans l’ombre (--ombre, réglée par l’anneau) */
+.anneau__carte::after { content: ""; position: absolute; inset: 0; background: #0b0d14; opacity: var(--ombre, 0); pointer-events: none; }
 .hero__bas { text-align: center; padding-bottom: clamp(56px, 10vh, 112px); }
 .hero__lede { max-width: 34em; margin: 0 auto; font: 400 clamp(16px, 1.2vw, 18px)/1.6 var(--sans); color: var(--ink-2); }
 .demande { display: flex; align-items: center; gap: 12px; width: min(520px, 100%); margin: 26px auto 0; padding: 7px 7px 7px 18px; border-radius: 999px; background: #141414; box-shadow: 0 22px 40px -24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(210, 87, 15, 0.45); transition: box-shadow 0.3s ease; }

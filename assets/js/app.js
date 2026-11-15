@@ -244,7 +244,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     let base = 0, vit = 0, tire = false, x0 = 0, b0 = 0, dernier = 0, R = 800, pas = 14, L = 180, visible = false, tourne = false;
     const mesurer = () => {
       const W = el.clientWidth;
-      L = Math.max(118, Math.min(210, W * 0.13)); R = Math.max(440, W * 0.55);
+      L = Math.max(118, Math.min(210, W * 0.13)); R = Math.max(300, W * 0.55);     // rayon plus serré sur téléphone : l’anneau y reste bien courbé
       pas = (L * 1.12 / R) * 180 / Math.PI;
       el.style.setProperty('--l', L.toFixed(1) + 'px');
     };
@@ -255,6 +255,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         const x = Math.sin(r) * R, z = (1 - Math.cos(r)) * R * 0.85;
         c.style.transform = 'translate3d(' + x.toFixed(1) + 'px, 0, ' + z.toFixed(1) + 'px) rotateY(' + (-a).toFixed(2) + 'deg)';
         c.style.opacity = Math.abs(a) > Math.min(arc / 2 - pas * 0.6, 78) ? '0' : '1';
+        c.style.setProperty('--ombre', (0.42 * Math.pow(Math.min(1, Math.abs(a) / 78), 1.4)).toFixed(3));
       });
     };
     const boucle = (t) => {
