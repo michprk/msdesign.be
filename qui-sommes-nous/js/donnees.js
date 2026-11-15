@@ -22,11 +22,12 @@ export const VOL = [
 export const BAIE = { gauche: 0.485, haut: 0.515, droite: 0.5215, bas: 0.476 };
 
 // Le studio et ses objets (un par chapitre). image : null tant que la photo n'existe pas encore.
-export const STUDIO = { image: null };
+// x, y : où se trouve l'objet dans la photo du studio (même repère que plus haut).
+export const STUDIO = { image: 'studio.webp' };
 export const OBJETS = {
-  carnet: { x: 0.5, y: 0.5, image: null },
-  ordinateur: { x: 0.2, y: 0.55, image: null },
-  tasse: { x: 0.6, y: 0.45, image: null },
-  plante: { x: 0.85, y: 0.6, image: null },
+  carnet: { x: 0.67, y: 0.19, image: null },       // le carnet de croquis ouvert sur la grande table
+  ordinateur: { x: 0.155, y: 0.43, image: null },  // l'écran avec le code, sur le bureau à gauche
+  tasse: { x: 0.73, y: 0.27, image: null },        // la tasse de café sur la table
+  plante: { x: 0.665, y: 0.58, image: null },      // le figuier, au fond
 };
 export const ORDRE = ['carnet', 'ordinateur', 'tasse', 'plante'];
