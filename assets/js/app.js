@@ -373,42 +373,6 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     v.addEventListener('ended', close);
   });
 
-  /* ---------- Fin de page, façon Lusion : on continue à descendre, le cercle se remplit, on plonge « Sous la surface » ---------- */
-  safe('next', () => {
-    const sec = $('[data-next]');
-    if (!sec) return;
-    const fill = $('[data-next-fill]', sec), pct = $('[data-next-pct]', sec), link = $('[data-next-link]', sec);
-    let p = 0, lastIn = 0, raf = 0, going = false;
-    const atEnd = () => sec.getBoundingClientRect().bottom - window.innerHeight < 6;      // tout en bas de la page
-    const draw = () => {
-      fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
-      pct.textContent = String(Math.round(p * 100)).padStart(3, '0');
-      sec.classList.toggle('is-loading', p > 0.01);
-    };
-    // 100 % : une ligne de construction en pointillés traverse le noir… et la page suivante commence le dessin du lotus
-    const go = (via) => {
-      if (going) return; going = true; p = 1; draw();
-      sec.classList.add('is-go'); track('xp_enter', { via });
-      setTimeout(() => { location.href = link.href; }, reduced ? 0 : 650);
-    };
-    const loop = () => {
-      raf = 0;
-      if (!going && performance.now() - lastIn > 380) p = Math.max(0, p - 0.014);     // on lâche : le cercle redescend
-      draw();
-      if (p >= 1) { go('scroll'); return; }
-      if (p > 0 && !going) raf = requestAnimationFrame(loop);
-    };
-    const push = (amt) => { if (going || !atEnd()) return; p = Math.min(1, p + amt); lastIn = performance.now(); if (!raf) raf = requestAnimationFrame(loop); };
-    window.addEventListener('wheel', (e) => { if (e.deltaY > 0) push(Math.min(e.deltaY, 160) / 1150); }, { passive: true });
-    let ty = null;
-    window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
-    window.addEventListener('touchmove', (e) => { if (ty === null) return; const dy = ty - e.touches[0].clientY; ty = e.touches[0].clientY; if (dy > 0) push(dy / 700); }, { passive: true });
-    window.addEventListener('keydown', (e) => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) push(0.12); });
-    link.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); go('link'); });
-    window.addEventListener('pageshow', () => { going = false; p = 0; sec.classList.remove('is-go'); draw(); });   // retour arrière
-    window.__msNext = { get p() { return p; }, get going() { return going; } };
-  });
-
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
   safe('ribbon', () => {
     const host = $('[data-ribbon]');

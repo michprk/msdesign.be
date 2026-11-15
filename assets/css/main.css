@@ -915,22 +915,6 @@ html.reduced .gantt .gantt__bar { transform: none !important; }
 @keyframes xp-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(21, 94, 239, 0.5); } 50% { box-shadow: 0 0 0 6px rgba(21, 94, 239, 0); } }
 
 /* ---------- Fin de page, façon Lusion : du noir, on continue à descendre, la ligne se remplit… et on passe « Sous la surface » ---------- */
-.endxp { position: relative; display: grid; place-items: center; height: 100vh; height: 100svh; min-height: 520px; overflow: hidden; isolation: isolate; background: #000; color: #f2fbff; text-align: center; }
-.endxp__in { position: relative; z-index: 1; display: grid; justify-items: center; padding: 0 var(--pad); transition: opacity 0.45s var(--ease), filter 0.45s var(--ease), transform 0.6s var(--ease); }
-.endxp__kicker { margin: 0 0 22px; font: 600 11.5px/1.4 var(--sans); letter-spacing: 0.26em; text-transform: uppercase; color: rgba(242, 251, 255, 0.5); }
-.endxp__title { margin: 0; font: 300 clamp(40px, 6vw, 92px)/1 var(--display); letter-spacing: -0.035em; }
-.endxp__title em { font-style: italic; color: #8fe3ff; }
-.endxp__load { display: flex; align-items: center; gap: 16px; width: min(340px, 78vw); margin: 46px 0 0; }
-.endxp__num { min-width: 2.6em; font: 500 13px/1 var(--sans); letter-spacing: 0.14em; text-align: left; font-variant-numeric: tabular-nums; }
-.endxp__bar { position: relative; flex: 1; height: 1px; overflow: hidden; background: rgba(242, 251, 255, 0.18); }
-.endxp__bar i { position: absolute; inset: 0; background: #f2fbff; transform: scaleX(0); transform-origin: left; }
-.endxp__link { margin-top: 30px; color: rgba(242, 251, 255, 0.55); font: 500 13.5px/1.2 var(--sans); text-decoration: underline; text-underline-offset: 4px; transition: color 0.3s; }
-.endxp__link:hover { color: #fff; }
-.endxp.is-loading .endxp__title { opacity: 0.85; }
-/* 100 % : le texte s’efface, une ligne de construction en pointillés traverse le noir (le dessin du lotus commence à la page suivante) */
-.endxp__slit { position: absolute; left: 0; right: 0; top: 50%; z-index: 2; height: 1px; background: repeating-linear-gradient(90deg, rgba(238, 246, 255, 0.9) 0 7px, transparent 7px 13px); opacity: 0; transform: scaleX(0); pointer-events: none; }
-.endxp.is-go .endxp__in { opacity: 0; filter: blur(8px); transform: scale(0.97); }
-.endxp.is-go .endxp__slit { opacity: 1; transform: scaleX(1); transition: transform 0.55s cubic-bezier(0.7, 0, 0.2, 1) 0.05s, opacity 0.2s; }
 
 /* ==========================================================================
    Trois couleurs, des mots plus grands
