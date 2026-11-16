@@ -276,24 +276,36 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     el.addEventListener('pointerup', lacher); el.addEventListener('pointercancel', lacher);
   });
 
-  /* ---------- Le geste : la fresque peinte s’anime, les index se touchent, puis le papier de nos réalisations ----------
-     Trois étapes, déclenchées par le défilement dans la piste (pas étirées) : 0 = les mains un peu écartées ;
-     au-delà de 6 %, 1 = elles glissent l’une vers l’autre jusqu’au contact (le titre change) ; au-delà de 62 %,
-     2 = la fresque s’efface dans le papier. En remontant, tout revient en arrière. Le dessin (WebGL) n’est chargé
-     qu’à l’approche de la section ; sans WebGL, l’image peinte reste fixe et seul le titre change. */
+  /* ---------- Le geste : la fresque peinte s’anime, les index se touchent, puis on file vers nos projets ----------
+     Deux étapes, déclenchées par le défilement dans la piste (pas étirées) : 0 = les mains un peu écartées ;
+     au-delà de 6 %, 1 = elles glissent l’une vers l’autre jusqu’au contact (le titre change). Dès que les doigts
+     se touchent (en descendant), la page glisse d’elle-même jusqu’à « Nos projets ». En remontant, les mains se
+     séparent. Le dessin (WebGL) n’est chargé qu’à l’approche de la section ; sans WebGL, l’image reste fixe. */
   safe('geste', () => {
     const el = $('[data-geste]');
     if (!el) return;
-    const piste = $('.geste__piste', el), toile = $('.geste__toile', el);
-    let geste = null, etat = -1;
+    const piste = $('.geste__piste', el), toile = $('.geste__toile', el), salle = $('[data-salle]');
+    let geste = null, etat = -1, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0;
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
+    // le contact fait : on descend tout seul jusqu’aux sites (une seule fois par passage, et seulement si l’on est encore ici)
+    const allerAuxSites = (attente) => {
+      clearTimeout(tAuto);
+      tAuto = setTimeout(() => {
+        if (parti || etat < 1 || !salle) return;
+        const r = el.getBoundingClientRect();
+        if (r.top > window.innerHeight * 0.5 || r.bottom < window.innerHeight * 0.5) return;
+        parti = true;
+        scrollToY(salle.getBoundingClientRect().top + window.scrollY + 1, 1.5);
+      }, attente);
+    };
     const maj = () => {
-      const v = avance(), e = v > 0.62 ? 2 : v > 0.06 ? 1 : 0;
+      const y = window.scrollY; versLeBas = y >= dernierY; dernierY = y;
+      const v = avance(), e = v > 0.06 ? 1 : 0;
+      if (v < 0.03) parti = false;                          // revenu au début du geste : le prochain contact repartira vers les sites
       if (e === etat) return;
       etat = e;
-      el.classList.toggle('is-papier', e === 2);
       if (geste) geste.setEtat(e);
-      else el.classList.toggle('is-contact', e >= 1);       // sans dessin animé : le titre change tout de suite
+      else { el.classList.toggle('is-contact', e >= 1); if (e >= 1 && versLeBas) allerAuxSites(900); }   // sans dessin animé
     };
     window.addEventListener('scroll', maj, { passive: true });
     maj();
@@ -305,7 +317,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         geste = m.createGeste(toile, {
           src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
           reduced,
-          onContact: (c) => el.classList.toggle('is-contact', c),
+          onContact: (c) => { el.classList.toggle('is-contact', c); if (c && versLeBas) allerAuxSites(reduced ? 0 : 650); },
         });
         if (!geste) return;
         el.classList.add('has-gl');
