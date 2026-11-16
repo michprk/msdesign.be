@@ -276,6 +276,46 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     el.addEventListener('pointerup', lacher); el.addEventListener('pointercancel', lacher);
   });
 
+  /* ---------- Le geste : les deux mains de la Création d’Adam se rejoignent, puis s’ouvrent sur nos réalisations ----------
+     Paliers du défilement dans la piste : au-delà de 6 %, les bras se rapprochent (2,6 s) puis se touchent (étincelle,
+     nouveau titre) ; au-delà de 60 %, le cercle bleu nuit s’ouvre. En remontant, tout revient en arrière. */
+  safe('geste', () => {
+    const el = $('[data-geste]');
+    if (!el) return;
+    const piste = $('.geste__piste', el), mains = $('.geste__mains', el), portail = $('.geste__portail', el);
+    let tContact = 0;
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add('is-vu'); }, { threshold: 0.15 }).observe(el);
+    const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
+    // le cercle doit couvrir tout l’écran depuis le point de contact
+    const couvrir = () => {
+      const r = portail.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const d = Math.hypot(Math.max(cx, window.innerWidth - cx), Math.max(cy, window.innerHeight - cy));
+      portail.style.setProperty('--s', String(Math.ceil((d * 2.1) / 10)));
+    };
+    const maj = () => {
+      const v = avance(), c = el.classList;
+      if (v > 0.06 && !c.contains('is-geste')) {
+        c.add('is-vu', 'is-geste');
+        clearTimeout(tContact);
+        tContact = setTimeout(() => { c.add('is-contact'); maj(); }, reduced ? 0 : 2500);
+      }
+      if (v < 0.03 && c.contains('is-geste')) { clearTimeout(tContact); c.remove('is-geste', 'is-contact', 'is-ouvert'); }
+      if (v > 0.6 && c.contains('is-contact') && !c.contains('is-ouvert')) { couvrir(); c.add('is-ouvert'); }
+      if (v < 0.5 && c.contains('is-ouvert')) c.remove('is-ouvert');
+    };
+    window.addEventListener('scroll', maj, { passive: true });
+    window.addEventListener('resize', () => { if (el.classList.contains('is-ouvert')) couvrir(); });
+    maj();
+    // les mains suivent un tout petit peu la souris
+    if (fine && !reduced) {
+      el.addEventListener('pointermove', (e) => {
+        mains.style.setProperty('--mx', ((e.clientX / window.innerWidth - 0.5) * 2).toFixed(3));
+        mains.style.setProperty('--my', ((e.clientY / window.innerHeight - 0.5) * 2).toFixed(3));
+      });
+      el.addEventListener('pointerleave', () => { mains.style.setProperty('--mx', '0'); mains.style.setProperty('--my', '0'); });
+    }
+  });
+
   /* ---------- Nos réalisations : la salle de projection ----------
      La piste est haute ; à chaque palier de défilement, l'écran de devant s'envole et le suivant s'avance.
      Survoler (ou parcourir au clavier) un nom de la liste montre son écran tout de suite. La pile suit un peu la souris. */
