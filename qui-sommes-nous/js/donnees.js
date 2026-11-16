@@ -36,7 +36,7 @@ export const TERRASSE = { image: 'terrasse.webp', point: [0.5, 0.43], zoom: 2.9 
 export const STUDIO = { image: 'studio.webp', tasse: [0.7325, 0.293] };
 export const OBJETS = {
   carnet: { x: 0.67, y: 0.19, image: 'carnet.webp' },   // le carnet de croquis ouvert sur la grande table
-  ordinateur: { x: 0.155, y: 0.43, image: null },       // l'écran avec le code, sur le bureau à gauche
+  ordinateur: { x: 0.155, y: 0.43, image: 'ordinateur.webp' },       // l'écran avec le code, sur le bureau à gauche
   tasse: { x: 0.73, y: 0.27, image: null },             // la tasse de café sur la table
   plante: { x: 0.665, y: 0.58, image: null },           // le figuier, au fond
 };
