@@ -285,7 +285,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     const el = $('[data-geste]');
     if (!el) return;
     const piste = $('.geste__piste', el), toile = $('.geste__toile', el), salle = $('[data-salle]');
-    let geste = null, etat = -1, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0;
+    let geste = null, etat = -1, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0, tVerrou = 0;
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
     // le contact fait : on descend tout seul jusqu’aux sites (une seule fois par passage, et seulement si l’on est encore ici)
     const allerAuxSites = (attente) => {
@@ -295,7 +295,8 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         const r = el.getBoundingClientRect();
         if (r.top > window.innerHeight * 0.5 || r.bottom < window.innerHeight * 0.5) return;
         parti = true;
-        scrollToY(salle.getBoundingClientRect().top + window.scrollY + 1, 1.5);
+        if (lenis) lenis.start();
+        scrollToY(salle.getBoundingClientRect().top + window.scrollY + 1, 1.3);
       }, attente);
     };
     const maj = () => {
@@ -304,8 +305,11 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (v < 0.03) parti = false;                          // revenu au début du geste : le prochain contact repartira vers les sites
       if (e === etat) return;
       etat = e;
-      if (geste) geste.setEtat(e);
-      else { el.classList.toggle('is-contact', e >= 1); if (e >= 1 && versLeBas) allerAuxSites(900); }   // sans dessin animé
+      if (geste) {
+        geste.setEtat(e);
+        // en descendant : le défilement s’arrête le temps du geste, pour qu’on le voie toujours en entier
+        if (e === 1 && versLeBas && lenis && !reduced) { lenis.stop(); clearTimeout(tVerrou); tVerrou = setTimeout(() => lenis.start(), 2200); }
+      } else { el.classList.toggle('is-contact', e >= 1); if (e >= 1 && versLeBas) allerAuxSites(900); }   // sans dessin animé
     };
     window.addEventListener('scroll', maj, { passive: true });
     maj();
@@ -317,7 +321,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         geste = m.createGeste(toile, {
           src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
           reduced,
-          onContact: (c) => { el.classList.toggle('is-contact', c); if (c && versLeBas) allerAuxSites(reduced ? 0 : 650); },
+          onContact: (c) => { el.classList.toggle('is-contact', c); if (c && versLeBas) { clearTimeout(tVerrou); allerAuxSites(reduced ? 0 : 300); } },
         });
         if (!geste) return;
         el.classList.add('has-gl');
