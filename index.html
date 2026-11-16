@@ -149,46 +149,38 @@
   </div>
 </section>
 
-<!-- Nos réalisations : un projet à la fois, en grand -->
-<section class="sec projects" id="etudes" aria-labelledby="etudes-title">
-  <!-- Les réalisations : le titre et cinq exemples de sites (commerces fictifs), en grille -->
-  <div class="wrap projets">
-    <div class="projets__head">
-      <p class="eyebrow" data-reveal>Nos réalisations</p>
-      <!-- le point du « j » est un vrai petit rond orange qui tombe sur la lettre et rebondit -->
-      <h2 class="h2 projets__title" id="etudes-title" data-reveal>Des pro<span class="j-point"><span class="j-point__j">j</span><span class="j-point__pt" aria-hidden="true"></span></span>ets qui<br> ont <em>du sens,</em><br> et qui marquent.</h2>
-      <p class="lead" data-reveal>Chaque site est une rencontre entre une vision, une stratégie et un design sur mesure. Voici cinq exemples imaginés pour montrer notre façon de travailler&nbsp;: les commerces sont fictifs, les sites fonctionnent.</p>
+<!-- Nos réalisations : une salle de projection. À gauche la liste des sites, à droite leurs écrans empilés en 3D ;
+     en descendant, l’écran de devant s’envole et le suivant s’avance (pour changer de sites : la liste et les écrans, dans le même ordre). -->
+<section class="salle" id="etudes" aria-labelledby="etudes-title" data-salle>
+  <div class="salle__piste" style="--n: 5">
+    <div class="salle__scene">
+      <div class="salle__gauche">
+        <p class="salle__surtitre">Nos réalisations</p>
+        <!-- le point du « j » est un vrai petit rond qui tombe sur la lettre et rebondit -->
+        <h2 class="salle__titre" id="etudes-title" data-reveal>Des pro<span class="j-point"><span class="j-point__j">j</span><span class="j-point__pt" aria-hidden="true"></span></span>ets qui ont <em>du sens.</em></h2>
+        <ol class="salle__liste">
+          <li><a href="/exemples/studio-bascule/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="0" data-texte="Un site en grandes lettres pour un studio de graphisme et de direction artistique." aria-current="true"><span class="salle__num">01</span><span class="salle__nom">Studio Bascule</span><span class="salle__genre">Graphisme</span></a></li>
+          <li><a href="/exemples/strate/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="1" data-texte="Un site vitrine pour un paysagiste bruxellois, avec une descente en 3D sous le jardin."><span class="salle__num">02</span><span class="salle__nom">Strate</span><span class="salle__genre">Paysagisme</span></a></li>
+          <li><a href="/exemples/atelier-veritas/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="2" data-texte="Un site épuré pour un bureau d’architecture, entre esthétique et engagement."><span class="salle__num">03</span><span class="salle__nom">Atelier Véritas</span><span class="salle__genre">Architecture</span></a></li>
+          <li><a href="/exemples/verdane/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="3" data-texte="Un catalogue minimaliste et naturel pour une boutique de plantes d’intérieur."><span class="salle__num">04</span><span class="salle__nom">Verdane</span><span class="salle__genre">Boutique en ligne</span></a></li>
+          <li><a href="/exemples/le-fournil/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="4" data-texte="Un site chaleureux pour une boulangerie artisanale, qui valorise le savoir-faire et la proximité."><span class="salle__num">05</span><span class="salle__nom">Le Fournil</span><span class="salle__genre">Boulangerie</span></a></li>
+        </ol>
+        <p class="salle__note">Des commerces imaginés, des sites qui fonctionnent&nbsp;: cliquez pour les visiter.</p>
+      </div>
+      <div class="salle__droite">
+        <div class="salle__pile" data-salle-pile aria-hidden="true">
+          <a class="salle__ecran" href="/exemples/studio-bascule/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 0"><span class="salle__barre"><i></i><i></i><i></i><span>studio-bascule.be</span></span><span class="salle__vue"><img src="/assets/img/concept-bascule-1440.webp" srcset="/assets/img/concept-bascule-720.webp 720w, /assets/img/concept-bascule-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/strate/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 1"><span class="salle__barre"><i></i><i></i><i></i><span>strate.be</span></span><span class="salle__vue"><img src="/assets/img/concept-strate-1440.webp" srcset="/assets/img/concept-strate-720.webp 720w, /assets/img/concept-strate-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/atelier-veritas/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 2"><span class="salle__barre"><i></i><i></i><i></i><span>atelierveritas.be</span></span><span class="salle__vue"><img src="/assets/img/concept-veritas-1440.webp" srcset="/assets/img/concept-veritas-720.webp 720w, /assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/verdane/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 3"><span class="salle__barre"><i></i><i></i><i></i><span>verdane.be</span></span><span class="salle__vue"><img src="/assets/img/concept-verdane-1440.webp" srcset="/assets/img/concept-verdane-720.webp 720w, /assets/img/concept-verdane-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/le-fournil/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 4"><span class="salle__barre"><i></i><i></i><i></i><span>lefournil.be</span></span><span class="salle__vue"><img src="/assets/img/concept-fournil-1440.webp" srcset="/assets/img/concept-fournil-720.webp 720w, /assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+        </div>
+        <div class="salle__legende">
+          <p class="salle__compteur"><b data-salle-n>01</b><span> / 05</span></p>
+          <p class="salle__texte" data-salle-texte aria-live="polite">Un site en grandes lettres pour un studio de graphisme et de direction artistique.</p>
+        </div>
+      </div>
     </div>
-    <a class="projet" href="/exemples/strate/" target="_blank" rel="noopener" data-track="example_open" data-reveal>
-      <span class="win projet__win"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-strate-720.webp" srcset="/assets/img/concept-strate-720.webp 720w, /assets/img/concept-strate-1440.webp 1440w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Strate, paysagiste : « Un beau jardin commence sous terre » sur une photo de massif d’automne."></span>
-      <span class="projet__genre">Paysagisme</span>
-      <h3 class="projet__nom">Strate<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></h3>
-      <span class="projet__texte">Un site vitrine pour un paysagiste bruxellois, avec une descente en 3D sous le jardin.</span>
-    </a>
-    <a class="projet" href="/exemples/atelier-veritas/" target="_blank" rel="noopener" data-track="example_open" data-reveal>
-      <span class="win projet__win"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-veritas-720.webp" srcset="/assets/img/concept-veritas-720.webp 720w, /assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Atelier Véritas, architecture, avec une maison en pierre claire et un escalier courbe."></span>
-      <span class="projet__genre">Architecture</span>
-      <h3 class="projet__nom">Atelier Véritas<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></h3>
-      <span class="projet__texte">Un site épuré pour un bureau d’architecture, entre esthétique et engagement.</span>
-    </a>
-    <a class="projet" href="/exemples/studio-bascule/" target="_blank" rel="noopener" data-track="example_open" data-reveal>
-      <span class="win projet__win"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-bascule-720.webp" srcset="/assets/img/concept-bascule-720.webp 720w, /assets/img/concept-bascule-1440.webp 1440w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Studio Bascule, graphisme, en grandes lettres bleues sur fond sable."></span>
-      <span class="projet__genre">Graphisme</span>
-      <h3 class="projet__nom">Studio Bascule<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></h3>
-      <span class="projet__texte">Un site en grandes lettres pour un studio de graphisme et de direction artistique.</span>
-    </a>
-    <a class="projet" href="/exemples/verdane/" target="_blank" rel="noopener" data-track="example_open" data-reveal>
-      <span class="win projet__win"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-verdane-720.webp" srcset="/assets/img/concept-verdane-720.webp 720w, /assets/img/concept-verdane-1440.webp 1440w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Verdane, plantes d’intérieur : un grand titre sur la photo d’un caoutchouc, puis le catalogue."></span>
-      <span class="projet__genre">Boutique en ligne</span>
-      <h3 class="projet__nom">Verdane<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></h3>
-      <span class="projet__texte">Un catalogue minimaliste et naturel pour une boutique de plantes d’intérieur.</span>
-    </a>
-    <a class="projet" href="/exemples/le-fournil/" target="_blank" rel="noopener" data-track="example_open" data-reveal>
-      <span class="win projet__win"><span class="win__bar" aria-hidden="true"><i></i><i></i><i></i></span><img src="/assets/img/concept-fournil-720.webp" srcset="/assets/img/concept-fournil-720.webp 720w, /assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 30vw" width="1440" height="900" loading="lazy" decoding="async" alt="L’accueil du site Le Fournil, boulangerie, avec un boulanger qui tient une miche au levain."></span>
-      <span class="projet__genre">Boulangerie</span>
-      <h3 class="projet__nom">Le Fournil<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></h3>
-      <span class="projet__texte">Un site chaleureux pour une boulangerie artisanale, qui valorise le savoir-faire et la proximité.</span>
-    </a>
   </div>
 </section>
 
@@ -422,99 +414,72 @@
   </div>
 </section>
 
-<!-- Contact : l’invitation et la photo, puis le bloc bleu et le formulaire -->
-<section class="sec contact" id="contact" aria-labelledby="contact-title">
-  <div class="wrap contact__intro">
-    <div class="contact__copy">
-      <p class="label" data-reveal>Contact</p>
-      <h2 class="contact__title" id="contact-title" data-reveal><span>Parlons de</span> <span class="accent">votre projet.</span></h2>
-      <p class="lead" data-reveal>Vous avez une idée, un besoin ou une question&nbsp;? Écrivez-nous, nous vous répondons dans les plus brefs délais.</p>
-      <ul class="feats" data-reveal>
-        <li><svg aria-hidden="true"><use href="#i-bolt"/></svg><span>Réponse rapide<br>sous 24&nbsp;h ouvrées</span></li>
-        <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Basé à Bruxelles<br>et disponible en ligne</span></li>
-        <li><svg aria-hidden="true"><use href="#i-shield"/></svg><span>Échange gratuit<br>et sans engagement</span></li>
+<!-- Contact : une lettre. Sur un ciel bleu où dérivent d’autres feuilles, on remplit les blancs, on scelle à la cire,
+     et la lettre part dans son enveloppe. Les noms des champs et les messages d’erreur restent ceux du formulaire (app.js). -->
+<section class="ecrire" id="contact" aria-labelledby="contact-title" data-ecrire>
+  <div class="ecrire__ciel" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="wrap ecrire__grille">
+    <div class="ecrire__intro">
+      <p class="ecrire__surtitre" data-reveal>Contact</p>
+      <h2 class="ecrire__titre" id="contact-title" data-reveal>Écrivez-nous. <em>On répond à chaque lettre.</em></h2>
+      <p class="ecrire__lede" data-reveal>Remplissez les blancs, scellez, envoyez&nbsp;: réponse sous 24&nbsp;h ouvrées. Le premier échange est gratuit et sans engagement.</p>
+      <ul class="ecrire__lignes" data-reveal>
+        <li><span>Écrire</span><a href="mailto:mck.honorable@msdesign.be" data-track="email_click">mck.honorable@msdesign.be</a></li>
+        <li><span>Appeler</span><a href="tel:+32486611159" data-track="phone_click">+32&nbsp;486&nbsp;61&nbsp;11&nbsp;59</a></li>
+        <li><span>Nous trouver</span>Bruxelles, Belgique</li>
       </ul>
     </div>
-    <figure class="contact__photo" data-reveal>
-      <img src="/assets/img/contact-studio-1200.webp" width="1200" height="1050" loading="lazy" decoding="async" alt="Un ordinateur portable ouvert sur un bureau clair, un carnet bleu M&amp;S Design posé dessus, l’ombre d’une plante.">
-      <img class="contact__keys" src="/assets/img/contact-keys-1200.webp" width="1200" height="1050" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      <svg class="seal" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="seal-path" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1 -88 0"/></defs><g class="seal__ring"><text><textPath href="#seal-path">M&amp;S DESIGN · STUDIO WEB · BRUXELLES ·</textPath></text></g><text class="seal__amp" x="60" y="69" text-anchor="middle">&amp;</text></svg>
-    </figure>
-  </div>
-  <div class="wrap">
-    <div class="contact__box">
-      <aside class="contact__panel" data-reveal>
-        <p class="label label--light">Restons en contact</p>
-        <p class="contact__q">Une question&nbsp;?<br>Une idée&nbsp;?</p>
-        <p class="contact__txt">Que ce soit pour un projet, une demande de devis ou simplement échanger sur vos idées, nous sommes à votre écoute.</p>
-        <ul class="contact__lines">
-          <li><svg aria-hidden="true"><use href="#i-mail"/></svg><a href="mailto:mck.honorable@msdesign.be" data-track="email_click">mck.honorable@msdesign.be</a></li>
-          <li><svg aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+32486611159" data-track="phone_click">+32 486 61 11 59</a></li>
-          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>Bruxelles, Belgique</span></li>
-        </ul>
-        <img class="contact__leaves" src="/assets/img/deco-leaves-left.webp" width="188" height="232" alt="" aria-hidden="true" loading="lazy" decoding="async">
-      </aside>
-      <form class="form" id="contact-form" data-form action="/merci.html" novalidate data-reveal>
-        <div class="form__step">
-          <p><span class="form__num">01</span>Dites-nous en quelques mots</p>
-          <p class="note note--start" aria-hidden="true">C’est parti&nbsp;!<svg viewBox="0 0 60 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M50 4c4 14-6 30-36 34"/><path d="M20 31l-7 7 9 3"/></svg></p>
-        </div>
-        <div class="form__row">
-          <div class="field">
-            <label for="f-name">Nom et prénom <span aria-hidden="true">*</span></label>
-            <span class="field__in"><svg aria-hidden="true"><use href="#i-user"/></svg><input id="f-name" name="name" type="text" autocomplete="name" required placeholder="Votre nom et prénom" aria-describedby="err-name"></span>
-            <p class="field__error" id="err-name" hidden></p>
+    <div class="ecrire__table">
+      <form class="lettre" id="contact-form" data-form action="/merci.html" novalidate>
+        <div class="lettre__feuille" data-lettre>
+          <p class="lettre__date" data-date>Bruxelles</p>
+          <label class="lettre__trombone">
+            <input type="file" name="fichier" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" aria-describedby="err-fichier">
+            <svg viewBox="0 0 24 60" aria-hidden="true"><path d="M8 54V14a6 6 0 0 1 12 0v36a9 9 0 0 1-18 0V18"/></svg>
+            <span data-file-label>Joindre un fichier</span>
+          </label>
+          <p class="field__error lettre__err lettre__err--fichier" id="err-fichier" hidden></p>
+          <p class="lettre__p">Bonjour Michal et Mamoudou,</p>
+          <p class="lettre__p">Je m’appelle <span class="champ"><label class="sr-only" for="f-name">Nom et prénom</label><input id="f-name" name="name" type="text" autocomplete="name" required placeholder="prénom et nom" aria-describedby="err-name"><span class="field__error champ__err" id="err-name" hidden></span></span>
+            et j’aimerais <span class="champ champ--choix"><label class="sr-only" for="f-projet">Type de projet</label><select id="f-projet" name="projet" required aria-describedby="err-projet">
+              <option value="">choisir ce que vous souhaitez</option>
+              <option value="vitrine">créer un nouveau site</option>
+              <option value="refonte">refaire mon site</option>
+              <option value="identite">créer mon identité visuelle</option>
+              <option value="seo">être mieux trouvé sur Google</option>
+              <option value="automatisation">automatiser une partie de mon travail</option>
+              <option value="autre">vous parler d’autre chose</option>
+            </select><span class="field__error champ__err" id="err-projet" hidden></span></span>
+            pour <span class="champ"><label class="sr-only" for="f-societe">Votre entreprise (facultatif)</label><input id="f-societe" name="societe" type="text" autocomplete="organization" placeholder="mon commerce (facultatif)"></span>.</p>
+          <fieldset class="lettre__p lettre__budget">
+            <legend>Côté budget, je pense plutôt à&nbsp;:</legend>
+            <label class="puce"><input type="radio" name="formule" value="essentiel"><span>Essentiel <small>500&nbsp;€</small></span></label>
+            <label class="puce"><input type="radio" name="formule" value="signature"><span>Signature <small>1&nbsp;290&nbsp;€</small></span></label>
+            <label class="puce"><input type="radio" name="formule" value="premium"><span>Premium <small>3&nbsp;900&nbsp;€</small></span></label>
+            <label class="puce"><input type="radio" name="formule" value=""><span>je ne sais pas encore</span></label>
+          </fieldset>
+          <div class="lettre__p champ champ--texte">
+            <label for="f-message">Mon idée, en quelques mots&nbsp;:</label>
+            <textarea id="f-message" name="message" rows="3" required placeholder="mon activité, ce que j’aimerais, mes envies…" aria-describedby="err-message"></textarea>
+            <span class="field__error champ__err" id="err-message" hidden></span>
           </div>
-          <div class="field">
-            <label for="f-email">E-mail <span aria-hidden="true">*</span></label>
-            <span class="field__in"><svg aria-hidden="true"><use href="#i-mail"/></svg><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="votre@email.be" aria-describedby="err-email"></span>
-            <p class="field__error" id="err-email" hidden></p>
+          <p class="lettre__p">Vous pouvez me répondre à <span class="champ"><label class="sr-only" for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="mon@email.be" aria-describedby="err-email"><span class="field__error champ__err" id="err-email" hidden></span></span>
+            ou m’appeler au <span class="champ"><label class="sr-only" for="f-phone">Téléphone (facultatif)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+32 … (facultatif)" aria-describedby="err-phone"><span class="field__error champ__err" id="err-phone" hidden></span></span>.</p>
+          <p class="lettre__p lettre__fin">À très vite,</p>
+          <p class="lettre__signature" data-signature aria-hidden="true"></p>
+          <div class="field--hp" aria-hidden="true">
+            <label for="f-website">Ne pas remplir</label>
+            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
           </div>
-        </div>
-        <div class="form__row">
-          <div class="field">
-            <label for="f-phone">Téléphone <span class="field__opt">(facultatif)</span></label>
-            <span class="field__in"><svg aria-hidden="true"><use href="#i-phone"/></svg><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+32 4XX XX XX XX" aria-describedby="err-phone"></span>
-            <p class="field__error" id="err-phone" hidden></p>
+          <div class="lettre__pied">
+            <p class="lettre__note">Vos informations restent entre nous. <a href="/confidentialite.html">Confidentialité</a></p>
+            <button class="cachet" type="submit" data-track="form_submit"><span class="cachet__cire" aria-hidden="true">M&amp;S</span><span class="cachet__txt">Sceller et envoyer</span></button>
           </div>
-          <div class="field">
-            <label for="f-projet">Type de projet <span aria-hidden="true">*</span></label>
-            <select id="f-projet" name="projet" required aria-describedby="err-projet">
-              <option value="">Choisissez une option</option>
-              <option value="vitrine">Nouveau site</option>
-              <option value="refonte">Refonte de site</option>
-              <option value="identite">Identité visuelle</option>
-              <option value="seo">Référencement</option>
-              <option value="automatisation">Automatisation</option>
-              <option value="autre">Autre demande</option>
-            </select>
-            <p class="field__error" id="err-projet" hidden></p>
-          </div>
+          <p class="form__status" data-status role="status" aria-live="polite"></p>
         </div>
-        <fieldset class="field">
-          <legend>Formule envisagée <span class="field__opt">(si vous le savez)</span></legend>
-          <div class="formules">
-            <label class="formule"><input type="radio" name="formule" value="essentiel"><span><b>Essentiel</b><small>1 page</small><small>500&nbsp;€ HTVA</small></span></label>
-            <label class="formule"><input type="radio" name="formule" value="signature"><span><b>Signature</b><small>Jusqu’à 6 pages</small><small>1&nbsp;290&nbsp;€ HTVA</small></span></label>
-            <label class="formule"><input type="radio" name="formule" value="premium"><span><b>Premium</b><small>Design d’exception</small><small>3&nbsp;900&nbsp;€ HTVA</small></span></label>
-          </div>
-        </fieldset>
-        <div class="field">
-          <label for="f-message">Votre message <span aria-hidden="true">*</span></label>
-          <textarea id="f-message" name="message" rows="4" required placeholder="Parlez-nous de votre projet, de vos idées, de vos besoins…" aria-describedby="err-message"></textarea>
-          <p class="field__error" id="err-message" hidden></p>
-        </div>
-        <div class="field field--file">
-          <label class="file"><input type="file" name="fichier" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" aria-describedby="err-fichier"><svg aria-hidden="true"><use href="#i-clip"/></svg><span data-file-label>Ajouter un fichier <span class="field__opt">(facultatif)</span></span></label>
-          <p class="field__error" id="err-fichier" hidden></p>
-        </div>
-        <div class="field field--hp" aria-hidden="true">
-          <label for="f-website">Ne pas remplir</label>
-          <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
-        </div>
-        <button class="btn btn--lg form__send" type="submit" data-track="form_submit"><svg class="btn__icon" aria-hidden="true"><use href="#i-send"/></svg>Envoyer ma demande<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
-        <p class="form__note"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Vos informations sont protégées et ne seront jamais partagées. <a href="/confidentialite.html">Confidentialité</a></span></p>
-        <p class="form__status" data-status role="status" aria-live="polite"></p>
+        <!-- l’enveloppe, qui n’apparaît qu’à l’envoi -->
+        <div class="enveloppe" aria-hidden="true"><span class="enveloppe__dos"></span><span class="enveloppe__face"></span><span class="enveloppe__rabat"></span><span class="enveloppe__cire">M&amp;S</span></div>
+        <p class="lettre__partie" aria-hidden="true">Lettre envoyée. À très vite.</p>
       </form>
     </div>
   </div>

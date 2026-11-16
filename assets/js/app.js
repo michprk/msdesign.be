@@ -276,6 +276,69 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     el.addEventListener('pointerup', lacher); el.addEventListener('pointercancel', lacher);
   });
 
+  /* ---------- Nos réalisations : la salle de projection ----------
+     La piste est haute ; à chaque palier de défilement, l'écran de devant s'envole et le suivant s'avance.
+     Survoler (ou parcourir au clavier) un nom de la liste montre son écran tout de suite. La pile suit un peu la souris. */
+  safe('salle', () => {
+    const el = $('[data-salle]');
+    if (!el) return;
+    const piste = $('.salle__piste', el), pile = $('[data-salle-pile]', el), liste = $('.salle__liste', el);
+    const liens = $$('[data-salle-lien]', el), ecrans = $$('.salle__ecran', el), N = ecrans.length;
+    const num = $('[data-salle-n]', el), texte = $('[data-salle-texte]', el);
+    if (!N) return;
+    let actif = -1, survol = null, tTexte = 0;
+    const poser = (i) => {
+      if (i === actif) return;
+      actif = i;
+      ecrans.forEach((e, j) => {
+        const k = j - i;
+        e.style.setProperty('--k', String(k));
+        e.classList.toggle('is-devant', k === 0);
+        e.classList.toggle('is-parti', k < 0);
+        e.classList.toggle('is-loin', k > 3);
+      });
+      liens.forEach((a, j) => a.setAttribute('aria-current', j === i ? 'true' : 'false'));
+      if (num) num.textContent = String(i + 1).padStart(2, '0');
+      if (texte) {
+        texte.classList.add('is-change'); clearTimeout(tTexte);
+        tTexte = setTimeout(() => { texte.textContent = liens[i].dataset.texte || ''; texte.classList.remove('is-change'); }, reduced ? 0 : 260);
+      }
+    };
+    const palier = () => {
+      const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight;
+      const p = h > 0 ? Math.min(0.9999, Math.max(0, -r.top / h)) : 0;
+      return Math.floor(p * N);
+    };
+    const maj = () => { if (survol === null) poser(palier()); };
+    window.addEventListener('scroll', maj, { passive: true });
+    window.addEventListener('resize', maj);
+    maj();
+    liens.forEach((a, j) => {
+      a.addEventListener('pointerenter', () => { survol = j; poser(j); });
+      a.addEventListener('focus', () => { survol = j; poser(j); });
+      a.addEventListener('blur', () => { survol = null; maj(); });
+    });
+    if (liste) liste.addEventListener('pointerleave', () => { survol = null; maj(); });
+    // la pile s'incline doucement vers la souris
+    if (fine && !reduced && pile) {
+      let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+      const boucle = () => {
+        x += (tx - x) * 0.08; y += (ty - y) * 0.08;
+        pile.style.setProperty('--ry', (x * 7).toFixed(2) + 'deg');
+        pile.style.setProperty('--rx', (-y * 4.5).toFixed(2) + 'deg');
+        raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.002 ? requestAnimationFrame(boucle) : 0;
+      };
+      const viser = () => { if (!raf) raf = requestAnimationFrame(boucle); };
+      el.addEventListener('pointermove', (e) => {
+        const r = pile.getBoundingClientRect();
+        tx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+        ty = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+        viser();
+      });
+      el.addEventListener('pointerleave', () => { tx = 0; ty = 0; viser(); });
+    }
+  });
+
   /* ---------- La demande en une phrase : des idées qui s’écrivent toutes seules, puis le formulaire ---------- */
   safe('demande', () => {
     const f = $('[data-demande]');
@@ -582,7 +645,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     }
     form.addEventListener('change', (e) => {
       if (e.target.name === 'formule') estimate();
-      if (e.target.name === 'fichier') { const l = $('[data-file-label]', form); if (l) l.textContent = fileName() || 'Ajouter un fichier (facultatif)'; }
+      if (e.target.name === 'fichier') { const l = $('[data-file-label]', form); if (l) l.textContent = fileName() || 'Joindre un fichier'; }
       if (e.target.name === 'projet') { const box = $('#err-projet', form); if (box) { box.hidden = true; box.textContent = ''; } }
     });
     formApi.preset = (plan) => {
@@ -590,6 +653,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (sel && PLANS[plan]) { sel.value = plan; estimate(); }
       const pj = form.elements.projet;
       if (pj && !val('projet')) pj.value = 'vitrine';
+      form.dispatchEvent(new Event('change'));
     };
     formApi.projet = (p) => {
       const pj = form.elements.projet;
@@ -692,8 +756,10 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       } catch (e) { /* navigation privée */ }
       const p = PLANS[data.formule];
       track('generate_lead', { form_type: 'devis', projet: data.projet, value: p ? p.price : 0, currency: 'EUR', method: viaMail ? 'mailto' : 'api' });
-      if (!viaMail) form.reset();
-      setTimeout(() => { window.location.href = form.getAttribute('action') || (import.meta.env.BASE_URL + 'merci.html'); }, viaMail ? 900 : 0);
+      const enveloppe = form.classList.contains('lettre') && !reduced;      // la lettre se range, se scelle et s’envole
+      if (enveloppe) form.classList.add('is-envoi');
+      if (!viaMail && !enveloppe) form.reset();
+      setTimeout(() => { window.location.href = form.getAttribute('action') || (import.meta.env.BASE_URL + 'merci.html'); }, enveloppe ? 3300 : viaMail ? 900 : 0);
     }
 
     form.addEventListener('submit', async (e) => {
@@ -759,6 +825,49 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       }
     });
     estimate();
+  });
+
+  /* ---------- Contact : la lettre ----------
+     La date du jour, des blancs qui prennent la largeur de ce qu'on y écrit, une feuille de papier
+     ligné qui s'allonge, et la signature qui s'écrit toute seule avec le nom. L'envoi (validation,
+     anti-spam, API ou messagerie) reste celui du formulaire ci-dessus. */
+  safe('lettre', () => {
+    const form = $('form.lettre');
+    if (!form) return;
+    const date = $('[data-date]', form), signature = $('[data-signature]', form), nom = form.elements.name, texte = form.elements.message;
+    if (date) date.textContent = 'Bruxelles, le ' + new Date().toLocaleDateString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+    const mesure = document.createElement('canvas').getContext('2d');
+    const largeur = (el) => {
+      const cs = getComputedStyle(el);
+      mesure.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+      const t = el.tagName === 'SELECT' ? (el.options[el.selectedIndex] || {}).text || '' : el.value || el.placeholder || '';
+      return Math.ceil(mesure.measureText(t).width) + (el.tagName === 'SELECT' ? 36 : 8);
+    };
+    const ajuster = () => {
+      $$('.champ input, .champ select', form).forEach((el) => {
+        el.style.width = Math.max(48, largeur(el)) + 'px';
+        if (el.tagName === 'SELECT') el.classList.toggle('is-vide', !el.value);
+      });
+      if (texte) { texte.style.height = 'auto'; texte.style.height = texte.scrollHeight + 'px'; }
+    };
+    let tSigne = 0;
+    const signer = () => {
+      if (!signature || !nom) return;
+      const v = nom.value.trim();
+      clearTimeout(tSigne);
+      if (v.length < 2) { signature.classList.remove('is-signee'); return; }
+      if (signature.textContent === v && signature.classList.contains('is-signee')) return;
+      signature.classList.remove('is-signee');
+      tSigne = setTimeout(() => { signature.textContent = v; void signature.offsetWidth; signature.classList.add('is-signee'); }, 250);
+    };
+    form.addEventListener('input', ajuster);
+    form.addEventListener('change', () => { ajuster(); signer(); });
+    if (nom) nom.addEventListener('blur', signer);
+    window.addEventListener('resize', ajuster);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajuster);
+    // les valeurs posées par le héros (« Décrivez votre projet ») ou un lien de formule : on remet la lettre à jour en arrivant
+    if ('IntersectionObserver' in window) new IntersectionObserver((e) => { if (e[0].isIntersecting) { ajuster(); signer(); } }).observe(form);
+    ajuster();
   });
 
   /* ---------- Barre d’action mobile : après le héros, cachée près du formulaire ---------- */
