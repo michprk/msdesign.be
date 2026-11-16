@@ -17,6 +17,9 @@
 @font-face { font-family: "Junicode"; src: url("../fonts/junicode-vf-subset.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Hanken Grotesk"; src: url("../fonts/hanken-grotesk-300-700-latin.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Instrument Sans"; src: url("../fonts/instrument-sans-400-700-latin.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+/* Barlow Condensed (Google Fonts, licence OFL) : les noms des sites dans « Nos projets » */
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/barlow-condensed-700-latin.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url("../fonts/barlow-condensed-800-latin.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
 
 :root {
   --bg: #f5f1e9;
@@ -1042,54 +1045,55 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
 .note svg { display: block; width: 46px; height: 34px; margin-top: 2px; }
 
 /* ==========================================================================
-   Nos réalisations : sur le papier de l'accueil
-   Le même papier que la première page (même texture, fixée à l'écran : on passe de la fresque au papier
-   sans couture). À gauche, la liste des sites ; le doigt de Michel-Ange (la main de Dieu, découpée dans la
-   fresque peinte) glisse devant le nom du site affiché. À droite, leurs écrans empilés en 3D. La piste est
-   haute (un palier de défilement par site) ; à chaque palier, l'écran de devant s'envole et le suivant
-   s'avance (animation déclenchée, pas étirée). Un clic sur un nom ramène à ce site.
-   Sur ordinateur, la souris est accompagnée d'une boule qui grossit sur l'écran (« Visiter »).
+   Nos projets
+   Une grande carte aux coins arrondis, sur un fond de grands plis de lumière floue aux couleurs de M&S
+   (WebGL : assets/js/fond-salle.js) que la souris remue sans se voir.
+   Seulement l'essentiel, centré : au milieu, les écrans des sites empilés
+   en 3D, avec le nom du site en grand (Barlow Condensed) sur un voile bleu nuit qui se lève au survol ;
+   à gauche, la liste, et le doigt de Michel-Ange qui montre le site affiché (un clic sur un nom y ramène) ;
+   la colonne de droite reste vide pour que les écrans soient bien au milieu. La piste est haute (un palier
+   de défilement par site) ; à chaque palier, l'écran de devant s'envole et le suivant s'avance.
    ========================================================================== */
-.geste, .salle { --papier: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035' numOctaves='6' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='%23f7f2ea' surfaceScale='2.6' diffuseConstant='1.1'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); }
-.salle { position: relative; color: var(--ink); }
+.geste { --papier: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035' numOctaves='6' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='%23f7f2ea' surfaceScale='2.6' diffuseConstant='1.1'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); }
+@media (hover: hover) and (pointer: fine) { .geste__scene { background-attachment: fixed; } }
+.salle { --nuit: #070c21; --creme: #f5f1e9; --bleu-clair: #9db8ff; position: relative; margin: 0 clamp(8px, 1.2vw, 18px); border-radius: clamp(22px, 2.6vw, 36px); overflow: clip; background: var(--nuit); color: var(--creme); }
 .salle__piste { height: calc(var(--n) * 72vh + 100vh); }
-/* trois colonnes centrées : la liste | les écrans (au milieu) | le site affiché ; mêmes marges à gauche et à droite
-   (la marge de gauche accueille le doigt) ; « Nos réalisations » au-dessus, au centre */
+/* trois colonnes centrées : la liste | les écrans (au milieu) | le site affiché ; mêmes marges des deux côtés */
 .salle__scene { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 2.4fr) minmax(0, 0.72fr); grid-template-rows: auto minmax(0, 1fr); align-items: center; column-gap: clamp(26px, 3vw, 60px);
-  padding: clamp(92px, 13vh, 130px) clamp(104px, 9vw, 190px) clamp(40px, 7vh, 72px); overflow: hidden;
-  background: var(--papier) 0 0 / 600px 600px, var(--bg); }
-@media (hover: hover) and (pointer: fine) { .salle__scene, .geste__scene { background-attachment: fixed; } }
-.salle__surtitre { grid-column: 1 / -1; grid-row: 1; margin: 0; text-align: center; font: 600 12px/1 var(--sans); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(23, 23, 23, 0.5); }
+  padding: clamp(84px, 12vh, 120px) clamp(104px, 9vw, 190px) clamp(40px, 7vh, 72px); overflow: hidden; isolation: isolate; border-radius: inherit;
+  background: radial-gradient(ellipse 60% 70% at 72% 30%, rgba(21, 94, 239, 0.55), rgba(21, 94, 239, 0) 70%), radial-gradient(ellipse 50% 60% at 18% 82%, rgba(91, 141, 255, 0.22), rgba(91, 141, 255, 0) 70%), var(--nuit); }
+/* le fond animé (il remplace le dégradé ci-dessus dès qu'il est prêt) */
+.salle__fond { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s var(--ease); }
+.salle__fond.is-pret { opacity: 1; }
+.salle__surtitre { grid-column: 1 / -1; grid-row: 1; margin: 0; text-align: center; font: 700 clamp(30px, 3.1vw, 50px)/1 "Barlow Condensed", var(--sans); letter-spacing: 0.005em; color: var(--creme); }
 .salle__gauche { grid-column: 1; grid-row: 2; position: relative; z-index: 2; }
 .salle__centre { grid-column: 2; grid-row: 2; min-width: 0; }
-.salle__liste { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(23, 23, 23, 0.12); }
-.salle__liste a { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; column-gap: 10px; row-gap: 5px; padding: clamp(9px, 1.6vh, 15px) 0; border-bottom: 1px solid rgba(23, 23, 23, 0.12); color: rgba(23, 23, 23, 0.34); text-decoration: none; transition: color 0.5s var(--ease); }
+.salle__liste { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(245, 241, 233, 0.16); }
+.salle__liste a { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); align-items: baseline; column-gap: 10px; row-gap: 5px; padding: clamp(9px, 1.6vh, 15px) 0; border-bottom: 1px solid rgba(245, 241, 233, 0.16); color: rgba(245, 241, 233, 0.42); text-decoration: none; transition: color 0.5s var(--ease); }
 .salle__num { font: 500 12px/1 var(--sans); letter-spacing: 0.1em; transition: color 0.5s var(--ease); }
-.salle__nom { font: 400 clamp(19px, 1.6vw, 28px)/1.08 "Junicode", Georgia, serif; letter-spacing: -0.01em; transition: transform 0.6s var(--ease); }
+.salle__nom { font: 700 clamp(21px, 1.8vw, 31px)/1 "Barlow Condensed", var(--sans); letter-spacing: 0.005em; transition: transform 0.6s var(--ease); }
 .salle__genre { grid-column: 2; font: 500 10px/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; }
-.salle__liste a[aria-current="true"], .salle__liste a:hover, .salle__liste a:focus-visible { color: var(--ink); }
-.salle__liste a[aria-current="true"] .salle__num { color: var(--blue); }
+.salle__liste a[aria-current="true"], .salle__liste a:hover, .salle__liste a:focus-visible { color: #fff; }
+.salle__liste a[aria-current="true"] .salle__num { color: var(--bleu-clair); }
 .salle__liste a[aria-current="true"] .salle__nom { transform: translateX(6px); }
-.salle__liste a:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
-.salle__note { margin: 22px 0 0; font: 400 13.5px/1.5 var(--sans); color: rgba(23, 23, 23, 0.5); }
+.salle__liste a:focus-visible { outline: 2px solid var(--bleu-clair); outline-offset: 4px; }
 /* le doigt de Michel-Ange : --dx / --dy posés par le script, il glisse d'un nom à l'autre */
 .salle__doigt { position: absolute; left: 0; top: 0; z-index: 3; width: clamp(210px, 18vw, 330px); height: auto; max-width: none; pointer-events: none; opacity: 0;
-  filter: drop-shadow(0 16px 18px rgba(70, 52, 28, 0.16)); transform: translate3d(calc(var(--dx, 0px) - 60px), var(--dy, 0px), 0);
+  filter: drop-shadow(0 18px 22px rgba(0, 4, 20, 0.45)); transform: translate3d(calc(var(--dx, 0px) - 60px), var(--dy, 0px), 0);
   transition: transform 1s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.9s var(--ease); }
 .salle__doigt.is-la { opacity: 1; transform: translate3d(var(--dx), var(--dy), 0); }
-/* la pile d'écrans : chaque écran reçoit --k = sa place par rapport à l'écran de devant (0 devant, 1 juste derrière…) */
-.salle__pile { --rx: 0deg; --ry: 0deg; position: relative; aspect-ratio: 16 / 10.6; perspective: 1800px; perspective-origin: 50% 0%; transform-style: preserve-3d; }
-.salle__ecran { --k: var(--i); position: absolute; inset: 0; z-index: calc(20 - var(--k)); display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; background: #fff; color: var(--ink); text-decoration: none; box-shadow: 0 0 0 1px rgba(23, 23, 23, 0.06), 0 50px 80px -44px rgba(60, 44, 22, 0.42), 0 20px 30px -24px rgba(60, 44, 22, 0.3); transform-origin: 50% 100%;
+/* la pile d'écrans : chaque écran reçoit --k = sa place par rapport à l'écran de devant (0 devant, 1 juste derrière…) ;
+   la pile elle-même laisse passer la souris (en 3D, elle passerait devant l'écran incliné) : seul l'écran de devant se clique */
+.salle__pile { --rx: 0deg; --ry: 0deg; position: relative; aspect-ratio: 16 / 10.6; perspective: 1800px; perspective-origin: 50% 0%; transform-style: preserve-3d; pointer-events: none; }
+.salle__ecran { --k: var(--i); position: absolute; inset: 0; z-index: calc(20 - var(--k)); display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; background: #fff; color: var(--ink); text-decoration: none; pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 60px 100px -40px rgba(0, 3, 18, 0.75), 0 24px 40px -26px rgba(0, 3, 18, 0.6); transform-origin: 50% 100%;
   transform: translate3d(0, calc(var(--k) * -6.5%), calc(var(--k) * -160px)) rotateX(calc(var(--rx) + 4deg)) rotateY(var(--ry));
-  filter: brightness(max(0.55, calc(1 - var(--k) * 0.12))) saturate(max(0.4, calc(1 - var(--k) * 0.2)));
+  filter: brightness(max(0.35, calc(1 - var(--k) * 0.2)));
   transition: transform 1.05s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.8s var(--ease), filter 0.9s var(--ease); }
-/* la pile elle-même laisse passer la souris (en 3D, elle passerait devant l'écran incliné) ; seul l'écran de devant se clique */
-.salle__pile { pointer-events: none; }
-.salle__ecran { pointer-events: none; }
 .salle__ecran.is-devant { pointer-events: auto; }
 .salle__ecran.is-loin { opacity: 0; }
 /* l'écran qu'on quitte s'envole vers nous et vers le bas */
-.salle__ecran.is-parti { opacity: 0; transform: translate3d(-8%, 42%, 260px) rotateX(-32deg) rotateY(-10deg); }
+.salle__ecran.is-parti { opacity: 0; transform: translate3d(0, 42%, 260px) rotateX(-32deg); }
 .salle__barre { flex: none; display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; background: #f4f1ea; border-bottom: 1px solid rgba(23, 23, 23, 0.06); }
 .salle__barre i { width: 8px; height: 8px; border-radius: 50%; background: #d9d2c4; }
 .salle__barre span { margin: 0 auto; padding: 3px 14px; border-radius: 999px; background: #fff; font: 500 11px/1.2 var(--sans); color: #8a8478; }
@@ -1097,26 +1101,18 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
 .salle__vue img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; transform-origin: 50% 0; }
 .salle__ecran.is-devant .salle__vue img { animation: salle-plan 14s ease-in-out infinite alternate; }
 @keyframes salle-plan { from { transform: scale(1); } to { transform: scale(1.07) translateY(-1.5%); } }
-.salle__voir { position: absolute; right: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 13px/1 var(--sans); opacity: 0; transform: translateY(8px); transition: opacity 0.4s var(--ease), transform 0.5s var(--ease); }
+/* le nom du site, en grand, sur l'image teintée de bleu nuit (comme une affiche) ; il arrive avec l'écran,
+   et le voile se lève au survol pour montrer le site. La teinte « multiplie » l'image : le site garde ses formes, en bleu. */
+.salle__marque { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; padding: 0 6%; text-align: center; font: 800 clamp(46px, 5.8vw, 108px)/0.92 "Barlow Condensed", var(--sans); letter-spacing: 0.06em; color: rgba(255, 255, 255, 0); text-shadow: 0 6px 34px rgba(0, 6, 30, 0.35);
+  transition: color 0.7s var(--ease), letter-spacing 1.1s cubic-bezier(0.2, 0.8, 0.2, 1), text-shadow 0.5s var(--ease); }
+.salle__marque::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(160deg, #1f3a9e, #0b1a5c); mix-blend-mode: multiply; opacity: 0.84; transition: opacity 0.6s var(--ease); }
+.salle__ecran.is-devant .salle__marque { color: #fff; letter-spacing: 0; transition-delay: 0.35s; }
+.salle__ecran.is-devant:hover .salle__marque, .salle__ecran.is-devant:focus-visible .salle__marque { color: rgba(255, 255, 255, 0); text-shadow: 0 6px 34px rgba(0, 6, 30, 0); transition-delay: 0s; }
+.salle__ecran.is-devant:hover .salle__marque::before, .salle__ecran.is-devant:focus-visible .salle__marque::before { opacity: 0; }
+.salle__voir { position: absolute; left: 50%; bottom: 18px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 13px/1 var(--sans); opacity: 0; transform: translate(-50%, 8px); transition: opacity 0.4s var(--ease), transform 0.5s var(--ease); }
 .salle__voir svg { width: 14px; height: 14px; }
-.salle__ecran:hover .salle__voir, .salle__ecran:focus-visible .salle__voir { opacity: 1; transform: none; }
-.salle.has-boule .salle__ecran:hover .salle__voir { opacity: 0; }
-.salle.has-boule .salle__scene, .salle.has-boule .salle__scene a { cursor: none; }
-.salle__legende { grid-column: 3; grid-row: 2; }
-.salle__compteur { margin: 0 0 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(23, 23, 23, 0.12); font: 500 13px/1 var(--sans); letter-spacing: 0.1em; color: rgba(23, 23, 23, 0.45); }
-.salle__compteur b { font-weight: 700; color: var(--ink); }
-.salle__texte { margin: 0; max-width: 22em; font: 400 16px/1.55 var(--sans); color: rgba(23, 23, 23, 0.74); transition: opacity 0.3s var(--ease); }
-.salle__texte.is-change { opacity: 0; }
-/* la boule qui accompagne la souris (créée par le script, posée sur la page) */
-.boule { position: fixed; left: 0; top: 0; z-index: 95; width: 0; height: 0; pointer-events: none; opacity: 0; transition: opacity 0.35s var(--ease); }
-.boule.is-la { opacity: 1; }
-.boule__rond { position: absolute; left: 0; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); transform: translate(-50%, -50%);
-  transition: width 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.45s var(--ease), box-shadow 0.45s var(--ease); }
-.boule[data-sur="nom"] .boule__rond { width: 46px; height: 46px; background: rgba(21, 94, 239, 0.1); box-shadow: inset 0 0 0 1px rgba(21, 94, 239, 0.45); }
-.boule[data-sur="ecran"] .boule__rond { width: 124px; height: 124px; background: var(--blue); box-shadow: 0 18px 40px -16px rgba(21, 94, 239, 0.7); }
-.boule__texte { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) scale(0.6); font: 600 15px/1 var(--sans); letter-spacing: -0.01em; color: #fff; white-space: nowrap; opacity: 0; transition: opacity 0.3s var(--ease), transform 0.5s var(--ease); }
-.boule[data-sur="ecran"] .boule__texte { opacity: 1; transform: translate(-50%, -50%) scale(1); transition-delay: 0.08s; }
-html.reduced .salle__ecran, html.reduced .salle__texte, html.reduced .salle__doigt { transition: none; }
+.salle__ecran.is-devant:hover .salle__voir, .salle__ecran.is-devant:focus-visible .salle__voir { opacity: 1; transform: translate(-50%, 0); }
+html.reduced .salle__ecran, html.reduced .salle__doigt, html.reduced .salle__marque { transition: none; }
 html.reduced .salle__ecran .salle__vue img { animation: none; }
 /* sans JavaScript : pas de piste, la scène s'affiche simplement */
 html:not(.js) .salle__piste { height: auto; }
@@ -1125,22 +1121,18 @@ html:not(.js) .salle__scene { position: relative; height: auto; }
   .salle__piste { height: calc(var(--n) * 62vh + 100vh); }
   .salle__scene { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 18px; padding: 64px 18px 26px; }
   .salle__doigt { display: none; }
-  .salle__surtitre { order: 1; }
+  .salle__surtitre { order: 1; font-size: clamp(30px, 9vw, 42px); }
   .salle__centre { order: 2; margin-top: 34px; }
   .salle__gauche { order: 3; }
   .salle__liste { border: 0; text-align: center; }
-  .salle__liste a { grid-template-columns: minmax(0, 1fr); justify-items: center; }
-  .salle__genre { grid-column: 1; }
   .salle__liste li:not(:has(a[aria-current="true"])) { display: none; }
-  .salle__liste a { padding: 0; border: 0; }
+  .salle__liste a { grid-template-columns: minmax(0, 1fr); justify-items: center; padding: 0; border: 0; }
+  .salle__genre { grid-column: 1; }
   .salle__liste a[aria-current="true"] .salle__nom { transform: none; }
-  .salle__note { display: none; }
   .salle__pile { perspective: 1100px; }
   .salle__ecran { transform: translate3d(0, calc(var(--k) * -6%), calc(var(--k) * -110px)) rotateX(calc(var(--rx) + 4deg)); }
-  .salle__legende { order: 4; text-align: center; }
-  .salle__compteur { display: none; }
-  .salle__texte { margin: 0 auto; font-size: 15px; }
-  .salle__voir { opacity: 1; transform: none; right: 10px; bottom: 10px; padding: 8px 12px; font-size: 12px; }
+  .salle__marque { font-size: clamp(34px, 11vw, 58px); }
+  .salle__voir { opacity: 1; transform: translate(-50%, 0); bottom: 10px; padding: 8px 12px; font-size: 12px; }
 }
 
 

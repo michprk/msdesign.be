@@ -379,6 +379,24 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       });
     });
     if (liste) liste.addEventListener('pointerleave', () => { survol = null; maj(); });
+    // le fond : de grands plis de lumière que la souris remue sans se voir (« boule invisible ») ; chargé à l’approche
+    const toile = $('.salle__fond', el);
+    if (toile) {
+      new IntersectionObserver(([e], io) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        import('./fond-salle.js').then((m) => {
+          const fond = m.createFond(toile, { reduced });
+          if (!fond) return;
+          new IntersectionObserver(([v]) => fond.visible(v.isIntersecting)).observe(el);
+          scene.addEventListener('pointermove', (ev) => {
+            const r = scene.getBoundingClientRect();
+            fond.souris((ev.clientX - r.left) / r.width, 1 - (ev.clientY - r.top) / r.height);
+          });
+          scene.addEventListener('pointerleave', () => fond.sortie());
+        }).catch((err) => console.warn('[ms] fond', err));
+      }, { rootMargin: '100% 0px' }).observe(el);
+    }
     if (!fine || reduced) return;
     // la pile s’incline doucement vers la souris
     if (pile) {
@@ -398,33 +416,6 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       });
       el.addEventListener('pointerleave', () => { tx = 0; ty = 0; viser(); });
     }
-    // la grosse boule qui accompagne la souris (comme sur les sites de studios) : un petit point qui suit avec un léger
-    // retard, qui devient une grosse boule bleue « Visiter » sur l’écran de devant, et un rond plus discret sur un nom
-    const boule = document.createElement('div');
-    boule.className = 'boule'; boule.setAttribute('aria-hidden', 'true');
-    boule.innerHTML = '<span class="boule__rond"></span><span class="boule__texte">Visiter</span>';
-    document.body.appendChild(boule);
-    el.classList.add('has-boule');
-    let bx = 0, by = 0, cx = 0, cy = 0, rafB = 0, dedans = false;
-    const suivre = () => {
-      cx += (bx - cx) * 0.2; cy += (by - cy) * 0.2;
-      boule.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
-      rafB = Math.abs(bx - cx) + Math.abs(by - cy) > 0.3 ? requestAnimationFrame(suivre) : 0;
-    };
-    const regarder = (x, y) => {
-      const t = document.elementFromPoint(x, y);
-      boule.dataset.sur = t && t.closest('.salle__ecran.is-devant') ? 'ecran' : t && t.closest('.salle__liste a') ? 'nom' : '';
-    };
-    scene.addEventListener('pointermove', (e) => {
-      bx = e.clientX; by = e.clientY;
-      if (!dedans) { dedans = true; cx = bx; cy = by; boule.classList.add('is-la'); }
-      regarder(bx, by);
-      if (!rafB) rafB = requestAnimationFrame(suivre);
-    });
-    scene.addEventListener('pointerleave', () => { dedans = false; boule.classList.remove('is-la'); });
-    // en défilant sans bouger la souris, ce qui est sous la boule change : on regarde de nouveau
-    window.addEventListener('scroll', () => { if (dedans) regarder(bx, by); }, { passive: true });
-    new IntersectionObserver(([e]) => { if (!e.isIntersecting) { dedans = false; boule.classList.remove('is-la'); } }).observe(el);
   });
 
   /* ---------- La demande en une phrase : des idées qui s’écrivent toutes seules, puis le formulaire ---------- */
