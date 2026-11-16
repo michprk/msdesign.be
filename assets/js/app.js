@@ -276,44 +276,46 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     el.addEventListener('pointerup', lacher); el.addEventListener('pointercancel', lacher);
   });
 
-  /* ---------- Le geste : les deux mains de la Création d’Adam se rejoignent, puis s’ouvrent sur nos réalisations ----------
-     Paliers du défilement dans la piste : au-delà de 6 %, les bras se rapprochent (2,6 s) puis se touchent (étincelle,
-     nouveau titre) ; au-delà de 60 %, le cercle bleu nuit s’ouvre. En remontant, tout revient en arrière. */
+  /* ---------- Le geste : la fresque peinte s’anime, les index se touchent, puis le papier de nos réalisations ----------
+     Trois étapes, déclenchées par le défilement dans la piste (pas étirées) : 0 = les mains un peu écartées ;
+     au-delà de 6 %, 1 = elles glissent l’une vers l’autre jusqu’au contact (le titre change) ; au-delà de 62 %,
+     2 = la fresque s’efface dans le papier. En remontant, tout revient en arrière. Le dessin (WebGL) n’est chargé
+     qu’à l’approche de la section ; sans WebGL, l’image peinte reste fixe et seul le titre change. */
   safe('geste', () => {
     const el = $('[data-geste]');
     if (!el) return;
-    const piste = $('.geste__piste', el), mains = $('.geste__mains', el), portail = $('.geste__portail', el);
-    let tContact = 0;
-    new IntersectionObserver(([e]) => { if (e.isIntersecting) el.classList.add('is-vu'); }, { threshold: 0.15 }).observe(el);
+    const piste = $('.geste__piste', el), toile = $('.geste__toile', el);
+    let geste = null, etat = -1;
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
-    // le cercle doit couvrir tout l’écran depuis le point de contact
-    const couvrir = () => {
-      const r = portail.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      const d = Math.hypot(Math.max(cx, window.innerWidth - cx), Math.max(cy, window.innerHeight - cy));
-      portail.style.setProperty('--s', String(Math.ceil((d * 2.1) / 10)));
-    };
     const maj = () => {
-      const v = avance(), c = el.classList;
-      if (v > 0.06 && !c.contains('is-geste')) {
-        c.add('is-vu', 'is-geste');
-        clearTimeout(tContact);
-        tContact = setTimeout(() => { c.add('is-contact'); maj(); }, reduced ? 0 : 2500);
-      }
-      if (v < 0.03 && c.contains('is-geste')) { clearTimeout(tContact); c.remove('is-geste', 'is-contact', 'is-ouvert'); }
-      if (v > 0.6 && c.contains('is-contact') && !c.contains('is-ouvert')) { couvrir(); c.add('is-ouvert'); }
-      if (v < 0.5 && c.contains('is-ouvert')) c.remove('is-ouvert');
+      const v = avance(), e = v > 0.62 ? 2 : v > 0.06 ? 1 : 0;
+      if (e === etat) return;
+      etat = e;
+      el.classList.toggle('is-papier', e === 2);
+      if (geste) geste.setEtat(e);
+      else el.classList.toggle('is-contact', e >= 1);       // sans dessin animé : le titre change tout de suite
     };
     window.addEventListener('scroll', maj, { passive: true });
-    window.addEventListener('resize', () => { if (el.classList.contains('is-ouvert')) couvrir(); });
     maj();
-    // les mains suivent un tout petit peu la souris
-    if (fine && !reduced) {
-      el.addEventListener('pointermove', (e) => {
-        mains.style.setProperty('--mx', ((e.clientX / window.innerWidth - 0.5) * 2).toFixed(3));
-        mains.style.setProperty('--my', ((e.clientY / window.innerHeight - 0.5) * 2).toFixed(3));
-      });
-      el.addEventListener('pointerleave', () => { mains.style.setProperty('--mx', '0'); mains.style.setProperty('--my', '0'); });
-    }
+    new IntersectionObserver(([e], io) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      import('./geste.js').then((m) => {
+        const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 2100;
+        geste = m.createGeste(toile, {
+          src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
+          reduced,
+          onContact: (c) => el.classList.toggle('is-contact', c),
+        });
+        if (!geste) return;
+        el.classList.add('has-gl');
+        geste.setEtat(Math.max(0, etat));
+        new IntersectionObserver(([v]) => geste.visible(v.isIntersecting)).observe(el);
+        window.addEventListener('resize', () => geste.taille());
+        // la peinture suit un tout petit peu la souris
+        if (fine && !reduced) el.addEventListener('pointermove', (ev) => geste.souris(ev.clientX / window.innerWidth - 0.5, ev.clientY / window.innerHeight - 0.5));
+      }).catch((err) => console.warn('[ms] geste', err));
+    }, { rootMargin: '120% 0px' }).observe(el);
   });
 
   /* ---------- Nos réalisations : la salle de projection ----------
@@ -322,11 +324,19 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
   safe('salle', () => {
     const el = $('[data-salle]');
     if (!el) return;
-    const piste = $('.salle__piste', el), pile = $('[data-salle-pile]', el), liste = $('.salle__liste', el);
+    const piste = $('.salle__piste', el), pile = $('[data-salle-pile]', el), liste = $('.salle__liste', el), scene = $('.salle__scene', el);
     const liens = $$('[data-salle-lien]', el), ecrans = $$('.salle__ecran', el), N = ecrans.length;
-    const num = $('[data-salle-n]', el), texte = $('[data-salle-texte]', el);
+    const num = $('[data-salle-n]', el), texte = $('[data-salle-texte]', el), doigt = $('.salle__doigt', el);
     if (!N) return;
     let actif = -1, survol = null, tTexte = 0;
+    // le doigt de Michel-Ange vient se placer devant le numéro du site affiché (le bout de l’index est à 44 % de la hauteur de l’image)
+    const viserDoigt = () => {
+      if (!doigt || actif < 0 || !doigt.offsetWidth) return;
+      const s = scene.getBoundingClientRect(), a = liens[actif].getBoundingClientRect(), n = $('.salle__num', liens[actif]).getBoundingClientRect();
+      doigt.style.setProperty('--dx', (n.left - s.left - doigt.offsetWidth - 12).toFixed(1) + 'px');
+      doigt.style.setProperty('--dy', (a.top + a.height / 2 - s.top - doigt.offsetHeight * 0.44).toFixed(1) + 'px');
+      doigt.classList.add('is-la');
+    };
     const poser = (i) => {
       if (i === actif) return;
       actif = i;
@@ -338,6 +348,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         e.classList.toggle('is-loin', k > 3);
       });
       liens.forEach((a, j) => a.setAttribute('aria-current', j === i ? 'true' : 'false'));
+      viserDoigt();
       if (num) num.textContent = String(i + 1).padStart(2, '0');
       if (texte) {
         texte.classList.add('is-change'); clearTimeout(tTexte);
@@ -351,16 +362,26 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     };
     const maj = () => { if (survol === null) poser(palier()); };
     window.addEventListener('scroll', maj, { passive: true });
-    window.addEventListener('resize', maj);
+    window.addEventListener('resize', () => { maj(); viserDoigt(); });
     maj();
+    if (doigt) { if (doigt.complete) viserDoigt(); else doigt.addEventListener('load', viserDoigt, { once: true }); }
     liens.forEach((a, j) => {
       a.addEventListener('pointerenter', () => { survol = j; poser(j); });
       a.addEventListener('focus', () => { survol = j; poser(j); });
       a.addEventListener('blur', () => { survol = null; maj(); });
+      // un clic sur un nom ramène à ce site (le site lui-même s’ouvre depuis son écran) ; Ctrl/⌘ + clic l’ouvre quand même
+      a.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        survol = null;
+        const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight;
+        scrollToY(r.top + window.scrollY + h * ((j + 0.5) / N), 1.1);
+      });
     });
     if (liste) liste.addEventListener('pointerleave', () => { survol = null; maj(); });
-    // la pile s'incline doucement vers la souris
-    if (fine && !reduced && pile) {
+    if (!fine || reduced) return;
+    // la pile s’incline doucement vers la souris
+    if (pile) {
       let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
       const boucle = () => {
         x += (tx - x) * 0.08; y += (ty - y) * 0.08;
@@ -377,6 +398,33 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       });
       el.addEventListener('pointerleave', () => { tx = 0; ty = 0; viser(); });
     }
+    // la grosse boule qui accompagne la souris (comme sur les sites de studios) : un petit point qui suit avec un léger
+    // retard, qui devient une grosse boule bleue « Visiter » sur l’écran de devant, et un rond plus discret sur un nom
+    const boule = document.createElement('div');
+    boule.className = 'boule'; boule.setAttribute('aria-hidden', 'true');
+    boule.innerHTML = '<span class="boule__rond"></span><span class="boule__texte">Visiter</span>';
+    document.body.appendChild(boule);
+    el.classList.add('has-boule');
+    let bx = 0, by = 0, cx = 0, cy = 0, rafB = 0, dedans = false;
+    const suivre = () => {
+      cx += (bx - cx) * 0.2; cy += (by - cy) * 0.2;
+      boule.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+      rafB = Math.abs(bx - cx) + Math.abs(by - cy) > 0.3 ? requestAnimationFrame(suivre) : 0;
+    };
+    const regarder = (x, y) => {
+      const t = document.elementFromPoint(x, y);
+      boule.dataset.sur = t && t.closest('.salle__ecran.is-devant') ? 'ecran' : t && t.closest('.salle__liste a') ? 'nom' : '';
+    };
+    scene.addEventListener('pointermove', (e) => {
+      bx = e.clientX; by = e.clientY;
+      if (!dedans) { dedans = true; cx = bx; cy = by; boule.classList.add('is-la'); }
+      regarder(bx, by);
+      if (!rafB) rafB = requestAnimationFrame(suivre);
+    });
+    scene.addEventListener('pointerleave', () => { dedans = false; boule.classList.remove('is-la'); });
+    // en défilant sans bouger la souris, ce qui est sous la boule change : on regarde de nouveau
+    window.addEventListener('scroll', () => { if (dedans) regarder(bx, by); }, { passive: true });
+    new IntersectionObserver(([e]) => { if (!e.isIntersecting) { dedans = false; boule.classList.remove('is-la'); } }).observe(el);
   });
 
   /* ---------- La demande en une phrase : des idées qui s’écrivent toutes seules, puis le formulaire ---------- */

@@ -149,33 +149,32 @@
   </div>
 </section>
 
-<!-- Le geste : avant nos réalisations, les deux mains de la Création d’Adam (Michel-Ange, chapelle Sixtine, domaine public)
-     se rapprochent sur le plâtre de la fresque ; au contact, une lumière, puis un cercle bleu nuit s’ouvre sur nos sites. -->
+<!-- Le geste : avant nos réalisations, les deux mains de la Création d’Adam, peintes comme une vraie fresque (image 4K),
+     glissent l’une vers l’autre jusqu’à ce que les index se touchent ; puis la fresque s’efface dans le papier de l’accueil
+     et nos sites arrivent, un par un. La peinture est animée en WebGL (assets/js/geste.js) ; sans WebGL, l’image reste fixe. -->
 <section class="geste" aria-labelledby="geste-titre" data-geste>
   <div class="geste__piste">
     <div class="geste__scene">
+      <img class="geste__repli" src="/assets/img/geste/fresque-1920.webp" srcset="/assets/img/geste/fresque-1920.webp 1920w, /assets/img/geste/fresque-3840.webp 3840w" sizes="100vw" width="1920" height="1072" alt="" loading="lazy" decoding="async">
+      <canvas class="geste__toile" aria-hidden="true"></canvas>
       <p class="geste__surtitre">Nos réalisations</p>
       <h2 class="geste__titre" id="geste-titre"><span class="geste__avant">Tout commence par une rencontre.</span><span class="geste__apres" aria-hidden="true">Votre idée, nos mains.</span></h2>
-      <div class="geste__mains" aria-hidden="true">
-        <img class="geste__adam" src="/assets/img/geste/adam.webp" width="690" height="193" alt="" decoding="async">
-        <img class="geste__dieu" src="/assets/img/geste/dieu.webp" width="346" height="185" alt="" decoding="async">
-        <span class="geste__etincelle"></span>
-        <span class="geste__portail"></span>
-      </div>
-      <p class="geste__credit">D’après Michel-Ange, <cite>La Création d’Adam</cite>, chapelle Sixtine (vers 1512).</p>
+      <p class="geste__credit">D’après Michel-Ange, <cite>La Création d’Adam</cite>, chapelle Sixtine.</p>
     </div>
   </div>
 </section>
 
-<!-- Nos réalisations : une salle de projection. À gauche la liste des sites, à droite leurs écrans empilés en 3D ;
-     en descendant, l’écran de devant s’envole et le suivant s’avance (pour changer de sites : la liste et les écrans, dans le même ordre). -->
+<!-- Nos réalisations : sur le même papier que l’accueil, tout est centré : au milieu, les écrans des sites empilés en 3D ;
+     à gauche, leur liste (le doigt de Michel-Ange montre celui qu’on regarde ; un clic sur un nom y ramène) ; à droite,
+     ce qu’est le site affiché. En descendant, l’écran de devant s’envole et le suivant s’avance. Sur ordinateur, une grosse boule suit la souris et invite à visiter
+     (pour changer de sites : la liste et les écrans, dans le même ordre). -->
 <section class="salle" id="etudes" aria-labelledby="etudes-title" data-salle>
   <div class="salle__piste" style="--n: 5">
     <div class="salle__scene">
+      <!-- le doigt de Michel-Ange (la main de Dieu, découpée dans la fresque peinte) montre le site affiché -->
+      <img class="salle__doigt" src="/assets/img/geste/main-dieu.webp" width="1100" height="693" alt="" aria-hidden="true" loading="lazy" decoding="async">
+      <h2 class="salle__surtitre" id="etudes-title">Nos réalisations</h2>
       <div class="salle__gauche">
-        <p class="salle__surtitre">Nos réalisations</p>
-        <!-- le point du « j » est un vrai petit rond qui tombe sur la lettre et rebondit -->
-        <h2 class="salle__titre" id="etudes-title" data-reveal>Des pro<span class="j-point"><span class="j-point__j">j</span><span class="j-point__pt" aria-hidden="true"></span></span>ets qui ont <em>du sens.</em></h2>
         <ol class="salle__liste">
           <li><a href="/exemples/studio-bascule/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="0" data-texte="Un site en grandes lettres pour un studio de graphisme et de direction artistique." aria-current="true"><span class="salle__num">01</span><span class="salle__nom">Studio Bascule</span><span class="salle__genre">Graphisme</span></a></li>
           <li><a href="/exemples/strate/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="1" data-texte="Un site vitrine pour un paysagiste bruxellois, avec une descente en 3D sous le jardin."><span class="salle__num">02</span><span class="salle__nom">Strate</span><span class="salle__genre">Paysagisme</span></a></li>
@@ -183,20 +182,20 @@
           <li><a href="/exemples/verdane/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="3" data-texte="Un catalogue minimaliste et naturel pour une boutique de plantes d’intérieur."><span class="salle__num">04</span><span class="salle__nom">Verdane</span><span class="salle__genre">Boutique en ligne</span></a></li>
           <li><a href="/exemples/le-fournil/" target="_blank" rel="noopener" data-track="example_open" data-salle-lien="4" data-texte="Un site chaleureux pour une boulangerie artisanale, qui valorise le savoir-faire et la proximité."><span class="salle__num">05</span><span class="salle__nom">Le Fournil</span><span class="salle__genre">Boulangerie</span></a></li>
         </ol>
-        <p class="salle__note">Des commerces imaginés, des sites qui fonctionnent&nbsp;: cliquez pour les visiter.</p>
       </div>
-      <div class="salle__droite">
+      <div class="salle__centre">
         <div class="salle__pile" data-salle-pile aria-hidden="true">
-          <a class="salle__ecran" href="/exemples/studio-bascule/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 0"><span class="salle__barre"><i></i><i></i><i></i><span>studio-bascule.be</span></span><span class="salle__vue"><img src="/assets/img/concept-bascule-1440.webp" srcset="/assets/img/concept-bascule-720.webp 720w, /assets/img/concept-bascule-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
-          <a class="salle__ecran" href="/exemples/strate/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 1"><span class="salle__barre"><i></i><i></i><i></i><span>strate.be</span></span><span class="salle__vue"><img src="/assets/img/concept-strate-1440.webp" srcset="/assets/img/concept-strate-720.webp 720w, /assets/img/concept-strate-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
-          <a class="salle__ecran" href="/exemples/atelier-veritas/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 2"><span class="salle__barre"><i></i><i></i><i></i><span>atelierveritas.be</span></span><span class="salle__vue"><img src="/assets/img/concept-veritas-1440.webp" srcset="/assets/img/concept-veritas-720.webp 720w, /assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
-          <a class="salle__ecran" href="/exemples/verdane/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 3"><span class="salle__barre"><i></i><i></i><i></i><span>verdane.be</span></span><span class="salle__vue"><img src="/assets/img/concept-verdane-1440.webp" srcset="/assets/img/concept-verdane-720.webp 720w, /assets/img/concept-verdane-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
-          <a class="salle__ecran" href="/exemples/le-fournil/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 4"><span class="salle__barre"><i></i><i></i><i></i><span>lefournil.be</span></span><span class="salle__vue"><img src="/assets/img/concept-fournil-1440.webp" srcset="/assets/img/concept-fournil-720.webp 720w, /assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 56vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/studio-bascule/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 0"><span class="salle__barre"><i></i><i></i><i></i><span>studio-bascule.be</span></span><span class="salle__vue"><img src="/assets/img/concept-bascule-1440.webp" srcset="/assets/img/concept-bascule-720.webp 720w, /assets/img/concept-bascule-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/strate/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 1"><span class="salle__barre"><i></i><i></i><i></i><span>strate.be</span></span><span class="salle__vue"><img src="/assets/img/concept-strate-1440.webp" srcset="/assets/img/concept-strate-720.webp 720w, /assets/img/concept-strate-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/atelier-veritas/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 2"><span class="salle__barre"><i></i><i></i><i></i><span>atelierveritas.be</span></span><span class="salle__vue"><img src="/assets/img/concept-veritas-1440.webp" srcset="/assets/img/concept-veritas-720.webp 720w, /assets/img/concept-veritas-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/verdane/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 3"><span class="salle__barre"><i></i><i></i><i></i><span>verdane.be</span></span><span class="salle__vue"><img src="/assets/img/concept-verdane-1440.webp" srcset="/assets/img/concept-verdane-720.webp 720w, /assets/img/concept-verdane-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
+          <a class="salle__ecran" href="/exemples/le-fournil/" target="_blank" rel="noopener" tabindex="-1" data-track="example_open" style="--i: 4"><span class="salle__barre"><i></i><i></i><i></i><span>lefournil.be</span></span><span class="salle__vue"><img src="/assets/img/concept-fournil-1440.webp" srcset="/assets/img/concept-fournil-720.webp 720w, /assets/img/concept-fournil-1440.webp 1440w" sizes="(max-width: 820px) 92vw, 46vw" width="1440" height="900" loading="lazy" decoding="async" alt=""></span><span class="salle__voir">Visiter le site<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></span></a>
         </div>
-        <div class="salle__legende">
-          <p class="salle__compteur"><b data-salle-n>01</b><span> / 05</span></p>
-          <p class="salle__texte" data-salle-texte aria-live="polite">Un site en grandes lettres pour un studio de graphisme et de direction artistique.</p>
-        </div>
+      </div>
+      <div class="salle__legende">
+        <p class="salle__compteur"><b data-salle-n>01</b><span> / 05</span></p>
+        <p class="salle__texte" data-salle-texte aria-live="polite">Un site en grandes lettres pour un studio de graphisme et de direction artistique.</p>
+        <p class="salle__note">Des commerces imaginés, des sites qui fonctionnent&nbsp;: cliquez sur un écran pour le visiter.</p>
       </div>
     </div>
   </div>
