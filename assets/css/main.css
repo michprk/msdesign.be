@@ -1057,7 +1057,10 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
 .geste { --papier: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035' numOctaves='6' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='%23f7f2ea' surfaceScale='2.6' diffuseConstant='1.1'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); }
 @media (hover: hover) and (pointer: fine) { .geste__scene { background-attachment: fixed; } }
 .salle { --nuit: #070c21; --creme: #f5f1e9; --bleu-clair: #9db8ff; position: relative; margin: 0 clamp(8px, 1.2vw, 18px); border-radius: clamp(22px, 2.6vw, 36px); overflow: clip; background: var(--nuit); color: var(--creme); }
-.salle__piste { height: calc(var(--n) * 72vh + 100vh); }
+/* le nombre de sites et la place de chaque écran sont ici, pas dans le HTML : en ligne, la règle de sécurité du site
+   (CSP « style-src 'self' ») interdit les styles écrits dans les balises */
+.salle__piste { --n: 5; height: calc(var(--n) * 72vh + 100vh); }
+.salle__ecran:nth-child(1) { --i: 0; } .salle__ecran:nth-child(2) { --i: 1; } .salle__ecran:nth-child(3) { --i: 2; } .salle__ecran:nth-child(4) { --i: 3; } .salle__ecran:nth-child(5) { --i: 4; }
 /* trois colonnes centrées : la liste | les écrans (au milieu) | le site affiché ; mêmes marges des deux côtés */
 .salle__scene { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 2.4fr) minmax(0, 0.72fr); grid-template-rows: auto minmax(0, 1fr); align-items: center; column-gap: clamp(26px, 3vw, 60px);
   padding: clamp(84px, 12vh, 120px) clamp(104px, 9vw, 190px) clamp(40px, 7vh, 72px); overflow: hidden; isolation: isolate; border-radius: inherit;
