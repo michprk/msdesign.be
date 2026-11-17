@@ -280,22 +280,31 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
      Deux étapes, déclenchées par le défilement dans la piste (pas étirées) : 0 = les mains un peu écartées ;
      au-delà de 6 %, 1 = elles glissent l’une vers l’autre jusqu’au contact (le titre change). Dès que les doigts
      se touchent (en descendant), la page glisse d’elle-même jusqu’à « Nos projets ». En remontant, les mains se
-     séparent. Le dessin (WebGL) n’est chargé qu’à l’approche de la section ; sans WebGL, l’image reste fixe. */
+     séparent. Le dessin (WebGL) se charge dès que la page est prête ; sans WebGL, l’image reste fixe. */
   safe('geste', () => {
     const el = $('[data-geste]');
     if (!el) return;
     const piste = $('.geste__piste', el), toile = $('.geste__toile', el), salle = $('[data-salle]');
-    let geste = null, etat = -1, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0, tVerrou = 0;
+    let geste = null, sansDessin = false, etat = -1, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0, tVerrou = 0, verrouille = false;
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
+    // le défilement en pause le temps du geste (souris : Lenis s’arrête ; sans Lenis : la page ne bouge plus) ;
+    // par sécurité, jamais plus de 7 s
+    const verrouiller = (oui) => {
+      if (oui === verrouille) return;
+      verrouille = oui; clearTimeout(tVerrou);
+      if (lenis) { if (oui) lenis.stop(); else lenis.start(); }
+      else document.documentElement.style.overflow = oui ? 'hidden' : '';
+      if (oui) tVerrou = setTimeout(() => verrouiller(false), 7000);
+    };
     // le contact fait : on descend tout seul jusqu’aux sites (une seule fois par passage, et seulement si l’on est encore ici)
     const allerAuxSites = (attente) => {
       clearTimeout(tAuto);
       tAuto = setTimeout(() => {
+        verrouiller(false);
         if (parti || etat < 1 || !salle) return;
         const r = el.getBoundingClientRect();
         if (r.top > window.innerHeight * 0.5 || r.bottom < window.innerHeight * 0.5) return;
         parti = true;
-        if (lenis) lenis.start();
         scrollToY(salle.getBoundingClientRect().top + window.scrollY + 1, 1.3);
       }, attente);
     };
@@ -305,33 +314,40 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (v < 0.03) parti = false;                          // revenu au début du geste : le prochain contact repartira vers les sites
       if (e === etat) return;
       etat = e;
-      if (geste) {
-        geste.setEtat(e);
-        // en descendant : le défilement s’arrête le temps du geste, pour qu’on le voie toujours en entier
-        if (e === 1 && versLeBas && lenis && !reduced) { lenis.stop(); clearTimeout(tVerrou); tVerrou = setTimeout(() => lenis.start(), 2200); }
-      } else { el.classList.toggle('is-contact', e >= 1); if (e >= 1 && versLeBas) allerAuxSites(900); }   // sans dessin animé
+      if (sansDessin) {                                      // pas de WebGL : le titre change, puis les sites
+        el.classList.toggle('is-contact', e >= 1);
+        if (e >= 1 && versLeBas) allerAuxSites(900);
+        return;
+      }
+      // en descendant : on se cale sur la fresque et on attend le contact des doigts, même si le dessin charge encore
+      if (e === 1 && versLeBas && !reduced && !parti) {
+        const r = piste.getBoundingClientRect(), cible = r.top + window.scrollY + (r.height - window.innerHeight) * 0.1;
+        if (lenis) lenis.scrollTo(cible, { immediate: true, force: true }); else window.scrollTo(0, cible);
+        verrouiller(true);
+      }
+      if (e === 0) verrouiller(false);
+      if (geste) geste.setEtat(e);
     };
     window.addEventListener('scroll', maj, { passive: true });
     maj();
-    new IntersectionObserver(([e], io) => {
-      if (!e.isIntersecting) return;
-      io.disconnect();
-      import('./geste.js').then((m) => {
-        const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 2100;
-        geste = m.createGeste(toile, {
-          src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
-          reduced,
-          onContact: (c) => { el.classList.toggle('is-contact', c); if (c && versLeBas) { clearTimeout(tVerrou); allerAuxSites(reduced ? 0 : 300); } },
-        });
-        if (!geste) return;
-        el.classList.add('has-gl');
-        geste.setEtat(Math.max(0, etat));
-        new IntersectionObserver(([v]) => geste.visible(v.isIntersecting)).observe(el);
-        window.addEventListener('resize', () => geste.taille());
-        // la peinture suit un tout petit peu la souris
-        if (fine && !reduced) el.addEventListener('pointermove', (ev) => geste.souris(ev.clientX / window.innerWidth - 0.5, ev.clientY / window.innerHeight - 0.5));
-      }).catch((err) => console.warn('[ms] geste', err));
-    }, { rootMargin: '120% 0px' }).observe(el);
+    // le dessin se charge dès que la page est prête (pas au dernier moment) : il est là quand on arrive
+    const charger = () => import('./geste.js').then((m) => {
+      const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 2100;
+      geste = m.createGeste(toile, {
+        src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
+        reduced,
+        onContact: (c) => { el.classList.toggle('is-contact', c); if (c && verrouille) allerAuxSites(reduced ? 0 : 350); },
+      });
+      if (!geste) { sansDessin = true; etat = -1; maj(); verrouiller(false); return; }
+      el.classList.add('has-gl');
+      geste.setEtat(Math.max(0, etat));
+      new IntersectionObserver(([v]) => geste.visible(v.isIntersecting)).observe(el);
+      window.addEventListener('resize', () => geste.taille());
+      // la peinture suit un tout petit peu la souris
+      if (fine && !reduced) el.addEventListener('pointermove', (ev) => geste.souris(ev.clientX / window.innerWidth - 0.5, ev.clientY / window.innerHeight - 0.5));
+    }).catch((err) => { console.warn('[ms] geste', err); sansDessin = true; verrouiller(false); });
+    if (document.readyState === 'complete') setTimeout(charger, 400);
+    else window.addEventListener('load', () => setTimeout(charger, 400), { once: true });
   });
 
   /* ---------- Nos réalisations : la salle de projection ----------
