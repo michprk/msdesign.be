@@ -1140,134 +1140,42 @@ html:not(.js) .salle__scene { position: relative; height: auto; }
 
 
 /* ==========================================================================
-   Contact : la lettre
-   Sur un ciel bleu où dérivent d'autres feuilles (toutes dans le même sens, très lentement),
-   une feuille crème : on remplit les blancs, on scelle à la cire orange. À l'envoi, la feuille
-   se range dans une enveloppe, le cachet tombe, l'enveloppe s'envole.
+   Le ciel : le fond du bas de page (de la promesse au studio)
+   Plus un simple beige : un ciel pastel (image fixe, sans animation) reste derrière les sections pendant
+   qu'on défile. Technique : un calque collé en haut de l'écran (sticky), aussi haut que l'écran, avec une
+   marge négative pour que les sections passent par-dessus.
    ========================================================================== */
-.ecrire { position: relative; isolation: isolate; overflow: hidden; margin: 0 clamp(8px, 1.2vw, 18px); padding: clamp(92px, 13vh, 150px) 0 clamp(84px, 12vh, 140px); border-radius: clamp(22px, 2.6vw, 36px); background: radial-gradient(ellipse 70% 60% at 72% 42%, #3b7bff 0%, rgba(59, 123, 255, 0) 62%), var(--blue); color: #fff; }
-.ecrire__ciel { position: absolute; inset: 0; z-index: -1; pointer-events: none; perspective: 900px; }
-.ecrire__ciel i { position: absolute; left: var(--x); top: 108%; width: var(--w); aspect-ratio: 0.72; border-radius: 3px; background: repeating-linear-gradient(to bottom, transparent 0 9%, rgba(21, 94, 239, 0.16) 9% calc(9% + 1px)) 0 18% / 100% 70% no-repeat, #f7f2ea; opacity: var(--o); filter: blur(var(--f)); box-shadow: 0 30px 50px -30px rgba(0, 10, 60, 0.5); animation: feuille-derive var(--d) linear var(--t) infinite; }
-.ecrire__ciel i:nth-child(1) { --x: 46%; --w: 120px; --o: 0.16; --f: 5px; --d: 58s; --t: -12s; }
-.ecrire__ciel i:nth-child(2) { --x: 58%; --w: 70px; --o: 0.12; --f: 8px; --d: 74s; --t: -40s; }
-.ecrire__ciel i:nth-child(3) { --x: 66%; --w: 150px; --o: 0.1; --f: 10px; --d: 66s; --t: -5s; }
-.ecrire__ciel i:nth-child(4) { --x: 76%; --w: 90px; --o: 0.16; --f: 4px; --d: 52s; --t: -30s; }
-.ecrire__ciel i:nth-child(5) { --x: 86%; --w: 60px; --o: 0.12; --f: 7px; --d: 80s; --t: -55s; }
-.ecrire__ciel i:nth-child(6) { --x: 50%; --w: 130px; --o: 0.14; --f: 3px; --d: 60s; --t: -22s; }
-.ecrire__ciel i:nth-child(7) { --x: 92%; --w: 54px; --o: 0.1; --f: 9px; --d: 90s; --t: -70s; }
-@keyframes feuille-derive { from { transform: translate3d(0, 0, 0) rotate(-16deg) rotateX(30deg); } to { transform: translate3d(26vw, -150vh, 0) rotate(8deg) rotateX(-14deg); } }
-html.reduced .ecrire__ciel i { animation: none; top: auto; bottom: 10%; }
-.ecrire__grille { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.3fr); gap: clamp(32px, 5vw, 96px); align-items: center; }
-.ecrire__surtitre { margin: 0; font: 600 12px/1 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); }
-.ecrire__titre { margin: 18px 0 24px; font: 800 clamp(44px, 5vw, 84px)/0.98 "Inter", var(--sans); letter-spacing: -0.045em; color: #fff; }
-.ecrire__titre em { display: block; margin-top: 0.16em; font: 400 0.6em/1.06 "Junicode", Georgia, serif; font-style: normal; letter-spacing: -0.01em; color: var(--bg); }
-.ecrire__lede { max-width: 30em; margin: 0; font: 400 17px/1.6 var(--sans); color: rgba(255, 255, 255, 0.86); }
-.ecrire__lignes { list-style: none; margin: clamp(30px, 5vh, 48px) 0 0; padding: 0; border-top: 1px solid rgba(255, 255, 255, 0.24); }
-.ecrire__lignes li { display: grid; grid-template-columns: 9em minmax(0, 1fr); align-items: baseline; padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.24); font: 400 16px/1.4 var(--sans); }
-.ecrire__lignes span { font: 600 11px/1.6 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.62); }
-.ecrire__lignes a { color: #fff; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size 0.4s var(--ease); }
-.ecrire__lignes a:hover, .ecrire__lignes a:focus-visible { background-size: 100% 1px; }
-.ecrire__table { position: relative; }
-/* la feuille */
-.lettre { position: relative; }
-.lettre__feuille { position: relative; padding: clamp(40px, 4vw, 64px) clamp(24px, 3.8vw, 64px) clamp(24px, 3vw, 44px); border-radius: 3px; color: #26231f; font: 400 clamp(18px, 1.42vw, 22px)/1.8 "Junicode", Georgia, serif;
-  background: radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 70%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.33 0 0 0 0 0.22 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), #faf6ee;
-  box-shadow: inset 0 0 70px rgba(140, 110, 60, 0.08), 0 1px 0 rgba(0, 0, 0, 0.04), 0 70px 100px -50px rgba(3, 12, 60, 0.7), 0 30px 40px -30px rgba(3, 12, 60, 0.45);
-  transform: rotate(-1.4deg); transform-origin: 50% 60%; transition: transform 0.9s var(--ease); }
-.lettre__feuille:focus-within { transform: rotate(0deg); }
-.lettre__p { margin: 0 0 0.55em; }
-.lettre__date { margin: 0 0 1.3em; text-align: right; font-size: 0.8em; color: #7b766c; }
-/* les blancs à remplir : soulignés en pointillés bleus, l'encre est bleue */
-.champ { position: relative; display: inline-block; max-width: 100%; vertical-align: baseline; }
-.champ input, .champ select { max-width: 100%; margin: 0 2px; padding: 0 3px 1px; border: 0; border-bottom: 1.5px dashed rgba(21, 94, 239, 0.5); border-radius: 0; background: transparent; color: var(--blue); font: inherit; line-height: 1.3; outline: none; transition: border-color 0.3s var(--ease), background-color 0.3s var(--ease); }
-.champ input { width: 9em; }
-.champ input::placeholder, .champ--texte textarea::placeholder { color: rgba(38, 35, 31, 0.36); opacity: 1; }
-.champ input:focus, .champ select:focus, .champ--texte textarea:focus { border-bottom-style: solid; border-bottom-color: var(--blue); background-color: rgba(21, 94, 239, 0.05); }
-.champ select { appearance: none; -webkit-appearance: none; padding-right: 1.15em; cursor: pointer; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23155eef' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 2px center / 0.55em; }
-.champ select.is-vide { color: rgba(38, 35, 31, 0.36); }
-.champ select option { color: #26231f; font-family: var(--sans); font-size: 15px; }
-.champ [aria-invalid="true"] { border-bottom-color: #c2410c; border-bottom-style: solid; }
-.champ__err { position: absolute; left: 0; top: calc(100% + 2px); z-index: 4; width: max-content; max-width: min(320px, 80vw); padding: 6px 10px; border-radius: 6px; background: #b8400d; color: #fff; font: 500 12.5px/1.35 var(--sans); box-shadow: 0 8px 20px -10px rgba(80, 20, 0, 0.6); }
-.champ__err[hidden] { display: none; }
-.champ__err .link-btn { color: #fff; }
-.champ--texte { display: block; }
-.champ--texte label { display: block; }
-.champ--texte textarea { display: block; width: 100%; min-height: calc(3 * 1.8em); margin: 0.1em 0 0; padding: 0 3px; border: 0; border-radius: 0; resize: none; overflow: hidden; background: repeating-linear-gradient(to bottom, transparent 0 calc(1.8em - 1px), rgba(21, 94, 239, 0.28) calc(1.8em - 1px) 1.8em) local; color: var(--blue); font: inherit; line-height: 1.8; outline: none; }
-.champ--texte .champ__err:not([hidden]) { position: static; display: inline-block; margin-top: 6px; }
-/* le budget : des pastilles à cocher */
-.lettre__budget { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; min-width: 0; margin: 0.2em 0 0.9em; padding: 0; border: 0; }
-.lettre__budget legend { float: left; width: 100%; margin: 0 0 6px; padding: 0; }
-.puce { position: relative; cursor: pointer; }
-.puce input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-.puce span { display: inline-flex; align-items: baseline; gap: 6px; padding: 7px 14px 8px; border: 1.2px solid rgba(38, 35, 31, 0.2); border-radius: 999px; background: rgba(255, 255, 255, 0.5); font: 500 14px/1.2 var(--sans); color: #3d3a35; transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease); }
-.puce small { font-size: 12.5px; color: #8a8478; transition: color 0.3s var(--ease); }
-.puce:hover span { border-color: rgba(21, 94, 239, 0.55); }
-.puce input:checked + span { border-color: var(--blue); background: var(--blue); color: #fff; }
-.puce input:checked + span small { color: rgba(255, 255, 255, 0.75); }
-.puce input:focus-visible + span { outline: 2px solid var(--blue); outline-offset: 2px; }
-/* le trombone (pièce jointe), accroché en haut de la feuille */
-.lettre__trombone { position: absolute; top: -16px; left: clamp(24px, 3.8vw, 64px); display: flex; align-items: flex-end; gap: 10px; cursor: pointer; font: 500 13px/1.2 var(--sans); color: #7b766c; }
-.lettre__trombone svg { width: 18px; height: 46px; fill: none; stroke: #8c919c; stroke-width: 2.2; stroke-linecap: round; filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.18)); transition: transform 0.4s var(--ease); }
-.lettre__trombone input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-.lettre__trombone span { padding-bottom: 3px; border-bottom: 1px dashed transparent; transition: color 0.3s var(--ease), border-color 0.3s var(--ease); }
-.lettre__trombone:hover span, .lettre__trombone:focus-within span { color: var(--blue); border-bottom-color: currentColor; }
-.lettre__trombone:hover svg { transform: rotate(-6deg); }
-.lettre__err--fichier { position: absolute; top: 34px; left: clamp(24px, 3.8vw, 64px); z-index: 4; margin: 0; padding: 6px 10px; border-radius: 6px; background: #b8400d; color: #fff; font: 500 12.5px/1.35 var(--sans); }
-.lettre__err--fichier[hidden] { display: none; }
-/* la signature s'écrit toute seule avec le nom */
-.lettre__fin { margin-bottom: 0; }
-.lettre__signature { min-height: 1.3em; margin: 0 0 0.5em; font: 400 clamp(30px, 2.6vw, 44px)/1.15 "Junicode", Georgia, serif; color: var(--blue); transform: rotate(-3deg) skewX(-10deg); transform-origin: left center; clip-path: inset(-20% 100% -20% 0); transition: clip-path 1.2s cubic-bezier(0.6, 0, 0.25, 1); }
-.lettre__signature.is-signee { clip-path: inset(-20% -5% -20% 0); }
-.lettre__pied { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 4px; }
-.lettre__note { margin: 0; max-width: 18em; font: 400 13px/1.45 var(--sans); color: #8a8478; }
-.lettre__note a { color: inherit; text-underline-offset: 3px; }
-/* le cachet de cire : c'est le bouton d'envoi */
-.cachet { flex: none; display: inline-flex; align-items: center; gap: 14px; padding: 0; border: 0; background: none; color: #26231f; font: 600 14.5px/1 var(--sans); cursor: pointer; }
-.cachet__cire, .enveloppe__cire { display: grid; place-items: center; border-radius: 48% 52% 50% 50% / 51% 47% 53% 49%; font: 400 22px/1 "Junicode", Georgia, serif; color: rgba(255, 226, 200, 0.92); text-shadow: 0 1px 0 rgba(90, 25, 0, 0.6), 0 -1px 0 rgba(255, 200, 160, 0.35); background: radial-gradient(circle at 36% 30%, #f3843d 0%, #d2570f 46%, #92360a 100%); box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.07), inset 0 -6px 12px rgba(80, 20, 0, 0.42), inset 0 5px 10px rgba(255, 190, 140, 0.32), 0 9px 18px -6px rgba(110, 35, 0, 0.6); }
-.cachet__cire { width: 76px; height: 76px; transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.cachet:hover .cachet__cire { transform: rotate(-10deg) scale(1.06); }
-.cachet__txt { padding-bottom: 3px; border-bottom: 1px solid currentColor; }
-.cachet:focus-visible { outline: 2px solid var(--blue); outline-offset: 6px; border-radius: 999px; }
-.lettre.is-sending .cachet__cire { animation: cire-attend 1s ease-in-out infinite; }
-@keyframes cire-attend { 50% { transform: scale(0.94); } }
-.lettre .form__status { margin: 14px 0 0; font: 400 14.5px/1.5 var(--sans); }
-/* l'envoi : la feuille se range, l'enveloppe se ferme, le cachet tombe, l'enveloppe s'envole */
-.enveloppe { position: absolute; left: 50%; top: 50%; width: min(80%, 520px); aspect-ratio: 1.62; margin: 0; transform: translate(-50%, -50%); opacity: 0; pointer-events: none; perspective: 900px; }
-.enveloppe__dos, .enveloppe__face, .enveloppe__rabat { position: absolute; left: 0; right: 0; }
-.enveloppe__dos { inset: 0; border-radius: 6px; background: #e9dfcb; box-shadow: 0 50px 70px -36px rgba(3, 12, 60, 0.7); }
-.enveloppe__face { inset: 0; z-index: 2; border-radius: 6px; background: linear-gradient(#f6efe2, #efe5d2); clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%); }
-.enveloppe__rabat { top: 0; z-index: 3; height: 58%; background: linear-gradient(#ece2cf, #e2d6bf); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; transform: rotateX(180deg); }
-.enveloppe__cire { position: absolute; left: 50%; top: 58%; z-index: 4; width: 68px; height: 68px; margin: -34px 0 0 -34px; opacity: 0; transform: scale(1.9); }
-.lettre__partie { position: absolute; left: 0; right: 0; top: 50%; margin: 0; text-align: center; font: 400 clamp(26px, 2.6vw, 40px)/1.2 "Junicode", Georgia, serif; color: #fff; opacity: 0; transform: translateY(-50%); pointer-events: none; }
-.lettre.is-envoi .lettre__feuille { animation: feuille-range 0.85s cubic-bezier(0.6, 0, 0.3, 1) forwards; }
-.lettre.is-envoi .lettre__feuille > * { animation: efface 0.35s ease forwards; }
-.lettre.is-envoi .enveloppe { animation: enveloppe-vit 3s cubic-bezier(0.5, 0, 0.3, 1) 0.45s forwards; }
-.lettre.is-envoi .enveloppe__rabat { animation: rabat-ferme 0.5s cubic-bezier(0.5, 0, 0.3, 1) 1.05s forwards; }
-.lettre.is-envoi .enveloppe__cire { animation: cire-pose 0.36s cubic-bezier(0.5, 0, 0.6, 1.4) 1.5s forwards; }
-.lettre.is-envoi .lettre__partie { animation: partie 0.9s var(--ease) 2.5s forwards; }
-@keyframes feuille-range { to { transform: translateY(6%) scale(0.62, 0.36); opacity: 0; } }
-@keyframes efface { to { opacity: 0; } }
-@keyframes enveloppe-vit {
-  0% { opacity: 0; transform: translate(-50%, -38%) scale(0.92); }
-  14% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  62% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  70% { transform: translate(-50%, -46%) scale(1.02) rotate(2deg); }
-  100% { opacity: 0; transform: translate(40%, -190%) scale(0.5) rotate(-22deg); }
-}
-@keyframes rabat-ferme { to { transform: rotateX(0deg); } }
-@keyframes cire-pose { to { opacity: 1; transform: scale(1); } }
-@keyframes partie { from { opacity: 0; transform: translateY(-30%); } to { opacity: 1; transform: translateY(-50%); } }
-@media (max-width: 900px) {
-  .ecrire__grille { grid-template-columns: minmax(0, 1fr); }
-  .lettre__feuille { transform: rotate(-0.7deg); }
-}
-@media (max-width: 560px) {
-  .ecrire { padding: 72px 0 64px; }
-  .lettre__feuille { padding: 44px 18px 22px; font-size: 17px; }
-  .ecrire__lignes li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
-  .lettre__pied { flex-direction: column-reverse; align-items: flex-start; }
-  .cachet__cire { width: 64px; height: 64px; font-size: 19px; }
-}
+.ciel { position: relative; isolation: isolate; }
+.ciel__fond { position: sticky; top: 0; z-index: -1; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; pointer-events: none;
+  background: #cddcf1 url("../ciel/ciel-1280.webp") 50% 72% / cover no-repeat; }
+@media (min-width: 900px), (min-resolution: 2dppx) { .ciel__fond { background-image: url("../ciel/ciel-2560.webp"); } }
+.ciel .sec, .ciel .sec--tint, .ciel .tarifs, .ciel .studio { background: transparent; }
+/* la promesse « En ligne en 21 jours », pensée en crème sur fond bleu : sur le ciel, elle passe à l'encre bleu nuit */
+.ciel .promise { --encre: #0d1a3d; color: var(--encre); }
+.ciel .promise__top, .ciel .promise__cols p, .ciel .promise__note { color: rgba(13, 26, 61, 0.72); }
+.ciel .promise__title, .ciel .promise__cols h3, .ciel .promise__note a { color: var(--encre); }
+.ciel .promise__dot { color: var(--orange); }
+.ciel .gantt__head, .ciel .gantt__head span, .ciel .gantt__head span:last-child { border-color: rgba(13, 26, 61, 0.22); }
+.ciel .gantt__head span { color: rgba(13, 26, 61, 0.7); }
+.ciel .gantt__rows { background: linear-gradient(to right, rgba(13, 26, 61, 0.16) 1px, transparent 1px) 0 0 / 25% 100%; box-shadow: inset -1px 0 0 rgba(13, 26, 61, 0.16); }
+.ciel .gantt__bar { background: rgba(255, 255, 255, 0.78); box-shadow: 0 10px 24px -14px rgba(13, 26, 61, 0.35); }
+
+/* ==========================================================================
+   Contact : pas de formulaire, une invitation simple à nous écrire, sur le ciel
+   ========================================================================== */
+.contact { padding: clamp(120px, 20vh, 220px) 0; text-align: center; }
+.contact__boite { display: flex; flex-direction: column; align-items: center; }
+.contact__titre { margin: 16px 0 24px; font: 400 clamp(58px, 9.5vw, 156px)/0.94 var(--display); letter-spacing: -0.035em; color: var(--ink); }
+.contact__texte { max-width: 32em; margin: 0 0 clamp(32px, 5vh, 52px); font: 400 clamp(17px, 1.35vw, 21px)/1.55 var(--sans); color: rgba(23, 23, 23, 0.8); }
+.contact__mail { display: inline-flex; align-items: center; gap: 14px; padding: 21px 34px; border-radius: 999px; background: var(--blue); color: #fff; font: 600 clamp(17px, 1.5vw, 22px)/1 var(--sans); letter-spacing: -0.01em; text-decoration: none;
+  box-shadow: 0 26px 50px -22px rgba(21, 94, 239, 0.65); transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.contact__mail svg { width: 18px; height: 18px; flex: none; }
+.contact__mail:hover, .contact__mail:focus-visible { transform: translateY(-3px); box-shadow: 0 32px 60px -22px rgba(21, 94, 239, 0.8); }
+.contact__mail:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.contact__tel { margin: 24px 0 0; font: 400 15px/1.5 var(--sans); color: rgba(23, 23, 23, 0.72); }
+.contact__tel a { color: inherit; }
+@media (max-width: 560px) { .contact__mail { padding: 18px 24px; font-size: 16px; } }
+
 
 /* ==========================================================================
    Le geste : la Création d'Adam avant nos réalisations

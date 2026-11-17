@@ -198,6 +198,11 @@
   </div>
 </section>
 
+<!-- Le ciel : de la promesse jusqu’au studio, le fond n’est plus un simple beige mais un ciel pastel (une image fixe,
+     sans animation), qui reste derrière les sections pendant qu’on défile (calque collé à l’écran). -->
+<div class="ciel">
+<div class="ciel__fond" aria-hidden="true"></div>
+
 <!-- La promesse de délai -->
 <section class="sec promise" id="promesse" aria-labelledby="promesse-title">
   <div class="wrap">
@@ -428,74 +433,14 @@
   </div>
 </section>
 
-<!-- Contact : une lettre. Sur un ciel bleu où dérivent d’autres feuilles, on remplit les blancs, on scelle à la cire,
-     et la lettre part dans son enveloppe. Les noms des champs et les messages d’erreur restent ceux du formulaire (app.js). -->
-<section class="ecrire" id="contact" aria-labelledby="contact-title" data-ecrire>
-  <div class="ecrire__ciel" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="wrap ecrire__grille">
-    <div class="ecrire__intro">
-      <p class="ecrire__surtitre" data-reveal>Contact</p>
-      <h2 class="ecrire__titre" id="contact-title" data-reveal>Écrivez-nous. <em>On répond à chaque lettre.</em></h2>
-      <p class="ecrire__lede" data-reveal>Remplissez les blancs, scellez, envoyez&nbsp;: réponse sous 24&nbsp;h ouvrées. Le premier échange est gratuit et sans engagement.</p>
-      <ul class="ecrire__lignes" data-reveal>
-        <li><span>Écrire</span><a href="mailto:mck.honorable@msdesign.be" data-track="email_click">mck.honorable@msdesign.be</a></li>
-        <li><span>Appeler</span><a href="tel:+32486611159" data-track="phone_click">+32&nbsp;486&nbsp;61&nbsp;11&nbsp;59</a></li>
-        <li><span>Nous trouver</span>Bruxelles, Belgique</li>
-      </ul>
-    </div>
-    <div class="ecrire__table">
-      <form class="lettre" id="contact-form" data-form action="/merci.html" novalidate>
-        <div class="lettre__feuille" data-lettre>
-          <p class="lettre__date" data-date>Bruxelles</p>
-          <label class="lettre__trombone">
-            <input type="file" name="fichier" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt" aria-describedby="err-fichier">
-            <svg viewBox="0 0 24 60" aria-hidden="true"><path d="M8 54V14a6 6 0 0 1 12 0v36a9 9 0 0 1-18 0V18"/></svg>
-            <span data-file-label>Joindre un fichier</span>
-          </label>
-          <p class="field__error lettre__err lettre__err--fichier" id="err-fichier" hidden></p>
-          <p class="lettre__p">Bonjour Michal et Mamoudou,</p>
-          <p class="lettre__p">Je m’appelle <span class="champ"><label class="sr-only" for="f-name">Nom et prénom</label><input id="f-name" name="name" type="text" autocomplete="name" required placeholder="prénom et nom" aria-describedby="err-name"><span class="field__error champ__err" id="err-name" hidden></span></span>
-            et j’aimerais <span class="champ champ--choix"><label class="sr-only" for="f-projet">Type de projet</label><select id="f-projet" name="projet" required aria-describedby="err-projet">
-              <option value="">choisir ce que vous souhaitez</option>
-              <option value="vitrine">créer un nouveau site</option>
-              <option value="refonte">refaire mon site</option>
-              <option value="identite">créer mon identité visuelle</option>
-              <option value="seo">être mieux trouvé sur Google</option>
-              <option value="automatisation">automatiser une partie de mon travail</option>
-              <option value="autre">vous parler d’autre chose</option>
-            </select><span class="field__error champ__err" id="err-projet" hidden></span></span>
-            pour <span class="champ"><label class="sr-only" for="f-societe">Votre entreprise (facultatif)</label><input id="f-societe" name="societe" type="text" autocomplete="organization" placeholder="mon commerce (facultatif)"></span>.</p>
-          <fieldset class="lettre__p lettre__budget">
-            <legend>Côté budget, je pense plutôt à&nbsp;:</legend>
-            <label class="puce"><input type="radio" name="formule" value="essentiel"><span>Essentiel <small>500&nbsp;€</small></span></label>
-            <label class="puce"><input type="radio" name="formule" value="signature"><span>Signature <small>1&nbsp;290&nbsp;€</small></span></label>
-            <label class="puce"><input type="radio" name="formule" value="premium"><span>Premium <small>3&nbsp;900&nbsp;€</small></span></label>
-            <label class="puce"><input type="radio" name="formule" value=""><span>je ne sais pas encore</span></label>
-          </fieldset>
-          <div class="lettre__p champ champ--texte">
-            <label for="f-message">Mon idée, en quelques mots&nbsp;:</label>
-            <textarea id="f-message" name="message" rows="3" required placeholder="mon activité, ce que j’aimerais, mes envies…" aria-describedby="err-message"></textarea>
-            <span class="field__error champ__err" id="err-message" hidden></span>
-          </div>
-          <p class="lettre__p">Vous pouvez me répondre à <span class="champ"><label class="sr-only" for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="mon@email.be" aria-describedby="err-email"><span class="field__error champ__err" id="err-email" hidden></span></span>
-            ou m’appeler au <span class="champ"><label class="sr-only" for="f-phone">Téléphone (facultatif)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+32 … (facultatif)" aria-describedby="err-phone"><span class="field__error champ__err" id="err-phone" hidden></span></span>.</p>
-          <p class="lettre__p lettre__fin">À très vite,</p>
-          <p class="lettre__signature" data-signature aria-hidden="true"></p>
-          <div class="field--hp" aria-hidden="true">
-            <label for="f-website">Ne pas remplir</label>
-            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
-          </div>
-          <div class="lettre__pied">
-            <p class="lettre__note">Vos informations restent entre nous. <a href="/confidentialite.html">Confidentialité</a></p>
-            <button class="cachet" type="submit" data-track="form_submit"><span class="cachet__cire" aria-hidden="true">M&amp;S</span><span class="cachet__txt">Sceller et envoyer</span></button>
-          </div>
-          <p class="form__status" data-status role="status" aria-live="polite"></p>
-        </div>
-        <!-- l’enveloppe, qui n’apparaît qu’à l’envoi -->
-        <div class="enveloppe" aria-hidden="true"><span class="enveloppe__dos"></span><span class="enveloppe__face"></span><span class="enveloppe__rabat"></span><span class="enveloppe__cire">M&amp;S</span></div>
-        <p class="lettre__partie" aria-hidden="true">Lettre envoyée. À très vite.</p>
-      </form>
-    </div>
+<!-- Contact : pas de formulaire. Une invitation simple à nous écrire, sur le ciel. -->
+<section class="sec contact" id="contact" aria-labelledby="contact-title">
+  <div class="wrap contact__boite">
+    <p class="label" data-reveal>Contact</p>
+    <h2 class="contact__titre" id="contact-title" data-reveal>Contactez-nous.</h2>
+    <p class="contact__texte" data-reveal>Un projet, une idée, une simple question&nbsp;? Écrivez-nous&nbsp;: on répond à toutes vos questions, sous 24&nbsp;h ouvrées.</p>
+    <a class="contact__mail" href="mailto:mck.honorable@msdesign.be" data-track="email_click" data-reveal>mck.honorable@msdesign.be<svg aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+    <p class="contact__tel" data-reveal>Ou par téléphone&nbsp;: <a href="tel:+32486611159" data-track="phone_click">+32&nbsp;486&nbsp;61&nbsp;11&nbsp;59</a></p>
   </div>
 </section>
 
@@ -545,6 +490,7 @@
     </div>
   </div>
 </section>
+</div><!-- /ciel -->
 
 </main>
 

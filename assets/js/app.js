@@ -130,7 +130,10 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     });
     window.__msLenis = lenis; // accès pratique pour le débogage
   });
+  // un défilement lancé par le site (menu, ancre, bouton) : on le note, pour que les scènes ne le « rattrapent » pas
+  let navigationJusqua = 0;
   function scrollToY(y, duration) {
+    navigationJusqua = performance.now() + (duration || 1.3) * 1000 + 300;
     if (lenis) lenis.scrollTo(y, { duration: duration || 1.3, easing: easeInOut, force: true });
     else window.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
   }
@@ -285,7 +288,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     const el = $('[data-geste]');
     if (!el) return;
     const piste = $('.geste__piste', el), toile = $('.geste__toile', el), salle = $('[data-salle]');
-    let geste = null, sansDessin = false, etat = -1, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0, tVerrou = 0, verrouille = false;
+    let geste = null, sansDessin = false, etat = -1, vAvant = 0, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0, tVerrou = 0, verrouille = false;
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
     // le défilement en pause le temps du geste (souris : Lenis s’arrête ; sans Lenis : la page ne bouge plus) ;
     // par sécurité, jamais plus de 7 s
@@ -310,7 +313,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     };
     const maj = () => {
       const y = window.scrollY; versLeBas = y >= dernierY; dernierY = y;
-      const v = avance(), e = v > 0.06 ? 1 : 0;
+      const v = avance(), e = v > 0.06 ? 1 : 0, venuDuHaut = vAvant <= 0.06; vAvant = v;
       if (v < 0.03) parti = false;                          // revenu au début du geste : le prochain contact repartira vers les sites
       if (e === etat) return;
       etat = e;
@@ -320,7 +323,8 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         return;
       }
       // en descendant : on se cale sur la fresque et on attend le contact des doigts, même si le dessin charge encore
-      if (e === 1 && versLeBas && !reduced && !parti) {
+      // (seulement si l’on arrive soi-même par le haut ; pas pendant un saut par le menu ni si l’on a déjà dépassé la fresque)
+      if (e === 1 && versLeBas && !reduced && !parti && venuDuHaut && v < 0.6 && performance.now() > navigationJusqua) {
         const r = piste.getBoundingClientRect(), cible = r.top + window.scrollY + (r.height - window.innerHeight) * 0.1;
         if (lenis) lenis.scrollTo(cible, { immediate: true, force: true }); else window.scrollTo(0, cible);
         verrouiller(true);
