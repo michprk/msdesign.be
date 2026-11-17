@@ -1184,6 +1184,9 @@ html.reduced .ciel__fond { transition: none; }
    ========================================================================== */
 .geste { position: relative; }
 .geste__piste { height: 170vh; }
+/* le fondu depuis le beige du manifeste, en haut de la fresque (il défile avec la section, la scène reste collée) */
+.geste::before { content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: 3; height: clamp(140px, 22vh, 260px); pointer-events: none;
+  background: linear-gradient(to bottom, var(--bg) 0%, rgba(245, 241, 233, 0.82) 30%, rgba(245, 241, 233, 0.4) 62%, rgba(245, 241, 233, 0) 100%); }
 .geste__scene { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate; background: var(--papier) 0 0 / 600px 600px, var(--bg); }
 .geste__repli, .geste__toile { position: absolute; inset: 0; width: 100%; height: 100%; }
 .geste__repli { object-fit: cover; }
@@ -1210,4 +1213,36 @@ html.reduced .ciel__fond { transition: none; }
 @media (max-width: 760px) {
   .geste__piste { height: 150vh; }
   .geste__titre { font-size: clamp(30px, 8.6vw, 40px); }
+}
+
+/* ==========================================================================
+   Identité visuelle : le crépuscule sur la colline, la carte de Prisme posée dans l'herbe, le texte au milieu
+   La scène (image + carte) occupe toute la section, à la façon d'un fond « cover » calé en bas : elle est
+   dessinée dans une boîte au format de l'image (16:9) assez grande pour couvrir la section ; la carte est placée
+   en pourcentages de cette boîte, donc toujours au même endroit sur la crête, quel que soit l'écran.
+   ========================================================================== */
+.identite { --ciel-haut: #1b2547; position: relative; isolation: isolate; overflow: clip; container-type: size; height: max(118vh, 940px); height: max(118svh, 940px); color: var(--on-night); background: var(--ciel-haut); }
+.identite__scene { position: absolute; left: 50%; bottom: 0; z-index: -2; width: max(100cqw, 177.78cqh); aspect-ratio: 16 / 9; transform: translateX(-50%); }
+.identite__fond { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* la carte, debout sur la crête ; un halo très doux derrière, comme la lumière d'un écran dans le soir */
+.identite__carte { position: absolute; left: 50%; bottom: 11%; width: clamp(190px, 13%, 400px); height: auto; aspect-ratio: 600 / 750; transform: translateX(-50%); border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 60px -20px rgba(8, 10, 30, 0.7), 0 0 120px 10px rgba(255, 196, 150, 0.16); }
+/* l'herbe de devant : la bande du milieu, du bas de l'image (40 % de large, 24 % de haut), posée exactement sur le fond */
+.identite__herbe { position: absolute; left: 30%; bottom: 0; width: 40%; height: 24%; pointer-events: none; }
+/* le fondu depuis le bleu de la promesse, en haut (comme le beige qui se fond dans le ciel du contact) */
+.identite::before { content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: clamp(200px, 30vh, 340px); pointer-events: none;
+  background: linear-gradient(to bottom, var(--blue) 0%, rgba(21, 94, 239, 0.78) 22%, rgba(21, 94, 239, 0.38) 52%, rgba(21, 94, 239, 0.1) 80%, rgba(21, 94, 239, 0) 100%); }
+/* et en bas, l'herbe se fond dans le beige de la méthode */
+.identite::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(90px, 13vh, 160px); pointer-events: none;
+  background: linear-gradient(to bottom, rgba(245, 241, 233, 0), rgba(245, 241, 233, 0.35) 45%, rgba(245, 241, 233, 0.8) 78%, var(--bg)); }
+.identite__texte { position: relative; display: flex; flex-direction: column; align-items: center; padding-top: clamp(150px, 20vh, 230px); text-align: center; }
+.identite__label { color: rgba(245, 241, 233, 0.72); }
+.identite__titre { max-width: 13em; color: var(--on-night); font-size: clamp(40px, 5vw, 76px); }
+.identite__titre em { color: inherit; }   /* pas d'orange ici : le crépuscule suffit */
+.identite__lead { max-width: 31em; margin: 22px 0 0; font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--sans); color: rgba(245, 241, 233, 0.82); text-wrap: pretty; }
+.identite__liens { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px 24px; margin: 30px 0 0; }
+@media (max-width: 760px) {
+  .identite { height: max(112svh, 860px); }
+  .identite__texte { padding-top: clamp(120px, 16vh, 170px); }
+  .identite__carte { width: clamp(150px, 13%, 200px); }
 }

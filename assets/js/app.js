@@ -1071,7 +1071,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],
       [/methode|process|etape/, '/#methode', 'Notre méthode'],
       [/tarif|prix|offre|formule|devis-gratuit|pricing/, '/#contact', 'Nous contacter'],
-      [/faq|question|aide/, '/#faq', 'Les questions fréquentes'],
+      [/faq|question|aide/, '/#contact', 'Nous poser une question'],
       [/contact|devis|rendez-vous|rdv/, '/#contact', 'Le formulaire de contact'],
       [/confidentialit|privacy|rgpd|cookie|politique/, '/confidentialite.html', 'La politique de confidentialité'],
       [/cgv|cgu|mention|condition|legal/, '/cgu.html', 'Les conditions et mentions légales']
