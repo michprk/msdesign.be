@@ -354,6 +354,13 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     else window.addEventListener('load', () => setTimeout(charger, 400), { once: true });
   });
 
+  /* ---------- Le ciel de la fin : il apparaît quand on arrive au contact (et repart si l’on remonte) ---------- */
+  safe('ciel', () => {
+    const el = $('[data-ciel]');
+    if (!el) return;
+    new IntersectionObserver(([e]) => el.classList.toggle('is-visible', e.isIntersecting), { rootMargin: '0px 0px -35% 0px' }).observe(el);
+  });
+
   /* ---------- Nos réalisations : la salle de projection ----------
      La piste est haute ; à chaque palier de défilement, l'écran de devant s'envole et le suivant s'avance.
      Survoler (ou parcourir au clavier) un nom de la liste montre son écran tout de suite. La pile suit un peu la souris. */

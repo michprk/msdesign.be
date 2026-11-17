@@ -198,11 +198,6 @@
   </div>
 </section>
 
-<!-- Le ciel : de la promesse jusqu’au studio, le fond n’est plus un simple beige mais un ciel pastel (une image fixe,
-     sans animation), qui reste derrière les sections pendant qu’on défile (calque collé à l’écran). -->
-<div class="ciel">
-<div class="ciel__fond" aria-hidden="true"></div>
-
 <!-- La promesse de délai -->
 <section class="sec promise" id="promesse" aria-labelledby="promesse-title">
   <div class="wrap">
@@ -432,6 +427,11 @@
     </div>
   </div>
 </section>
+
+<!-- Le ciel : seulement pour la fin (le contact et le studio). Quand on arrive au contact, le beige s’efface et les
+     nuages montent doucement en place (une fois, un peu plus d’une seconde) ; ensuite le ciel reste derrière, fixe. -->
+<div class="ciel" data-ciel>
+<div class="ciel__fond" aria-hidden="true"></div>
 
 <!-- Contact : pas de formulaire. Une invitation simple à nous écrire, sur le ciel. -->
 <section class="sec contact" id="contact" aria-labelledby="contact-title">

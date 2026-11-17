@@ -1140,25 +1140,23 @@ html:not(.js) .salle__scene { position: relative; height: auto; }
 
 
 /* ==========================================================================
-   Le ciel : le fond du bas de page (de la promesse au studio)
-   Plus un simple beige : un ciel pastel (image fixe, sans animation) reste derrière les sections pendant
-   qu'on défile. Technique : un calque collé en haut de l'écran (sticky), aussi haut que l'écran, avec une
+   Le ciel : le fond de la fin de page (le contact et le studio)
+   Un ciel pastel (image fixe) reste derrière ces sections pendant qu'on défile ; à l'arrivée au contact,
+   il apparaît en un peu plus d'une seconde (le beige s'efface, les nuages montent). Technique : un calque collé en haut de l'écran (sticky), aussi haut que l'écran, avec une
    marge négative pour que les sections passent par-dessus.
    ========================================================================== */
 .ciel { position: relative; isolation: isolate; }
+.ciel { background: var(--bg); }
+/* en haut du ciel, le beige de la FAQ se fond dans les nuages (pas de ligne nette) */
+.ciel::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(180px, 32vh, 360px); background: linear-gradient(to bottom, var(--bg), rgba(245, 241, 233, 0.6) 45%, rgba(245, 241, 233, 0)); pointer-events: none; }
 .ciel__fond { position: sticky; top: 0; z-index: -1; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; pointer-events: none;
-  background: #cddcf1 url("../ciel/ciel-1280.webp") 50% 72% / cover no-repeat; }
+  background: #cddcf1 url("../ciel/ciel-1280.webp") 50% 72% / cover no-repeat;
+  opacity: 0; transform: translateY(5%) scale(1.06); transition: opacity 1.1s var(--ease), transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+/* l'arrivée : le beige s'efface, les nuages montent en place */
+.ciel.is-visible .ciel__fond { opacity: 1; transform: none; }
+html.reduced .ciel__fond { transition: none; }
 @media (min-width: 900px), (min-resolution: 2dppx) { .ciel__fond { background-image: url("../ciel/ciel-2560.webp"); } }
 .ciel .sec, .ciel .sec--tint, .ciel .tarifs, .ciel .studio { background: transparent; }
-/* la promesse « En ligne en 21 jours », pensée en crème sur fond bleu : sur le ciel, elle passe à l'encre bleu nuit */
-.ciel .promise { --encre: #0d1a3d; color: var(--encre); }
-.ciel .promise__top, .ciel .promise__cols p, .ciel .promise__note { color: rgba(13, 26, 61, 0.72); }
-.ciel .promise__title, .ciel .promise__cols h3, .ciel .promise__note a { color: var(--encre); }
-.ciel .promise__dot { color: var(--orange); }
-.ciel .gantt__head, .ciel .gantt__head span, .ciel .gantt__head span:last-child { border-color: rgba(13, 26, 61, 0.22); }
-.ciel .gantt__head span { color: rgba(13, 26, 61, 0.7); }
-.ciel .gantt__rows { background: linear-gradient(to right, rgba(13, 26, 61, 0.16) 1px, transparent 1px) 0 0 / 25% 100%; box-shadow: inset -1px 0 0 rgba(13, 26, 61, 0.16); }
-.ciel .gantt__bar { background: rgba(255, 255, 255, 0.78); box-shadow: 0 10px 24px -14px rgba(13, 26, 61, 0.35); }
 
 /* ==========================================================================
    Contact : pas de formulaire, une invitation simple à nous écrire, sur le ciel
