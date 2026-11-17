@@ -308,9 +308,20 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         const r = el.getBoundingClientRect();
         if (r.top > window.innerHeight * 0.5 || r.bottom < window.innerHeight * 0.5) return;
         parti = true;
-        scrollToY(salle.getBoundingClientRect().top + window.scrollY + 1, 1.3);
+        // le passage : la fresque s’approche du point de contact, l’écran passe au bleu nuit des projets,
+        // on saute directement aux sites (sans défilement visible), puis le voile s’en va
+        if (reduced) { jumpToY(salle.getBoundingClientRect().top + window.scrollY + 1); return; }
+        voile.classList.add('is-on'); el.classList.add('is-passage');
+        setTimeout(() => {
+          jumpToY(salle.getBoundingClientRect().top + window.scrollY + 1);
+          el.classList.remove('is-passage');
+          requestAnimationFrame(() => requestAnimationFrame(() => voile.classList.remove('is-on')));
+        }, 480);
       }, attente);
     };
+    const voile = document.createElement('div');
+    voile.className = 'passage'; voile.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(voile);
     const maj = () => {
       const y = window.scrollY; versLeBas = y >= dernierY; dernierY = y;
       const v = avance(), e = v > 0.06 ? 1 : 0, venuDuHaut = vAvant <= 0.06; vAvant = v;
@@ -340,7 +351,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       geste = m.createGeste(toile, {
         src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
         reduced,
-        onContact: (c) => { el.classList.toggle('is-contact', c); if (c && verrouille) allerAuxSites(reduced ? 0 : 350); },
+        onContact: (c) => { el.classList.toggle('is-contact', c); if (c && verrouille) allerAuxSites(reduced ? 0 : 220); },
       });
       if (!geste) { sansDessin = true; etat = -1; maj(); verrouiller(false); return; }
       el.classList.add('has-gl');
@@ -1059,7 +1070,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       [/etude|exemple|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos exemples de sites'],
       [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],
       [/methode|process|etape/, '/#methode', 'Notre méthode'],
-      [/tarif|prix|offre|formule|devis-gratuit|pricing/, '/#tarifs', 'Les tarifs'],
+      [/tarif|prix|offre|formule|devis-gratuit|pricing/, '/#contact', 'Nous contacter'],
       [/faq|question|aide/, '/#faq', 'Les questions fréquentes'],
       [/contact|devis|rendez-vous|rdv/, '/#contact', 'Le formulaire de contact'],
       [/confidentialit|privacy|rgpd|cookie|politique/, '/confidentialite.html', 'La politique de confidentialité'],

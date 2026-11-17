@@ -1056,10 +1056,10 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
    ========================================================================== */
 .geste { --papier: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035' numOctaves='6' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeDiffuseLighting in='n' lighting-color='%23f7f2ea' surfaceScale='2.6' diffuseConstant='1.1'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); }
 @media (hover: hover) and (pointer: fine) { .geste__scene { background-attachment: fixed; } }
-.salle { --nuit: #070c21; --creme: #f5f1e9; --bleu-clair: #9db8ff; position: relative; margin: 0 clamp(8px, 1.2vw, 18px); border-radius: clamp(22px, 2.6vw, 36px); overflow: clip; background: var(--nuit); color: var(--creme); }
+.salle { --nuit: #070c21; --creme: #f5f1e9; --bleu-clair: #9db8ff; position: relative; margin: 0; border-radius: 0; overflow: clip; background: var(--nuit); color: var(--creme); }
 /* le nombre de sites et la place de chaque écran sont ici, pas dans le HTML : en ligne, la règle de sécurité du site
    (CSP « style-src 'self' ») interdit les styles écrits dans les balises */
-.salle__piste { --n: 5; height: calc(var(--n) * 72vh + 100vh); }
+.salle__piste { --n: 5; height: calc(var(--n) * 34vh + 100vh); }
 .salle__ecran:nth-child(1) { --i: 0; } .salle__ecran:nth-child(2) { --i: 1; } .salle__ecran:nth-child(3) { --i: 2; } .salle__ecran:nth-child(4) { --i: 3; } .salle__ecran:nth-child(5) { --i: 4; }
 /* trois colonnes centrées : la liste | les écrans (au milieu) | le site affiché ; mêmes marges des deux côtés */
 .salle__scene { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: minmax(0, 0.72fr) minmax(0, 2.4fr) minmax(0, 0.72fr); grid-template-rows: auto minmax(0, 1fr); align-items: center; column-gap: clamp(26px, 3vw, 60px);
@@ -1083,7 +1083,7 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
 /* le doigt de Michel-Ange : --dx / --dy posés par le script, il glisse d'un nom à l'autre */
 .salle__doigt { position: absolute; left: 0; top: 0; z-index: 3; width: clamp(210px, 18vw, 330px); height: auto; max-width: none; pointer-events: none; opacity: 0;
   filter: drop-shadow(0 18px 22px rgba(0, 4, 20, 0.45)); transform: translate3d(calc(var(--dx, 0px) - 60px), var(--dy, 0px), 0);
-  transition: transform 1s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.9s var(--ease); }
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.9s var(--ease); }
 .salle__doigt.is-la { opacity: 1; transform: translate3d(var(--dx), var(--dy), 0); }
 /* la pile d'écrans : chaque écran reçoit --k = sa place par rapport à l'écran de devant (0 devant, 1 juste derrière…) ;
    la pile elle-même laisse passer la souris (en 3D, elle passerait devant l'écran incliné) : seul l'écran de devant se clique */
@@ -1092,7 +1092,7 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 60px 100px -40px rgba(0, 3, 18, 0.75), 0 24px 40px -26px rgba(0, 3, 18, 0.6); transform-origin: 50% 100%;
   transform: translate3d(0, calc(var(--k) * -6.5%), calc(var(--k) * -160px)) rotateX(calc(var(--rx) + 4deg)) rotateY(var(--ry));
   filter: brightness(max(0.35, calc(1 - var(--k) * 0.2)));
-  transition: transform 1.05s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.8s var(--ease), filter 0.9s var(--ease); }
+  transition: transform 0.75s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.6s var(--ease), filter 0.7s var(--ease); }
 .salle__ecran.is-devant { pointer-events: auto; }
 .salle__ecran.is-loin { opacity: 0; }
 /* l'écran qu'on quitte s'envole vers nous et vers le bas */
@@ -1121,7 +1121,7 @@ html.reduced .salle__ecran .salle__vue img { animation: none; }
 html:not(.js) .salle__piste { height: auto; }
 html:not(.js) .salle__scene { position: relative; height: auto; }
 @media (max-width: 860px) {
-  .salle__piste { height: calc(var(--n) * 62vh + 100vh); }
+  .salle__piste { height: calc(var(--n) * 34vh + 100vh); }
   .salle__scene { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 18px; padding: 64px 18px 26px; }
   .salle__doigt { display: none; }
   .salle__surtitre { order: 1; font-size: clamp(30px, 9vw, 42px); }
@@ -1190,6 +1190,11 @@ html.reduced .ciel__fond { transition: none; }
 .geste.has-gl .geste__repli { display: none; }
 .geste__toile { opacity: 0; transition: opacity 1.4s var(--ease); }
 .geste__toile.is-pret { opacity: 1; }
+/* le passage vers nos projets : la fresque s'approche du point de contact pendant que l'écran passe au bleu nuit */
+.geste__toile { transform-origin: 49.5% 50.6%; }
+.geste.is-passage .geste__toile { transform: scale(1.12); transition: transform 0.5s cubic-bezier(0.5, 0, 0.75, 0), opacity 1.4s var(--ease); }
+.passage { position: fixed; inset: 0; z-index: 120; pointer-events: none; background: #070c21; opacity: 0; transition: opacity 0.45s cubic-bezier(0.45, 0, 0.55, 1); }
+.passage.is-on { opacity: 1; transition-duration: 0.42s; }
 /* un voile clair en haut, pour que le titre se lise sur le plâtre */
 .geste__scene::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: opacity 1s var(--ease);
   background: linear-gradient(180deg, rgba(240, 234, 222, 0.78) 0%, rgba(240, 234, 222, 0.3) 28%, rgba(240, 234, 222, 0) 44%); }

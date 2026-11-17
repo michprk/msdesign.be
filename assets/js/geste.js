@@ -115,13 +115,13 @@ export function createGeste(canvas, { src, reduced = false, onContact } = {}) {
     gl.viewport(0, 0, w, h); gl.uniform2f(U.uRes, w, h);
   };
 
-  // T va de 0 à 2 : 0→1 les mains se rejoignent (1,5 s), 1→2 la fresque s'efface dans le papier (1,6 s)
+  // T va de 0 à 2 : 0→1 les mains se rejoignent (1 s), 1→2 la fresque s'efface dans le papier (1,6 s)
   const image = (now) => {
     raf = 0;
     if (!pret || !vivant) return;
     const dt = Math.min(0.05, (now - (dernier || now)) / 1000); dernier = now;
     if (T !== cible) {
-      const v = T < 1 || (cible < 1 && T <= 1) ? 1 / 1.5 : 1 / 1.6;
+      const v = T < 1 || (cible < 1 && T <= 1) ? 1 / 1.0 : 1 / 1.6;
       T = cible > T ? Math.min(cible, T + v * dt) : Math.max(cible, T - v * dt);
     }
     sourisL[0] += (souris[0] - sourisL[0]) * 0.05; sourisL[1] += (souris[1] - sourisL[1]) * 0.05;
