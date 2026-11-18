@@ -347,11 +347,13 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     maj();
     // le dessin se charge dès que la page est prête (pas au dernier moment) : il est là quand on arrive
     const charger = () => import('./geste.js').then((m) => {
-      const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 2100;
+      // la caméra s'approche des doigts (jusqu'à ×1,4) : la grande image dès qu'un écran dépasse 1 500 pixels de large
+      const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 1500;
       geste = m.createGeste(toile, {
         src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
         reduced,
-        onContact: (c) => { el.classList.toggle('is-contact', c); if (c && verrouille) allerAuxSites(reduced ? 0 : 220); },
+        // au contact, on laisse la lumière courir dans les fissures avant de partir vers les sites
+        onContact: (c) => { el.classList.toggle('is-contact', c); if (c && verrouille) allerAuxSites(reduced ? 0 : 850); },
       });
       if (!geste) { sansDessin = true; etat = -1; maj(); verrouiller(false); return; }
       el.classList.add('has-gl');
