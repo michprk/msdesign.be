@@ -1146,9 +1146,9 @@ html:not(.js) .salle__scene { position: relative; height: auto; }
    marge négative pour que les sections passent par-dessus.
    ========================================================================== */
 .ciel { position: relative; isolation: isolate; }
-.ciel { background: var(--bg); }
+.ciel { background: #aac2d5; }
 /* en haut du ciel, le beige de la FAQ se fond dans les nuages (pas de ligne nette) */
-.ciel::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(180px, 32vh, 360px); background: linear-gradient(to bottom, var(--bg), rgba(245, 241, 233, 0.6) 45%, rgba(245, 241, 233, 0)); pointer-events: none; }
+.ciel::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(180px, 32vh, 360px); background: linear-gradient(to bottom, #aac2d5, rgba(170, 194, 213, 0.6) 45%, rgba(170, 194, 213, 0)); pointer-events: none; }
 .ciel__fond { position: sticky; top: 0; z-index: -1; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; pointer-events: none;
   background: #cddcf1 url("../ciel/ciel-1280.webp") 50% 72% / cover no-repeat;
   opacity: 0; transform: translateY(5%) scale(1.06); transition: opacity 1.1s var(--ease), transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -1216,22 +1216,18 @@ html.reduced .ciel__fond { transition: none; }
 }
 
 /* ==========================================================================
-   Identité visuelle : le crépuscule sur la colline, la carte de Prisme posée dans l'herbe, le texte au milieu
-   La scène (image + carte) occupe toute la section, à la façon d'un fond « cover » calé en bas : elle est
-   dessinée dans une boîte au format de l'image (16:9) assez grande pour couvrir la section ; la carte est placée
-   en pourcentages de cette boîte, donc toujours au même endroit sur la crête, quel que soit l'écran.
+   Identité visuelle : dans le ciel du contact, la carte de Prisme posée sur un banc de nuages, le texte au milieu
+   La scène (carte + banc) est dessinée dans une boîte 16:9 calée en bas, assez grande pour couvrir la section ;
+   la carte est placée en pourcentages de cette boîte, toujours au même endroit sur le banc, quel que soit l'écran.
    ========================================================================== */
-.identite { --ciel-haut: #1b2547; position: relative; isolation: isolate; overflow: clip; container-type: size; height: max(118vh, 940px); height: max(118svh, 940px); color: var(--on-night); background: var(--ciel-haut); }
+.identite { position: relative; z-index: 1; isolation: isolate; overflow-x: clip; container-type: size; height: max(118vh, 940px); height: max(118svh, 940px); color: var(--ink); }
 .identite__scene { position: absolute; left: 50%; bottom: 0; z-index: -2; width: max(100cqw, 177.78cqh); aspect-ratio: 16 / 9; transform: translateX(-50%); }
-.identite__fond { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-/* la carte, debout sur la crête ; un halo très doux derrière, comme la lumière d'un écran dans le soir */
-.identite__carte { position: absolute; left: 50%; bottom: 11%; width: clamp(190px, 13%, 400px); height: auto; aspect-ratio: 600 / 750; transform: translateX(-50%); border-radius: 3px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 60px -20px rgba(8, 10, 30, 0.7), 0 0 120px 10px rgba(255, 196, 150, 0.16); }
-/* l'herbe de devant : la bande du milieu, du bas de l'image (40 % de large, 24 % de haut), posée exactement sur le fond */
-.identite__herbe { position: absolute; left: 30%; bottom: 0; width: 40%; height: 24%; pointer-events: none; }
-/* le fondu depuis le ciel de la poire, en haut (comme le beige qui se fond dans le ciel du contact) */
-.identite::before { content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: clamp(200px, 30vh, 340px); pointer-events: none;
-  background: linear-gradient(to bottom, #e0ded9 0%, rgba(224, 222, 217, 0.78) 22%, rgba(224, 222, 217, 0.38) 52%, rgba(224, 222, 217, 0.1) 80%, rgba(224, 222, 217, 0) 100%); }
+/* la carte, posée sur le banc ; une ombre douce et un halo clair, comme dans la lumière du matin */
+.identite__carte { position: absolute; left: 50%; bottom: 14%; width: clamp(190px, 13%, 400px); height: auto; aspect-ratio: 600 / 750; transform: translateX(-50%); border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), 0 34px 60px -24px rgba(60, 70, 120, 0.45), 0 0 120px 10px rgba(255, 236, 214, 0.5); }
+/* le banc de nuages devant le pied de la carte (son bas se fond, pour ne pas montrer le bord de l'image) */
+.identite__nuee { position: absolute; left: -6%; bottom: -52%; width: 112%; height: auto; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent 98%); mask-image: linear-gradient(to bottom, #000 74%, transparent 98%); }
 
 /* ==========================================================================
    La poire d'or : on y arrive par un énorme coup de pinceau bleu en spirale, sur tout l'écran (app.js, « encre ») ;
@@ -1276,14 +1272,10 @@ html.js .encre.is-revele .encre__lead { transition-delay: 0.75s; }
 .encre__trait { position: fixed; inset: 0; z-index: 130; width: 100%; height: 100%; pointer-events: none; visibility: hidden; }
 .encre__trait.is-on { visibility: visible; }
 .encre__trait path { fill: none; stroke: var(--blue); stroke-linecap: round; stroke-linejoin: round; }
-/* et en bas, l'herbe se fond dans le haut du ciel de « Ensemble » (l'heure bleue) */
-.identite::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(120px, 18vh, 220px); pointer-events: none;
-  background: linear-gradient(to bottom, rgba(36, 49, 110, 0), rgba(36, 49, 110, 0.4) 40%, rgba(36, 49, 110, 0.85) 75%, #24316e); }
 .identite__texte { position: relative; display: flex; flex-direction: column; align-items: center; padding-top: clamp(150px, 20vh, 230px); text-align: center; }
-.identite__label { color: rgba(245, 241, 233, 0.72); }
-.identite__titre { max-width: 13em; color: var(--on-night); font-size: clamp(40px, 5vw, 76px); }
-.identite__titre em { color: inherit; }   /* pas d'orange ici : le crépuscule suffit */
-.identite__lead { max-width: 31em; margin: 22px 0 0; font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--sans); color: rgba(245, 241, 233, 0.82); text-wrap: pretty; }
+.identite__titre { max-width: 13em; color: var(--ink); font-size: clamp(40px, 5vw, 76px); }
+.identite__titre em { color: var(--blue); }
+.identite__lead { max-width: 31em; margin: 22px 0 0; font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--sans); color: var(--ink-2); text-wrap: pretty; }
 .identite__liens { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px 24px; margin: 30px 0 0; }
 @media (max-width: 760px) {
   .identite { height: max(112svh, 860px); }
@@ -1292,21 +1284,46 @@ html.js .encre.is-revele .encre__lead { transition-delay: 0.75s; }
 }
 
 /* ==========================================================================
-   Ensemble : à la place de la méthode. Le même ciel que l'identité, quelques minutes plus tard (l'heure bleue,
-   les premières étoiles), et l'invitation à travailler ensemble, au milieu. L'image couvre la section, calée
-   en bas (pour garder la pointe des herbes) ; le haut naît de l'herbe de l'identité, le bas se fond dans le
-   beige du contact.
+   Ensemble : à la place de la méthode. Toujours le ciel du contact, entre deux bancs de nuages, et l'invitation
+   à travailler ensemble, au milieu.
    ========================================================================== */
-.ensemble { --haut: #24316e; position: relative; isolation: isolate; overflow: clip; display: grid; place-items: center; min-height: max(100vh, 720px); min-height: max(100svh, 720px); padding: clamp(130px, 18vh, 200px) 0 clamp(150px, 20vh, 220px); color: var(--on-night); background: var(--haut); text-align: center; }
-.ensemble__fond { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
-/* le haut : le bleu profond où se fond l'herbe de l'identité, sans ligne de raccord */
-.ensemble::before { content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: clamp(140px, 22vh, 260px); pointer-events: none;
-  background: linear-gradient(to bottom, var(--haut), rgba(36, 49, 110, 0.7) 35%, rgba(36, 49, 110, 0)); }
-.ensemble::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(90px, 13vh, 160px); pointer-events: none;
-  background: linear-gradient(to bottom, rgba(245, 241, 233, 0), rgba(245, 241, 233, 0.35) 45%, rgba(245, 241, 233, 0.8) 78%, var(--bg)); }
+.ensemble { position: relative; z-index: 1; display: grid; place-items: center; min-height: max(110vh, 760px); min-height: max(110svh, 760px); padding: clamp(150px, 20vh, 220px) 0 clamp(170px, 22vh, 240px); color: var(--ink); text-align: center; }
 .ensemble__texte { display: flex; flex-direction: column; align-items: center; }
-.ensemble__label { color: rgba(245, 241, 233, 0.72); }
-.ensemble__titre { max-width: 11em; margin: 0; font: 400 clamp(46px, 6.6vw, 108px)/0.98 var(--display); letter-spacing: -0.035em; color: #fbf9f4; text-wrap: balance; }
-.ensemble__titre em { font-style: italic; }
-.ensemble__lead { max-width: 33em; margin: 26px 0 0; font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--sans); color: rgba(245, 241, 233, 0.85); text-wrap: pretty; }
+.ensemble__titre { max-width: 11em; margin: 0; font: 400 clamp(46px, 6.6vw, 108px)/0.98 var(--display); letter-spacing: -0.035em; color: var(--ink); text-wrap: balance; }
+.ensemble__titre em { font-style: italic; color: var(--blue); }
+.ensemble__lead { max-width: 33em; margin: 26px 0 0; font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--sans); color: var(--ink-2); text-wrap: pretty; }
 .ensemble__liens { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px 28px; margin: 34px 0 0; }
+
+/* ==========================================================================
+   Le voyage : l'identité et « Ensemble » sur un fond bleu pastel (le bleu du ciel du contact, un peu plus clair au
+   milieu, plus profond sur les bords), entourés d'un chemin de nuages peints qui longe les bords ; un ruban de soie
+   bleu roi et deux colombes. Chaque élément avance à sa vitesse (app.js, « nuages ») : ceux qui vont moins vite que
+   la page nous suivent un moment, ce qui fait glisser le chemin d'une partie à l'autre. Ils dérivent aussi un peu.
+   ========================================================================== */
+.voyage { position: relative; isolation: isolate;
+  background: radial-gradient(120% 80% at 50% 45%, #bccfdc 0%, #aac2d5 55%, #98b6ce 100%) #aac2d5; }
+/* en haut, le clair du bas de la poire, une brume d'où sortent les nuages (elle passe devant eux, derrière le texte) ;
+   en bas, les nuages se fondent dans le bleu, d'où naît le ciel du contact : pas de ligne nette aux raccords */
+.voyage::before, .voyage::after { content: ""; position: absolute; left: 0; right: 0; z-index: 1; pointer-events: none; }
+.voyage::before { top: 0; height: clamp(220px, 34vh, 380px); background: linear-gradient(to bottom, #e0ded9, rgba(224, 222, 217, 0.78) 28%, rgba(224, 222, 217, 0.3) 62%, rgba(224, 222, 217, 0)); }
+.voyage::after { bottom: 0; height: clamp(180px, 28vh, 320px); background: linear-gradient(to top, #aac2d5, rgba(170, 194, 213, 0.75) 35%, rgba(170, 194, 213, 0)); }
+.voyage > section { position: relative; z-index: 2; }
+.nuees { position: absolute; inset: 0; overflow: clip; pointer-events: none; }
+.nuee { position: absolute; top: 0; left: 0; height: auto; max-width: none; pointer-events: none; will-change: translate;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 74%, transparent 98%); mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 74%, transparent 98%);
+  animation: nuee-derive 24s ease-in-out infinite alternate; }
+.nuee--derriere { z-index: 0; }
+.nuee--devant { z-index: 2; }
+.nuee--miroir { scale: -1 1; }
+.nuee:nth-child(3n) { animation-duration: 29s; animation-delay: -9s; }
+.nuee:nth-child(3n + 1) { animation-delay: -15s; }
+@keyframes nuee-derive { from { transform: translateX(-1.4vw); } to { transform: translateX(1.4vw); } }
+/* le ruban ondule doucement ; les colombes planent (elles montent et descendent un peu) */
+.nuee--colombe { -webkit-mask-image: none; mask-image: none; }
+/* le ruban sort des nuages à gauche et s'efface au bout, à droite */
+.nuee--ruban { z-index: 2; -webkit-mask-image: linear-gradient(to right, #000 78%, transparent); mask-image: linear-gradient(to right, #000 78%, transparent); }
+.nuee--ruban { animation: nuee-ruban 9s ease-in-out infinite alternate; transform-origin: 0 50%; }
+@keyframes nuee-ruban { from { transform: rotate(-2deg) skewY(-1deg); } to { transform: rotate(2deg) skewY(1.5deg) translateX(1vw); } }
+.nuee--colombe { animation: nuee-colombe 5.5s ease-in-out infinite alternate; }
+@keyframes nuee-colombe { from { transform: translate(0, 0) rotate(-2deg); } to { transform: translate(-1.2vw, -1.6vw) rotate(3deg); } }
+html.reduced .nuee { animation: none; }

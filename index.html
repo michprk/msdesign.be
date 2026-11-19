@@ -222,40 +222,57 @@
 </section>
 
 
-<!-- Identité visuelle (à la place de l'ancien bloc « Nos services ») : un ciel de crépuscule et une colline d'herbe (image générée), et sur la colline, posée comme
-     un petit écran, la carte de Prisme (un opticien d'exemple) : l'herbe de devant (le même bas d'image, découpé :
-     _msdesign-src/perf/herbe-avant.mjs) repasse par-dessus sa base. Le texte au milieu, dans le ciel. Le haut de la section
-     se fond dans le bleu de la promesse, comme le beige se fond dans le ciel du contact. -->
+<!-- Le voyage : de « Une marque qu’on reconnaît… » à « Il ne manque plus que vous », un fond bleu pastel (le bleu du
+     ciel du contact) et, tout autour du texte, un chemin de nuages peints qui longe les bords : une bande en haut, un
+     mur à gauche, une bande en bas qui devient la bande du haut de la partie suivante, un coin en haut à droite… avec
+     un ruban de soie bleu roi et des colombes. Chaque élément avance à sa vitesse (assets/js/app.js, « nuages ») :
+     placé par rapport à une section (data-ancre, son bord : data-cote), décalé de data-dy hauteurs d’écran, à data-x %
+     de la largeur, large de data-l % (data-lm sur téléphone), il va à data-v fois la vitesse du défilement. -->
+<div class="voyage" data-voyage>
+<div class="nuees" aria-hidden="true" data-nuees>
+  <img class="nuee nuee--derriere" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="120vw" alt="" width="2720" height="1536" loading="lazy" decoding="async" data-ancre="#services" data-cote="haut" data-dy="0.16" data-x="-12" data-l="124" data-lm="230" data-v="0.72">
+  <img class="nuee nuee--derriere nuee--ruban" src="/assets/img/nuages/ruban-1600.webp" alt="" width="1600" height="903" loading="lazy" decoding="async" data-ancre="#services" data-cote="milieu" data-dy="0.26" data-x="-10" data-l="46" data-lm="100" data-v="0.84">
+  <img class="nuee nuee--derriere" src="/assets/img/nuages/bord-1200.webp" alt="" width="1200" height="1600" loading="lazy" decoding="async" data-ancre="#services" data-cote="milieu" data-dy="0.08" data-x="-5" data-l="32" data-lm="62" data-v="0.8">
+  <img class="nuee nuee--derriere nuee--miroir" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="120vw" alt="" width="2720" height="1536" loading="lazy" decoding="async" data-ancre="#services" data-cote="bas" data-dy="-0.02" data-x="-10" data-l="120" data-lm="230" data-v="0.86">
+  <img class="nuee nuee--devant nuee--colombe" src="/assets/img/nuages/colombe-900.webp" alt="" width="900" height="900" loading="lazy" decoding="async" data-ancre="#services" data-cote="bas" data-dy="-0.32" data-x="80" data-l="15" data-lm="30" data-v="1.18">
+  <img class="nuee nuee--derriere" src="/assets/img/nuages/coin-1600.webp" alt="" width="1600" height="1200" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="haut" data-dy="0.3" data-x="60" data-l="44" data-lm="90" data-v="0.78">
+  <img class="nuee nuee--derriere" src="/assets/img/nuages/bord-1200.webp" alt="" width="1200" height="1600" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="bas" data-dy="-0.42" data-x="-6" data-l="28" data-lm="56" data-v="0.86">
+  <img class="nuee nuee--devant nuee--colombe nuee--miroir" src="/assets/img/nuages/colombe-900.webp" alt="" width="900" height="900" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="milieu" data-dy="0.12" data-x="5" data-l="11" data-lm="24" data-v="1.22">
+  <img class="nuee nuee--derriere" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="120vw" alt="" width="2720" height="1536" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="bas" data-dy="-0.16" data-x="-12" data-l="124" data-lm="230" data-v="0.9">
+</div>
+
+<!-- Identité visuelle (à la place de l’ancien bloc « Nos services ») : dans le ciel, la carte de Prisme (un opticien
+     d’exemple) posée sur un banc de nuages, le texte au milieu. -->
 <section class="identite" id="services" aria-labelledby="identite-title">
   <div class="identite__scene">
-    <img class="identite__fond" src="/assets/img/identite/crepuscule-1920.webp" srcset="/assets/img/identite/crepuscule-1920.webp 1920w, /assets/img/identite/crepuscule-3840.webp 3840w" sizes="(max-aspect-ratio: 16/9) 210vh, 100vw" width="3840" height="2160" alt="" loading="lazy" decoding="async">
     <img class="identite__carte" src="/assets/img/logos/carte-prisme-verre.webp" width="600" height="750" alt="La carte de Prisme, opticien : le mot « prisme » sur un verre irisé, avec « lunettes de créateurs, sur mesure »." loading="lazy" decoding="async">
-    <img class="identite__herbe" src="/assets/img/identite/herbe-1920.webp" srcset="/assets/img/identite/herbe-1920.webp 768w, /assets/img/identite/herbe-3840.webp 1536w" sizes="(max-aspect-ratio: 16/9) 84vh, 40vw" width="1536" height="514" alt="" loading="lazy" decoding="async">
+    <img class="identite__nuee" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="(max-aspect-ratio: 16/9) 200vh, 112vw" alt="" width="2720" height="1536" loading="lazy" decoding="async">
   </div>
   <div class="wrap identite__texte">
     <p class="label identite__label" data-reveal>Identité visuelle</p>
     <h2 class="h2 identite__titre" id="identite-title" data-reveal>Une marque qu’on reconnaît <em>au premier regard.</em></h2>
     <p class="identite__lead" data-reveal>Le logo, les couleurs et les typographies de votre commerce, déclinés partout&nbsp;: vitrine, enseigne, cartes, réseaux et site. Ici, Prisme, un opticien d’exemple.</p>
-    <p class="identite__liens" data-reveal><a class="btn btn--light" href="/#contact">Parlons de votre marque<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></p>
+    <p class="identite__liens" data-reveal><a class="btn" href="/#contact">Parlons de votre marque<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></p>
   </div>
 </section>
 
-<!-- Ensemble : à la place de la méthode (ses quatre photos). Le même ciel que l’identité, quelques minutes plus tard
-     (l’heure bleue, les premières étoiles), et au milieu l’invitation à travailler ensemble. -->
+<!-- Ensemble : à la place de la méthode (ses quatre photos). Toujours le même ciel, entre deux bancs de nuages, et au
+     milieu l’invitation à travailler ensemble. -->
 <section class="ensemble" id="ensemble" aria-labelledby="ensemble-titre">
-  <img class="ensemble__fond" src="/assets/img/ensemble/heure-bleue-1920.webp" srcset="/assets/img/ensemble/heure-bleue-1920.webp 1920w, /assets/img/ensemble/heure-bleue-3840.webp 3840w" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" width="3840" height="2160" alt="" loading="lazy" decoding="async">
   <div class="wrap ensemble__texte">
     <p class="label ensemble__label" data-reveal>Ensemble</p>
     <h2 class="ensemble__titre" id="ensemble-titre" data-reveal>Il ne manque plus <em>que vous.</em></h2>
     <p class="ensemble__lead" data-reveal>Vous avez l’idée, nous avons le savoir-faire. Un appel de 30&nbsp;minutes suffit pour commencer&nbsp;: votre site est en ligne en 21&nbsp;jours.</p>
-    <p class="ensemble__liens" data-reveal><a class="btn btn--light" href="/#contact">Parlons de votre projet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></p>
+    <p class="ensemble__liens" data-reveal><a class="btn" href="/#contact">Parlons de votre projet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></p>
   </div>
 </section>
+</div><!-- /voyage -->
 
-<!-- Le ciel : seulement pour la fin (le contact et le studio). Quand on arrive au contact, le beige s’efface et les
-     nuages montent doucement en place (une fois, un peu plus d’une seconde) ; ensuite le ciel reste derrière, fixe. -->
+<!-- Le ciel : seulement pour la fin (le contact et le studio). Quand on arrive au contact, le bleu du voyage s’efface et
+     les nuages montent doucement en place (une fois, un peu plus d’une seconde) ; ensuite le ciel reste derrière, fixe. -->
 <div class="ciel" data-ciel>
 <div class="ciel__fond" aria-hidden="true"></div>
+
 
 <!-- Contact : pas de formulaire. Une invitation simple à nous écrire, sur le ciel. -->
 <section class="sec contact" id="contact" aria-labelledby="contact-title">
