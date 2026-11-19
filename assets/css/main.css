@@ -1229,9 +1229,53 @@ html.reduced .ciel__fond { transition: none; }
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 60px -20px rgba(8, 10, 30, 0.7), 0 0 120px 10px rgba(255, 196, 150, 0.16); }
 /* l'herbe de devant : la bande du milieu, du bas de l'image (40 % de large, 24 % de haut), posée exactement sur le fond */
 .identite__herbe { position: absolute; left: 30%; bottom: 0; width: 40%; height: 24%; pointer-events: none; }
-/* le fondu depuis le bleu de la promesse, en haut (comme le beige qui se fond dans le ciel du contact) */
+/* le fondu depuis le ciel de la poire, en haut (comme le beige qui se fond dans le ciel du contact) */
 .identite::before { content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: clamp(200px, 30vh, 340px); pointer-events: none;
-  background: linear-gradient(to bottom, var(--blue) 0%, rgba(21, 94, 239, 0.78) 22%, rgba(21, 94, 239, 0.38) 52%, rgba(21, 94, 239, 0.1) 80%, rgba(21, 94, 239, 0) 100%); }
+  background: linear-gradient(to bottom, #e0ded9 0%, rgba(224, 222, 217, 0.78) 22%, rgba(224, 222, 217, 0.38) 52%, rgba(224, 222, 217, 0.1) 80%, rgba(224, 222, 217, 0) 100%); }
+
+/* ==========================================================================
+   La poire d'or : on y arrive par un énorme coup de pinceau bleu en spirale, sur tout l'écran (app.js, « encre ») ;
+   il éclabousse et l'encre « mange » le papier (assets/js/encre.js) : derrière, un ciel de nuages, une poire en or
+   sur sa branche, et une main qui vient la toucher. La scène (image + main) est posée dans une boîte au format de
+   l'image (16:9) qui couvre la section ; sur un écran étroit, la boîte se décale pour garder le contact
+   (la poire et le bout du doigt, --contact) au milieu de l'écran.
+   ========================================================================== */
+.encre { --contact: 0.333; --poire-x: 33.5%; --poire-y: 53%; position: relative; height: 100vh; height: 100svh; min-height: 620px; overflow: hidden; container-type: size; background: #c9dbe0; }
+.encre__scene { position: absolute; top: 50%; width: max(100cqw, 177.78cqh); aspect-ratio: 16 / 9;
+  left: clamp(calc(100cqw - max(100cqw, 177.78cqh)), calc(50cqw - var(--contact) * max(100cqw, 177.78cqh)), 0px); transform: translateY(-50%); }
+.encre__ciel { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* la main : elle arrive de la droite et vient poser le bout de l'index sur la poire, puis flotte à peine
+   (dans son image, le bout de l'index est à 24,5 % de la largeur et à mi-hauteur ; l'avant-bras sort à droite) */
+.encre__main { position: absolute; left: 11.5%; top: 7.2%; width: 90%; height: auto; pointer-events: none; transform-origin: 100% 50%; }
+html.js .encre__main { opacity: 0; transform: translate(42%, 6%) rotate(-4deg); transition: transform 2.2s cubic-bezier(0.16, 0.84, 0.3, 1) 0.2s, opacity 0.9s var(--ease) 0.2s; }
+html.js .encre.is-revele .encre__main { opacity: 1; transform: none; }
+.encre.is-touche .encre__main { animation: encre-flotte 6s ease-in-out 0.4s infinite; }
+@keyframes encre-flotte { 0%, 100% { transform: none; } 50% { transform: translate(-0.4%, 0.6%) rotate(-0.4deg); } }
+/* au contact, un reflet doré s'allume sur la poire */
+.encre__eclat { position: absolute; left: var(--poire-x); top: var(--poire-y); width: 18%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%) scale(0.4); opacity: 0; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 246, 214, 0.95) 0%, rgba(255, 214, 120, 0.5) 22%, rgba(255, 200, 90, 0) 62%); mix-blend-mode: screen; }
+.encre.is-touche .encre__eclat { animation: encre-eclat 1.8s var(--ease) both; }
+@keyframes encre-eclat { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.25); } }
+/* le papier et l'éclaboussure, au-dessus de la scène, tant qu'elle n'est pas dévoilée */
+.encre__toile { position: absolute; inset: 0; display: block; width: 100%; height: 100%; visibility: hidden; }
+.encre.has-gl:not(.is-revele) .encre__toile { visibility: visible; }
+/* le titre, en bas à gauche, une fois la scène dévoilée */
+.encre__texte { position: absolute; left: 0; right: 0; bottom: clamp(36px, 8vh, 84px); pointer-events: none; }
+.encre__titre { max-width: 9.5em; margin: 0; font: 400 clamp(40px, 5.6vw, 96px)/0.98 var(--display); letter-spacing: -0.035em; color: #10203f; }
+.encre__titre em { display: block; font-style: italic; color: var(--blue); }
+.encre__lead { max-width: 30em; margin: 18px 0 0; font: 400 clamp(15px, 1.15vw, 17px)/1.55 var(--sans); color: rgba(16, 32, 63, 0.78); }
+html.js .encre__texte > * { opacity: 0; transform: translateY(18px); transition: opacity 1s var(--ease), transform 1.2s var(--ease); }
+html.js .encre.is-revele .encre__texte > * { opacity: 1; transform: none; }
+html.js .encre.is-revele .encre__titre { transition-delay: 0.5s; }
+html.js .encre.is-revele .encre__lead { transition-delay: 0.75s; }
+@media (max-width: 760px) {
+  .encre__texte { bottom: clamp(28px, 6vh, 56px); }
+  .encre__titre { font-size: clamp(36px, 10.5vw, 48px); }
+}
+/* le grand coup de pinceau : un calque SVG plein écran, au-dessus de tout (même du menu) */
+.encre__trait { position: fixed; inset: 0; z-index: 130; width: 100%; height: 100%; pointer-events: none; visibility: hidden; }
+.encre__trait.is-on { visibility: visible; }
+.encre__trait path { fill: none; stroke: var(--blue); stroke-linecap: round; stroke-linejoin: round; }
 /* et en bas, l'herbe se fond dans le beige de la méthode */
 .identite::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(90px, 13vh, 160px); pointer-events: none;
   background: linear-gradient(to bottom, rgba(245, 241, 233, 0), rgba(245, 241, 233, 0.35) 45%, rgba(245, 241, 233, 0.8) 78%, var(--bg)); }

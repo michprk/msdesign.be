@@ -200,12 +200,24 @@
         <span class="gantt__bar gantt__bar--3">Mise en ligne</span>
       </div>
     </div>
-    <div class="promise__cols">
-      <div data-reveal><img class="promise__img" src="/assets/img/etape-maquette-640.webp" srcset="/assets/img/etape-maquette-640.webp 640w, /assets/img/etape-maquette-1200.webp 1200w" sizes="(max-width: 760px) 92vw, 30vw" width="1200" height="900" loading="lazy" decoding="async" alt="Des pages de site dessinées au crayon sur papier, avant la maquette."><h3>Maquette</h3><p>Un appel de 30&nbsp;minutes, puis votre page d’accueil dessinée et un devis ferme sous 5&nbsp;jours. Vous validez&nbsp;: la date de mise en ligne est fixée.</p></div>
-      <div data-reveal><img class="promise__img" src="/assets/img/etape-conception-640.webp" srcset="/assets/img/etape-conception-640.webp 640w, /assets/img/etape-conception-1200.webp 1200w" sizes="(max-width: 760px) 92vw, 30vw" width="1200" height="900" loading="lazy" decoding="async" alt="Deux écrans sur un bureau clair, remplis de maquettes de pages."><h3>Conception</h3><p>Nous dessinons et développons toutes les pages. Vous suivez l’avancement chaque semaine, vos retours sont intégrés au fil de l’eau.</p></div>
-      <div data-reveal><img class="promise__img" src="/assets/img/etape-en-ligne-640.webp" srcset="/assets/img/etape-en-ligne-640.webp 640w, /assets/img/etape-en-ligne-1200.webp 1200w" sizes="(max-width: 760px) 92vw, 30vw" width="1200" height="900" loading="lazy" decoding="async" alt="Un site ouvert sur un téléphone, tenu en main."><h3>Mise en ligne</h3><p>Référencement, vitesse, accessibilité, tests sur téléphone&nbsp;: votre site part en ligne quand tout est au niveau, à la date promise.</p></div>
-    </div>
     <p class="promise__note" data-reveal>* 21&nbsp;jours après la maquette validée et la réception de vos textes, pour la formule Signature (14 pour l’Essentiel, 6&nbsp;semaines pour le Premium). Si nous dépassons la date de notre fait, nous vous remboursons 10&nbsp;% du prix par semaine de retard, jusqu’à 50&nbsp;%. <a href="/cgu.html#delais">Comment fonctionne le remboursement</a></p>
+  </div>
+</section>
+
+<!-- La poire d’or : à la place des photos des étapes. On y arrive par un énorme coup de pinceau bleu qui tourne
+     en spirale sur tout l’écran puis s’enroule jusqu’au centre ; là, il éclabousse, et l’encre « mange » le papier :
+     derrière, il y a la scène, un ciel de nuages, une poire en or sur sa branche, et une main qui vient la toucher
+     (assets/js/app.js, « encre » ; l’éclaboussure : assets/js/encre.js). Sans WebGL, la scène est simplement là. -->
+<section class="encre" id="encre" aria-labelledby="encre-titre" data-encre>
+  <div class="encre__scene">
+    <img class="encre__ciel" src="/assets/img/poire/ciel-poire-1920.webp" srcset="/assets/img/poire/ciel-poire-1920.webp 1920w, /assets/img/poire/ciel-poire-3840.webp 3840w" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" width="3840" height="2160" alt="Une poire en or suspendue à une branche, dans un ciel de nuages blancs ; une main s’approche pour la toucher." loading="lazy" decoding="async">
+    <span class="encre__eclat" aria-hidden="true"></span>
+    <img class="encre__main" src="/assets/img/poire/main-1400.webp" srcset="/assets/img/poire/main-1400.webp 1400w, /assets/img/poire/main-2720.webp 2720w" sizes="(max-aspect-ratio: 16/9) 160vh, 90vw" width="2720" height="1536" alt="" loading="lazy" decoding="async">
+  </div>
+  <canvas class="encre__toile" aria-hidden="true"></canvas>
+  <div class="wrap encre__texte">
+    <h2 class="encre__titre" id="encre-titre">Mettez le désordre. <em>On remet de l’ordre.</em></h2>
+    <p class="encre__lead">Vos idées en vrac deviennent un site net, en 21&nbsp;jours.</p>
   </div>
 </section>
 

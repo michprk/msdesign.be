@@ -675,6 +675,93 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     v.addEventListener('ended', close);
   });
 
+  /* ---------- La poire d’or : le grand coup de pinceau en spirale, l’éclaboussure, puis la scène ----------
+     En descendant, quand la section arrive (son haut aux 3/5 de l’écran), le défilement se met en pause : un énorme
+     trait bleu entre par le bas à gauche et tourne en spirale sur tout l’écran jusqu’à le recouvrir ; caché
+     derrière lui, on se cale sur la section (le papier est remis à neuf) ; puis la queue du trait le suit et il
+     s’enroule jusqu’au centre, où il éclabousse : l’encre tourbillonne et « mange » le papier ; derrière, le ciel et
+     la poire d’or apparaissent, la main arrive et vient la toucher (un reflet doré s’allume), le titre se pose.
+     Si la section repart sous l’écran (on remonte), tout rejouera. L’éclaboussure (assets/js/encre.js, WebGL 2)
+     n’est chargée qu’à l’approche ; sans elle, la scène est simplement là. */
+  safe('encre', () => {
+    const sec = $('[data-encre]');
+    if (!sec) return;
+    const toile = $('.encre__toile', sec);
+    let encre = null, joue = false, enCours = false, minuterie = 0;
+    // la scène dévoilée : la main arrive, puis touche la poire
+    const devoile = () => { sec.classList.add('is-revele'); clearTimeout(minuterie); minuterie = setTimeout(() => sec.classList.add('is-touche'), reduced ? 0 : 2100); };
+    const recouvre = () => { clearTimeout(minuterie); sec.classList.remove('is-revele', 'is-touche'); if (encre) encre.recouvrir(); };
+    const charger = () => import('./encre.js').then((m) => {
+      encre = m.createEncre(toile, { onFini: devoile });
+      if (!encre) { devoile(); return; }
+      new IntersectionObserver(([v]) => encre.visible(v.isIntersecting)).observe(sec);
+      window.addEventListener('resize', () => { if (!sec.classList.contains('is-revele')) encre.taille(); });
+      // sans coup de pinceau (mouvement réduit, ou déjà sur la section), la scène est déjà là
+      if (reduced || !lenis || joue || sec.getBoundingClientRect().top < window.innerHeight * 0.6) { joue = true; devoile(); }
+      sec.classList.add('has-gl');
+    }).catch((err) => { console.warn('[ms] encre', err); devoile(); });
+    new IntersectionObserver(([v], o) => { if (v.isIntersecting) { o.disconnect(); charger(); } }, { rootMargin: '200% 0px' }).observe(sec);
+
+    // le coup de pinceau : un calque SVG plein écran, un seul chemin dont on n’affiche qu’un morceau (de la queue à la tête)
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg'), chemin = document.createElementNS(NS, 'path');
+    svg.setAttribute('class', 'encre__trait'); svg.setAttribute('aria-hidden', 'true');
+    svg.appendChild(chemin); document.body.appendChild(svg);
+    const entre = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+    const DUREE = 2.3, SAUT = 1.4;                          // en secondes : la durée totale, le moment du saut (écran tout bleu)
+    const lancer = () => {
+      enCours = joue = true;
+      const W = window.innerWidth, H = window.innerHeight;
+      const y = sec.getBoundingClientRect().top + window.scrollY;
+      // la spirale : centrée là où le trait éclaboussera, assez grande pour que son premier tour déborde de l’écran ;
+      // ses tours sont plus serrés que l’épaisseur du trait : quand elle est entière, l’écran est tout bleu
+      const cx = W * 0.5, cy = Math.min(H, sec.offsetHeight) * 0.47;
+      const R0 = Math.hypot(W, H) * 0.56, TOURS = 2.4, depart = Math.PI * 0.75;
+      const epais = (R0 / TOURS) * 1.3, fin = clamp(W * 0.03, 22, 44);
+      const pts = [[cx + Math.cos(depart - 0.5) * R0 * 1.35, cy + Math.sin(depart - 0.5) * R0 * 1.35]];
+      for (let i = 0; i <= 420; i++) {
+        const u = i / 420, a = depart + u * Math.PI * 2 * TOURS, r = R0 * (1 - u);
+        pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]);
+      }
+      chemin.setAttribute('d', 'M ' + pts.map(([x, yy]) => x.toFixed(1) + ' ' + yy.toFixed(1)).join(' L '));
+      const L = chemin.getTotalLength();
+      lenis.stop();
+      svg.classList.add('is-on');
+      const t0 = performance.now();
+      let saute = false, eclabousse = false;
+      const image = (now) => {
+        const t = (now - t0) / 1000;
+        const tete = easeInOut(entre(t, 0, 1.2)), queue = easeInOut(entre(t, 0.75, DUREE - 0.05));
+        chemin.style.strokeWidth = (epais + (fin - epais) * easeInOut(entre(t, 1.3, 2.05))).toFixed(1);
+        chemin.style.strokeDasharray = Math.max(0.01, (tete - queue) * L).toFixed(1) + ' ' + (L * 2).toFixed(1);
+        chemin.style.strokeDashoffset = (-queue * L).toFixed(1);
+        // l’écran est couvert : on remet le papier et on se cale sur la section, sans défilement visible
+        if (!saute && t >= SAUT) { saute = true; recouvre(); navigationJusqua = performance.now() + 1500; jumpToY(y); }
+        // le trait arrive au centre : il éclabousse, et l’encre ouvre le papier sur la scène
+        if (!eclabousse && t >= DUREE - 0.2) {
+          eclabousse = true;
+          if (encre) encre.eclabousser(cx, cy); else devoile();
+        }
+        if (t < DUREE) { requestAnimationFrame(image); return; }
+        svg.classList.remove('is-on');
+        lenis.start();
+        enCours = false;
+      };
+      requestAnimationFrame(image);
+    };
+    // le déclencheur : en descendant, quand le haut de la section passe aux 3/5 de l’écran
+    let dernierY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const yy = window.scrollY, descend = yy > dernierY; dernierY = yy;
+      const r = sec.getBoundingClientRect();
+      if (r.top > window.innerHeight) joue = false;          // la section est repartie sous l’écran : on rejouera
+      // arrivé sans coup de pinceau (par le menu, ou en remontant d’en dessous) : la scène est simplement là
+      if (!joue && !enCours && r.top <= 0 && r.bottom > 0) { joue = true; if (encre) encre.devoiler(); else devoile(); return; }
+      if (joue || enCours || !descend || reduced || !lenis || performance.now() < navigationJusqua) return;
+      if (r.top < window.innerHeight * 0.6 && r.top > 0) lancer();
+    }, { passive: true });
+  });
+
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
   safe('ribbon', () => {
     const host = $('[data-ribbon]');
