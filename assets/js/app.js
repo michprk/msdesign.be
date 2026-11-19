@@ -1158,7 +1158,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       [/premium|mystere|secret|bientot/, '/etudes/#premium', 'Notre prochain site Premium'],
       [/etude|exemple|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos exemples de sites'],
       [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],
-      [/methode|process|etape/, '/#methode', 'Notre méthode'],
+      [/methode|process|etape/, '/#promesse', 'Notre méthode'],
       [/tarif|prix|offre|formule|devis-gratuit|pricing/, '/#contact', 'Nous contacter'],
       [/faq|question|aide/, '/#contact', 'Nous poser une question'],
       [/contact|devis|rendez-vous|rdv/, '/#contact', 'Le formulaire de contact'],

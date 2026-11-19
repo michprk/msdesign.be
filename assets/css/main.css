@@ -1276,9 +1276,9 @@ html.js .encre.is-revele .encre__lead { transition-delay: 0.75s; }
 .encre__trait { position: fixed; inset: 0; z-index: 130; width: 100%; height: 100%; pointer-events: none; visibility: hidden; }
 .encre__trait.is-on { visibility: visible; }
 .encre__trait path { fill: none; stroke: var(--blue); stroke-linecap: round; stroke-linejoin: round; }
-/* et en bas, l'herbe se fond dans le beige de la méthode */
-.identite::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(90px, 13vh, 160px); pointer-events: none;
-  background: linear-gradient(to bottom, rgba(245, 241, 233, 0), rgba(245, 241, 233, 0.35) 45%, rgba(245, 241, 233, 0.8) 78%, var(--bg)); }
+/* et en bas, l'herbe se fond dans le haut du ciel de « Ensemble » (l'heure bleue) */
+.identite::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(120px, 18vh, 220px); pointer-events: none;
+  background: linear-gradient(to bottom, rgba(36, 49, 110, 0), rgba(36, 49, 110, 0.4) 40%, rgba(36, 49, 110, 0.85) 75%, #24316e); }
 .identite__texte { position: relative; display: flex; flex-direction: column; align-items: center; padding-top: clamp(150px, 20vh, 230px); text-align: center; }
 .identite__label { color: rgba(245, 241, 233, 0.72); }
 .identite__titre { max-width: 13em; color: var(--on-night); font-size: clamp(40px, 5vw, 76px); }
@@ -1290,3 +1290,23 @@ html.js .encre.is-revele .encre__lead { transition-delay: 0.75s; }
   .identite__texte { padding-top: clamp(120px, 16vh, 170px); }
   .identite__carte { width: clamp(150px, 13%, 200px); }
 }
+
+/* ==========================================================================
+   Ensemble : à la place de la méthode. Le même ciel que l'identité, quelques minutes plus tard (l'heure bleue,
+   les premières étoiles), et l'invitation à travailler ensemble, au milieu. L'image couvre la section, calée
+   en bas (pour garder la pointe des herbes) ; le haut naît de l'herbe de l'identité, le bas se fond dans le
+   beige du contact.
+   ========================================================================== */
+.ensemble { --haut: #24316e; position: relative; isolation: isolate; overflow: clip; display: grid; place-items: center; min-height: max(100vh, 720px); min-height: max(100svh, 720px); padding: clamp(130px, 18vh, 200px) 0 clamp(150px, 20vh, 220px); color: var(--on-night); background: var(--haut); text-align: center; }
+.ensemble__fond { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+/* le haut : le bleu profond où se fond l'herbe de l'identité, sans ligne de raccord */
+.ensemble::before { content: ""; position: absolute; left: 0; right: 0; top: 0; z-index: -1; height: clamp(140px, 22vh, 260px); pointer-events: none;
+  background: linear-gradient(to bottom, var(--haut), rgba(36, 49, 110, 0.7) 35%, rgba(36, 49, 110, 0)); }
+.ensemble::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: -1; height: clamp(90px, 13vh, 160px); pointer-events: none;
+  background: linear-gradient(to bottom, rgba(245, 241, 233, 0), rgba(245, 241, 233, 0.35) 45%, rgba(245, 241, 233, 0.8) 78%, var(--bg)); }
+.ensemble__texte { display: flex; flex-direction: column; align-items: center; }
+.ensemble__label { color: rgba(245, 241, 233, 0.72); }
+.ensemble__titre { max-width: 11em; margin: 0; font: 400 clamp(46px, 6.6vw, 108px)/0.98 var(--display); letter-spacing: -0.035em; color: #fbf9f4; text-wrap: balance; }
+.ensemble__titre em { font-style: italic; }
+.ensemble__lead { max-width: 33em; margin: 26px 0 0; font: 400 clamp(17px, 1.3vw, 19px)/1.6 var(--sans); color: rgba(245, 241, 233, 0.85); text-wrap: pretty; }
+.ensemble__liens { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px 28px; margin: 34px 0 0; }
