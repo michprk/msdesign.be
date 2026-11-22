@@ -14,7 +14,7 @@
   RewriteRule ^api/contact/?$ api/contact.php [L]
 
   # 2. Adresses courantes qui mènent à la bonne section (liens partagés, anciennes habitudes)
-  RewriteRule ^(services|site-vitrine|identite-visuelle|referencement|seo)/?$ /#services [R=301,NE,L]
+  RewriteRule ^(services|site-vitrine|identite-visuelle|referencement|seo)/?$ /#promesse [R=301,NE,L]
   RewriteRule ^(realisations|portfolio|projets)/?$ /#realisations [R=301,NE,L]
   RewriteRule ^(methode|process)/?$ /#methode [R=301,NE,L]
   RewriteRule ^(tarifs|prix|offres)/?$ /#tarifs [R=301,NE,L]

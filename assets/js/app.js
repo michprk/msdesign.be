@@ -367,52 +367,15 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     else window.addEventListener('load', () => setTimeout(charger, 400), { once: true });
   });
 
-  /* ---------- Le ciel : il apparaît quand on arrive à l’identité (et repart si l’on remonte au-dessus) ---------- */
+  /* ---------- Le ciel : il apparaît quand on arrive au contact (et repart si l’on remonte au-dessus) ---------- */
   safe('ciel', () => {
     const el = $('[data-ciel]');
     if (!el) return;
-    new IntersectionObserver(([e]) => el.classList.toggle('is-visible', e.isIntersecting), { rootMargin: '0px 0px -35% 0px' }).observe(el);
-  });
-
-  /* ---------- Le chemin de nuages : chaque nuage avance à sa vitesse (data-v fois celle du défilement) ----------
-     Un nuage est placé par rapport à une section (data-ancre ; son haut, son milieu ou son bas : data-cote), décalé
-     de data-dy hauteurs d’écran, à data-x % de la largeur, large de data-l % (data-lm sur un écran étroit). Quand son
-     centre passe au milieu de l’écran, il est exactement à sa place ; avant et après, il s’en écarte : plus vite que
-     la page si data-v > 1 (les bancs qu’on traverse), plus lentement si data-v < 1 (ceux qui nous suivent). */
-  safe('nuages', () => {
-    const boite = $('[data-nuees]');
-    if (!boite) return;
-    const cadre = boite.parentElement, nuees = $$('.nuee', boite);
-    let places = [], attente = 0;
-    const placer = () => {
-      const vw = window.innerWidth, vh = window.innerHeight, etroit = vw < 760;
-      const haut = cadre.getBoundingClientRect().top + window.scrollY;
-      places = nuees.map((n) => {
-        const a = $(n.dataset.ancre);
-        if (!a) return null;
-        const r = a.getBoundingClientRect(), dessus = r.top + window.scrollY - haut;
-        const bord = n.dataset.cote === 'bas' ? dessus + r.height : n.dataset.cote === 'milieu' ? dessus + r.height / 2 : dessus;
-        const l = Number((etroit && n.dataset.lm) || n.dataset.l) * vw / 100;
-        const h = l * Number(n.getAttribute('height')) / Number(n.getAttribute('width'));
-        const centre = bord + Number(n.dataset.dy || 0) * vh;
-        // sur un écran étroit, les nuages plus larges que l’écran restent centrés sur leur position prévue
-        const x = Number(n.dataset.x) * vw / 100 - (etroit && n.dataset.lm ? (l - Number(n.dataset.l) * vw / 100) / 2 : 0);
-        n.style.width = l.toFixed(0) + 'px'; n.style.left = x.toFixed(0) + 'px'; n.style.top = (centre - h / 2).toFixed(0) + 'px';
-        return { n, centre: haut + centre, v: reduced ? 1 : Number(n.dataset.v || 1) };
-      }).filter(Boolean);
-      bouger();
-    };
-    const bouger = () => {
-      attente = 0;
-      const milieu = window.scrollY + window.innerHeight / 2;
-      for (const p of places) p.n.style.translate = '0 ' + ((milieu - p.centre) * (1 - p.v)).toFixed(1) + 'px';
-    };
-    window.addEventListener('scroll', () => { if (!attente) attente = requestAnimationFrame(bouger); }, { passive: true });
-    window.addEventListener('resize', () => requestAnimationFrame(placer));
-    window.addEventListener('load', placer);
-    // la page bouge encore au chargement (images, polices) : on replace quand la taille du voyage change
-    if ('ResizeObserver' in window) new ResizeObserver(() => requestAnimationFrame(placer)).observe(cadre);
-    placer();
+    // il reste allumé quand on descend dans le pied de page : en remontant, pas de clignotement
+    new IntersectionObserver(([e]) => el.classList.toggle('is-visible', e.isIntersecting || e.boundingClientRect.top < 0), { rootMargin: '0px 0px -35% 0px' }).observe(el);
+    // dès que le ciel entre par le bas, le bas de la poire se fond dedans
+    const poire = $('[data-encre]');
+    if (poire) new IntersectionObserver(([e]) => poire.classList.toggle('is-quittee', e.isIntersecting), { rootMargin: '0px 0px -2% 0px' }).observe(el);
   });
 
   /* ---------- Nos réalisations : la salle de projection ----------
@@ -1194,7 +1157,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     const code = $('[data-path]');
     if (code) code.textContent = location.host + location.pathname;
     const guesses = [
-      [/service|site|vitrine|identit|logo|seo|referencement|hebergement|entretien/, '/#services', 'Nos services'],
+      [/service|site|vitrine|identit|logo|seo|referencement|hebergement|entretien/, '/#promesse', 'Notre méthode'],
       [/greentage|verdane|plante|fleur|vintage|fournil|pain|veritas|architect|bascule|graphis/, '/etudes/', 'Nos exemples de sites'],
       [/premium|mystere|secret|bientot/, '/etudes/#premium', 'Notre prochain site Premium'],
       [/etude|exemple|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos exemples de sites'],

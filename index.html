@@ -222,54 +222,8 @@
 </section>
 
 
-<!-- Le voyage : de « Une marque qu’on reconnaît… » à « Il ne manque plus que vous », un fond bleu pastel (le bleu du
-     ciel du contact) et, tout autour du texte, un chemin de nuages peints qui longe les bords : une bande en haut, un
-     mur à gauche, une bande en bas qui devient la bande du haut de la partie suivante, un coin en haut à droite… avec
-     un ruban de soie bleu roi et des colombes. Chaque élément avance à sa vitesse (assets/js/app.js, « nuages ») :
-     placé par rapport à une section (data-ancre, son bord : data-cote), décalé de data-dy hauteurs d’écran, à data-x %
-     de la largeur, large de data-l % (data-lm sur téléphone), il va à data-v fois la vitesse du défilement. -->
-<div class="voyage" data-voyage>
-<div class="nuees" aria-hidden="true" data-nuees>
-  <img class="nuee nuee--derriere" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="120vw" alt="" width="2720" height="1536" loading="lazy" decoding="async" data-ancre="#services" data-cote="haut" data-dy="0.16" data-x="-12" data-l="124" data-lm="230" data-v="0.72">
-  <img class="nuee nuee--derriere nuee--ruban" src="/assets/img/nuages/ruban-1600.webp" alt="" width="1600" height="903" loading="lazy" decoding="async" data-ancre="#services" data-cote="milieu" data-dy="0.26" data-x="-10" data-l="46" data-lm="100" data-v="0.84">
-  <img class="nuee nuee--derriere" src="/assets/img/nuages/bord-1200.webp" alt="" width="1200" height="1600" loading="lazy" decoding="async" data-ancre="#services" data-cote="milieu" data-dy="0.08" data-x="-5" data-l="32" data-lm="62" data-v="0.8">
-  <img class="nuee nuee--derriere nuee--miroir" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="120vw" alt="" width="2720" height="1536" loading="lazy" decoding="async" data-ancre="#services" data-cote="bas" data-dy="-0.02" data-x="-10" data-l="120" data-lm="230" data-v="0.86">
-  <img class="nuee nuee--devant nuee--colombe" src="/assets/img/nuages/colombe-900.webp" alt="" width="900" height="900" loading="lazy" decoding="async" data-ancre="#services" data-cote="bas" data-dy="-0.32" data-x="80" data-l="15" data-lm="30" data-v="1.18">
-  <img class="nuee nuee--derriere" src="/assets/img/nuages/coin-1600.webp" alt="" width="1600" height="1200" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="haut" data-dy="0.3" data-x="60" data-l="44" data-lm="90" data-v="0.78">
-  <img class="nuee nuee--derriere" src="/assets/img/nuages/bord-1200.webp" alt="" width="1200" height="1600" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="bas" data-dy="-0.42" data-x="-6" data-l="28" data-lm="56" data-v="0.86">
-  <img class="nuee nuee--devant nuee--colombe nuee--miroir" src="/assets/img/nuages/colombe-900.webp" alt="" width="900" height="900" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="milieu" data-dy="0.12" data-x="5" data-l="11" data-lm="24" data-v="1.22">
-  <img class="nuee nuee--derriere" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="120vw" alt="" width="2720" height="1536" loading="lazy" decoding="async" data-ancre="#ensemble" data-cote="bas" data-dy="-0.16" data-x="-12" data-l="124" data-lm="230" data-v="0.9">
-</div>
-
-<!-- Identité visuelle (à la place de l’ancien bloc « Nos services ») : dans le ciel, la carte de Prisme (un opticien
-     d’exemple) posée sur un banc de nuages, le texte au milieu. -->
-<section class="identite" id="services" aria-labelledby="identite-title">
-  <div class="identite__scene">
-    <img class="identite__carte" src="/assets/img/logos/carte-prisme-verre.webp" width="600" height="750" alt="La carte de Prisme, opticien : le mot « prisme » sur un verre irisé, avec « lunettes de créateurs, sur mesure »." loading="lazy" decoding="async">
-    <img class="identite__nuee" src="/assets/img/nuages/bande-1600.webp" srcset="/assets/img/nuages/bande-1600.webp 1600w, /assets/img/nuages/bande-2720.webp 2720w" sizes="(max-aspect-ratio: 16/9) 200vh, 112vw" alt="" width="2720" height="1536" loading="lazy" decoding="async">
-  </div>
-  <div class="wrap identite__texte">
-    <p class="label identite__label" data-reveal>Identité visuelle</p>
-    <h2 class="h2 identite__titre" id="identite-title" data-reveal>Une marque qu’on reconnaît <em>au premier regard.</em></h2>
-    <p class="identite__lead" data-reveal>Le logo, les couleurs et les typographies de votre commerce, déclinés partout&nbsp;: vitrine, enseigne, cartes, réseaux et site. Ici, Prisme, un opticien d’exemple.</p>
-    <p class="identite__liens" data-reveal><a class="btn" href="/#contact">Parlons de votre marque<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></p>
-  </div>
-</section>
-
-<!-- Ensemble : à la place de la méthode (ses quatre photos). Toujours le même ciel, entre deux bancs de nuages, et au
-     milieu l’invitation à travailler ensemble. -->
-<section class="ensemble" id="ensemble" aria-labelledby="ensemble-titre">
-  <div class="wrap ensemble__texte">
-    <p class="label ensemble__label" data-reveal>Ensemble</p>
-    <h2 class="ensemble__titre" id="ensemble-titre" data-reveal>Il ne manque plus <em>que vous.</em></h2>
-    <p class="ensemble__lead" data-reveal>Vous avez l’idée, nous avons le savoir-faire. Un appel de 30&nbsp;minutes suffit pour commencer&nbsp;: votre site est en ligne en 21&nbsp;jours.</p>
-    <p class="ensemble__liens" data-reveal><a class="btn" href="/#contact">Parlons de votre projet<svg class="btn__icon" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a></p>
-  </div>
-</section>
-</div><!-- /voyage -->
-
-<!-- Le ciel : seulement pour la fin (le contact et le studio). Quand on arrive au contact, le bleu du voyage s’efface et
-     les nuages montent doucement en place (une fois, un peu plus d’une seconde) ; ensuite le ciel reste derrière, fixe. -->
+<!-- Le ciel : seulement le contact, sur un écran. Quand on y arrive, le bas clair de la poire se fond et les nuages montent
+     doucement en place ; ils s’arrêtent au bas du contact, le pied de page retrouve le beige. -->
 <div class="ciel" data-ciel>
 <div class="ciel__fond" aria-hidden="true"></div>
 
@@ -285,52 +239,6 @@
   </div>
 </section>
 
-<!-- Le studio : le plan de Bruxelles, et l’hôtel de ville dessiné au trait -->
-<section class="sec studio" id="studio" aria-labelledby="studio-title">
-  <div class="wrap studio__grid">
-    <figure class="studio__map" data-reveal>
-      <img src="/assets/img/plan-bruxelles-700.webp" srcset="/assets/img/plan-bruxelles-700.webp 700w, /assets/img/plan-bruxelles-1400.webp 1400w" sizes="(max-width: 900px) 92vw, 40vw" width="1400" height="980" loading="lazy" decoding="async" alt="Plan stylisé de Bruxelles : le centre, Ixelles, Saint-Gilles, Etterbeek, Schaerbeek et Molenbeek.">
-      <p class="studio__pin"><svg aria-hidden="true"><use href="#i-pin"/></svg><span><strong>M&amp;S Design</strong>Bruxelles</span></p>
-    </figure>
-    <div class="studio__copy">
-      <p class="label" data-reveal>Bruxelles</p>
-      <h2 class="h2" id="studio-title" data-reveal>Basés au cœur<br>de la capitale.</h2>
-      <p class="lead" data-reveal>Nous travaillons avec des clients en Belgique et partout en Europe. Que vous soyez indépendant, commerce ou PME, nous sommes à votre écoute pour créer un site qui vous ressemble.</p>
-      <a class="studio__maps" href="https://www.google.com/maps/place/Bruxelles" target="_blank" rel="noopener" data-reveal><svg aria-hidden="true"><use href="#i-pin"/></svg>Voir sur Google Maps <span aria-hidden="true">→</span></a>
-      <p class="studio__legal" data-reveal>Ouverture en 2027. Numéro d’entreprise et adresse du siège seront publiés dans les <a href="/cgu.html#mentions">mentions légales</a>.</p>
-    </div>
-    <div class="studio__sketch" aria-hidden="true" data-reveal>
-      <p class="note">On se rencontre&nbsp;?<br>Pourquoi pas&nbsp;!<svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M14 4c22 6 34 22 30 46"/><path d="M37 43l7 9 6-10"/></svg></p>
-      <svg class="hdv" viewBox="0 0 160 230" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 222h148"/>
-        <!-- les ailes -->
-        <path d="M14 222v-66h50v66M96 222v-66h50v66"/>
-        <path d="M14 156l25-20 25 20M96 156l25-20 25 20"/>
-        <path d="M24 148l4-8 4 8M46 148l4-8 4 8M106 148l4-8 4 8M128 148l4-8 4 8"/>
-        <path d="M20 182v-12a3 3 0 0 1 6 0v12M32 182v-12a3 3 0 0 1 6 0v12M44 182v-12a3 3 0 0 1 6 0v12M54 182v-12a3 3 0 0 1 6 0v12"/>
-        <path d="M20 208v-12a3 3 0 0 1 6 0v12M32 208v-12a3 3 0 0 1 6 0v12M44 208v-12a3 3 0 0 1 6 0v12M54 208v-12a3 3 0 0 1 6 0v12"/>
-        <path d="M102 182v-12a3 3 0 0 1 6 0v12M114 182v-12a3 3 0 0 1 6 0v12M126 182v-12a3 3 0 0 1 6 0v12M136 182v-12a3 3 0 0 1 6 0v12"/>
-        <path d="M102 208v-12a3 3 0 0 1 6 0v12M114 208v-12a3 3 0 0 1 6 0v12M126 208v-12a3 3 0 0 1 6 0v12M136 208v-12a3 3 0 0 1 6 0v12"/>
-        <path d="M14 192h50M96 192h50"/>
-        <!-- la tour -->
-        <path d="M64 222v-98h32v98"/>
-        <path d="M72 222v-16a8 8 0 0 1 16 0v16"/>
-        <path d="M70 190v-14a3 3 0 0 1 6 0v14M84 190v-14a3 3 0 0 1 6 0v14M70 160v-14a3 3 0 0 1 6 0v14M84 160v-14a3 3 0 0 1 6 0v14"/>
-        <path d="M64 124l-3-8M96 124l3-8M61 116h38"/>
-        <path d="M67 116v-36h26v36"/>
-        <path d="M72 108v-18a3 3 0 0 1 6 0v18M82 108v-18a3 3 0 0 1 6 0v18"/>
-        <path d="M67 80l-2-7M93 80l2-7M65 73h30"/>
-        <path d="M70 73v-18h20v18"/>
-        <path d="M75 70v-10a2.5 2.5 0 0 1 5 0v10M80 70v-10a2.5 2.5 0 0 1 5 0v10"/>
-        <path d="M70 55h20"/>
-        <!-- la flèche et saint Michel -->
-        <path d="M71 55l9-40 9 40"/>
-        <path d="M73.5 46h13M75.5 37h9M77.3 28h5.4"/>
-        <path d="M80 15v-9M77 9l3-3 3 3M80 6l3-3"/>
-      </svg>
-    </div>
-  </div>
-</section>
 </div><!-- /ciel -->
 
 </main>
