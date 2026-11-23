@@ -214,25 +214,20 @@
   </div>
 </section>
 
-<!-- La poire d’or : à la place des photos des étapes. On y arrive par un énorme coup de pinceau bleu qui tourne
-     en spirale sur tout l’écran puis s’enroule jusqu’au centre ; là, il éclabousse, et l’encre « mange » le papier :
-     derrière, il y a la scène, un ciel de nuages, une poire en or sur sa branche, et une main qui vient la toucher
-     (assets/js/app.js, « encre » ; l’éclaboussure : assets/js/encre.js). Sans WebGL, la scène est simplement là. -->
-<section class="encre" id="encre" aria-labelledby="encre-titre" data-encre>
-  <div class="encre__scene">
-    <img class="encre__ciel" src="/assets/img/poire/ciel-poire-1920.webp" srcset="/assets/img/poire/ciel-poire-1920.webp 1920w, /assets/img/poire/ciel-poire-3840.webp 3840w" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" width="3840" height="2160" alt="Une poire en or suspendue à une branche, dans un ciel de nuages blancs ; une main s’approche pour la toucher." loading="lazy" decoding="async">
-    <span class="encre__eclat" aria-hidden="true"></span>
-    <img class="encre__main" src="/assets/img/poire/main-1400.webp" srcset="/assets/img/poire/main-1400.webp 1400w, /assets/img/poire/main-2720.webp 2720w" sizes="(max-aspect-ratio: 16/9) 160vh, 90vw" width="2720" height="1536" alt="" loading="lazy" decoding="async">
-  </div>
-  <canvas class="encre__toile" aria-hidden="true"></canvas>
-  <div class="wrap encre__texte">
-    <h2 class="encre__titre" id="encre-titre">Mettez le désordre. <em>On remet de l’ordre.</em></h2>
-    <p class="encre__lead">Vos idées en vrac deviennent un site net, en 21&nbsp;jours.</p>
+<!-- « Mettez le désordre. On remet de l’ordre. » (assets/js/sphere3d.js) : le bleu de la bande du dessus continue, puis
+     se défait en points ; les tuiles de nos identités visuelles (8 marques fictives : affiche, logo, couleurs, typo, carte,
+     icône) flottent en désordre ; une main dessinée en lignes de balayage bleues arrive et touche : elles se rangent en
+     sphère. On la fait tourner ; un clic sur une tuile ouvre la planche de sa marque. Sans WebGL : le titre seul. -->
+<section class="ordre" id="encre" aria-labelledby="ordre-titre" data-ordre>
+  <canvas class="ordre__toile" aria-hidden="true"></canvas>
+  <div class="wrap ordre__texte">
+    <h2 class="ordre__titre" id="ordre-titre">Mettez le désordre. <em>On remet de l’ordre.</em></h2>
+    <p class="ordre__lead">Logo, couleurs, typographies&nbsp;: vos idées en vrac deviennent une identité nette.</p>
   </div>
 </section>
 
 
-<!-- Le ciel : seulement le contact, sur un écran. Quand on y arrive, le bas clair de la poire se fond et les nuages montent
+<!-- Le ciel : seulement le contact, sur un écran. Quand on y arrive, le bas clair de la section du dessus se fond et les nuages montent
      doucement en place ; ils s’arrêtent au bas du contact, le pied de page retrouve le beige. -->
 <div class="ciel" data-ciel>
 <div class="ciel__fond" aria-hidden="true"></div>
