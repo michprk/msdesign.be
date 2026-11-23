@@ -319,7 +319,10 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       verrouiller(true);
       el.classList.add('is-plonge');
       setTimeout(() => voile.classList.add('is-on'), 760);
-      champ.plonger(() => {
+      let fini = false;
+      const arriver = () => {
+        if (fini) return;
+        fini = true;
         navigationJusqua = performance.now() + 900;
         jumpToY(cibleSalle(j));
         el.classList.remove('is-plonge');
@@ -327,11 +330,13 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         verrouiller(false);
         plonge = false;
         requestAnimationFrame(() => requestAnimationFrame(() => voile.classList.remove('is-on')));
-      });
+      };
+      champ.plonger(arriver);
+      setTimeout(arriver, 1500);                           // par sécurité : même si le dessin s’arrête, on arrive
     };
     const maj = () => {
       const y = window.scrollY, bas = y >= dernierY; dernierY = y;
-      const v = avance(), venuDuHaut = vAvant <= 0.06; vAvant = v;
+      const v = avance(), venuDuHaut = vAvant <= 0.06, assis = vAvant >= 0.04 && vAvant <= 0.4; vAvant = v;
       if (v < 0.03) parti = false;                         // revenu au début : le prochain cran replongera
       // le paysage se lève quand il couvre l’écran (en arrivant par le haut, c’est au moment où l’on se pose)
       if (!ne && (reduced || piste.getBoundingClientRect().top <= 1)) naitre();
@@ -347,8 +352,10 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         setTimeout(() => verrouiller(false), 1600);
         return;
       }
-      // un cran de plus vers le bas : on plonge
-      if (v > 0.18 && bas && !parti && libre) plonger(null);
+      // un cran de plus vers le bas : on plonge (seulement si l’on était posé sur le paysage : un saut d’un coup
+      // par-dessus la section, avec la barre de défilement par exemple, ne déclenche rien)
+      if (v > 0.18 && v < 0.95 && assis && bas && !parti && libre) plonger(null);
+      else if (v >= 0.95 && bas) parti = true;
     };
     window.addEventListener('scroll', maj, { passive: true });
     maj();
