@@ -279,92 +279,99 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     el.addEventListener('pointerup', lacher); el.addEventListener('pointercancel', lacher);
   });
 
-  /* ---------- Le geste : la fresque peinte s’anime, les index se touchent, puis on file vers nos projets ----------
-     Deux étapes, déclenchées par le défilement dans la piste (pas étirées) : 0 = les mains un peu écartées ;
-     au-delà de 6 %, 1 = elles glissent l’une vers l’autre jusqu’au contact (le titre change). Dès que les doigts
-     se touchent (en descendant), la page glisse d’elle-même jusqu’à « Nos projets ». En remontant, les mains se
-     séparent. Le dessin (WebGL) se charge dès que la page est prête ; sans WebGL, l’image reste fixe. */
-  safe('geste', () => {
-    const el = $('[data-geste]');
+  /* ---------- Le champ de points : le paysage se lève, puis on plonge vers nos projets ----------
+     Déclenché, pas étiré : en arrivant par le haut (en descendant), la page se pose au début de la piste le temps
+     que les points se lèvent ; au cran suivant vers le bas (ou au clic sur « Voir nos projets » / un nom de site),
+     la caméra plonge dans la vallée, l’écran passe au bleu nuit et l’on arrive sur « Nos projets ».
+     En remontant, rien ne bloque. Le dessin (WebGL) se charge dès que la page est prête. */
+  safe('champ', () => {
+    const el = $('[data-champ]');
     if (!el) return;
-    const piste = $('.geste__piste', el), toile = $('.geste__toile', el), salle = $('[data-salle]');
-    let geste = null, sansDessin = false, etat = -1, vAvant = 0, versLeBas = true, dernierY = window.scrollY, parti = false, tAuto = 0, tVerrou = 0, verrouille = false;
+    const piste = $('.champ__piste', el), toile = $('.champ__toile', el), salle = $('[data-salle]');
+    let champ = null, vAvant = 0, dernierY = window.scrollY, parti = false, plonge = false, verrouille = false, tVerrou = 0;
+    if (!reduced) el.classList.add('is-attente');
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
-    // le défilement en pause le temps du geste (souris : Lenis s’arrête ; sans Lenis : la page ne bouge plus) ;
-    // par sécurité, jamais plus de 7 s
+    // le défilement en pause (souris : Lenis s’arrête ; sinon la page ne bouge plus) ; par sécurité, jamais plus de 4 s
     const verrouiller = (oui) => {
       if (oui === verrouille) return;
       verrouille = oui; clearTimeout(tVerrou);
       if (lenis) { if (oui) lenis.stop(); else lenis.start(); }
-      else document.documentElement.style.overflow = oui ? 'hidden' : '';
-      if (oui) tVerrou = setTimeout(() => verrouiller(false), 7000);
+      else d.style.overflow = oui ? 'hidden' : '';
+      if (oui) tVerrou = setTimeout(() => verrouiller(false), 4000);
     };
-    // le contact fait : on descend tout seul jusqu’aux sites (une seule fois par passage, et seulement si l’on est encore ici)
-    const allerAuxSites = (attente) => {
-      clearTimeout(tAuto);
-      tAuto = setTimeout(() => {
-        verrouiller(false);
-        if (parti || etat < 1 || !salle) return;
-        const r = el.getBoundingClientRect();
-        if (r.top > window.innerHeight * 0.5 || r.bottom < window.innerHeight * 0.5) return;
-        parti = true;
-        // le passage : la fresque s’approche du point de contact, l’écran passe au bleu nuit des projets,
-        // on saute directement aux sites (sans défilement visible), puis le voile s’en va
-        if (reduced) { jumpToY(salle.getBoundingClientRect().top + window.scrollY + 1); return; }
-        voile.classList.add('is-on'); el.classList.add('is-passage');
-        setTimeout(() => {
-          jumpToY(salle.getBoundingClientRect().top + window.scrollY + 1);
-          el.classList.remove('is-passage');
-          requestAnimationFrame(() => requestAnimationFrame(() => voile.classList.remove('is-on')));
-        }, 480);
-      }, attente);
-    };
+    let ne = false;
+    const naitre = () => { if (ne) return; ne = true; el.classList.remove('is-attente'); el.classList.add('is-ne'); if (champ) champ.naitre(); };
     const voile = document.createElement('div');
     voile.className = 'passage'; voile.setAttribute('aria-hidden', 'true');
     document.body.appendChild(voile);
+    // où arriver dans « Nos projets » : le premier site, ou celui qu’on a choisi
+    const cibleSalle = (j) => {
+      const p = $('.salle__piste', salle), n = $$('.salle__ecran', salle).length || 1;
+      if (j == null || !p) return salle.getBoundingClientRect().top + window.scrollY + 1;
+      const r = p.getBoundingClientRect();
+      return r.top + window.scrollY + (r.height - window.innerHeight) * ((j + 0.5) / n);
+    };
+    // bam : la caméra plonge dans la vallée, les points filent, l’écran passe au bleu nuit, on est dans les projets
+    const plonger = (j) => {
+      if (plonge || !salle) return;
+      plonge = true; parti = true;
+      if (reduced || !champ) { plonge = false; scrollToY(cibleSalle(j), 1.1); return; }
+      verrouiller(true);
+      el.classList.add('is-plonge');
+      setTimeout(() => voile.classList.add('is-on'), 760);
+      champ.plonger(() => {
+        navigationJusqua = performance.now() + 900;
+        jumpToY(cibleSalle(j));
+        el.classList.remove('is-plonge');
+        champ.reposer();
+        verrouiller(false);
+        plonge = false;
+        requestAnimationFrame(() => requestAnimationFrame(() => voile.classList.remove('is-on')));
+      });
+    };
     const maj = () => {
-      const y = window.scrollY; versLeBas = y >= dernierY; dernierY = y;
-      const v = avance(), e = v > 0.06 ? 1 : 0, venuDuHaut = vAvant <= 0.06; vAvant = v;
-      if (v < 0.03) parti = false;                          // revenu au début du geste : le prochain contact repartira vers les sites
-      if (e === etat) return;
-      etat = e;
-      if (sansDessin) {                                      // pas de WebGL : le titre change, puis les sites
-        el.classList.toggle('is-contact', e >= 1);
-        if (e >= 1 && versLeBas) allerAuxSites(900);
-        return;
-      }
-      // en descendant : on se cale sur la fresque et on attend le contact des doigts, même si le dessin charge encore
-      // (seulement si l’on arrive soi-même par le haut ; pas pendant un saut par le menu ni si l’on a déjà dépassé la fresque)
-      if (e === 1 && versLeBas && !reduced && !parti && venuDuHaut && v < 0.6 && performance.now() > navigationJusqua) {
+      const y = window.scrollY, bas = y >= dernierY; dernierY = y;
+      const v = avance(), venuDuHaut = vAvant <= 0.06; vAvant = v;
+      if (v < 0.03) parti = false;                         // revenu au début : le prochain cran replongera
+      // le paysage se lève quand il couvre l’écran (en arrivant par le haut, c’est au moment où l’on se pose)
+      if (!ne && (reduced || piste.getBoundingClientRect().top <= 1)) naitre();
+      if (plonge || verrouille || reduced) return;
+      const libre = performance.now() > navigationJusqua;
+      // on arrive par le haut : on se pose au début de la piste, le paysage se lève (1,6 s sans bouger)
+      if (v > 0.06 && bas && venuDuHaut && !parti && v < 0.6 && libre) {
         const r = piste.getBoundingClientRect(), cible = r.top + window.scrollY + (r.height - window.innerHeight) * 0.1;
         if (lenis) lenis.scrollTo(cible, { immediate: true, force: true }); else window.scrollTo(0, cible);
+        vAvant = 0.1;
+        naitre();
         verrouiller(true);
+        setTimeout(() => verrouiller(false), 1600);
+        return;
       }
-      if (e === 0) verrouiller(false);
-      if (geste) geste.setEtat(e);
+      // un cran de plus vers le bas : on plonge
+      if (v > 0.18 && bas && !parti && libre) plonger(null);
     };
     window.addEventListener('scroll', maj, { passive: true });
     maj();
-    // le dessin se charge dès que la page est prête (pas au dernier moment) : il est là quand on arrive
-    const charger = () => import('./geste.js').then((m) => {
-      // la caméra s'approche des doigts (jusqu'à ×1,4) : la grande image dès qu'un écran dépasse 1 500 pixels de large
-      const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 1500;
-      geste = m.createGeste(toile, {
-        src: import.meta.env.BASE_URL + 'assets/img/geste/fresque-' + (grand ? 3840 : 1920) + '.webp',
-        reduced,
-        // au contact, on laisse la lumière courir dans les fissures avant de partir vers les sites
-        onContact: (c) => { el.classList.toggle('is-contact', c); if (c && verrouille) allerAuxSites(reduced ? 0 : 850); },
-      });
-      if (!geste) { sansDessin = true; etat = -1; maj(); verrouiller(false); return; }
+    $$('[data-champ-aller]', el).forEach((a) => a.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      const j = a.dataset.champAller;
+      plonger(j === '' ? null : Number(j));
+    }));
+    const charger = () => import('./points.js').then((m) => {
+      champ = m.createChamp(toile, { reduced });
+      if (!champ) return;
       el.classList.add('has-gl');
-      geste.setEtat(Math.max(0, etat));
-      new IntersectionObserver(([v]) => geste.visible(v.isIntersecting)).observe(el);
-      window.addEventListener('resize', () => geste.taille());
-      // la peinture suit un tout petit peu la souris
-      if (fine && !reduced) el.addEventListener('pointermove', (ev) => geste.souris(ev.clientX / window.innerWidth - 0.5, ev.clientY / window.innerHeight - 0.5));
-    }).catch((err) => { console.warn('[ms] geste', err); sansDessin = true; verrouiller(false); });
-    if (document.readyState === 'complete') setTimeout(charger, 400);
-    else window.addEventListener('load', () => setTimeout(charger, 400), { once: true });
+      if (el.classList.contains('is-ne')) champ.naitre();
+      new IntersectionObserver(([v]) => champ.visible(v.isIntersecting)).observe(el);
+      window.addEventListener('resize', () => champ.taille());
+      if (fine && !reduced) {
+        el.addEventListener('pointermove', (ev) => { const r = toile.getBoundingClientRect(); champ.souris((ev.clientX - r.left) / r.width - 0.5, (ev.clientY - r.top) / r.height - 0.5); });
+        el.addEventListener('pointerleave', () => champ.quitte());
+      }
+    }).catch((err) => { console.warn('[ms] champ', err); });
+    if (document.readyState === 'complete') setTimeout(charger, 300);
+    else window.addEventListener('load', () => setTimeout(charger, 300), { once: true });
   });
 
   /* ---------- Le ciel : il apparaît quand on arrive au contact (et repart si l’on remonte au-dessus) ---------- */

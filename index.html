@@ -138,17 +138,27 @@
   </div>
 </section>
 
-<!-- Le geste : avant nos réalisations, les deux mains de la Création d’Adam, peintes comme une vraie fresque (image 4K),
-     glissent l’une vers l’autre jusqu’à ce que les index se touchent ; puis la fresque s’efface dans le papier de l’accueil
-     et nos sites arrivent, un par un. La peinture est animée en WebGL (assets/js/geste.js) ; sans WebGL, l’image reste fixe. -->
-<section class="geste" aria-labelledby="geste-titre" data-geste>
-  <div class="geste__piste">
-    <div class="geste__scene">
-      <img class="geste__repli" src="/assets/img/geste/fresque-1920.webp" srcset="/assets/img/geste/fresque-1920.webp 1920w, /assets/img/geste/fresque-3840.webp 3840w" sizes="100vw" width="1920" height="1072" alt="" loading="lazy" decoding="async">
-      <canvas class="geste__toile" aria-hidden="true"></canvas>
-      <p class="geste__surtitre">Nos réalisations</p>
-      <h2 class="geste__titre" id="geste-titre"><span class="geste__avant">Tout commence par une rencontre.</span><span class="geste__apres" aria-hidden="true">Votre idée, nos mains.</span></h2>
-      <p class="geste__credit">D’après Michel-Ange, <cite>La Création d’Adam</cite>, chapelle Sixtine.</p>
+<!-- Le champ de points : avant nos réalisations, un paysage fait de points bleus (WebGL, assets/js/points.js) :
+     une vallée calme au milieu pour le titre, des crêtes de chaque côté ; il se lève quand on arrive, la souris le
+     soulève. Au cran suivant (ou au clic sur « Voir nos projets »), la caméra plonge dans la vallée, les points filent
+     en traînées et l’on arrive sur « Nos projets ». Sans WebGL : une trame de points fixe en CSS. -->
+<section class="champ" aria-labelledby="champ-titre" data-champ>
+  <div class="champ__piste">
+    <div class="champ__scene">
+      <div class="champ__repli" aria-hidden="true"></div>
+      <canvas class="champ__toile" aria-hidden="true"></canvas>
+      <div class="champ__texte">
+        <h2 class="champ__titre" id="champ-titre"><span class="champ__l1">Point par point,</span> <span class="champ__l2">vos idées prennent forme.</span></h2>
+        <p class="champ__chapo">Cinq sites d’exemple, dessinés et codés au studio, de la première esquisse à la mise en ligne.</p>
+        <a class="btn champ__cta" href="/#etudes" data-champ-aller>Voir nos projets</a>
+      </div>
+      <ul class="champ__sites">
+        <li><a href="/#etudes" data-champ-aller="0">Studio Bascule</a></li>
+        <li><a href="/#etudes" data-champ-aller="1">Strate</a></li>
+        <li><a href="/#etudes" data-champ-aller="2">Atelier Véritas</a></li>
+        <li><a href="/#etudes" data-champ-aller="3">Verdane</a></li>
+        <li><a href="/#etudes" data-champ-aller="4">Le Fournil</a></li>
+      </ul>
     </div>
   </div>
 </section>
