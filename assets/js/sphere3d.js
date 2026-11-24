@@ -2,8 +2,8 @@
    « Mettez le désordre. On remet de l'ordre. » (accueil, après « En ligne en 21 jours »)
    Une sphère de nos identités visuelles, au milieu, sur un fond noir où ondule une nappe de lumière (comme un drap
    de soie éclairé de côté, avec un grain de film).
-   - Les vignettes : les logos de 24 marques fictives (un symbole dessiné, un nom dans sa typographie, sur sa couleur :
-     _msdesign-src/perf/identites/logos.html), chacun trois fois. Ce sont de petites plaques épaisses aux coins
+   - Les vignettes : les identités de 12 marques fictives, leurs planches découpées case par case (l'affiche, le logo,
+     la carte de visite, l'icône : là où l'on voit le logo). Ce sont de petites plaques épaisses aux coins
      arrondis, courbées sur la sphère, avec l'image des deux côtés : la sphère est ajourée, on voit à l'intérieur les
      vignettes de l'autre côté. Rangées rangée par rangée.
    - Le voile : le bleu de la bande du dessus continue sur la section, puis se défait en points qui rapetissent.
@@ -11,16 +11,20 @@
      elles se rangent en sphère, d'abord autour du doigt.
    - La sphère tourne seule ; on la fait tourner à la souris ou au doigt (avec de l'élan) ; la vignette survolée
      s'avance et s'éclaire. La surface ondule doucement.
-   - Un clic sur une vignette : la sphère ralentit et s'assombrit, et le logo apparaît en grand au milieu, dessiné par
-     des points qui grandissent depuis son centre (comme le voile de points bleus). Un clic (ou Échap) : les points
-     rapetissent, le logo s'efface.
-   Les logos sont des images (public/assets/img/identites/logo-*, faites par _msdesign-src/perf/identites/logos.mjs).
+   - Un clic sur une vignette : la sphère ralentit et s'assombrit, et la planche de sa marque apparaît en grand au
+     milieu, dessinée par des points qui grandissent depuis son centre (comme le voile de points bleus). Un clic (ou
+     Échap) : les points rapetissent, la planche s'efface.
+   Les planches sont des images (public/assets/img/identites/<marque>-{1440,2880}.webp, faites par
+   _msdesign-src/perf/identites/capture.mjs à partir de planche.html).
    Three.js ; une seule toile. jouer() : la séquence ; montrer() : directement rangée ; recouvrir() : retour au bleu.
    ========================================================================== */
 import * as THREE from 'three';
 
 const BLEU = [21 / 255, 94 / 255, 239 / 255];        // --blue, le même bleu que la bande du dessus
-const COPIES = 3;                                     // chaque logo apparaît trois fois sur la sphère
+const PLANCHE = 1.6;                                  // le format des planches (16:10)
+// les cases de la planche où l'on voit le logo, en fractions (u vers la droite, v vers le bas) : l'affiche à gauche ;
+// à droite le logo, la carte de visite, l'icône (les couleurs et la typographie ne sortent qu'avec la planche ouverte)
+const CASES = [[0, 0, 0.5, 1], [0.5, 0.08, 1, 0.42], [0.5, 0.72, 0.8, 1], [0.8, 0.72, 1, 1]];
 
 const lisse = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const entre = (x, a, b) => Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -220,7 +224,7 @@ export function createSphere(toile, opts = {}) {
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO;
     return t;
   };
-  const logos = marques.map((m) => texture(m.petite));
+  const planches = marques.map((m) => texture(m.petite));
   const grandes = marques.map(() => null);
   const BORD = new THREE.Color('#e9ecf2');
   const matiere = (tex, rect) => new THREE.ShaderMaterial({
@@ -234,24 +238,25 @@ export function createSphere(toile, opts = {}) {
   const CONTACT = new THREE.Vector3(1, 0.12, 0.25).normalize();       // là où le doigt touche la sphère
   const tmp = new THREE.Object3D();
   const tuiles = [];
-  for (let k = 0; k < COPIES; k++) marques.forEach((m, b) => {
+  marques.forEach((m, b) => CASES.forEach(([u0, v0, u1, v1], k) => {
     const i = tuiles.length;
     const hh = (n) => hasard(i * 5.31 + n);
     const dir = new THREE.Vector3(hh(1) - 0.5, (hh(2) - 0.5) * 0.8, hh(3) - 0.5).normalize();
     tuiles.push({
-      mesh: null, b, k, i, tex: logos[b], rect: [0, 0, 1, 1], format: 4 / 3,
+      // sa case dans la planche (l'image est retournée : v vers le haut) ; son format est celui de la case
+      mesh: null, b, k, i, tex: planches[b], rect: [u0, 1 - v1, u1, 1 - v0], format: ((u1 - u0) * PLANCHE) / (v1 - v0),
       p: new THREE.Vector3(), q: new THREE.Quaternion(), w: 0.3, h: 0.3, r: 1 + (hh(8) - 0.5) * 0.035,   // sa place (plus bas)
       cp: dir.multiplyScalar(1.35 + hh(4) * 0.95), cq: new THREE.Quaternion().setFromEuler(new THREE.Euler((hh(5) - 0.5) * 2.2, (hh(6) - 0.5) * 3, (hh(7) - 0.5) * 1.6)),
       seuil: 0.3, pop: 0,
     });
-  });
+  }));
   // sur la sphère (rayon 1), rangée par rangée : dans une rangée, toutes les vignettes ont la même hauteur et l'écart
   // se répartit ; les marques sont mêlées. La sphère est ajourée : les vignettes en couvrent un peu plus de la moitié,
   // de vrais espaces entre les rangées laissent voir l'intérieur.
   {
     const ECART = 0.05, POLE = 1.3, COUVERT = 0.66;
-    // mélangées ; les trois copies d'un même logo, réparties loin les unes des autres (un tiers de tour d'écart dans l'ordre)
-    const toutes = [...tuiles].sort((a, c) => ((a.b * 0.618 + a.k / COPIES) % 1) - ((c.b * 0.618 + c.k / COPIES) % 1));
+    // mélangées ; les quatre cases d'une même marque, réparties loin les unes des autres (un quart de tour d'écart)
+    const toutes = [...tuiles].sort((a, c) => ((a.b * 0.618 + a.k * 0.25) % 1) - ((c.b * 0.618 + c.k * 0.25) % 1));
     const somme = toutes.reduce((a, t) => a + t.format, 0);
     let HT = Math.sqrt((4 * Math.PI * COUVERT) / somme);
     const nR = Math.max(5, Math.round((2 * POLE) / (HT * 1.3)) + 1);
@@ -304,8 +309,8 @@ export function createSphere(toile, opts = {}) {
   const maillages = tuiles.map((t) => t.mesh);
 
   // la planche ouverte : une grande carte (la planche entière de la marque), qui part de la vignette cliquée
-  const matCarte = matiere(logos[0] || null, [0, 0, 1, 1]);
-  const carte = new THREE.Mesh(plaque(4 / 3, 1, 0.022, 0.06), matCarte);
+  const matCarte = matiere(planches[0] || null, [0, 0, 1, 1]);
+  const carte = new THREE.Mesh(plaque(PLANCHE, 1, 0.022, 0.04), matCarte);
   carte.visible = false; carte.frustumCulled = false; carte.renderOrder = 2;
   scene.add(carte);
   const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: texHalo('rgba(70, 120, 255, 0.55)'), transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
@@ -477,20 +482,20 @@ export function createSphere(toile, opts = {}) {
       u.uSombre.value = 0.62 * ez;
       u.uLueur.value = t.pop;
     }
-    // la carte : le logo en grand, au milieu, devant la sphère ; il apparaît par des points
+    // la carte : la planche de la marque en grand, au milieu, devant la sphère ; elle apparaît par des points
     if (choisie >= 0 && k > 0.001) {
       const t = tuiles[choisie], uc = carte.material.uniforms;
       const zc = R * 1.25, tv = Math.tan((camera.fov * Math.PI) / 360) * (10 - zc);
-      const lc = Math.min((portrait ? 0.86 : 0.5) * 2 * tv * camera.aspect, (portrait ? 0.42 : 0.62) * 2 * tv * (4 / 3)), hc = lc / (4 / 3);
+      const lc = Math.min((portrait ? 0.92 : 0.64) * 2 * tv * camera.aspect, (portrait ? 0.4 : 0.66) * 2 * tv * PLANCHE), hc = lc / PLANCHE;
       carte.position.set(camera.position.x, camera.position.y - 0.02 * tv, zc);
       carte.quaternion.identity();
-      carte.scale.set(lc / (4 / 3), hc, hc);
-      uc.uTaille.value.set(4 / 3, 1);
-      uc.uCoin.value = 0.045;
-      uc.uMaille.value = (4 / 3) / (portrait ? 26 : 38);
+      carte.scale.set(lc / PLANCHE, hc, hc);
+      uc.uTaille.value.set(PLANCHE, 1);
+      uc.uCoin.value = 0.03;
+      uc.uMaille.value = PLANCHE / (portrait ? 30 : 46);
       uc.uPoints.value = k;
       uc.uEch.value = hc;
-      uc.uMap.value = t.tex; uc.uRect.value.set(...t.rect);
+      uc.uMap.value = t.tex; uc.uRect.value.set(0, 0, 1, 1);
       uc.uMap2.value = grandes[t.b] || t.tex; uc.uRect2.value.set(0, 0, 1, 1);
       uc.uFondu.value = grandes[t.b] && grandes[t.b].image ? 1 : 0;
       uc.uCentre.value.copy(cs); uc.uR.value = Rc; uc.uBend.value = 0;
@@ -605,7 +610,7 @@ export function createSphere(toile, opts = {}) {
   const relancer = () => { if (!boucle && visible) { dernier = 0; boucle = requestAnimationFrame(image); } };
   document.addEventListener('visibilitychange', relancer);
 
-  // ouvrir : le logo de la vignette, en grand (sa version 1200 px dès qu'elle est chargée)
+  // ouvrir : la planche de la marque, en grand (sa version 2880 px sur les écrans fins, dès qu'elle est chargée)
   const ouvrir = (i) => {
     const t = tuiles[i];
     choisie = i; ouvert = true;

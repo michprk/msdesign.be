@@ -268,8 +268,8 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (visible) requestAnimationFrame(boucle); else { tourne = false; dernier = 0; }
     };
     mesurer(); placer();
-    new IntersectionObserver(([en]) => {
-      visible = en.isIntersecting;
+    new IntersectionObserver((es) => {
+      visible = es[es.length - 1].isIntersecting;
       if (visible && !tourne) { tourne = true; requestAnimationFrame(boucle); }
     }).observe(el);
     window.addEventListener('resize', () => { mesurer(); placer(); });
@@ -370,7 +370,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (!champ) return;
       el.classList.add('has-gl');
       if (el.classList.contains('is-ne')) champ.naitre();
-      new IntersectionObserver(([v]) => champ.visible(v.isIntersecting)).observe(el);
+      new IntersectionObserver((es) => champ.visible(es[es.length - 1].isIntersecting)).observe(el);
       window.addEventListener('resize', () => champ.taille());
       if (fine && !reduced) {
         el.addEventListener('pointermove', (ev) => { const r = toile.getBoundingClientRect(); champ.souris((ev.clientX - r.left) / r.width - 0.5, (ev.clientY - r.top) / r.height - 0.5); });
@@ -386,7 +386,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     const el = $('[data-ciel]');
     if (!el) return;
     // il reste allumé quand on descend dans le pied de page : en remontant, pas de clignotement
-    new IntersectionObserver(([e]) => el.classList.toggle('is-visible', e.isIntersecting || e.boundingClientRect.top < 0), { rootMargin: '0px 0px -35% 0px' }).observe(el);
+    new IntersectionObserver((es) => { const e = es[es.length - 1]; el.classList.toggle('is-visible', e.isIntersecting || e.boundingClientRect.top < 0); }, { rootMargin: '0px 0px -35% 0px' }).observe(el);
   });
 
   /* ---------- Nos réalisations : la salle de projection ----------
@@ -453,13 +453,13 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     // le fond : de grands plis de lumière que la souris remue sans se voir (« boule invisible ») ; chargé à l’approche
     const toile = $('.salle__fond', el);
     if (toile) {
-      new IntersectionObserver(([e], io) => {
-        if (!e.isIntersecting) return;
+      new IntersectionObserver((es, io) => {
+        if (!es.some((e) => e.isIntersecting)) return;
         io.disconnect();
         import('./fond-salle.js').then((m) => {
           const fond = m.createFond(toile, { reduced });
           if (!fond) return;
-          new IntersectionObserver(([v]) => fond.visible(v.isIntersecting)).observe(el);
+          new IntersectionObserver((es) => fond.visible(es[es.length - 1].isIntersecting)).observe(el);
           scene.addEventListener('pointermove', (ev) => {
             const r = scene.getBoundingClientRect();
             fond.souris((ev.clientX - r.left) / r.width, 1 - (ev.clientY - r.top) / r.height);
@@ -699,7 +699,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
   safe('ordre', () => {
     const sec = $('[data-ordre]');
     if (!sec) return;
-    const toile = $('.ordre__toile', sec), piste = $('.ordre__piste', sec), scene = $('.ordre__scene', sec);
+    const toile = $('.ordre__toile', sec), piste = $('.ordre__piste', sec);
     let objet = null, ouvert = false, profond = false, dernierY = window.scrollY, hautAvant = 1, verrouille = false, tVerrou = 0;
     const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
     // le défilement en pause le temps d’entrer (jamais plus de 3 s)
@@ -727,9 +727,6 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       const y = window.scrollY, dy = y - dernierY, descend = dy > 0, monte = dy < 0; dernierY = y;
       const r = piste.getBoundingClientRect(), h = window.innerHeight, v = avance();
       const venuDuHaut = hautAvant > 0; hautAvant = r.top;
-      // la sortie : le ciel du contact monte depuis le bas sur le dernier quart de la piste
-      const f = Math.min(1, Math.max(0, (v - 0.7) / 0.3));
-      scene.style.setProperty('--fin', (f * f * (3 - 2 * f)).toFixed(4));
       if (!objet) return;
       if (r.top >= h || r.bottom <= 0) { if (r.top >= h) fermer(true); return; }   // la section n’est pas à l’écran
       if (ouvert) {
@@ -764,8 +761,9 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       objet = m.createSphere(toile, {
         reduced,
         main: import.meta.env.BASE_URL + 'assets/img/poire/main-' + (grand ? 2720 : 1400) + '.webp',
-        // les logos des 24 marques fictives : la petite version pour la sphère, la grande pour la vue au clic
-        marques: Array.from({ length: 24 }, (_, n) => ({ petite: dossier + 'logo-' + n + '-600.webp', grande: dossier + 'logo-' + n + '-1200.webp' })),
+        // les identités des 12 marques fictives : leurs planches, découpées en vignettes par la sphère ; ouvertes en
+        // grand au clic (en double densité sur les écrans fins)
+        marques: ['ferment', 'halde', 'ondine', 'prisme', 'carmin', 'rayon', 'eve', 'sillon', 'nord', 'lueur', 'kiosque', 'atoll'].map((n) => ({ petite: dossier + n + '-1440.webp', grande: fin ? dossier + n + '-2880.webp' : null })),
         onContact: () => sec.classList.add('is-ordre'),
         // une planche ouverte en grand : le titre s’efface le temps qu’elle est là
         onOuvre: (b) => sec.classList.toggle('is-ouverte', b >= 0),
@@ -773,7 +771,8 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (!objet) return;
       if (import.meta.env.DEV) window.__msSphere = objet;
       sec.classList.add('has-gl');
-      new IntersectionObserver(([v]) => objet.visible(v.isIntersecting)).observe(sec);
+      // un saut dans la page peut livrer plusieurs changements d’un coup : seul le dernier dit si la section est à l’écran
+      new IntersectionObserver((es) => objet.visible(es[es.length - 1].isIntersecting)).observe(sec);
       window.addEventListener('resize', () => objet.taille());
       dernierY = window.scrollY + 1;                     // déjà sur la section au chargement : directement rangée
       verifier();
@@ -788,7 +787,7 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       sec.addEventListener('click', (ev) => { const [x, y] = ici(ev); objet.clic(x, y); curseur(x, y); });
       document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') objet.fermer(); });
     }).catch((err) => { console.warn('[ms] ordre', err); });
-    new IntersectionObserver(([v], o) => { if (v.isIntersecting) { o.disconnect(); charger(); } }, { rootMargin: '200% 0px' }).observe(sec);
+    new IntersectionObserver((es, o) => { if (es.some((v) => v.isIntersecting)) { o.disconnect(); charger(); } }, { rootMargin: '200% 0px' }).observe(sec);
   });
 
   /* ---------- La ficelle 3D : Three.js n’est chargé qu’à l’approche de la section ---------- */
