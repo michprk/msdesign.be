@@ -796,7 +796,10 @@ html.reduced .devis__steps span { max-height: none; opacity: 1; margin-top: 4px;
 .film__close svg { width: 20px; height: 20px; transform: rotate(45deg); }
 
 /* ---------- La promesse : le planning en semaines, bleu et beige ---------- */
-.promise { --beige: #e9dcc3; background: var(--blue); color: var(--ecru); }
+.promise { --beige: #e9dcc3; position: relative; isolation: isolate; background: var(--blue); color: var(--ecru); }
+/* le haut : le bleu nuit de « Nos projets » se fond dans le bleu de la bande */
+.promise::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(220px, 40vh, 420px); z-index: -1; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(7, 12, 33, 1.000) 0%, rgba(7, 12, 33, 0.982) 8%, rgba(7, 12, 33, 0.923) 17%, rgba(7, 12, 33, 0.821) 27%, rgba(7, 12, 33, 0.677) 38%, rgba(7, 12, 33, 0.500) 50%, rgba(7, 12, 33, 0.323) 62%, rgba(7, 12, 33, 0.179) 73%, rgba(7, 12, 33, 0.077) 83%, rgba(7, 12, 33, 0.018) 92%, rgba(7, 12, 33, 0.000) 100%); }
 .promise__top { display: flex; justify-content: space-between; gap: 20px; font: 500 14px/1.4 var(--sans); color: rgba(245, 241, 233, 0.86); }
 .promise__title { margin: clamp(30px, 5vw, 60px) 0 clamp(40px, 6vw, 76px); text-align: center; font: 400 clamp(56px, 9.6vw, 156px)/1 var(--display); letter-spacing: -0.03em; color: #fbf9f4; }
 .promise__dot { color: var(--beige); }
@@ -1026,6 +1029,9 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
    de défilement par site) ; à chaque palier, l'écran de devant s'envole et le suivant s'avance.
    ========================================================================== */
 .salle { --nuit: #070c21; --creme: #f5f1e9; --bleu-clair: #9db8ff; position: relative; margin: 0; border-radius: 0; overflow: clip; background: var(--nuit); color: var(--creme); }
+/* le haut : le bas du paysage de points arrive ici en bleu nuit uni ; on adoucit le début des plis de lumière */
+.salle::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: clamp(110px, 16vh, 180px); z-index: 2; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(7, 12, 33, 1.000) 0%, rgba(7, 12, 33, 0.982) 8%, rgba(7, 12, 33, 0.923) 17%, rgba(7, 12, 33, 0.821) 27%, rgba(7, 12, 33, 0.677) 38%, rgba(7, 12, 33, 0.500) 50%, rgba(7, 12, 33, 0.323) 62%, rgba(7, 12, 33, 0.179) 73%, rgba(7, 12, 33, 0.077) 83%, rgba(7, 12, 33, 0.018) 92%, rgba(7, 12, 33, 0.000) 100%); }
 /* le nombre de sites et la place de chaque écran sont ici, pas dans le HTML : en ligne, la règle de sécurité du site
    (CSP « style-src 'self' ») interdit les styles écrits dans les balises */
 .salle__piste { --n: 5; height: calc(var(--n) * 34vh + 100vh); }
@@ -1157,6 +1163,9 @@ html.reduced .ciel__fond { transition: none; }
    Sans WebGL : une trame de points fixe, masquée en deux massifs.
    ========================================================================== */
 .champ { position: relative; background: var(--bg); }
+/* le bas : le beige du paysage se fond dans le bleu nuit de « Nos projets », juste en dessous */
+.champ::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(260px, 48vh, 520px); z-index: 3; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(7, 12, 33, 0.000) 0%, rgba(7, 12, 33, 0.018) 8%, rgba(7, 12, 33, 0.077) 17%, rgba(7, 12, 33, 0.179) 27%, rgba(7, 12, 33, 0.323) 38%, rgba(7, 12, 33, 0.500) 50%, rgba(7, 12, 33, 0.677) 62%, rgba(7, 12, 33, 0.821) 73%, rgba(7, 12, 33, 0.923) 83%, rgba(7, 12, 33, 0.982) 92%, rgba(7, 12, 33, 1.000) 100%); }
 .champ__piste { height: 170vh; }
 .champ__scene { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate; display: grid; place-items: center; background: var(--bg); }
 .champ__toile, .champ__repli { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -1217,13 +1226,20 @@ html.reduced .ciel__fond { transition: none; }
 
 /* ==========================================================================
    « Mettez le désordre. On remet de l'ordre. » : une sphère de nos identités visuelles
-   Une toile (Three.js, assets/js/sphere3d.js) sur un fond clair et froid, qui finit dans le beige du ciel du contact
-   (#e0ded9 en bas, le même ton que le haut du ciel : pas de raccord visible). Le bleu de la bande du dessus
-   continue sur la section tant que la séquence n'a pas commencé (c'est la toile qui le dessine). Le titre se pose
-   quand le doigt touche la sphère (.is-ordre).
+   Une toile (Three.js, assets/js/sphere3d.js) sur fond noir : une nappe de lumière ondule derrière la sphère, avec un
+   grain de film. C'est une grande page à elle : on y entre en se posant (le bleu de la bande du dessus, qui continue
+   sur la section, se défait en points), on y reste en défilant (la sphère tourne), on en sort par le ciel du contact
+   qui monte depuis le bas (#e0ded9 : pas de raccord visible) ; en remontant, les points bleus se referment.
+   Le titre se pose quand le doigt touche la sphère (.is-ordre).
    ========================================================================== */
-.ordre { position: relative; height: 100vh; height: 100svh; min-height: 620px; overflow: hidden;
-  background: radial-gradient(ellipse 46% 52% at 50% 40%, rgba(252, 253, 255, 0.95) 0%, rgba(252, 253, 255, 0) 72%), linear-gradient(to bottom, #e6ecf7 0%, #edf0f5 52%, #e0ded9 100%); }
+.ordre { position: relative; background: #05070d; }
+/* une grande page à elle : la piste est haute, la scène reste collée à l'écran (on est « dans » l'univers) */
+.ordre__piste { height: 240vh; }
+.ordre__scene { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 620px; overflow: hidden; }
+/* la sortie : le ciel du contact monte depuis le bas, en un long fondu (la transparence est réglée par le défilement) */
+.ordre__fin { position: absolute; left: 0; right: 0; top: 100%; height: 220%; z-index: 3; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(224, 222, 217, 0.000) 0%, rgba(224, 222, 217, 0.018) 8%, rgba(224, 222, 217, 0.077) 17%, rgba(224, 222, 217, 0.179) 27%, rgba(224, 222, 217, 0.323) 38%, rgba(224, 222, 217, 0.500) 50%, rgba(224, 222, 217, 0.677) 62%, rgba(224, 222, 217, 0.821) 73%, rgba(224, 222, 217, 0.923) 83%, rgba(224, 222, 217, 0.982) 92%, rgba(224, 222, 217, 1.000) 46%, #e0ded9 46%);
+  transform: translate3d(0, calc(var(--fin, 0) * -100%), 0); }
 .ordre__toile { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 /* le curseur dit ce qu'on peut faire : cliquer une tuile, faire tourner la sphère, refermer la planche */
 .ordre[data-sous="tuile"], .ordre[data-sous="planche"] { cursor: pointer; }
@@ -1232,16 +1248,19 @@ html.reduced .ciel__fond { transition: none; }
 .ordre__toile { touch-action: pan-y; }                    /* au doigt : glisser de côté fait tourner, de haut en bas fait défiler */
 /* le titre, centré en haut ; la sphère, énorme, au milieu en dessous */
 .ordre__texte { position: absolute; z-index: 1; left: 0; right: 0; top: clamp(92px, 12.5vh, 140px); text-align: center; pointer-events: none; transition: opacity 0.5s var(--ease); }
-.ordre__titre { margin: 0 auto; font: 400 clamp(30px, 3.5vw, 60px)/1.02 var(--display); letter-spacing: -0.03em; color: #10203f; text-wrap: balance; }
-.ordre__titre em { font-style: italic; color: var(--blue); }
-.ordre__lead { max-width: 34em; margin: 12px auto 0; text-wrap: balance; font: 400 clamp(15px, 1.1vw, 17px)/1.5 var(--sans); color: rgba(16, 32, 63, 0.72); }
+.ordre__titre { margin: 0 auto; font: 400 clamp(28px, 3.1vw, 52px)/1.02 var(--display); letter-spacing: -0.03em; color: #f3f5fa; text-wrap: balance; }
+.ordre__titre em { font-style: italic; color: #8fb0ff; }
+.ordre__lead { max-width: 60em; margin: 8px auto 0; text-wrap: balance; font: 400 clamp(15px, 1.1vw, 17px)/1.5 var(--sans); color: rgba(236, 240, 250, 0.68); }
 .ordre.is-ouverte .ordre__texte { opacity: 0; }
 html.js .ordre.has-gl .ordre__texte > * { opacity: 0; transform: translateY(18px); transition: opacity 1s var(--ease), transform 1.2s var(--ease); }
 html.js .ordre.has-gl.is-ordre .ordre__texte > * { opacity: 1; transform: none; }
+/* quand on ressort de l'univers (les points se referment), le titre s'efface tout de suite */
+html.js .ordre.has-gl:not(.is-ordre) .ordre__texte > * { transition-duration: 0.25s; }
 html.js .ordre.is-ordre .ordre__titre { transition-delay: 0.35s; }
 html.js .ordre.is-ordre .ordre__lead { transition-delay: 0.6s; }
 /* là où la barre « Demander un devis » flotte en bas de l'écran, le texte passe au-dessus */
 @media (max-width: 760px) {
+  .ordre__piste { height: 200vh; }
   .ordre__titre { font-size: clamp(30px, 8.6vw, 40px); }
   .ordre__titre em { display: block; }
   .ordre__texte { top: clamp(78px, 11vh, 100px); padding: 0 8px; }

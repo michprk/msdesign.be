@@ -219,10 +219,15 @@
      icône) flottent en désordre ; une main dessinée en lignes de balayage bleues arrive et touche : elles se rangent en
      sphère. On la fait tourner ; un clic sur une tuile ouvre la planche de sa marque. Sans WebGL : le titre seul. -->
 <section class="ordre" id="encre" aria-labelledby="ordre-titre" data-ordre>
-  <canvas class="ordre__toile" aria-hidden="true"></canvas>
-  <div class="wrap ordre__texte">
-    <h2 class="ordre__titre" id="ordre-titre">Mettez le désordre. <em>On remet de l’ordre.</em></h2>
-    <p class="ordre__lead">Logo, couleurs, typographies&nbsp;: vos idées en vrac deviennent une identité nette.</p>
+  <div class="ordre__piste">
+    <div class="ordre__scene">
+      <canvas class="ordre__toile" aria-hidden="true"></canvas>
+      <div class="wrap ordre__texte">
+        <h2 class="ordre__titre" id="ordre-titre">Mettez le désordre. <em>On remet de l’ordre.</em></h2>
+        <p class="ordre__lead">Logo, couleurs, typographies&nbsp;: vos idées en vrac deviennent une identité nette.</p>
+      </div>
+      <div class="ordre__fin" aria-hidden="true"></div>
+    </div>
   </div>
 </section>
 

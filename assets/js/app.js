@@ -699,16 +699,61 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
   safe('ordre', () => {
     const sec = $('[data-ordre]');
     if (!sec) return;
-    const toile = $('.ordre__toile', sec);
-    let objet = null, joue = false, dernierY = window.scrollY;
+    const toile = $('.ordre__toile', sec), piste = $('.ordre__piste', sec), scene = $('.ordre__scene', sec);
+    let objet = null, ouvert = false, profond = false, dernierY = window.scrollY, hautAvant = 1, verrouille = false, tVerrou = 0;
+    const avance = () => { const r = piste.getBoundingClientRect(), h = r.height - window.innerHeight; return h > 0 ? Math.min(1, Math.max(0, -r.top / h)) : 0; };
+    // le défilement en pause le temps d’entrer (jamais plus de 3 s)
+    const verrouiller = (oui) => {
+      if (oui === verrouille) return;
+      verrouille = oui; clearTimeout(tVerrou);
+      if (lenis) { if (oui) lenis.stop(); else lenis.start(); }
+      else d.style.overflow = oui ? 'hidden' : '';
+      if (oui) tVerrou = setTimeout(() => verrouiller(false), 3000);
+    };
+    // deux états : l’univers est ouvert (la sphère), ou fermé (le voile de points bleus le recouvre)
+    // - on l’ouvre en descendant : en arrivant par le haut, on se pose et il s’ouvre ; si l’on y redescend sans être
+    //   ressorti, il se rouvre sans se poser ;
+    // - on le ferme en remontant, dans le premier tiers de la piste : les points se referment bien avant que le bord
+    //   de la section n’apparaisse ; on ne se pose pas ;
+    // - arrivé par le bas, ou par un lien, au-delà du premier tiers : il est déjà ouvert.
+    // Entre « fermer en remontant » (avance < 0,3) et « rouvrir sans descendre » (avance ≥ 0,3) il n’y a aucun
+    // chevauchement : pas d’aller-retour possible.
+    const fermer = (instant) => {
+      if (!ouvert) return;
+      ouvert = false; sec.classList.remove('is-ordre');
+      if (instant) objet.recouvrir(); else objet.couvrir();
+    };
     const verifier = () => {
-      const y = window.scrollY, descend = y > dernierY; dernierY = y;
+      const y = window.scrollY, dy = y - dernierY, descend = dy > 0, monte = dy < 0; dernierY = y;
+      const r = piste.getBoundingClientRect(), h = window.innerHeight, v = avance();
+      const venuDuHaut = hautAvant > 0; hautAvant = r.top;
+      // la sortie : le ciel du contact monte depuis le bas sur le dernier quart de la piste
+      const f = Math.min(1, Math.max(0, (v - 0.7) / 0.3));
+      scene.style.setProperty('--fin', (f * f * (3 - 2 * f)).toFixed(4));
       if (!objet) return;
-      const r = sec.getBoundingClientRect(), h = window.innerHeight;
-      if (r.top > h) { if (joue) { joue = false; sec.classList.remove('is-ordre'); objet.recouvrir(); } return; }
-      if (joue || r.top >= h * 0.4 || r.bottom <= 0) return;
-      joue = true;
-      if (descend && r.top > 0 && !reduced && performance.now() > navigationJusqua) objet.jouer(); else objet.montrer();
+      if (r.top >= h || r.bottom <= 0) { if (r.top >= h) fermer(true); return; }   // la section n’est pas à l’écran
+      if (ouvert) {
+        if (Math.abs(dy) < 400) objet.elan(dy);                   // dans l’univers, le défilement fait tourner la sphère
+        if (v >= 0.3) profond = true;
+        // on referme en remontant pour de vrai (pas sur un frémissement de quelques pixels) : bien avant le bord si l’on
+        // était descendu dans l’univers, ou dès qu’on repasse au-dessus de son début
+        if (monte && dy < -3 && ((profond && v < 0.3) || r.top > 0)) fermer(false);
+        return;
+      }
+      if (verrouille) return;
+      const libre = performance.now() > navigationJusqua;
+      if (descend && r.top <= 0 && v < 0.3) {
+        ouvert = true; profond = false;
+        if (venuDuHaut && libre && !reduced) {                     // on arrive par le haut : on se pose, on entre
+          const cible = r.top + window.scrollY;
+          if (lenis) lenis.scrollTo(cible, { immediate: true, force: true }); else window.scrollTo(0, cible);
+          verrouiller(true);
+          setTimeout(() => verrouiller(false), 2300);
+        }
+        if (reduced) objet.montrer(); else objet.jouer();
+        return;
+      }
+      if (v >= 0.3) { ouvert = true; profond = true; objet.montrer(); }   // arrivé par le bas, ou par un lien
     };
     window.addEventListener('scroll', verifier, { passive: true });
     const charger = () => import('./sphere3d.js').then((m) => {
@@ -719,13 +764,14 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       objet = m.createSphere(toile, {
         reduced,
         main: import.meta.env.BASE_URL + 'assets/img/poire/main-' + (grand ? 2720 : 1400) + '.webp',
-        // les identités (marques fictives) : leurs planches, découpées en tuiles par la sphère
-        marques: ['ferment', 'halde', 'ondine', 'prisme', 'carmin', 'rayon', 'eve', 'sillon', 'nord', 'lueur', 'kiosque', 'atoll'].map((n) => ({ petite: dossier + n + '-1440.webp', grande: fin ? dossier + n + '-2880.webp' : null })),
+        // les logos des 24 marques fictives : la petite version pour la sphère, la grande pour la vue au clic
+        marques: Array.from({ length: 24 }, (_, n) => ({ petite: dossier + 'logo-' + n + '-600.webp', grande: dossier + 'logo-' + n + '-1200.webp' })),
         onContact: () => sec.classList.add('is-ordre'),
         // une planche ouverte en grand : le titre s’efface le temps qu’elle est là
         onOuvre: (b) => sec.classList.toggle('is-ouverte', b >= 0),
       });
       if (!objet) return;
+      if (import.meta.env.DEV) window.__msSphere = objet;
       sec.classList.add('has-gl');
       new IntersectionObserver(([v]) => objet.visible(v.isIntersecting)).observe(sec);
       window.addEventListener('resize', () => objet.taille());
