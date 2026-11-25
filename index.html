@@ -214,10 +214,12 @@
   </div>
 </section>
 
-<!-- « Mettez le désordre. On remet de l’ordre. » (assets/js/sphere3d.js) : le bleu de la bande du dessus continue, puis
-     se défait en points ; les tuiles de nos identités visuelles (8 marques fictives : affiche, logo, couleurs, typo, carte,
-     icône) flottent en désordre ; une main dessinée en lignes de balayage bleues arrive et touche : elles se rangent en
-     sphère. On la fait tourner ; un clic sur une tuile ouvre la planche de sa marque. Sans WebGL : le titre seul. -->
+<!-- « Mettez le désordre. On remet de l’ordre. » (assets/js/sphere3d.js, assets/js/projets.js) : le bleu de la bande du
+     dessus continue, puis se défait en points ; les plaques de nos douze identités (marques fictives) flottent en
+     désordre ; une main en lignes de balayage bleues touche : elles se rangent en îlots, un par projet, autour d'un cœur
+     de verre. Au survol, le nom ; au clic, la planche se reconstitue et la fiche du projet s'ouvre. Au clavier : la liste
+     des projets (data-ordre-index). Sans WebGL : la même liste, en vignettes. -->
+
 <section class="ordre" id="encre" aria-labelledby="ordre-titre" data-ordre>
   <div class="ordre__piste">
     <div class="ordre__scene">
@@ -225,6 +227,51 @@
       <div class="wrap ordre__texte">
         <h2 class="ordre__titre" id="ordre-titre">Mettez le désordre. <em>On remet de l’ordre.</em></h2>
         <p class="ordre__lead">Logo, couleurs, typographies&nbsp;: vos idées en vrac deviennent une identité nette.</p>
+        <p class="ordre__aide">Douze identités imaginées par le studio. Choisissez-en une pour la découvrir.</p>
+      </div>
+      <!-- le nom du projet survolé, au-dessus de son îlot (placé par la sphère) -->
+      <div class="ordre__etiquette" aria-hidden="true" data-etiquette>
+        <span class="ordre__etiquette-nom" data-e="nom"></span>
+        <span class="ordre__etiquette-metier" data-e="metier"></span>
+        <span class="ordre__etiquette-voir">Découvrir le projet</span>
+      </div>
+      <!-- les projets, au clavier (et à la place de la sphère si l'appareil ne sait pas l'afficher) -->
+      <ol class="ordre__index" aria-label="Les identités visuelles imaginées par le studio" data-ordre-index></ol>
+      <!-- la fiche d'un projet -->
+      <div class="ordre__fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-nom" hidden data-fiche>
+        <div class="fiche" data-lenis-prevent>
+          <div class="fiche__haut">
+            <p class="fiche__sur">Identité visuelle, concept du studio</p>
+            <button class="fiche__fermer" type="button" data-fiche-fermer>Retour à la sphère<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button>
+          </div>
+          <img class="fiche__image" alt="" width="1440" height="900" decoding="async" data-fiche-image>
+          <h3 class="fiche__nom" id="fiche-nom" tabindex="-1" data-f="nom"></h3>
+          <p class="fiche__metier" data-f="metier"></p>
+          <p class="fiche__intro" data-f="intro"></p>
+          <div class="fiche__bloc">
+            <h4>L’idée</h4>
+            <p data-f="idee"></p>
+          </div>
+          <div class="fiche__bloc">
+            <h4>Direction artistique</h4>
+            <p data-f="direction"></p>
+          </div>
+          <div class="fiche__bloc">
+            <h4>Choix graphiques</h4>
+            <ul class="fiche__couleurs" data-f="couleurs"></ul>
+            <p class="fiche__typo"><span class="fiche__aa" data-f="aa">Aa</span><span class="fiche__police" data-f="police"></span></p>
+          </div>
+          <div class="fiche__bloc">
+            <h4>Visuels</h4>
+            <ul class="fiche__visuels" data-f="visuels"></ul>
+          </div>
+          <a class="fiche__cta" href="#contact" data-fiche-contact>Parler de votre identité</a>
+          <nav class="fiche__nav" aria-label="Autres projets">
+            <button type="button" data-fiche-prec>Projet précédent</button>
+            <span class="fiche__rang" data-f="rang"></span>
+            <button type="button" data-fiche-suiv>Projet suivant</button>
+          </nav>
+        </div>
       </div>
     </div>
   </div>

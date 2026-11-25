@@ -1,30 +1,32 @@
 /* ==========================================================================
    « Mettez le désordre. On remet de l'ordre. » (accueil, après « En ligne en 21 jours »)
-   Une sphère de nos identités visuelles, au milieu, sur un fond noir où ondule une nappe de lumière (comme un drap
-   de soie éclairé de côté, avec un grain de film).
-   - Les vignettes : les identités de 12 marques fictives, leurs planches découpées case par case (l'affiche, le logo,
-     la carte de visite, l'icône : là où l'on voit le logo). Ce sont de petites plaques épaisses aux coins
-     arrondis, courbées sur la sphère, avec l'image des deux côtés : la sphère est ajourée, on voit à l'intérieur les
-     vignettes de l'autre côté. Rangées rangée par rangée.
-   - Le voile : le bleu de la bande du dessus continue sur la section, puis se défait en points qui rapetissent.
-   - Au départ, les vignettes flottent en désordre ; quand le doigt (la main en lignes de balayage bleues) touche,
-     elles se rangent en sphère, d'abord autour du doigt.
-   - La sphère tourne seule ; on la fait tourner à la souris ou au doigt (avec de l'élan) ; la vignette survolée
-     s'avance et s'éclaire. La surface ondule doucement.
-   - Un clic sur une vignette : la sphère ralentit et s'assombrit, et la planche de sa marque apparaît en grand au
-     milieu, dessinée par des points qui grandissent depuis son centre (comme le voile de points bleus). Un clic (ou
-     Échap) : les points rapetissent, la planche s'efface.
-   Les planches sont des images (public/assets/img/identites/<marque>-{1440,2880}.webp, faites par
-   _msdesign-src/perf/identites/capture.mjs à partir de planche.html).
+   La sphère des identités : notre galerie de logos, au milieu, sur un fond noir où ondule une nappe de lumière (un
+   drap de soie éclairé de côté, avec un grain de film).
+   - Les projets (assets/js/projets.js) : douze identités imaginées par le studio. Chacune est un îlot sur la sphère :
+     quatre plaques épaisses aux coins arrondis, découpées dans sa planche (l'affiche, le logo, la carte de visite,
+     l'icône), posées comme une petite mise en page. Les îlots sont espacés : on voit tout de suite douze projets.
+   - La sphère elle-même est en verre clair (d'après une image de référence générée par IA, _msdesign-src/perf/shots/
+     sphere-ia/reference-4.png) : elle réfracte la soie du fond, un liseré clair à peine irisé la souligne, un bleu
+     profond s'installe dans le bas ; les plaques sont posées presque à plat dessus, avec une ombre de contact ; on voit
+     les îlots de l'autre côté à travers le verre, estompés et bleutés. Une lumière tourne lentement.
+   - Le voile : le bleu de la bande du dessus continue sur la section, puis se défait en points qui rapetissent. Au
+     départ, les plaques flottent en désordre ; quand le doigt (la main en lignes de balayage bleues) touche, elles se
+     rangent, d'abord autour du doigt.
+   - Au repos, la sphère tourne très lentement ; elle suit un peu le curseur, et les plaques proches de lui se
+     soulèvent. Au survol d'un projet, son îlot se soulève, s'éclaire de sa couleur et fait son geste (des bulles pour
+     le bar à vins, des prises pour la salle d'escalade, un tour de potier pour l'atelier céramique…) ; son nom
+     apparaît (onEtiquette).
+   - Au clic : la sphère ralentit et amène l'îlot face à nous, la caméra avance doucement ; les quatre plaques quittent
+     la sphère et reprennent leur place dans la planche entière, que des points complètent ; la fiche du projet
+     s'ouvre à côté (onOuvre, dans app.js). Fermer : le chemin inverse. Projet suivant : l'un repart, l'autre arrive.
    Three.js ; une seule toile. jouer() : la séquence ; montrer() : directement rangée ; recouvrir() : retour au bleu.
    ========================================================================== */
 import * as THREE from 'three';
+import { CASES, SUR_LA_SPHERE, ILOT } from './projets.js';
 
 const BLEU = [21 / 255, 94 / 255, 239 / 255];        // --blue, le même bleu que la bande du dessus
 const PLANCHE = 1.6;                                  // le format des planches (16:10)
-// les cases de la planche où l'on voit le logo, en fractions (u vers la droite, v vers le bas) : l'affiche à gauche ;
-// à droite le logo, la carte de visite, l'icône (les couleurs et la typographie ne sortent qu'avec la planche ouverte)
-const CASES = [[0, 0, 0.5, 1], [0.5, 0.08, 1, 0.42], [0.5, 0.72, 0.8, 1], [0.8, 0.72, 1, 1]];
+const S = 0.43;                                       // la taille d'un îlot : 0,43 radian de sphère par hauteur de planche
 
 const lisse = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 const entre = (x, a, b) => Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -32,18 +34,8 @@ const sortie = (t) => 1 - Math.pow(1 - t, 3);
 // un hasard qui donne toujours les mêmes valeurs
 const hasard = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
 
-// un halo rond (lueur), dessiné une fois
-function texHalo(couleur) {
-  const c = document.createElement('canvas'); c.width = c.height = 256;
-  const g = c.getContext('2d'), d = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-  d.addColorStop(0, couleur); d.addColorStop(1, 'rgba(0,0,0,0)');
-  g.fillStyle = d; g.fillRect(0, 0, 256, 256);
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
-
-// une vignette : une plaque épaisse (w × h × ep) aux coins arrondis : une face avant et une face arrière quadrillées
-// (pour pouvoir se courber ; les coins sont découpés dans le shader) et une tranche qui suit l'arrondi.
+// une plaque épaisse (w × h × ep) aux coins arrondis : une face avant et une face arrière quadrillées (pour pouvoir se
+// courber ; les coins sont découpés dans le shader) et une tranche qui suit l'arrondi.
 // aFace : 1 l'avant, -1 l'arrière (l'image en miroir : elle se lit correctement depuis l'intérieur de la sphère), 0 la tranche.
 function plaque(w, h, ep, r) {
   const pos = [], uv = [], face = [], idx = [];
@@ -108,10 +100,10 @@ const VS_TUILE = `
   }`;
 const FS_TUILE = `
   uniform sampler2D uMap, uMap2;
-  uniform vec4 uRect, uRect2;
+  uniform vec4 uRect, uRect2, uFocus;
   uniform vec2 uTaille;
-  uniform float uCoin, uSombre, uLueur, uFondu, uPoints, uMaille;
-  uniform vec3 uBord;
+  uniform float uCoin, uSombre, uLueur, uFondu, uPoints, uMaille, uEclat, uFocusK;
+  uniform vec3 uBord, uTeinte, uLumiere;
   varying vec2 vUv;
   varying float vFace;
   varying vec3 vRad;
@@ -120,8 +112,8 @@ const FS_TUILE = `
     vec3 v = normalize(cameraPosition - vMonde), c;
     if (abs(vFace) > 0.5) {
       vec2 q = (vUv - 0.5) * uTaille;
-      vec2 b = uTaille * 0.5 - vec2(uCoin);
-      float sd = length(max(abs(q) - b, 0.0)) - uCoin;
+      vec2 dq = abs(q) - (uTaille * 0.5 - vec2(uCoin));
+      float sd = length(max(dq, 0.0)) + min(max(dq.x, dq.y), 0.0) - uCoin;   // la distance au bord (négative dedans)
       if (sd > 0.0) discard;                                // les coins arrondis
       if (uPoints < 0.999) {                                // apparaît par des points qui grandissent depuis le centre
         vec2 pp = vUv * uTaille, cel = floor(pp / uMaille), ctr = (cel + 0.5) * uMaille;
@@ -131,21 +123,109 @@ const FS_TUILE = `
         if (length(pp - ctr) > uMaille * 0.74 * kk) discard;
       }
       vec3 n = vRad * sign(vFace);
-      vec3 img = texture2D(uMap, mix(uRect.xy, uRect.zw, vUv)).rgb;
+      vec2 st = mix(uRect.xy, uRect.zw, vUv);
+      vec3 img = texture2D(uMap, st).rgb;
       if (uFondu > 0.0) img = mix(img, texture2D(uMap2, mix(uRect2.xy, uRect2.zw, vUv)).rgb, uFondu);
       float l = 0.55 + 0.45 * max(dot(n, v), 0.0);
-      float reflet = pow(max(dot(reflect(-v, n), normalize(vec3(-0.35, 0.75, 0.55))), 0.0), 30.0);
-      c = img * l + reflet * 0.18;
-      if (vFace < 0.0) c *= 0.78;                            // l'intérieur de la sphère, un peu dans l'ombre
-      c += uLueur * vec3(0.18, 0.36, 1.0) * (1.0 - smoothstep(0.0, uCoin, -sd)) * 0.9;
+      // la lumière qui tourne lentement : un reflet doux qui glisse sur les plaques
+      float reflet = pow(max(dot(reflect(-v, n), uLumiere), 0.0), 28.0);
+      c = img * l * (1.0 + uEclat) + reflet * 0.2;
+      if (vFace < 0.0) c *= 0.74;                            // l'intérieur de la sphère, un peu dans l'ombre
+      // le survol : un liseré de la couleur du projet
+      c += uLueur * uTeinte * (1.0 - smoothstep(0.0, uCoin * 0.9, -sd)) * 0.9;
+      // une case mise en avant dans la planche ouverte : le reste s'assombrit
+      if (uFocusK > 0.0) {
+        float dedans = step(uFocus.x, st.x) * step(st.x, uFocus.z) * step(uFocus.y, st.y) * step(st.y, uFocus.w);
+        c *= mix(1.0, 0.3 + 0.7 * dedans, uFocusK);
+      }
     } else {
       if (uPoints < 0.999) discard;
       vec3 n = normalize(cross(dFdx(vMonde), dFdy(vMonde)));
-      c = uBord * (0.45 + 0.55 * abs(dot(n, v)));            // la tranche, claire
+      c = uBord * (0.45 + 0.55 * abs(dot(n, v))) + uLueur * uTeinte * 0.35;   // la tranche, claire
     }
     c *= 1.0 - uSombre;
     gl_FragColor = vec4(c, 1.0);
     #include <colorspace_fragment>
+  }`;
+
+// le verre : une sphère de verre clair qui respire à peine. Elle réfracte la soie du fond (déformée, plus fort vers le
+// bord, les trois couleurs un peu décalées), s'assombrit et bleuit vers le bas ; un liseré clair et un reflet doux
+const VS_COEUR = `
+  uniform float uT, uAmp;
+  varying vec3 vN;
+  varying vec3 vP;
+  varying vec3 vNv;
+  void main() {
+    vec3 p = position;
+    float n = sin(p.x * 3.1 + uT * 0.35) * sin(p.y * 2.7 - uT * 0.28) * sin(p.z * 3.3 + uT * 0.22)
+            + 0.5 * sin(p.x * 5.3 - uT * 0.4 + p.z * 2.0) * sin(p.y * 4.1 + uT * 0.31);
+    p *= 1.0 + uAmp * n;
+    vec4 m = modelMatrix * vec4(p, 1.0);
+    vP = m.xyz;
+    vN = normalize(mat3(modelMatrix) * normal);
+    vNv = normalize((viewMatrix * vec4(vN, 0.0)).xyz);
+    gl_Position = projectionMatrix * viewMatrix * m;
+  }`;
+const FS_COEUR = `
+  uniform sampler2D uSoie;
+  uniform vec2 uRes;
+  uniform vec3 uLumiere;
+  uniform float uT, uOpacite;
+  varying vec3 vN;
+  varying vec3 vP;
+  varying vec3 vNv;
+  void main() {
+    vec3 v = normalize(cameraPosition - vP), n = normalize(vN);
+    float cosv = max(dot(n, v), 0.0);
+    float fr = pow(1.0 - cosv, 3.0);
+    // la soie vue à travers le verre : déplacée selon la normale, davantage vers le bord ; un peu de dispersion
+    vec2 uv = gl_FragCoord.xy / uRes;
+    vec2 dec = -vNv.xy * (0.05 + 0.22 * (1.0 - cosv));
+    vec3 refr = vec3(texture2D(uSoie, uv + dec * 0.97).r, texture2D(uSoie, uv + dec).g, texture2D(uSoie, uv + dec * 1.04).b);
+    // le corps du verre : presque incolore en haut, un bleu profond qui monte du bas (en couleurs d'écran, comme la soie)
+    float bas = clamp(0.5 - n.y * 0.5, 0.0, 1.0);
+    vec3 corps = mix(vec3(0.012, 0.018, 0.035), vec3(0.02, 0.07, 0.2), bas * bas);
+    vec3 c = corps + refr * mix(vec3(1.05, 1.08, 1.12), vec3(0.62, 0.74, 0.98), bas);
+    // les reflets : le studio (plus clair en haut), le liseré du bord (à peine irisé), la lumière qui tourne
+    vec3 r = reflect(-v, n);
+    float studio = smoothstep(-0.2, 0.9, r.y);
+    vec3 irise = 0.5 + 0.5 * cos(6.2831 * (fr * 1.6 + vec3(0.0, 0.33, 0.67)));
+    c += fr * (vec3(0.35, 0.45, 0.62) * studio * 0.55 + mix(vec3(0.8, 0.88, 1.0), irise, 0.3) * smoothstep(0.6, 0.97, fr) * 0.6);
+    // le bord : un liseré fin et net, plus vif en haut
+    float bord = smoothstep(0.72, 0.98, fr) * (0.55 + 0.45 * clamp(n.y + 0.4, 0.0, 1.0));
+    c += mix(vec3(0.78, 0.86, 1.0), irise, 0.2) * bord * 0.85;
+    // une grande boîte à lumière de studio, en haut à gauche, qui se reflète en long sur le verre
+    float boite = smoothstep(0.25, 0.55, r.y) * smoothstep(0.15, -0.35, r.x) * smoothstep(-0.2, 0.4, r.z);
+    c += vec3(0.75, 0.82, 0.95) * boite * (0.08 + 0.25 * fr);
+    float spec = pow(max(dot(n, normalize(uLumiere + v)), 0.0), 220.0);
+    float halo = pow(max(dot(n, normalize(uLumiere + v)), 0.0), 16.0);
+    c += spec * 0.45 + halo * 0.025;
+    float a = clamp(0.7 + 0.28 * fr + spec * 0.3, 0.0, 1.0) * uOpacite;
+    gl_FragColor = vec4(c, a);
+  }`;
+
+// l'ombre de contact d'une plaque sur le verre : un rectangle arrondi flou, posé sur la sphère
+const VS_OMBRE = `
+  uniform vec3 uCentre;
+  uniform float uR;
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    vec4 base = modelMatrix * vec4(position.xy, 0.0, 1.0);
+    vec3 m = uCentre + normalize(base.xyz - uCentre) * uR;
+    gl_Position = projectionMatrix * viewMatrix * vec4(m, 1.0);
+  }`;
+const FS_OMBRE = `
+  uniform vec2 uTaille;
+  uniform float uFlou, uForce;
+  varying vec2 vUv;
+  void main() {
+    vec2 q = (vUv - 0.5) * uTaille * 1.4;
+    vec2 dq = abs(q) - (uTaille * 0.5 - vec2(uFlou));
+    float sd = length(max(dq, 0.0)) + min(max(dq.x, dq.y), 0.0) - uFlou;
+    float a = uForce * (1.0 - smoothstep(-uFlou, uFlou * 1.8, sd));
+    if (a < 0.003) discard;
+    gl_FragColor = vec4(0.0, 0.008, 0.03, a);
   }`;
 
 // le fond : une nappe de lumière qui ondule en travers de l'écran, comme un drap de soie éclairé de côté
@@ -173,17 +253,17 @@ const FS_SOIE = `
     float a = nappe(p, t, 0.06, 0.2, 0.15) + 0.5 * nappe(p * vec2(0.82, 1.1) + vec2(0.4, 0.02), t * 0.8 + 2.0, -0.04, 0.17, 0.11);
     float lointain = 0.25 * nappe(p * vec2(0.6, 0.9) + vec2(-0.6, 0.0), t * 0.6 + 5.0, 0.12, 0.25, 0.22);
     vec3 fond = mix(vec3(0.012, 0.016, 0.03), vec3(0.03, 0.038, 0.065), 1.0 - clamp(length(p) * 0.9, 0.0, 1.0));
-    vec3 c = fond + vec3(0.86, 0.9, 1.0) * (a * 0.82 + lointain);
+    vec3 c = fond + vec3(0.86, 0.9, 1.0) * (a * 0.94 + lointain * 1.1);
     gl_FragColor = vec4(c, 1.0);
   }`;
 const FS_GRAIN = `
   uniform sampler2D uSoie;
   uniform vec2 uRes;
-  uniform float uT;
+  uniform float uT, uVoile;
   varying vec2 vUv;
   float h(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
   void main() {
-    vec3 c = texture2D(uSoie, vUv).rgb;
+    vec3 c = texture2D(uSoie, vUv).rgb * (1.0 - uVoile);
     c += (h(floor(gl_FragCoord.xy) + fract(uT * 7.3) * 91.7) - 0.5) * 0.055;   // le grain
     vec2 p = vUv - 0.5;
     c *= 1.0 - dot(p, p) * 0.55;                                               // le vignettage
@@ -191,7 +271,57 @@ const FS_GRAIN = `
   }`;
 const VS_PLEIN = 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy * 2.0, 0.0, 1.0); }';
 
+// le geste de chaque projet au survol (h : 0 → 1) : il parle de son métier. Les décalages sont en hauteur de planche,
+// le soulèvement en rayon de sphère, les rotations en radians.
+function geste(nom, t, h, T, o) {
+  o.dx = 0; o.dy = 0; o.lift = 0; o.roll = 0; o.tx = 0; o.ty = 0; o.glow = 0; o.plat = 0;
+  if (h < 0.0005) return o;
+  const ci = t.ci, d = Math.hypot(t.lx, t.ly);
+  switch (nom) {
+    case 'bulles':      // le bar à vins : les plaques remontent chacune à son rythme, comme des bulles
+      o.lift = h * (0.035 + 0.03 * (0.5 + 0.5 * Math.sin(T * 2.4 - ci * 1.3))); break;
+    case 'relief':      // la salle d'escalade : des prises à des hauteurs différentes
+      o.lift = h * [0.03, 0.09, 0.055, 0.12][ci]; break;
+    case 'tour':        // l'atelier céramique : l'îlot tourne doucement, comme sur un tour
+      o.roll = h * 0.11 * Math.sin(T * 1.1); o.lift = h * 0.045; break;
+    case 'spectre':     // l'opticien : les plaques s'écartent comme la lumière dans un prisme
+      o.dx = h * 0.06 * (ci - 1.5); o.lift = h * (0.03 + 0.014 * ci); o.glow = h * 0.2 * (0.5 + 0.5 * Math.sin(T * 2 - ci)); break;
+    case 'ecrin':       // l'institut de beauté : l'écrin s'ouvre
+      o.dx = h * t.lx * 0.09; o.dy = h * t.ly * 0.09; o.lift = h * 0.05; break;
+    case 'oblique':     // l'atelier vélo : les plaques glissent le long de la barre oblique
+      { const s = (ci % 2 ? 1 : -1) * h * 0.04; o.dx = s * 0.5; o.dy = s; o.lift = h * 0.045; } break;
+    case 'drape':       // la créatrice de mode : les plaques ondulent comme un tissu
+      o.tx = h * 0.24 * Math.sin(T * 1.6 - t.lx * 2.2); o.lift = h * 0.045; o.plat = h * 0.7; break;
+    case 'sillon':      // le disquaire : une onde part du centre, comme un sillon
+      o.lift = h * (0.035 + 0.028 * Math.sin(T * 3.2 - d * 7)); o.roll = h * 0.035 * Math.sin(T * 0.8); break;
+    case 'assemblage':  // la menuiserie : les pièces se déboîtent
+      o.dx = h * (t.lx < 0 ? -0.05 : 0.05); o.lift = h * (ci === 0 ? 0.03 : 0.065); break;
+    case 'flamme':      // les bougies : la lumière vacille
+      o.lift = h * 0.045; o.glow = h * (0.3 + 0.18 * Math.sin(T * 9.1) + 0.1 * Math.sin(T * 13.7 + ci)); break;
+    case 'pages':       // le kiosque : les pages se tournent
+      o.ty = h * (0.3 + 0.06 * Math.sin(T * 1.4 + ci)) * (ci % 2 ? -1 : 1); o.lift = h * 0.05; o.plat = h * 0.75; break;
+    case 'onde':        // la piscine : des ronds dans l'eau
+      o.lift = h * (0.032 + 0.03 * Math.sin(T * 2.6 - d * 6)); break;
+    default: o.lift = h * 0.045;
+  }
+  return o;
+}
+
+// où poser les îlots : trois rangées décalées, aucune aux pôles, sur les trois quarts du haut de la sphère (elle est
+// coupée en bas de l'écran), pour que chaque projet reste lisible quand la sphère tourne
+function centresIlots(n) {
+  const rangs = n <= 4 ? [n] : [Math.round(n / 3), n - 2 * Math.round(n / 3), Math.round(n / 3)];
+  const lats = rangs.length === 1 ? [0.2] : [0.8, 0.24, -0.32];
+  const out = [];
+  rangs.forEach((m, r) => {
+    for (let i = 0; i < m; i++) out.push({ lat: lats[r], lon: (i / m) * Math.PI * 2 + (r === 1 ? 0 : Math.PI / m) + 0.35 });
+  });
+  return out;
+}
+
 export function createSphere(toile, opts = {}) {
+  const projets = opts.projets || [];
+  if (!projets.length) return null;
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas: toile, antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -201,124 +331,132 @@ export function createSphere(toile, opts = {}) {
   renderer.setClearColor(0x05070d, 1);
   renderer.autoClear = false;
   const reduit = !!opts.reduced;
-  const marques = opts.marques && opts.marques.length ? opts.marques : [];
+  const onContact = opts.onContact || (() => {});
+  const onOuvre = opts.onOuvre || (() => {});
+  const onEtiquette = opts.onEtiquette || (() => {});
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 80);
   camera.position.set(0, 0, 10);
 
   /* ---------- le fond : la soie (demi-résolution) et le grain ---------- */
+  let echelleFond = 0.5;
   const fondCible = new THREE.WebGLRenderTarget(4, 4, { type: THREE.UnsignedByteType });
   const fondScene = new THREE.Scene(), grainScene = new THREE.Scene();
   const ortho2 = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   const soie = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({ uniforms: { uRes: { value: new THREE.Vector2(1, 1) }, uT: { value: 0 } }, vertexShader: VS_PLEIN, fragmentShader: FS_SOIE, depthTest: false, depthWrite: false }));
   soie.frustumCulled = false; fondScene.add(soie);
-  const grain = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({ uniforms: { uSoie: { value: fondCible.texture }, uRes: { value: new THREE.Vector2(1, 1) }, uT: { value: 0 } }, vertexShader: VS_PLEIN, fragmentShader: FS_GRAIN, depthTest: false, depthWrite: false }));
+  const grain = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({ uniforms: { uSoie: { value: fondCible.texture }, uRes: { value: new THREE.Vector2(1, 1) }, uT: { value: 0 }, uVoile: { value: 0 } }, vertexShader: VS_PLEIN, fragmentShader: FS_GRAIN, depthTest: false, depthWrite: false }));
   grain.frustumCulled = false; grainScene.add(grain);
 
-  /* ---------- les vignettes ---------- */
+  /* ---------- les images : une planche par projet (la grande seulement à l'ouverture, sur les écrans fins) ---------- */
   const chargeur = new THREE.TextureLoader();
   const ANISO = renderer.capabilities.getMaxAnisotropy();
-  const texture = (src, fin) => {
-    const t = chargeur.load(src, () => { if (fin) fin(t); dessiner(); });
+  const texture = (src) => {
+    const t = chargeur.load(src, () => dessiner());
     t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO;
     return t;
   };
-  const planches = marques.map((m) => texture(m.petite));
-  const grandes = marques.map(() => null);
-  const BORD = new THREE.Color('#e9ecf2');
-  const matiere = (tex, rect) => new THREE.ShaderMaterial({
+  const planches = projets.map((p) => texture(p.image));
+  const grandes = projets.map(() => null);
+  const BORD = new THREE.Color('#bfc5d0');
+  const lumiere = new THREE.Vector3(-0.35, 0.75, 0.55).normalize();
+  const matiere = (tex, rect, teinte) => new THREE.ShaderMaterial({
     uniforms: {
       uMap: { value: tex }, uRect: { value: new THREE.Vector4(...rect) }, uMap2: { value: tex }, uRect2: { value: new THREE.Vector4(...rect) }, uFondu: { value: 0 },
       uTaille: { value: new THREE.Vector2(1, 1) }, uCoin: { value: 0.05 }, uSombre: { value: 0 }, uLueur: { value: 0 }, uBord: { value: BORD },
+      uTeinte: { value: new THREE.Color(teinte || '#4d7dff') }, uEclat: { value: 0 }, uLumiere: { value: lumiere },
+      uFocus: { value: new THREE.Vector4(0, 0, 1, 1) }, uFocusK: { value: 0 },
       uCentre: { value: new THREE.Vector3() }, uR: { value: 1 }, uBend: { value: 1 }, uEch: { value: 1 }, uPoints: { value: 1 }, uMaille: { value: 0.05 },
     },
     vertexShader: VS_TUILE, fragmentShader: FS_TUILE, side: THREE.DoubleSide,
   });
+  // une case de planche (u vers la droite, v vers le bas) → le rectangle dans l'image (v vers le haut)
+  const rectGL = ([u0, v0, u1, v1]) => [u0, 1 - v1, u1, 1 - v0];
+
+  /* ---------- les îlots : un par projet, sur la sphère de rayon 1 ---------- */
   const CONTACT = new THREE.Vector3(1, 0.12, 0.25).normalize();       // là où le doigt touche la sphère
-  const tmp = new THREE.Object3D();
+  const m4 = new THREE.Matrix4();
+  const ilots = centresIlots(projets.length).map(({ lat, lon }, pi) => {
+    const C = new THREE.Vector3(Math.cos(lat) * Math.sin(lon), Math.sin(lat), Math.cos(lat) * Math.cos(lon));
+    const E = new THREE.Vector3(Math.cos(lon), 0, -Math.sin(lon));
+    const N = new THREE.Vector3().crossVectors(C, E);
+    // la rotation qui amène l'îlot face à nous, droit
+    const visee = new THREE.Quaternion().setFromRotationMatrix(m4.makeBasis(E, N, C)).invert();
+    const pr = projets[pi];
+    return { C, E, N, visee, pop: 0, k: 0, carte: null, couleur: new THREE.Color(pr.couleur || '#4d7dff'), geste: pr.geste };
+  });
   const tuiles = [];
-  marques.forEach((m, b) => CASES.forEach(([u0, v0, u1, v1], k) => {
+  projets.forEach((pr, pi) => SUR_LA_SPHERE.forEach((nom, ci) => {
+    const [x0, y0, x1, y1] = ILOT.cases[nom];
+    const cw = x1 - x0, ch = y1 - y0;
     const i = tuiles.length;
     const hh = (n) => hasard(i * 5.31 + n);
     const dir = new THREE.Vector3(hh(1) - 0.5, (hh(2) - 0.5) * 0.8, hh(3) - 0.5).normalize();
+    const [u0, v0, u1, v1] = CASES[nom];
     tuiles.push({
-      // sa case dans la planche (l'image est retournée : v vers le haut) ; son format est celui de la case
-      mesh: null, b, k, i, tex: planches[b], rect: [u0, 1 - v1, u1, 1 - v0], format: ((u1 - u0) * PLANCHE) / (v1 - v0),
-      p: new THREE.Vector3(), q: new THREE.Quaternion(), w: 0.3, h: 0.3, r: 1 + (hh(8) - 0.5) * 0.035,   // sa place (plus bas)
+      i, pi, ci, nom, cw, ch,
+      lx: (x0 + x1) / 2 - ILOT.centre[0], ly: ILOT.centre[1] - (y0 + y1) / 2,      // sa place dans l'îlot (y vers le haut)
+      bx: (u0 + u1) / 2 * PLANCHE, by: (v0 + v1) / 2,                               // sa place dans la planche
+      rect: rectGL(CASES[nom]), r: 1 + (hh(8) - 0.5) * 0.016,
+      // son désordre : quelque part autour de la sphère, tournée n'importe comment
       cp: dir.multiplyScalar(1.35 + hh(4) * 0.95), cq: new THREE.Quaternion().setFromEuler(new THREE.Euler((hh(5) - 0.5) * 2.2, (hh(6) - 0.5) * 3, (hh(7) - 0.5) * 1.6)),
-      seuil: 0.3, pop: 0,
+      seuil: 0.3, prox: 0, sx: -9999, sy: -9999, mesh: null,
     });
   }));
-  // sur la sphère (rayon 1), rangée par rangée : dans une rangée, toutes les vignettes ont la même hauteur et l'écart
-  // se répartit ; les marques sont mêlées. La sphère est ajourée : les vignettes en couvrent un peu plus de la moitié,
-  // de vrais espaces entre les rangées laissent voir l'intérieur.
-  {
-    const ECART = 0.05, POLE = 1.3, COUVERT = 0.66;
-    // mélangées ; les quatre cases d'une même marque, réparties loin les unes des autres (un quart de tour d'écart)
-    const toutes = [...tuiles].sort((a, c) => ((a.b * 0.618 + a.k * 0.25) % 1) - ((c.b * 0.618 + c.k * 0.25) % 1));
-    const somme = toutes.reduce((a, t) => a + t.format, 0);
-    let HT = Math.sqrt((4 * Math.PI * COUVERT) / somme);
-    const nR = Math.max(5, Math.round((2 * POLE) / (HT * 1.3)) + 1);
-    const RANGS = Array.from({ length: nR }, (_, r) => -POLE + (r * 2 * POLE) / (nR - 1));
-    HT = Math.min(HT, ((2 * POLE) / (nR - 1)) * 0.8);
-    const caps = RANGS.map((f) => 2 * Math.PI * Math.cos(f));
-    const capTot = caps.reduce((a, c) => a + c, 0);
-    let rempli = (HT * somme + toutes.length * ECART) / capTot;
-    if (rempli > 0.96) { HT *= (0.96 * capTot - toutes.length * ECART) / (HT * somme); rempli = 0.96; }
-    const larg = (t) => HT * t.format;
-    const ordreRangs = [...RANGS.keys()].sort((a, c) => Math.abs(a - (nR - 1) / 2) - Math.abs(c - (nR - 1) / 2) || a - c);
-    const rangs = RANGS.map(() => []), pris = RANGS.map(() => 0);
-    let n = 0;
-    for (const ri of ordreRangs) {                          // de l'équateur vers les pôles
-      while (n < toutes.length && (rangs[ri].length === 0 || pris[ri] + larg(toutes[n]) + ECART <= caps[ri] * rempli * 1.03)) {
-        rangs[ri].push(toutes[n]); pris[ri] += larg(toutes[n]) + ECART; n++;
-      }
-    }
-    while (n < toutes.length) {
-      const ri = caps.map((c, r) => c - pris[r]).reduce((m, v, r, a) => (v > a[m] ? r : m), 0);
-      rangs[ri].push(toutes[n]); pris[ri] += larg(toutes[n]) + ECART; n++;
-    }
-    RANGS.forEach((f, ri) => {
-      const rang = rangs[ri];
-      const utile = rang.reduce((a, t) => a + larg(t), 0);
-      const serre = Math.min(1, (caps[ri] - rang.length * ECART) / utile);
-      const jeu = (caps[ri] - utile * serre) / Math.max(1, rang.length);
-      let x = hasard(ri * 9.1) * caps[ri];
-      for (const t of rang) {
-        const w = larg(t) * serre, a = (x + w / 2) / Math.cos(f);
-        t.p.set(Math.cos(f) * Math.cos(a), Math.sin(f), Math.cos(f) * Math.sin(a));
-        tmp.position.copy(t.p); tmp.lookAt(t.p.clone().multiplyScalar(2));
-        t.q.copy(tmp.quaternion);
-        t.w = w; t.h = w / t.format;
-        t.seuil = 0.42 * (1 - t.p.distanceTo(CONTACT) / 2);
-        x += w + jeu;
-      }
-    });
-    // chaque vignette devient une plaque à ses mesures (rayon 1) : épaisse, coins arrondis
-    for (const t of tuiles) {
-      const coin = Math.min(t.w, t.h) * 0.075;
-      t.mesh = new THREE.Mesh(plaque(t.w, t.h, HT * 0.065, coin), matiere(t.tex, t.rect));
-      t.mesh.material.uniforms.uTaille.value.set(t.w, t.h);
-      t.mesh.material.uniforms.uCoin.value = coin;
-      t.mesh.userData.i = t.i;
-      t.mesh.frustumCulled = false;
-      scene.add(t.mesh);
-    }
+  for (const t of tuiles) {
+    const il = ilots[t.pi];
+    const w = t.cw * S, h = t.ch * S, coin = Math.min(w, h) * 0.07;
+    t.mesh = new THREE.Mesh(plaque(w, h, S * 0.05, coin), matiere(planches[t.pi], t.rect, projets[t.pi].couleur));
+    t.ombre = new THREE.Mesh(new THREE.PlaneGeometry(w * 1.4, h * 1.4, 8, 8), new THREE.ShaderMaterial({
+      uniforms: { uCentre: { value: new THREE.Vector3() }, uR: { value: 1 }, uTaille: { value: new THREE.Vector2(w, h) }, uFlou: { value: coin }, uForce: { value: 0 } },
+      vertexShader: VS_OMBRE, fragmentShader: FS_OMBRE, transparent: true, depthWrite: false,
+    }));
+    t.ombre.renderOrder = 2; t.ombre.frustumCulled = false;
+    scene.add(t.ombre);
+    const u = t.mesh.material.uniforms;
+    u.uTaille.value.set(w, h); u.uCoin.value = coin;
+    t.mesh.userData.i = t.i;
+    t.mesh.frustumCulled = false;
+    // le doigt range d'abord les plaques proches de lui
+    const p = il.C.clone().addScaledVector(il.E, Math.tan(t.lx * S)).addScaledVector(il.N, Math.tan(t.ly * S)).normalize();
+    t.seuil = 0.42 * (1 - p.distanceTo(CONTACT) / 2);
+    scene.add(t.mesh);
   }
   const maillages = tuiles.map((t) => t.mesh);
+  const parProjet = projets.map((_, pi) => tuiles.filter((t) => t.pi === pi));
 
-  // la planche ouverte : une grande carte (la planche entière de la marque), qui part de la vignette cliquée
-  const matCarte = matiere(planches[0] || null, [0, 0, 1, 1]);
-  const carte = new THREE.Mesh(plaque(PLANCHE, 1, 0.022, 0.04), matCarte);
-  carte.visible = false; carte.frustumCulled = false; carte.renderOrder = 2;
-  scene.add(carte);
-  const aura = new THREE.Sprite(new THREE.SpriteMaterial({ map: texHalo('rgba(70, 120, 255, 0.55)'), transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
-  aura.renderOrder = 1;
-  scene.add(aura);
+  // le cœur de verre
+  const coeur = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), new THREE.ShaderMaterial({
+    uniforms: { uT: { value: 0 }, uAmp: { value: reduit ? 0 : 0.006 }, uLumiere: { value: lumiere }, uOpacite: { value: 1 }, uSoie: { value: fondCible.texture }, uRes: { value: new THREE.Vector2(1, 1) } },
+    vertexShader: VS_COEUR, fragmentShader: FS_COEUR, transparent: true, depthWrite: true,
+  }));
+  coeur.renderOrder = 1;
+  scene.add(coeur);
   // la lueur au point de contact
-  const lueur = new THREE.Sprite(new THREE.SpriteMaterial({ map: texHalo('rgba(140, 180, 255, 1)'), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  const texLueur = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 256;
+    const g = c.getContext('2d'), d = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    d.addColorStop(0, 'rgba(140, 180, 255, 1)'); d.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = d; g.fillRect(0, 0, 256, 256);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  })();
+  const lueur = new THREE.Sprite(new THREE.SpriteMaterial({ map: texLueur, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
   scene.add(lueur);
+
+  // la planche entière d'un projet, créée à sa première ouverture : elle complète, par des points, les quatre plaques
+  const carteDe = (pi) => {
+    const il = ilots[pi];
+    if (il.carte) return il.carte;
+    const m = new THREE.Mesh(plaque(PLANCHE, 1, 0.02, 0.03), matiere(planches[pi], [0, 0, 1, 1], projets[pi].couleur));
+    const u = m.material.uniforms;
+    u.uTaille.value.set(PLANCHE, 1); u.uCoin.value = 0.03; u.uBend.value = 0;
+    m.visible = false; m.frustumCulled = false; m.renderOrder = 2;
+    scene.add(m);
+    il.carte = m;
+    return m;
+  };
 
   /* ---------- la main en lignes de balayage, et le voile de points (en pixels, par-dessus) ---------- */
   const plan = new THREE.Scene(), dessus = new THREE.Scene();
@@ -329,10 +467,10 @@ export function createSphere(toile, opts = {}) {
   texMain.minFilter = THREE.LinearMipmapLinearFilter; texMain.anisotropy = 4;
   const main = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
     transparent: true, depthTest: false, depthWrite: false,
-    uniforms: { uTex: { value: texMain }, uN: { value: 120 }, uOrdre: { value: 0 }, uSouris: { value: new THREE.Vector2(-9, -9) }, uTrouble: { value: 0 }, uT: { value: 0 }, uBleu: { value: new THREE.Vector3(...BLEU) } },
+    uniforms: { uTex: { value: texMain }, uN: { value: 120 }, uOrdre: { value: 0 }, uSouris: { value: new THREE.Vector2(-9, -9) }, uTrouble: { value: 0 }, uT: { value: 0 }, uBleu: { value: new THREE.Vector3(0.33, 0.52, 1.0) }, uOpac: { value: 1 } },
     vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
     fragmentShader: `
-      uniform sampler2D uTex; uniform float uN, uOrdre, uTrouble, uT; uniform vec2 uSouris; uniform vec3 uBleu;
+      uniform sampler2D uTex; uniform float uN, uOrdre, uTrouble, uT, uOpac; uniform vec2 uSouris; uniform vec3 uBleu;
       varying vec2 vUv;
       float h1(float n) { return fract(sin(n * 127.1 + 31.7) * 43758.5453); }
       void main() {
@@ -356,12 +494,11 @@ export function createSphere(toile, opts = {}) {
         float px = fwidth(v * uN);
         float a = (1.0 - smoothstep(w * 0.5 - px * 0.6, w * 0.5 + px * 0.6, d)) * step(0.04, c.a);
         a *= 1.0 - smoothstep(0.8, 1.0, vUv.x);                  // le bras se perd vers la droite
-        a *= 0.35 + 0.65 * o;
+        a *= (0.35 + 0.65 * o) * uOpac;
         gl_FragColor = vec4(uBleu, a);
       }`,
   }));
   plan.add(main);
-  main.material.uniforms.uBleu.value.set(0.33, 0.52, 1.0);     // sur le noir, un bleu un peu plus lumineux
   const voile = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
     transparent: true, depthTest: false, depthWrite: false,
     uniforms: { uVoile: { value: 0 }, uCentre: { value: new THREE.Vector2() }, uDiag: { value: 1 }, uMaille: { value: 16 }, uBleu: { value: new THREE.Vector3(...BLEU) } },
@@ -370,7 +507,7 @@ export function createSphere(toile, opts = {}) {
       uniform float uVoile, uDiag, uMaille; uniform vec2 uCentre; uniform vec3 uBleu;
       void main() {
         vec2 p = gl_FragCoord.xy, cel = floor(p / uMaille), ctr = (cel + 0.5) * uMaille;
-        float dist = length(ctr - uCentre) / uDiag;              // 0 sur la planche, ~1 dans le coin le plus loin
+        float dist = length(ctr - uCentre) / uDiag;              // 0 au centre de la sphère, ~1 dans le coin le plus loin
         float k = clamp(uVoile * 1.6 - dist * 1.15, 0.0, 1.0);
         k = k * k * (3.0 - 2.0 * k);
         float r = uMaille * 0.72 * (1.0 - k);                    // 0,72 maille : les points se touchent, tout est bleu
@@ -383,15 +520,19 @@ export function createSphere(toile, opts = {}) {
   dessus.add(voile);
 
   /* ---------- la mise en page ---------- */
-  let W = 1, H = 1, dpr = 1, portrait = false, mainPos = { x: 0, y: 0, l: 1, h: 1 };
+  let W = 1, H = 1, dpr = 1, dprMax = 2, portrait = false, mainPos = { x: 0, y: 0, l: 1, h: 1 };
   const centre = new THREE.Vector3(), contact = new THREE.Vector3();
   let R = 1, tVue = 1;                                     // le rayon de la sphère ; la demi-hauteur visible à z = 0
   const MAIN_DOIGT = [0.245, 0.5];                        // le bout de l'index, dans l'image de la main (2720 × 1536)
-  const ecran = (v) => { const p = v.clone().project(camera); return [(p.x * 0.5 + 0.5) * W, (0.5 - p.y * 0.5) * H]; };
+  const v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), v3 = new THREE.Vector3(), n1 = new THREE.Vector3(), e1 = new THREE.Vector3(), y1 = new THREE.Vector3();
+  const q1 = new THREE.Quaternion(), q2 = new THREE.Quaternion(), q3 = new THREE.Quaternion(), qx = new THREE.Quaternion();
+  const ecran = (v) => { v3.copy(v).project(camera); return [(v3.x * 0.5 + 0.5) * W, (0.5 - v3.y * 0.5) * H, v3.z]; };
   let cSphere = [0, 0], rSphere = 1;                       // la sphère à l'écran (pour la souris et le voile)
+  const cs = new THREE.Vector3(), qs = new THREE.Quaternion(), qBase = new THREE.Quaternion(), qVise = new THREE.Quaternion(), eul = new THREE.Euler();
+  let Rc = 1;
   const placerEcran = () => {
     const [cx, cy] = ecran(cs);
-    const bord = ecran(cs.clone().add(new THREE.Vector3(Rc, 0, 0)));
+    const bord = ecran(v2.set(Rc, 0, 0).add(cs));
     cSphere = [cx, cy]; rSphere = Math.abs(bord[0] - cx);
     const [sx, sy] = ecran(contact);
     mainPos.x = sx + 3 - mainPos.l * MAIN_DOIGT[0];
@@ -399,14 +540,22 @@ export function createSphere(toile, opts = {}) {
     voile.material.uniforms.uCentre.value.set(cx * dpr, (H - cy) * dpr);
     lueur.position.copy(contact);
   };
+  const regler = () => {
+    renderer.setPixelRatio(dpr);
+    renderer.setSize(W, H, false);
+    fondCible.setSize(Math.max(4, Math.round(W * dpr * echelleFond)), Math.max(4, Math.round(H * dpr * echelleFond)));
+    coeur.material.uniforms.uRes.value.set(W * dpr, H * dpr);
+    voile.material.uniforms.uDiag.value = Math.hypot(W, H) * dpr;
+    voile.material.uniforms.uMaille.value = Math.round((portrait ? 13 : 16) * dpr);
+  };
   const taille = () => {
     const b = toile.getBoundingClientRect();
     W = Math.max(1, b.width); H = Math.max(1, b.height);
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    portrait = W / H < 0.9;
+    // la qualité : 2 au plus ; 1,75 sur téléphone ; jamais plus de 3 400 pixels de large
+    dpr = Math.min(window.devicePixelRatio || 1, portrait && W < 700 ? 1.75 : 2, dprMax);
     if (W * dpr > 3400) dpr = 3400 / W;
-    renderer.setPixelRatio(dpr);
-    renderer.setSize(W, H, false);
-    fondCible.setSize(Math.round(W * dpr * 0.5), Math.round(H * dpr * 0.5));
+    regler();
     soie.material.uniforms.uRes.value.set(W, H);
     grain.material.uniforms.uRes.value.set(W, H);
     camera.aspect = W / H; camera.updateProjectionMatrix();
@@ -414,13 +563,10 @@ export function createSphere(toile, opts = {}) {
     camera.updateMatrixWorld();                            // avant de projeter des points (sinon : NaN)
     ortho.left = 0; ortho.right = W; ortho.top = H; ortho.bottom = 0; ortho.updateProjectionMatrix();
     // la sphère : au milieu, sous le titre ; énorme
-    portrait = W / H < 0.9;
     tVue = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
-    centre.set(0, (1 - (portrait ? 0.58 : 0.612) * 2) * tVue, 0);
-    R = Math.min((portrait ? 0.3 : 0.378) * 2 * tVue, (portrait ? 0.46 : 0.38) * 2 * tVue * camera.aspect);
+    centre.set(0, (1 - (portrait ? 0.62 : 0.7) * 2) * tVue, 0);
+    R = Math.min((portrait ? 0.32 : 0.43) * 2 * tVue, (portrait ? 0.48 : 0.42) * 2 * tVue * camera.aspect);
     lueur.scale.setScalar(R * 0.75);
-    voile.material.uniforms.uDiag.value = Math.hypot(W, H) * dpr;
-    voile.material.uniforms.uMaille.value = Math.round((portrait ? 13 : 16) * dpr);
     poser();
     const [sx] = ecran(contact);
     const l = portrait ? W * 1.0 : Math.max(W * 0.6, (W - sx) / (1 - MAIN_DOIGT[0]) * 1.05);
@@ -431,36 +577,63 @@ export function createSphere(toile, opts = {}) {
 
   /* ---------- le temps ---------- */
   let visible = false, boucle = 0, dernier = 0, temps = 0, t0 = 0;
-  let etat = 'bleu';                                      // 'bleu' (recouvert), 'joue', 'ordre'
+  let etat = 'bleu';                                      // 'bleu' (recouvert), 'joue', 'ordre', 'couvre'
   let D = 1, vD = 0, ordreMain = 0, voileV = 0, glisse = 1, touche = false, tLueur = -9;
   const souris = { x: -9999, y: -9999, f: 0, trouble: 0 };
-  const cam = { x: 0, y: 0 };
-  let lacet = 0.6, tangage = 0.1, vLacet = 0, appui = null, aGlisse = false, survol = -1;
-  // la plongée : quelle vignette est ouverte (-1 : aucune), où en est la plongée (z) et l'envol de la carte (k)
-  let choisie = -1, ouvert = false, z = 0, k = 0;
-  const onContact = opts.onContact || (() => {});
-  const onOuvre = opts.onOuvre || (() => {});
-  const cs = new THREE.Vector3(), qs = new THREE.Quaternion(), eul = new THREE.Euler();
-  let Rc = 1;
-  const v1 = new THREE.Vector3(), v2 = new THREE.Vector3(), q1 = new THREE.Quaternion(), q2 = new THREE.Quaternion(), qx = new THREE.Quaternion();
-  const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  const cam = { x: 0, y: 0 }, regard = { x: 0, y: 0 };
+  let lacet = 0.25, tangage = 0.1, vLacet = 0, appui = null, aGlisse = false, survol = -1, focus = -1;
+  // le projet ouvert (-1 : aucun) ; z : l'approche (la sphère l'amène face à nous, la caméra avance) ; zv : la sphère
+  // tournée vers un projet (ouvert, ou choisi au clavier)
+  let choisie = -1, ouvert = false, z = 0, zv = 0, vise = -1, caseFocus = null, focusK = 0;
+  const g = { dx: 0, dy: 0, lift: 0, roll: 0, tx: 0, ty: 0, glow: 0, plat: 0 };
+  const planche = { d: 6, Hb: 1, xc: 0, yc: 0 };       // la planche ouverte, dans l'espace de la caméra
 
-  // la pose de chaque vignette : entre sa place sur la sphère et son désordre ; puis la carte ouverte
+  // la planche ouverte : à gauche de la fiche (ordinateur) ou en haut (téléphone), en pixels → espace de la caméra
+  const placerPlanche = () => {
+    planche.d = camera.position.z - R * 1.45;
+    const wpp = (2 * Math.tan((camera.fov * Math.PI) / 360) * planche.d) / H;   // unités par pixel à cette distance
+    let lp, cx, cy;
+    if (portrait) { lp = W * 0.9; cx = W / 2; cy = 86 + lp / PLANCHE / 2; }
+    else { lp = Math.min(W * 0.52, (H - 210) * PLANCHE); cx = W * 0.315; cy = 76 + (H - 76) / 2; }
+    planche.Hb = (lp / PLANCHE) * wpp;
+    planche.xc = (cx - W / 2) * wpp; planche.yc = -(cy - H / 2) * wpp;
+  };
+  // un point de la planche (en hauteur de planche, depuis son centre) → le monde
+  const surPlanche = (x, y, recul, out) => out.set(planche.xc + x * planche.Hb, planche.yc + y * planche.Hb, -(planche.d + recul)).applyMatrix4(camera.matrixWorld);
+
+  // la pose de chaque plaque : entre sa place dans son îlot, son désordre, et sa case dans la planche ouverte
   function poser() {
-    const ez = z * z * (3 - 2 * z);
+    const ez = z * z * (3 - 2 * z), evz = zv * zv * (3 - 2 * zv);
     cs.copy(centre);
-    Rc = R * (1 - 0.08 * ez);
-    qs.setFromEuler(eul.set(tangage, lacet, 0, 'YXZ'));
+    Rc = R * (1 - 0.05 * ez);
+    qBase.setFromEuler(eul.set(tangage + regard.y, lacet + regard.x, 0, 'YXZ'));
+    qs.copy(qBase).slerp(qVise, evz);
+    placerPlanche();
+    const onde = (p) => 0.007 * Math.sin(p * 7 - temps * 1.3) * (1 - ez);
     for (const t of tuiles) {
-      const u = t.mesh.material.uniforms;
+      const il = ilots[t.pi], u = t.mesh.material.uniforms;
       const d = Math.min(1, Math.max(0, (D - t.seuil) / (1 - 0.42)));
       const ec = d * d * (3 - 2 * d);
-      // sur la sphère : la surface ondule doucement, une vague part de la vignette cliquée, la survolée s'avance
-      let onde = 0.012 * Math.sin(t.p.y * 7 - temps * 1.5) * (1 - ez) + 0.07 * t.pop;
-      const rr = Rc * (t.r + onde);
-      v1.copy(t.p).applyQuaternion(qs).multiplyScalar(rr).add(cs);
-      q1.copy(qs).multiply(t.q);
-      let ech = Rc, bend = 1;
+      // dans l'îlot : son geste au survol, et les plaques proches du curseur qui se soulèvent
+      geste(reduit ? '' : il.geste, t, il.pop, temps, g);
+      const lift = g.lift + 0.014 * t.prox;
+      let lx = t.lx + g.dx, ly = t.ly + g.dy;
+      if (g.roll) { const c = Math.cos(g.roll), s = Math.sin(g.roll); const a = lx * c - ly * s; ly = lx * s + ly * c; lx = a; }
+      n1.copy(il.C).addScaledVector(il.E, Math.tan(lx * S)).addScaledVector(il.N, Math.tan(ly * S)).normalize();
+      // son orientation : droite dans son îlot (tournée avec lui)
+      e1.copy(il.E).multiplyScalar(Math.cos(g.roll)).addScaledVector(il.N, Math.sin(g.roll));
+      e1.addScaledVector(n1, -e1.dot(n1)).normalize();
+      y1.crossVectors(n1, e1);
+      q1.setFromRotationMatrix(m4.makeBasis(e1, y1, n1));
+      if (g.tx || g.ty) q1.multiply(qx.setFromEuler(eul.set(g.tx, g.ty, 0)));
+      q1.premultiply(qs);
+      const rr = Rc * (t.r + onde(n1.y) + lift);
+      v1.copy(n1).applyQuaternion(qs).multiplyScalar(rr).add(cs);
+      let ech = Rc, bend = 0.35 * (1 - g.plat);
+      const nOmbre = v2.copy(n1).addScaledVector(e1, 0.012 + lift * 0.35).addScaledVector(y1, -0.016 - lift * 0.45).normalize();
+      t.ombre.position.copy(nOmbre).applyQuaternion(qs).multiplyScalar(Rc).add(cs);
+      t.ombre.quaternion.copy(q1);
+      t.ombre.scale.setScalar(Rc);
       // en désordre : autour de la sphère, à plat, avec un léger flottement
       if (ec > 0) {
         v2.copy(t.cp).multiplyScalar(R).add(centre);
@@ -470,66 +643,102 @@ export function createSphere(toile, opts = {}) {
         q2.copy(t.cq).multiply(qx);
         q1.slerp(q2, ec);
         ech = R * 0.9 * ec + Rc * (1 - ec);
-        bend = 1 - ec;
+        bend *= 1 - ec;
+      }
+      // la planche ouverte : chaque plaque rejoint sa case, l'une après l'autre, en passant un peu au-dessus de la sphère
+      const f = il.k > 0 ? sortie(entre(il.k, 0.05 * t.ci, 0.05 * t.ci + 0.55)) : 0;
+      if (f > 0) {
+        const ef = f * f * (3 - 2 * f);
+        surPlanche(t.bx - PLANCHE / 2, 0.5 - t.by, 0, v2);
+        v3.copy(v1).sub(cs).normalize().multiplyScalar(Math.sin(Math.PI * ef) * 0.14 * R);
+        v1.lerp(v2, ef).add(v3);
+        q1.slerp(camera.quaternion, ef);
+        ech += (planche.Hb / S - ech) * ef;
+        bend *= 1 - ef;
       }
       t.mesh.position.copy(v1);
       t.mesh.quaternion.copy(q1);
       t.mesh.scale.setScalar(ech);
+      t.mesh.visible = il.k < 0.999;
+      { const uo = t.ombre.material.uniforms; uo.uCentre.value.copy(cs); uo.uR.value = Rc * 0.983;
+        uo.uFlou.value = Math.min(t.mesh.material.uniforms.uCoin.value * (1.6 + lift * 40), 0.08);
+        uo.uForce.value = 0.5 * (1 - ec) * (1 - f) / (1 + lift * 14) * (1 - 0.6 * (t.pi === choisie ? 0 : z)); t.ombre.visible = uo.uForce.value > 0.004; }
       u.uEch.value = ech;
       u.uCentre.value.copy(cs);
       u.uR.value = rr;
       u.uBend.value = bend;
-      u.uSombre.value = 0.62 * ez;
-      u.uLueur.value = t.pop;
+      u.uSombre.value = (t.pi === choisie ? 0 : 0.6 * ez) + 0.25 * (focus >= 0 && t.pi !== focus ? zv : 0);
+      u.uLueur.value = il.pop * (1 - f);
+      u.uEclat.value = il.pop * 0.1 + g.glow + 0.06 * t.prox;
+      // pour la souris : où est la plaque à l'écran (seulement celles qui nous font face)
+      if (f === 0 && ec === 0) { const [sx, sy, sz] = ecran(v1); v2.copy(n1).applyQuaternion(qs); t.sx = v2.z > 0.1 && sz < 1 ? sx : -9999; t.sy = sy; } else t.sx = -9999;
     }
-    // la carte : la planche de la marque en grand, au milieu, devant la sphère ; elle apparaît par des points
-    if (choisie >= 0 && k > 0.001) {
-      const t = tuiles[choisie], uc = carte.material.uniforms;
-      const zc = R * 1.25, tv = Math.tan((camera.fov * Math.PI) / 360) * (10 - zc);
-      const lc = Math.min((portrait ? 0.92 : 0.64) * 2 * tv * camera.aspect, (portrait ? 0.4 : 0.66) * 2 * tv * PLANCHE), hc = lc / PLANCHE;
-      carte.position.set(camera.position.x, camera.position.y - 0.02 * tv, zc);
-      carte.quaternion.identity();
-      carte.scale.set(lc / PLANCHE, hc, hc);
-      uc.uTaille.value.set(PLANCHE, 1);
-      uc.uCoin.value = 0.03;
-      uc.uMaille.value = PLANCHE / (portrait ? 30 : 46);
-      uc.uPoints.value = k;
-      uc.uEch.value = hc;
-      uc.uMap.value = t.tex; uc.uRect.value.set(0, 0, 1, 1);
-      uc.uMap2.value = grandes[t.b] || t.tex; uc.uRect2.value.set(0, 0, 1, 1);
-      uc.uFondu.value = grandes[t.b] && grandes[t.b].image ? 1 : 0;
-      uc.uCentre.value.copy(cs); uc.uR.value = Rc; uc.uBend.value = 0;
-      carte.visible = true;
-      aura.visible = true;
-      aura.position.set(carte.position.x, carte.position.y, carte.position.z - 0.05);
-      aura.scale.set(lc * 1.5, hc * 1.8, 1);
-      aura.material.opacity = 0.55 * lisse(0.3, 1, k);
-    } else { carte.visible = false; aura.visible = false; }
+    // les planches ouvertes (ou qui se referment) : des points complètent les quatre plaques
+    for (let pi = 0; pi < ilots.length; pi++) {
+      const il = ilots[pi];
+      if (!il.carte) continue;
+      const kc = entre(il.k, 0.5, 1);
+      il.carte.visible = kc > 0.001;
+      if (!il.carte.visible) continue;
+      const u = il.carte.material.uniforms;
+      surPlanche(0, 0, 0.006, il.carte.position);
+      il.carte.quaternion.copy(camera.quaternion);
+      il.carte.scale.setScalar(planche.Hb);
+      u.uEch.value = planche.Hb;
+      u.uPoints.value = kc;
+      u.uMaille.value = PLANCHE / (portrait ? 30 : 46);
+      u.uMap2.value = grandes[pi] || planches[pi];
+      u.uFondu.value = grandes[pi] && grandes[pi].image ? 1 : 0;
+      u.uFocusK.value = pi === choisie ? focusK : 0;
+    }
+    // le cœur de verre
+    coeur.position.copy(cs);
+    coeur.quaternion.copy(qs);
+    coeur.scale.setScalar(Rc * 0.975);
+    coeur.material.uniforms.uT.value = temps;
+    coeur.material.uniforms.uOpacite.value = 1 - 0.45 * ez;
     // le doigt touche la sphère sur son côté droit
     contact.copy(CONTACT).multiplyScalar(Rc * 1.02).add(cs);
     camera.updateMatrixWorld();
     placerEcran();
   }
 
+  // le nom du projet survolé (ou choisi au clavier), au-dessus de son îlot
+  let etiquette = -2;
+  const placerEtiquette = () => {
+    const pi = ouvert || z > 0.05 ? -1 : (focus >= 0 ? focus : survol);
+    if (pi < 0) { if (etiquette !== -1) { etiquette = -1; onEtiquette(-1); } return; }
+    const il = ilots[pi];
+    n1.copy(il.C).addScaledVector(il.N, Math.tan(0.5 * S + 0.04)).normalize();
+    v1.copy(n1).applyQuaternion(qs).multiplyScalar(Rc * 1.06).add(cs);
+    const [x, y] = ecran(v1);
+    etiquette = pi;
+    onEtiquette(pi, x, y, Math.max(il.pop, focus === pi ? 1 : 0));
+  };
+
   function dessiner() {
-    camera.position.set(cam.x + Math.sin(temps * 0.21) * 0.08, cam.y + Math.sin(temps * 0.17) * 0.04, 10);
+    camera.position.set(cam.x + Math.sin(temps * 0.21) * 0.08 * (1 - z), cam.y + Math.sin(temps * 0.17) * 0.04 * (1 - z), 10 - 0.75 * z * z * (3 - 2 * z));
     camera.lookAt(cam.x * 0.3, cam.y * 0.3, 0);
     camera.updateMatrixWorld();
+    lumiere.set(-0.35 + 0.45 * Math.sin(temps * 0.13), 0.75, 0.55 + 0.25 * Math.cos(temps * 0.11)).normalize();
     poser();
+    placerEtiquette();
     const tl = temps - tLueur;
     lueur.material.opacity = tl >= 0 && tl < 1.2 ? Math.sin(Math.PI * tl / 1.2) * 0.9 : 0;
-    // la main (elle s'efface quand on plonge dans la sphère)
+    // la main (elle s'efface quand un projet s'ouvre)
     const u = main.material.uniforms;
     u.uOrdre.value = ordreMain; u.uT.value = temps; u.uTrouble.value = souris.trouble;
-    const gx = (glisse + z * 0.6) * W * 0.16;
+    u.uOpac.value = 1 - z;
+    const gx = (glisse + z * 0.4) * W * 0.16;
     main.scale.set(mainPos.l, mainPos.h, 1);
     main.position.set(mainPos.x + mainPos.l / 2 + gx, H - (mainPos.y + mainPos.h / 2) + Math.sin(temps * 0.7) * 3, 0);
     u.uSouris.value.set((souris.x - mainPos.x - gx) / mainPos.l, (souris.y - mainPos.y) / mainPos.h);
-    main.visible = pretMain && z < 0.7;
+    main.visible = pretMain && z < 0.98;
     voile.material.uniforms.uVoile.value = voileV;
     voile.visible = voileV < 1.3;
     soie.material.uniforms.uT.value = temps;
     grain.material.uniforms.uT.value = temps;
+    grain.material.uniforms.uVoile.value = 0.35 * z;          // le fond s'efface un peu derrière la planche ouverte
     renderer.setRenderTarget(fondCible);
     renderer.render(fondScene, ortho2);
     renderer.setRenderTarget(null);
@@ -541,34 +750,48 @@ export function createSphere(toile, opts = {}) {
     renderer.render(dessus, ortho);
   }
 
-  // la vignette sous la souris (seulement sur la sphère rangée, hors plongée)
+  // le projet sous la souris (seulement sur la sphère rangée, sans projet ouvert)
   const viser = (x, y) => {
-    if (etat !== 'ordre' || z > 0.05) return -1;
-    ndc.set((x / W) * 2 - 1, 1 - (y / H) * 2);
+    if (etat !== 'ordre' || z > 0.05 || ouvert) return -1;
+    const ndc = new THREE.Vector2((x / W) * 2 - 1, 1 - (y / H) * 2);
     raycaster.setFromCamera(ndc, camera);
     for (const h of raycaster.intersectObjects(maillages, false)) {
-      // les coins arrondis ne comptent pas, ni le dos des vignettes de l'autre côté
       const t = tuiles[h.object.userData.i];
-      v1.copy(t.p).applyQuaternion(qs);
-      if (v1.z < -0.05) continue;
-      return t.i;
+      // pas le dos des plaques de l'autre côté
+      if (v1.copy(h.object.position).sub(cs).dot(v2.copy(camera.position).sub(cs)) < 0) continue;
+      return t.pi;
     }
-    // dans un joint entre deux vignettes : la plus proche de l'endroit où le rayon touche la sphère
+    // entre deux plaques d'un même îlot : l'îlot le plus proche de l'endroit où le rayon touche la sphère
     const o = raycaster.ray.origin, d = raycaster.ray.direction;
     v2.copy(o).sub(cs);
     const bq = v2.dot(d), cq = v2.lengthSq() - Rc * Rc, disc = bq * bq - cq;
     if (disc < 0) return -1;
     v2.copy(d).multiplyScalar(-bq - Math.sqrt(disc)).add(o).sub(cs).normalize().applyQuaternion(q2.copy(qs).invert());
-    let mieux = -1, angle = 0.22;
-    for (const t of tuiles) { const g = t.p.angleTo(v2); if (g < angle) { angle = g; mieux = t.i; } }
+    let mieux = -1, angle = 0.36;
+    ilots.forEach((il, pi) => { const a = il.C.angleTo(v2); if (a < angle) { angle = a; mieux = pi; } });
     return mieux;
+  };
+  const raycaster = new THREE.Raycaster();
+
+  // la qualité s'adapte : si l'appareil peine (plus de 26 ms par image en moyenne), on dessine moins de pixels
+  let mesures = 0, moyenne = 16;
+  const adapter = (brut) => {
+    if (etat !== 'ordre' || brut > 100 || mesures > 400) return;
+    moyenne += (brut - moyenne) * 0.05;
+    if (++mesures % 90 === 0 && moyenne > 26) {
+      if (dpr > 1.01) { dprMax = Math.max(1, dpr * 0.75); dpr = dprMax; regler(); }
+      else if (echelleFond > 0.34) { echelleFond = 0.33; regler(); }
+      moyenne = 16;
+    }
   };
 
   const image = (now) => {
     boucle = 0;
-    const dt = Math.min(0.05, dernier ? (now - dernier) / 1000 : 0.016);
+    const brut = dernier ? now - dernier : 16;
+    const dt = Math.min(0.05, brut / 1000);
     dernier = now;
     temps += dt;
+    adapter(brut);
     let cible = 1;
     if (etat === 'joue') {
       const t = temps - t0;
@@ -579,47 +802,71 @@ export function createSphere(toile, opts = {}) {
       cible = touche ? 0 : 1;
       if (t > 3.4) etat = 'ordre';
     } else if (etat === 'ordre') cible = 0;
-    // on ressort de l'univers : les points bleus se referment, les vignettes repartent en désordre
+    // on ressort de l'univers : les points bleus se referment, les plaques repartent en désordre
     else if (etat === 'couvre') {
       voileV = Math.max(0, voileV - dt * 4);
       if (voileV <= 0) { etat = 'bleu'; D = 1; vD = 0; ordreMain = 0; glisse = 1; touche = false; }
     }
     vD += (34 * (cible - D) - 2 * Math.sqrt(34) * 0.7 * vD) * dt;
     D = Math.max(0, Math.min(1.25, D + vD * dt));
-    // la plongée : la sphère se tourne vers la vignette choisie et grossit ; puis la carte s'envole
-    z += ((ouvert ? 1 : 0) - z) * (1 - Math.exp(-dt * 5));
-    // les points : à vitesse constante (0,55 s pour apparaître, 0,4 s pour s'effacer)
-    k = Math.max(0, Math.min(1, k + (ouvert ? dt / 0.55 : -dt / 0.4)));
-    if (!ouvert && k <= 0 && z < 0.02) choisie = -1;
-    if (ouvert) {
-      lacet += 0.02 * dt * (reduit ? 0 : 1);               // la sphère tourne à peine pendant ce temps
-      vLacet = 0;
-    } else if (!appui) {
-      lacet += (0.14 * (1 - z) + vLacet) * dt * (reduit ? 0 : 1);
+    // l'ouverture : la sphère amène l'îlot face à nous et la caméra avance ; puis les plaques rejoignent la planche
+    const vite = reduit ? 4 : 1;
+    const enCours = ilots.some((il) => il.k > 0.3);
+    z += ((ouvert || enCours ? 1 : 0) - z) * (1 - Math.exp(-dt * 4.2 * vite));
+    vise = ouvert ? choisie : focus;
+    zv += ((vise >= 0 || enCours ? 1 : 0) - zv) * (1 - Math.exp(-dt * 4 * vite));
+    if (vise >= 0) qVise.slerp(ilots[vise].visee, 1 - Math.exp(-dt * 5 * vite));
+    else if (zv < 0.01) qVise.copy(qBase);
+    ilots.forEach((il, pi) => {
+      const veut = ouvert && pi === choisie;
+      if (veut && z > 0.25) il.k = Math.min(1, il.k + (dt / 0.95) * vite);
+      else if (!veut) il.k = Math.max(0, il.k - (dt / 0.7) * vite);
+      il.pop += ((pi === survol || pi === focus) && !ouvert ? 1 - il.pop : -il.pop) * (1 - Math.exp(-dt * 9));
+    });
+    focusK += ((caseFocus ? 1 : 0) - focusK) * (1 - Math.exp(-dt * 8));
+    if (!ouvert && ilots.every((il) => il.k <= 0) && z < 0.02) choisie = -1;
+    // la rotation : très lente, seule, plus l'élan donné à la main ; arrêtée quand un projet est ouvert ou choisi
+    if (ouvert || focus >= 0) vLacet = 0;
+    else if (!appui) {
+      lacet += (0.1 * (1 - zv) + vLacet) * dt * (reduit ? 0 : 1);
       vLacet *= Math.exp(-dt * 1.6);
       tangage += (0.1 - tangage) * (1 - Math.exp(-dt * 1.2));
     }
-    for (const t of tuiles) t.pop += ((t.i === survol ? 1 : 0) - t.pop) * (1 - Math.exp(-dt * 10));
+    // le projet sous le curseur change aussi quand la sphère tourne toute seule
+    if (souris.f && !appui && !ouvert && etat === 'ordre') survol = viser(souris.x, souris.y);
+    // les plaques proches du curseur
+    const rayon = Math.min(W, H) * 0.17;
+    for (const t of tuiles) {
+      const dd = souris.f && !appui && !ouvert ? Math.hypot(t.sx - souris.x, t.sy - souris.y) / rayon : 9;
+      const cibleP = dd < 1 ? (1 - dd) * (1 - dd) : 0;
+      t.prox += (cibleP - t.prox) * (1 - Math.exp(-dt * 6));
+    }
     souris.trouble += ((souris.f ? 1 : 0) - souris.trouble) * (1 - Math.exp(-dt * 5));
     const kc = 1 - Math.exp(-dt * 2.2);
-    cam.x += ((souris.f && !appui && !ouvert ? (souris.x / W - 0.5) * 0.6 : 0) - cam.x) * kc;
-    cam.y += ((souris.f && !appui && !ouvert ? (0.5 - souris.y / H) * 0.3 : 0) - cam.y) * kc;
+    const libre = souris.f && !appui && !ouvert && !reduit;
+    cam.x += ((libre ? (souris.x / W - 0.5) * 0.6 : 0) - cam.x) * kc;
+    cam.y += ((libre ? (0.5 - souris.y / H) * 0.3 : 0) - cam.y) * kc;
+    // la sphère regarde un peu vers le curseur
+    regard.x += ((libre ? (souris.x / W - 0.5) * 0.16 : 0) - regard.x) * kc;
+    regard.y += ((libre ? (souris.y / H - 0.5) * 0.1 : 0) - regard.y) * kc;
     dessiner();
     if (visible && !document.hidden) boucle = requestAnimationFrame(image);
   };
   const relancer = () => { if (!boucle && visible) { dernier = 0; boucle = requestAnimationFrame(image); } };
   document.addEventListener('visibilitychange', relancer);
 
-  // ouvrir : la planche de la marque, en grand (sa version 2880 px sur les écrans fins, dès qu'elle est chargée)
-  const ouvrir = (i) => {
-    const t = tuiles[i];
-    choisie = i; ouvert = true;
-    const m = marques[t.b];
-    if (m.grande && !grandes[t.b]) grandes[t.b] = texture(m.grande);
-    onOuvre(t.b);
+  // ouvrir un projet : sa planche (la grande sur les écrans fins, dès qu'elle est chargée), sa fiche
+  const ouvrir = (pi) => {
+    if (pi < 0 || pi >= projets.length) return;
+    if (!ouvert) qVise.copy(qs);
+    carteDe(pi);
+    const pr = projets[pi];
+    if (pr.grande && !grandes[pi]) grandes[pi] = texture(pr.grande);
+    choisie = pi; ouvert = true; survol = -1; caseFocus = null;
+    onOuvre(pi);
     relancer();
   };
-  const fermer = () => { if (!ouvert) return false; ouvert = false; onOuvre(-1); relancer(); return true; };
+  const fermer = () => { if (!ouvert) return false; ouvert = false; caseFocus = null; onOuvre(-1); relancer(); return true; };
 
   const enOrdre = () => { etat = 'ordre'; D = 0; vD = 0; ordreMain = 1; voileV = 1.35; glisse = 0; touche = true; };
   taille();
@@ -627,14 +874,21 @@ export function createSphere(toile, opts = {}) {
   dessiner();
 
   return {
-    visible(oui) { visible = oui; if (oui && !reduit) relancer(); else if (!oui && boucle) { cancelAnimationFrame(boucle); boucle = 0; } if (reduit) dessiner(); },
+    visible(oui) { visible = oui; if (oui && !reduit) relancer(); else if (!oui && boucle) { cancelAnimationFrame(boucle); boucle = 0; } if (oui && reduit) relancer(); },
     taille,
     jouer() { if (reduit) { enOrdre(); onContact(); dessiner(); return; } etat = 'joue'; t0 = temps; touche = false; D = 1; vD = 0; fermer(); relancer(); },
     montrer() { enOrdre(); onContact(); dessiner(); relancer(); },
     couvrir() { if (etat === 'bleu' || etat === 'couvre') return; fermer(); if (reduit) { this.recouvrir(); return; } etat = 'couvre'; relancer(); },
     // le défilement donne de l'élan à la sphère
     elan(d) { if (etat !== 'ordre' || ouvert || reduit) return; vLacet = Math.max(-0.9, Math.min(0.9, vLacet + d * 0.0016)); relancer(); },
-    recouvrir() { etat = 'bleu'; D = 1; vD = 0; ordreMain = 0; voileV = 0; glisse = 1; touche = false; tLueur = -9; ouvert = false; z = 0; k = 0; choisie = -1; onOuvre(-1); dessiner(); },
+    recouvrir() {
+      etat = 'bleu'; D = 1; vD = 0; ordreMain = 0; voileV = 0; glisse = 1; touche = false; tLueur = -9;
+      const etaitOuvert = ouvert;
+      ouvert = false; z = 0; zv = 0; choisie = -1; focus = -1; caseFocus = null;
+      ilots.forEach((il) => { il.k = 0; il.pop = 0; });
+      if (etaitOuvert) onOuvre(-1);
+      dessiner();
+    },
     souris(x, y, dedans) {
       souris.x = x; souris.y = y; souris.f = dedans ? 1 : 0;
       if (appui) {
@@ -647,25 +901,32 @@ export function createSphere(toile, opts = {}) {
       survol = dedans && !appui ? viser(x, y) : -1;
       relancer();
     },
-    appui(x, y) { if (etat === 'ordre' && !ouvert) { appui = { x, y, px: x, py: y, t: performance.now() }; aGlisse = false; vLacet = 0; } },
+    appui(x, y) { if (etat === 'ordre' && !ouvert) { appui = { x, y, px: x, py: y, t: performance.now() }; aGlisse = false; vLacet = 0; focus = -1; } },
     lache() { appui = null; },
     sous(x, y) {
       if (etat !== 'ordre') return '';
-      if (ouvert) return 'planche';
-      if (viser(x, y) >= 0) return 'tuile';
+      if (ouvert) return 'ouvert';
+      if (viser(x, y) >= 0) return 'projet';
       return Math.hypot(x - cSphere[0], y - cSphere[1]) < rSphere * 1.05 ? 'sphere' : '';
     },
-    // un clic : sur une vignette, on plonge et sa planche s'ouvre ; quand elle est ouverte, n'importe quel clic referme
+    // un clic : sur un îlot, son projet s'ouvre ; quand un projet est ouvert, un clic à côté de la fiche le referme
     clic(x, y) {
       if (aGlisse) { aGlisse = false; return false; }
       if (etat !== 'ordre') return false;
       if (ouvert) return fermer();
-      const i = viser(x, y);
-      if (i < 0) return false;
-      ouvrir(i);
+      const pi = viser(x, y);
+      if (pi < 0) return false;
+      ouvrir(pi);
       return true;
     },
+    ouvrir(pi) { if (etat !== 'ordre') this.montrer(); ouvrir(pi); },
     fermer,
-    ouverte: () => (ouvert ? tuiles[choisie].b : -1),
+    // le projet suivant (+1) ou précédent (-1), sans quitter la fiche
+    suivant(d) { if (!ouvert) return; ouvrir((choisie + d + projets.length) % projets.length); },
+    // au clavier : la sphère se tourne vers le projet choisi (sans l'ouvrir) ; -1 : elle reprend sa rotation
+    viser(pi) { if (etat !== 'ordre' && pi >= 0) this.montrer(); focus = pi; if (pi >= 0 && zv < 0.01) qVise.copy(qs); relancer(); },
+    // une case mise en avant dans la planche ouverte ('affiche', 'logo'…), ou null
+    cellule(nom) { caseFocus = nom && CASES[nom] ? nom : null; if (caseFocus) { const r = rectGL(CASES[caseFocus]); ilots.forEach((il) => { if (il.carte) il.carte.material.uniforms.uFocus.value.set(...r); }); } relancer(); },
+    ouvert: () => (ouvert ? choisie : -1),
   };
 }

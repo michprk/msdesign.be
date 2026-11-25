@@ -753,22 +753,164 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       if (v >= 0.3) { ouvert = true; profond = true; objet.montrer(); }   // arrivé par le bas, ou par un lien
     };
     window.addEventListener('scroll', verifier, { passive: true });
-    const charger = () => import('./sphere3d.js').then((m) => {
+    const charger = () => Promise.all([import('./sphere3d.js'), import('./projets.js')]).then(([m, donnees]) => {
+      const { PROJETS, CASES, NOMS_CASES, SUR_LA_SPHERE, ILOT, planche } = donnees;
       const grand = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 1500;
       // une planche ouverte en double densité sur les écrans fins (Retina, 4K) ; la sphère se contente de la 1440
       const fin = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2) > 2000;
-      const dossier = import.meta.env.BASE_URL + 'assets/img/identites/';
+      const base = import.meta.env.BASE_URL;
+      const projets = PROJETS.map((p) => ({ ...p, image: planche(base, p.id, false), grande: fin ? planche(base, p.id, true) : null }));
+      const fiche = $('[data-fiche]', sec), panneau = $('.fiche', fiche), etiquette = $('[data-etiquette]', sec), index = $('[data-ordre-index]', sec);
+      const champ = (n) => $('[data-f="' + n + '"]', fiche);
+      let courant = -1, retour = null;
+
+      /* ---- la fiche d'un projet : remplie depuis projets.js ---- */
+      const remplir = (pi) => {
+        const p = projets[pi];
+        champ('nom').textContent = p.nom;
+        champ('metier').textContent = p.metier + ', ' + p.lieu;
+        champ('intro').textContent = p.intro;
+        champ('idee').textContent = p.idee;
+        champ('direction').textContent = p.direction;
+        champ('rang').textContent = (pi + 1) + ' / ' + projets.length;
+        const couleurs = champ('couleurs');
+        couleurs.textContent = '';
+        for (const [nom, valeur] of p.couleurs) {
+          const li = document.createElement('li'), pastille = document.createElement('i'), texte = document.createElement('span'), code = document.createElement('small');
+          pastille.style.setProperty('--c', valeur);
+          texte.textContent = nom;
+          code.textContent = valeur.startsWith('#') ? valeur.toUpperCase() : 'Dégradé';
+          texte.append(code); li.append(pastille, texte); couleurs.append(li);
+        }
+        // la typographie, dans sa propre police (chargée seulement ici)
+        const aa = champ('aa'), police = p.police;
+        aa.style.fontFamily = police.famille; aa.style.fontWeight = String(police.graisse);
+        aa.style.fontStyle = police.italique ? 'italic' : 'normal'; aa.style.fontStretch = police.largeur || 'normal';
+        aa.textContent = police.majuscules ? 'AA' : 'Aa';
+        champ('police').textContent = police.nom;
+        // les visuels : l'îlot en miniature ; une vignette touchée est mise en avant dans la planche
+        const visuels = champ('visuels');
+        visuels.textContent = '';
+        for (const nom of SUR_LA_SPHERE) {
+          const [x0, y0, x1, y1] = ILOT.cases[nom], [u0, v0, u1, v1] = CASES[nom];
+          const li = document.createElement('li'), b = document.createElement('button'), vignette = document.createElement('span');
+          li.style.setProperty('--l', (x0 / ILOT.largeur) * 100 + '%'); li.style.setProperty('--t', y0 * 100 + '%');
+          li.style.setProperty('--w', ((x1 - x0) / ILOT.largeur) * 100 + '%'); li.style.setProperty('--h', (y1 - y0) * 100 + '%');
+          b.type = 'button'; b.setAttribute('aria-pressed', 'false'); b.setAttribute('aria-label', NOMS_CASES[nom] + ' de ' + p.nom);
+          vignette.className = 'fiche__vignette';
+          vignette.style.setProperty('--img', 'url("' + p.image + '")');
+          vignette.style.setProperty('--bs', (100 / (u1 - u0)) + '% ' + (100 / (v1 - v0)) + '%');
+          vignette.style.setProperty('--bp', (u0 / (1 - (u1 - u0))) * 100 + '% ' + (v0 / (1 - (v1 - v0))) * 100 + '%');
+          b.addEventListener('click', () => {
+            const oui = b.getAttribute('aria-pressed') !== 'true';
+            visuels.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+            b.setAttribute('aria-pressed', oui ? 'true' : 'false');
+            if (objet) objet.cellule(oui ? nom : null);
+          });
+          b.append(vignette); li.append(b); visuels.append(li);
+        }
+        const img = $('[data-fiche-image]', fiche);
+        img.alt = 'La planche d’identité de ' + p.nom + ' : affiche, logo, couleurs, typographie, carte de visite et icône.';
+        if (sec.classList.contains('sans-gl')) img.src = p.image;
+      };
+      const montrerFiche = (pi) => {
+        const deja = courant >= 0;
+        remplir(pi);
+        courant = pi;
+        sec.classList.add('is-ouverte');
+        d.classList.add('fiche-ouverte');
+        if (!deja) {
+          retour = document.activeElement;
+          fiche.hidden = false;
+          void fiche.offsetWidth;                          // pour que l'entrée soit animée
+          fiche.classList.add('is-on');
+          if (lenis) lenis.stop();
+          setTimeout(() => { if (courant >= 0) champ('nom').focus({ preventScroll: true }); }, 80);
+        } else {
+          panneau.classList.remove('is-change'); void panneau.offsetWidth; panneau.classList.add('is-change');
+          panneau.scrollTop = 0;
+        }
+      };
+      const cacherFiche = () => {
+        if (courant < 0) return;
+        courant = -1;
+        fiche.classList.remove('is-on');
+        sec.classList.remove('is-ouverte');
+        d.classList.remove('fiche-ouverte');
+        if (lenis) lenis.start();
+        setTimeout(() => { if (courant < 0) fiche.hidden = true; }, 450);
+        if (retour && retour.isConnected && retour !== document.body && fiche.contains(document.activeElement)) retour.focus({ preventScroll: true });
+        retour = null;
+      };
+      const fermerFiche = () => { if (objet) objet.fermer(); else cacherFiche(); };
+      const changer = (dd) => { if (courant < 0) return; if (objet) objet.suivant(dd); else montrerFiche((courant + dd + projets.length) % projets.length); };
+      $('[data-fiche-fermer]', fiche).addEventListener('click', fermerFiche);
+      $('[data-fiche-prec]', fiche).addEventListener('click', () => changer(-1));
+      $('[data-fiche-suiv]', fiche).addEventListener('click', () => changer(1));
+      $('[data-fiche-contact]', fiche).addEventListener('click', (ev) => {
+        ev.preventDefault();
+        fermerFiche();
+        const c = document.getElementById('contact');
+        setTimeout(() => { if (lenis) lenis.scrollTo(c); else c.scrollIntoView({ behavior: 'smooth' }); }, 80);
+      });
+      // au clavier, dans la fiche : flèches = autre projet ; Tab reste dans la fiche
+      fiche.addEventListener('keydown', (ev) => {
+        if (ev.key === 'ArrowRight') { changer(1); ev.preventDefault(); }
+        else if (ev.key === 'ArrowLeft') { changer(-1); ev.preventDefault(); }
+        else if (ev.key === 'Tab') {
+          const els = [...fiche.querySelectorAll('button, a[href]')].filter((e) => e.offsetParent !== null);
+          if (!els.length) return;
+          const premier = els[0], dernier = els[els.length - 1];
+          if (ev.shiftKey && (document.activeElement === premier || !fiche.contains(document.activeElement) || document.activeElement === champ('nom'))) { dernier.focus(); ev.preventDefault(); }
+          else if (!ev.shiftKey && document.activeElement === dernier) { premier.focus(); ev.preventDefault(); }
+        }
+      });
+      document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && courant >= 0) fermerFiche(); });
+
+      /* ---- le nom du projet survolé, au-dessus de son îlot ---- */
+      const eNom = $('[data-e="nom"]', etiquette), eMetier = $('[data-e="metier"]', etiquette);
+      let eCourant = -1;
+      const onEtiquette = (pi, x, y, a) => {
+        if (pi < 0) { etiquette.classList.remove('is-on'); eCourant = -1; return; }
+        if (pi !== eCourant) { eCourant = pi; eNom.textContent = projets[pi].nom; eMetier.textContent = projets[pi].metier; }
+        const l = toile.clientWidth;
+        etiquette.style.setProperty('--x', Math.max(120, Math.min(l - 120, x)).toFixed(1) + 'px');
+        etiquette.style.setProperty('--y', Math.max(150, y).toFixed(1) + 'px');
+        etiquette.style.setProperty('--a', Math.min(1, a * 1.4).toFixed(3));
+        etiquette.classList.add('is-on');
+      };
+
       objet = m.createSphere(toile, {
         reduced,
-        main: import.meta.env.BASE_URL + 'assets/img/poire/main-' + (grand ? 2720 : 1400) + '.webp',
-        // les identités des 12 marques fictives : leurs planches, découpées en vignettes par la sphère ; ouvertes en
-        // grand au clic (en double densité sur les écrans fins)
-        marques: ['ferment', 'halde', 'ondine', 'prisme', 'carmin', 'rayon', 'eve', 'sillon', 'nord', 'lueur', 'kiosque', 'atoll'].map((n) => ({ petite: dossier + n + '-1440.webp', grande: fin ? dossier + n + '-2880.webp' : null })),
+        main: base + 'assets/img/poire/main-' + (grand ? 2720 : 1400) + '.webp',
+        projets,
         onContact: () => sec.classList.add('is-ordre'),
-        // une planche ouverte en grand : le titre s’efface le temps qu’elle est là
-        onOuvre: (b) => sec.classList.toggle('is-ouverte', b >= 0),
+        onOuvre: (pi) => { if (pi >= 0) montrerFiche(pi); else cacherFiche(); },
+        onEtiquette,
       });
-      if (!objet) return;
+
+      /* ---- les projets en liste : au clavier (la sphère se tourne vers celui qui a le focus), ou sans 3D ---- */
+      projets.forEach((p, pi) => {
+        const li = document.createElement('li'), b = document.createElement('button'), img = document.createElement('img');
+        const nom = document.createElement('span'), metier = document.createElement('span');
+        b.type = 'button';
+        img.alt = ''; img.width = 1440; img.height = 900; img.loading = 'lazy'; img.decoding = 'async';
+        if (!objet) img.src = p.image;
+        nom.className = 'ordre__index-nom'; nom.textContent = p.nom;
+        metier.className = 'ordre__index-metier'; metier.textContent = p.metier;
+        b.append(img, nom, metier); li.append(b); index.append(li);
+        b.addEventListener('click', () => { if (objet) { if (!ouvert) { ouvert = true; profond = true; } objet.ouvrir(pi); } else montrerFiche(pi); });
+        b.addEventListener('focus', () => { if (objet) { if (!ouvert) { ouvert = true; profond = true; } objet.viser(pi); } etiquette.classList.add('is-clavier'); });
+      });
+      index.addEventListener('focusout', (ev) => { if (!index.contains(ev.relatedTarget)) { if (objet) objet.viser(-1); etiquette.classList.remove('is-clavier'); } });
+
+      // pas de WebGL 2 : la liste en vignettes ; la fiche s'ouvre en fenêtre (un clic à côté la referme)
+      if (!objet) {
+        sec.classList.add('sans-gl');
+        $('[data-fiche-fermer]', fiche).firstChild.textContent = 'Fermer';
+        fiche.addEventListener('click', (ev) => { if (ev.target === fiche) cacherFiche(); });
+        return;
+      }
       if (import.meta.env.DEV) window.__msSphere = objet;
       sec.classList.add('has-gl');
       // un saut dans la page peut livrer plusieurs changements d’un coup : seul le dernier dit si la section est à l’écran
@@ -776,16 +918,20 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       window.addEventListener('resize', () => objet.taille());
       dernierY = window.scrollY + 1;                     // déjà sur la section au chargement : directement rangée
       verifier();
-      // la souris : survoler (la tuile s’avance), faire tourner la sphère (appuyer et glisser), cliquer une tuile
+      // la souris : survoler (le projet se soulève, son nom apparaît), faire tourner la sphère (appuyer et glisser),
+      // cliquer un projet ; rien de tout ça sur la fiche elle-même
       const ici = (ev) => { const r = toile.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
-      const curseur = (x, y) => { const s = objet.sous(x, y); sec.dataset.sous = s; };
-      sec.addEventListener('pointermove', (ev) => { const [x, y] = ici(ev); objet.souris(x, y, ev.pointerType === 'mouse' || ev.buttons > 0); curseur(x, y); });
-      sec.addEventListener('pointerdown', (ev) => { const [x, y] = ici(ev); objet.appui(x, y); sec.classList.add('is-appui'); });
+      const surFiche = (ev) => !!ev.target.closest('.fiche, [data-ordre-index]');
+      const curseur = (x, y) => { sec.dataset.sous = objet.sous(x, y); };
+      sec.addEventListener('pointermove', (ev) => {
+        if (surFiche(ev)) { objet.souris(-9999, -9999, false); delete sec.dataset.sous; return; }
+        const [x, y] = ici(ev); objet.souris(x, y, ev.pointerType === 'mouse' || ev.buttons > 0); curseur(x, y);
+      });
+      sec.addEventListener('pointerdown', (ev) => { if (surFiche(ev)) return; const [x, y] = ici(ev); objet.appui(x, y); sec.classList.add('is-appui'); });
       window.addEventListener('pointerup', () => { objet.lache(); sec.classList.remove('is-appui'); });
       window.addEventListener('pointercancel', () => { objet.lache(); sec.classList.remove('is-appui'); });
       sec.addEventListener('pointerleave', () => { objet.souris(-9999, -9999, false); delete sec.dataset.sous; });
-      sec.addEventListener('click', (ev) => { const [x, y] = ici(ev); objet.clic(x, y); curseur(x, y); });
-      document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') objet.fermer(); });
+      sec.addEventListener('click', (ev) => { if (surFiche(ev)) return; const [x, y] = ici(ev); objet.clic(x, y); curseur(x, y); });
     }).catch((err) => { console.warn('[ms] ordre', err); });
     new IntersectionObserver((es, o) => { if (es.some((v) => v.isIntersecting)) { o.disconnect(); charger(); } }, { rootMargin: '200% 0px' }).observe(sec);
   });
