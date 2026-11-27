@@ -10,9 +10,8 @@
      profond s'installe dans le bas ; les plaques sont posées presque à plat dessus, avec une ombre de contact ; on voit
      les îlots de l'autre côté à travers le verre, estompés et bleutés. Une lumière tourne lentement. Elle est entière à
      l'écran, sous le titre (opts.haut), avec son bord et son fond lumineux.
-   - Le curseur : une petite main holographique bleue, l'index qui montre (la même main que celle qui touche la sphère,
-     en lignes de balayage), dessinée dans la toile ; le vrai curseur est caché (app.js, main.css). Elle s'éclaire sur
-     un projet, s'enfonce quand on appuie (une onde part du doigt) et ses lignes tremblent quand elle va vite.
+   - Le curseur : la petite main holographique bleue (assets/js/main-curseur.js, commune avec « Nos projets ») ;
+     survole() lui dit quand elle est sur un projet.
    - Le voile : le bleu de la bande du dessus continue sur la section, puis se défait en points qui rapetissent. Au
      départ, les plaques flottent en désordre ; quand le doigt (la main en lignes de balayage bleues) touche, elles se
      rangent, d'abord autour du doigt.
@@ -528,75 +527,6 @@ export function createSphere(toile, opts = {}) {
   voile.frustumCulled = false;
   dessus.add(voile);
 
-  /* ---------- le curseur : une main holographique bleue, l'index qui montre ----------
-     La même image que la grande main, tournée pour que l'index montre en haut à gauche ; le bout de l'index est
-     exactement sous la souris. Des lignes de balayage horizontales (à l'écran), plus épaisses dans les ombres ; un
-     léger halo ; une bande claire qui descend ; un point au bout du doigt. Sur un projet : plus claire, un anneau au
-     doigt ; appuyer : elle s'enfonce et une onde part du doigt ; vite : ses lignes se décalent. */
-  const curseurScene = new THREE.Scene();
-  const CURSEUR = 360;                                    // le carré où on la dessine (px), centré sur le bout du doigt
-  const doigt = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
-    transparent: true, depthTest: false, depthWrite: false,
-    uniforms: {
-      uTex: { value: texMain }, uBout: { value: new THREE.Vector2(-999, -999) }, uDpr: { value: 1 }, uAngle: { value: -0.72 }, uEch: { value: 300 },
-      uT: { value: 0 }, uVis: { value: 0 }, uProjet: { value: 0 }, uAppui: { value: 0 }, uOnde: { value: 9 }, uVit: { value: 0 }, uPas: { value: 3 },
-    },
-    vertexShader: 'void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: `
-      uniform sampler2D uTex; uniform vec2 uBout; uniform float uDpr, uAngle, uEch, uT, uVis, uProjet, uAppui, uOnde, uVit, uPas;
-      float h1(float n) { return fract(sin(n * 127.1 + 31.7) * 43758.5453); }
-      // la main dans l'image (2720 × 1536) : le bout de l'index en (0,245 ; 0,5) ; d : en pixels depuis le bout du doigt
-      vec4 lire(vec2 d) {
-        float c = cos(-uAngle), s = sin(-uAngle);
-        vec2 q = vec2(c * d.x - s * d.y, s * d.x + c * d.y) / uEch;
-        vec2 st = vec2(0.245, 0.5) + vec2(q.x, q.y * 1.771);
-        if (st.x < 0.0 || st.x > 1.0 || st.y < 0.0 || st.y > 1.0) return vec4(0.0);
-        vec4 t = texture2D(uTex, st);
-        t.a *= 1.0 - smoothstep(0.55, 0.68, st.x);              // le poignet se perd
-        // l'index montre : les autres doigts (sous lui dans l'image) restent plus discrets
-        t.a *= 1.0 - 0.5 * smoothstep(0.475, 0.41, st.y) * smoothstep(0.5, 0.43, st.x);
-        return t;
-      }
-      void main() {
-        vec2 px = gl_FragCoord.xy / uDpr;                        // en pixels (y vers le haut)
-        float li = floor(px.y / uPas);
-        float r1 = h1(li);
-        // chaque ligne tressaille un peu ; davantage quand la main va vite
-        float dec = (r1 - 0.5) * (0.4 + 9.0 * uVit) + sin(uT * 3.1 + li * 1.7) * 0.3;
-        vec2 d = vec2(px.x + dec, (li + 0.5) * uPas) - uBout;
-        d /= 1.0 - 0.09 * uAppui;                                // appuyer : la main s'enfonce vers le doigt
-        vec4 c = lire(d);
-        float lum = dot(c.rgb, vec3(0.299, 0.587, 0.114));
-        float l = clamp((lum - 0.28) / 0.57, 0.0, 1.0);
-        // une bande claire qui descend le long de la main
-        float bp = 46.0 - mod(uT, 2.8) / 2.8 * 200.0;
-        float bande = exp(-pow((d.y - bp) / 10.0, 2.0));
-        float w = c.a * mix(0.78, 0.26, pow(l, 0.7)) * (1.0 + 0.25 * uProjet + 0.3 * bande);
-        float f = abs(fract(px.y / uPas) - 0.5);
-        float aa = 0.7 / (uPas * uDpr);
-        float trait = (1.0 - smoothstep(w * 0.5 - aa, w * 0.5 + aa, f)) * step(0.04, c.a);
-        float a = trait * (0.88 + 0.12 * bande);
-        // sous les lignes, un voile sombre à la forme de la main : elle se détache sur le verre bleu comme sur le noir
-        float fond = smoothstep(0.02, 0.5, c.a) * 0.42;
-        // le bout du doigt : un point ; sur un projet, un anneau ; à l'appui, une onde qui s'élargit
-        vec2 b = px - uBout;
-        float rb = length(b);
-        float lignes = 1.0 - smoothstep(0.32 - aa, 0.32 + aa, f);
-        a += exp(-rb * rb / 4.5) * 0.9;
-        a += exp(-pow((rb - 8.0) / 1.1, 2.0)) * uProjet * 0.75;
-        float o = clamp(uOnde / 0.6, 0.0, 1.0);
-        a += exp(-pow((rb - (6.0 + 46.0 * (1.0 - pow(1.0 - o, 3.0)))) / 1.6, 2.0)) * (1.0 - o) * mix(0.35, 1.0, lignes) * 0.9;
-        vec3 bleu = mix(vec3(0.5, 0.7, 1.0), vec3(0.84, 0.92, 1.0), clamp(bande * 0.7 + uProjet * 0.4 + uAppui * 0.4, 0.0, 1.0));
-        a = clamp(a, 0.0, 1.0);
-        float tout = a + fond * (1.0 - a);
-        vec3 col = (bleu * a + vec3(0.01, 0.025, 0.07) * fond * (1.0 - a)) / max(tout, 0.001);
-        gl_FragColor = vec4(col, tout * uVis);
-      }`,
-  }));
-  doigt.frustumCulled = false; doigt.renderOrder = 10;
-  curseurScene.add(doigt);
-  const main2 = { x: -9999, y: -9999, vis: 0, vit: 0, px: 0, py: 0, angle: -0.72, appui: 0, tOnde: -9, projet: 0 };
-
   /* ---------- la mise en page ---------- */
   let W = 1, H = 1, dpr = 1, dprMax = 2, portrait = false, mainPos = { x: 0, y: 0, l: 1, h: 1 };
   const centre = new THREE.Vector3(), contact = new THREE.Vector3();
@@ -663,8 +593,7 @@ export function createSphere(toile, opts = {}) {
   let visible = false, boucle = 0, dernier = 0, temps = 0, t0 = 0;
   let etat = 'bleu';                                      // 'bleu' (recouvert), 'joue', 'ordre', 'couvre'
   let D = 1, vD = 0, ordreMain = 0, voileV = 0, glisse = 1, touche = false, tLueur = -9;
-  const souris = { x: -9999, y: -9999, f: 0, trouble: 0, m: 0 };   // m : c'est une souris (la main-curseur se montre)
-  let appuye = false;
+  const souris = { x: -9999, y: -9999, f: 0, trouble: 0 };
   const cam = { x: 0, y: 0 }, regard = { x: 0, y: 0 };
   let lacet = 0.25, tangage = 0.1, vLacet = 0, appui = null, aGlisse = false, survol = -1, focus = -1;
   // le projet ouvert (-1 : aucun) ; z : l'approche (la sphère l'amène face à nous, la caméra avance) ; zv : la sphère
@@ -833,17 +762,6 @@ export function createSphere(toile, opts = {}) {
     renderer.clearDepth();
     renderer.render(scene, camera);
     renderer.render(dessus, ortho);
-    // la main-curseur, par-dessus tout (là où elle a été vue en dernier, le temps de s'effacer)
-    doigt.visible = main2.vis > 0.01 && main2.x > -999;
-    if (doigt.visible) {
-      const ud = doigt.material.uniforms;
-      doigt.scale.set(CURSEUR, CURSEUR, 1);
-      doigt.position.set(main2.x, H - main2.y, 0);
-      ud.uBout.value.set(main2.x, H - main2.y);
-      ud.uDpr.value = dpr; ud.uAngle.value = main2.angle; ud.uT.value = reduit ? 0 : temps; ud.uVis.value = main2.vis;
-      ud.uProjet.value = main2.projet; ud.uAppui.value = main2.appui; ud.uOnde.value = temps - main2.tOnde; ud.uVit.value = reduit ? 0 : main2.vit;
-      renderer.render(curseurScene, ortho);
-    }
   }
 
   // le projet sous la souris (seulement sur la sphère rangée, sans projet ouvert)
@@ -945,15 +863,6 @@ export function createSphere(toile, opts = {}) {
     // la sphère regarde un peu vers le curseur
     regard.x += ((libre ? (souris.x / W - 0.5) * 0.16 : 0) - regard.x) * kc;
     regard.y += ((libre ? (souris.y / H - 0.5) * 0.1 : 0) - regard.y) * kc;
-    // la main-curseur : elle apparaît, s'incline un peu dans le sens où elle va, s'éclaire sur un projet
-    const ici = souris.m && souris.x > -999;
-    const vx = ici && main2.x > -999 ? (souris.x - main2.x) / dt : 0, vy = ici && main2.x > -999 ? (souris.y - main2.y) / dt : 0;
-    if (ici) { main2.x = souris.x; main2.y = souris.y; }
-    main2.vis += ((ici ? 1 : 0) - main2.vis) * (1 - Math.exp(-dt * 16));
-    main2.vit += ((ici ? Math.min(1, Math.hypot(vx, vy) / 2600) : 0) - main2.vit) * (1 - Math.exp(-dt * 10));
-    main2.angle += ((-0.72 + (reduit ? 0 : Math.max(-0.18, Math.min(0.18, vx * 0.00009)))) - main2.angle) * (1 - Math.exp(-dt * 7));
-    main2.appui += ((appuye ? 1 : 0) - main2.appui) * (1 - Math.exp(-dt * 18));
-    main2.projet += ((survol >= 0 && !appui ? 1 : 0) - main2.projet) * (1 - Math.exp(-dt * 10));
     dessiner();
     if (visible && !document.hidden) boucle = requestAnimationFrame(image);
   };
@@ -994,9 +903,8 @@ export function createSphere(toile, opts = {}) {
       if (etaitOuvert) onOuvre(-1);
       dessiner();
     },
-    // dedans : la souris (ou un doigt posé) agit sur la sphère ; main : c'est une souris, la main-curseur la suit
-    souris(x, y, dedans, main) {
-      souris.x = x; souris.y = y; souris.f = dedans ? 1 : 0; souris.m = main ? 1 : 0;
+    souris(x, y, dedans) {
+      souris.x = x; souris.y = y; souris.f = dedans ? 1 : 0;
       if (appui) {
         if (Math.hypot(x - appui.x, y - appui.y) > 6) aGlisse = true;
         const pas = (x - appui.px) / W * 4.2;
@@ -1007,12 +915,10 @@ export function createSphere(toile, opts = {}) {
       survol = dedans && !appui ? viser(x, y) : -1;
       relancer();
     },
-    appui(x, y) {
-      appuye = true; main2.tOnde = temps;                  // la main s'enfonce, une onde part du doigt
-      if (etat === 'ordre' && !ouvert) { appui = { x, y, px: x, py: y, t: performance.now() }; aGlisse = false; vLacet = 0; focus = -1; }
-      relancer();
-    },
-    lache() { appui = null; appuye = false; },
+    appui(x, y) { if (etat === 'ordre' && !ouvert) { appui = { x, y, px: x, py: y, t: performance.now() }; aGlisse = false; vLacet = 0; focus = -1; } },
+    lache() { appui = null; },
+    // un projet est sous la souris (la main-curseur s'éclaire : main-curseur.js)
+    survole: () => survol >= 0 && !ouvert,
     sous(x, y) {
       if (etat !== 'ordre') return '';
       if (ouvert) return 'ouvert';

@@ -9,6 +9,7 @@
    Chaque bloc est isolé : si l’un échoue, le reste du site fonctionne.
    ========================================================================== */
 import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
+import { creerMainCurseur } from './main-curseur.js';   // la main holographique bleue qui sert de curseur (sphère, Nos projets)
 
 (() => {
   'use strict';
@@ -16,6 +17,9 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
   const reduced = d.classList.contains('reduced');
   const PAGE = d.dataset.page || '';
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  // la main-curseur : une seule pour toute la page, créée à la première section qui la demande
+  let laMain = null;
+  const mainCurseur = () => laMain || (laMain = creerMainCurseur({ image: import.meta.env.BASE_URL + 'assets/img/poire/main-1400.webp' }));
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -397,17 +401,11 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     if (!el) return;
     const piste = $('.salle__piste', el), pile = $('[data-salle-pile]', el), liste = $('.salle__liste', el), scene = $('.salle__scene', el);
     const liens = $$('[data-salle-lien]', el), ecrans = $$('.salle__ecran', el), N = ecrans.length;
-    const num = $('[data-salle-n]', el), texte = $('[data-salle-texte]', el), doigt = $('.salle__doigt', el);
+    const num = $('[data-salle-n]', el), texte = $('[data-salle-texte]', el);
     if (!N) return;
     let actif = -1, survol = null, tTexte = 0;
-    // le doigt de Michel-Ange vient se placer devant le numéro du site affiché (le bout de l’index est à 44 % de la hauteur de l’image)
-    const viserDoigt = () => {
-      if (!doigt || actif < 0 || !doigt.offsetWidth) return;
-      const s = scene.getBoundingClientRect(), a = liens[actif].getBoundingClientRect(), n = $('.salle__num', liens[actif]).getBoundingClientRect();
-      doigt.style.setProperty('--dx', (n.left - s.left - doigt.offsetWidth - 12).toFixed(1) + 'px');
-      doigt.style.setProperty('--dy', (a.top + a.height / 2 - s.top - doigt.offsetHeight * 0.44).toFixed(1) + 'px');
-      doigt.classList.add('is-la');
-    };
+    // à la souris, le curseur devient la main holographique bleue ; elle s'éclaire sur un nom et sur l'écran de devant
+    mainCurseur().zone(el, { cibles: '.salle__liste a, .salle__ecran.is-devant' });
     const poser = (i) => {
       if (i === actif) return;
       actif = i;
@@ -419,7 +417,6 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         e.classList.toggle('is-loin', k > 3);
       });
       liens.forEach((a, j) => a.setAttribute('aria-current', j === i ? 'true' : 'false'));
-      viserDoigt();
       if (num) num.textContent = String(i + 1).padStart(2, '0');
       if (texte) {
         texte.classList.add('is-change'); clearTimeout(tTexte);
@@ -433,9 +430,8 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
     };
     const maj = () => { if (survol === null) poser(palier()); };
     window.addEventListener('scroll', maj, { passive: true });
-    window.addEventListener('resize', () => { maj(); viserDoigt(); });
+    window.addEventListener('resize', maj);
     maj();
-    if (doigt) { if (doigt.complete) viserDoigt(); else doigt.addEventListener('load', viserDoigt, { once: true }); }
     liens.forEach((a, j) => {
       a.addEventListener('pointerenter', () => { survol = j; poser(j); });
       a.addEventListener('focus', () => { survol = j; poser(j); });
@@ -925,13 +921,12 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       const ici = (ev) => { const r = toile.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
       const surFiche = (ev) => !!ev.target.closest('.fiche, [data-ordre-index]');
       const curseur = (x, y) => { sec.dataset.sous = objet.sous(x, y); };
-      // à la souris, le curseur devient une main holographique bleue (dessinée dans la toile) ; le vrai est caché
-      // (main.css, .is-main) ; il revient sur la fiche, la liste et hors de la section
+      // à la souris, le curseur devient la main holographique bleue (main-curseur.js) ; le vrai curseur revient sur la
+      // fiche et la liste ; la main s'éclaire quand un projet est sous elle
+      mainCurseur().zone(sec, { exclure: '.fiche, [data-ordre-index]', projet: () => objet.survole() });
       sec.addEventListener('pointermove', (ev) => {
         if (surFiche(ev)) { objet.souris(-9999, -9999, false); delete sec.dataset.sous; return; }
-        const souris = ev.pointerType === 'mouse';
-        sec.classList.toggle('is-main', souris);
-        const [x, y] = ici(ev); objet.souris(x, y, souris || ev.buttons > 0, souris); curseur(x, y);
+        const [x, y] = ici(ev); objet.souris(x, y, ev.pointerType === 'mouse' || ev.buttons > 0); curseur(x, y);
       });
       sec.addEventListener('pointerdown', (ev) => { if (surFiche(ev)) return; const [x, y] = ici(ev); objet.appui(x, y); sec.classList.add('is-appui'); });
       window.addEventListener('pointerup', () => { objet.lache(); sec.classList.remove('is-appui'); });

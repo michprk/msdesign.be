@@ -1024,7 +1024,7 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
    (WebGL : assets/js/fond-salle.js) que la souris remue sans se voir.
    Seulement l'essentiel, centré : au milieu, les écrans des sites empilés
    en 3D, avec le nom du site en grand (Barlow Condensed) sur un voile bleu nuit qui se lève au survol ;
-   à gauche, la liste, et le doigt de Michel-Ange qui montre le site affiché (un clic sur un nom y ramène) ;
+   à gauche, la liste (un clic sur un nom y ramène) ; à la souris, le curseur est la main holographique bleue ;
    la colonne de droite reste vide pour que les écrans soient bien au milieu. La piste est haute (un palier
    de défilement par site) ; à chaque palier, l'écran de devant s'envole et le suivant s'avance.
    ========================================================================== */
@@ -1052,11 +1052,6 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
 .salle__liste a[aria-current="true"] .salle__num { color: var(--bleu-clair); }
 .salle__liste a[aria-current="true"] .salle__nom { transform: translateX(6px); }
 .salle__liste a:focus-visible { outline: 2px solid var(--bleu-clair); outline-offset: 4px; }
-/* le doigt de Michel-Ange : --dx / --dy posés par le script, il glisse d'un nom à l'autre */
-.salle__doigt { position: absolute; left: 0; top: 0; z-index: 3; width: clamp(210px, 18vw, 330px); height: auto; max-width: none; pointer-events: none; opacity: 0;
-  filter: drop-shadow(0 18px 22px rgba(0, 4, 20, 0.45)); transform: translate3d(calc(var(--dx, 0px) - 60px), var(--dy, 0px), 0);
-  transition: transform 0.7s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.9s var(--ease); }
-.salle__doigt.is-la { opacity: 1; transform: translate3d(var(--dx), var(--dy), 0); }
 /* la pile d'écrans : chaque écran reçoit --k = sa place par rapport à l'écran de devant (0 devant, 1 juste derrière…) ;
    la pile elle-même laisse passer la souris (en 3D, elle passerait devant l'écran incliné) : seul l'écran de devant se clique */
 .salle__pile { --rx: 0deg; --ry: 0deg; position: relative; aspect-ratio: 16 / 10.6; perspective: 1800px; perspective-origin: 50% 0%; transform-style: preserve-3d; pointer-events: none; }
@@ -1087,7 +1082,7 @@ html.reduced .personne__dessin .dessin__plein { opacity: 1 !important; transform
 .salle__voir { position: absolute; left: 50%; bottom: 18px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 13px/1 var(--sans); opacity: 0; transform: translate(-50%, 8px); transition: opacity 0.4s var(--ease), transform 0.5s var(--ease); }
 .salle__voir svg { width: 14px; height: 14px; }
 .salle__ecran.is-devant:hover .salle__voir, .salle__ecran.is-devant:focus-visible .salle__voir { opacity: 1; transform: translate(-50%, 0); }
-html.reduced .salle__ecran, html.reduced .salle__doigt, html.reduced .salle__marque { transition: none; }
+html.reduced .salle__ecran, html.reduced .salle__marque { transition: none; }
 html.reduced .salle__ecran .salle__vue img { animation: none; }
 /* sans JavaScript : pas de piste, la scène s'affiche simplement */
 html:not(.js) .salle__piste { height: auto; }
@@ -1095,7 +1090,6 @@ html:not(.js) .salle__scene { position: relative; height: auto; }
 @media (max-width: 860px) {
   .salle__piste { height: calc(var(--n) * 34vh + 100vh); }
   .salle__scene { display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 18px; padding: 64px 18px 26px; }
-  .salle__doigt { display: none; }
   .salle__surtitre { order: 1; font-size: clamp(30px, 9vw, 42px); }
   .salle__centre { order: 2; margin-top: 34px; }
   .salle__gauche { order: 3; }
@@ -1235,8 +1229,11 @@ html.reduced .ciel__fond { transition: none; }
 .ordre[data-sous="projet"], .ordre[data-sous="ouvert"] { cursor: pointer; }
 .ordre[data-sous="sphere"] { cursor: grab; }
 .ordre.is-appui[data-sous] { cursor: grabbing; }
-/* à la souris, une main holographique bleue (dessinée dans la toile, sphere3d.js) remplace le curseur */
-.ordre.has-gl.is-main[data-sous] { cursor: none; }
+/* la main-curseur (assets/js/main-curseur.js) : une petite toile qui suit la souris dans la sphère et « Nos projets » ;
+   le vrai curseur est caché seulement là (html.a-main-curseur) */
+.main-curseur { position: fixed; left: 0; top: 0; z-index: 9000; width: 340px; height: 340px; pointer-events: none; visibility: hidden; will-change: transform, opacity; }
+.main-curseur.is-on { visibility: visible; }
+html.a-main-curseur, html.a-main-curseur * { cursor: none !important; }
 .ordre__toile { touch-action: pan-y; }                    /* au doigt : glisser de côté fait tourner, de haut en bas fait défiler */
 /* le titre, centré en haut ; la sphère, énorme, au milieu en dessous */
 .ordre__texte { position: absolute; z-index: 1; left: 0; right: 0; top: clamp(92px, 12.5vh, 140px); text-align: center; pointer-events: none; transition: opacity 0.5s var(--ease); }
