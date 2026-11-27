@@ -1235,6 +1235,8 @@ html.reduced .ciel__fond { transition: none; }
 .ordre[data-sous="projet"], .ordre[data-sous="ouvert"] { cursor: pointer; }
 .ordre[data-sous="sphere"] { cursor: grab; }
 .ordre.is-appui[data-sous] { cursor: grabbing; }
+/* à la souris, une main holographique bleue (dessinée dans la toile, sphere3d.js) remplace le curseur */
+.ordre.has-gl.is-main[data-sous] { cursor: none; }
 .ordre__toile { touch-action: pan-y; }                    /* au doigt : glisser de côté fait tourner, de haut en bas fait défiler */
 /* le titre, centré en haut ; la sphère, énorme, au milieu en dessous */
 .ordre__texte { position: absolute; z-index: 1; left: 0; right: 0; top: clamp(92px, 12.5vh, 140px); text-align: center; pointer-events: none; transition: opacity 0.5s var(--ease); }

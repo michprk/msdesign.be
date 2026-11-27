@@ -884,6 +884,8 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
         reduced,
         main: base + 'assets/img/poire/main-' + (grand ? 2720 : 1400) + '.webp',
         projets,
+        // le bas du titre (la sphère se place en dessous, entière)
+        haut: () => { const t = $('.ordre__texte', sec); return t ? t.getBoundingClientRect().bottom - toile.getBoundingClientRect().top + 26 : 0; },
         onContact: () => sec.classList.add('is-ordre'),
         onOuvre: (pi) => { if (pi >= 0) montrerFiche(pi); else cacherFiche(); },
         onEtiquette,
@@ -923,9 +925,13 @@ import Lenis from 'lenis';   // défilement amorti (paquet npm « lenis »)
       const ici = (ev) => { const r = toile.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
       const surFiche = (ev) => !!ev.target.closest('.fiche, [data-ordre-index]');
       const curseur = (x, y) => { sec.dataset.sous = objet.sous(x, y); };
+      // à la souris, le curseur devient une main holographique bleue (dessinée dans la toile) ; le vrai est caché
+      // (main.css, .is-main) ; il revient sur la fiche, la liste et hors de la section
       sec.addEventListener('pointermove', (ev) => {
         if (surFiche(ev)) { objet.souris(-9999, -9999, false); delete sec.dataset.sous; return; }
-        const [x, y] = ici(ev); objet.souris(x, y, ev.pointerType === 'mouse' || ev.buttons > 0); curseur(x, y);
+        const souris = ev.pointerType === 'mouse';
+        sec.classList.toggle('is-main', souris);
+        const [x, y] = ici(ev); objet.souris(x, y, souris || ev.buttons > 0, souris); curseur(x, y);
       });
       sec.addEventListener('pointerdown', (ev) => { if (surFiche(ev)) return; const [x, y] = ici(ev); objet.appui(x, y); sec.classList.add('is-appui'); });
       window.addEventListener('pointerup', () => { objet.lache(); sec.classList.remove('is-appui'); });
