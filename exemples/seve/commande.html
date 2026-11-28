@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr" data-ton="clair">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Votre commande, Sève (exemple de boutique M&amp;S Design)</title>
+<meta name="description" content="La commande de la boutique d’exemple Sève : simulée, sans paiement. Exemple de site M&amp;S Design.">
+<meta name="theme-color" content="#e8e7e1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inria-serif-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="seve.css">
+</head>
+<body class="page-commande">
+<a class="sauter" href="#commande">Aller à la commande</a>
+<p class="exemple">Boutique d’exemple, imaginée par M&amp;S Design : la marque est fictive, rien n’est vendu. <a href="../../#etudes">Retour au studio</a></p>
+
+<header class="entete est-solide">
+  <a class="entete__marque" href="index.html" aria-label="Sève, accueil">Sève</a>
+  <nav class="entete__nav" aria-label="Principale">
+    <a href="boutique.html">Boutique</a>
+    <a class="entete__secondaire" href="produit.html?p=huile-visage">Huile visage</a>
+    <a class="entete__secondaire" href="index.html#atelier">L’atelier</a>
+  </nav>
+  <a class="entete__panier" href="commande.html" aria-current="page">Panier <span data-nombre></span></a>
+</header>
+
+<main class="commande" id="commande">
+  <h1 class="titre titre--grand">Votre commande</h1>
+  <ol class="pas" aria-label="Étapes">
+    <li data-pas="1" class="est-fait">Panier</li>
+    <li data-pas="2" class="est-actif">Livraison</li>
+    <li data-pas="3">Confirmation</li>
+  </ol>
+
+  <div class="commande__vide" data-vide hidden>
+    <p>Votre panier est vide.</p>
+    <a class="bouton" href="boutique.html">Voir la boutique</a>
+  </div>
+
+  <div class="commande__corps" data-etape hidden>
+    <section class="commande__panier" aria-labelledby="c-panier">
+      <h2 class="commande__titre" id="c-panier">Vos soins</h2>
+      <ul class="commande__liste" data-liste></ul>
+    </section>
+
+    <section class="commande__resume" aria-labelledby="c-livraison">
+      <h2 class="commande__titre" id="c-livraison">Livraison</h2>
+      <fieldset class="livraison">
+        <legend class="sr">Mode de livraison</legend>
+        <label class="livraison__choix"><input type="radio" name="livraison" value="atelier" checked><span><strong>Retrait à l’atelier</strong> Saint-Gilles, du mardi au samedi</span><em>gratuit</em></label>
+        <label class="livraison__choix"><input type="radio" name="livraison" value="domicile"><span><strong>Livraison à domicile</strong> En Belgique, en deux jours</span><em data-frais-domicile></em></label>
+      </fieldset>
+      <dl class="totaux">
+        <div><dt>Sous-total</dt><dd data-sous-total></dd></div>
+        <div><dt>Livraison</dt><dd data-frais></dd></div>
+        <div class="totaux__total"><dt>Total</dt><dd data-total></dd></div>
+      </dl>
+      <p class="commande__note" data-note></p>
+      <div class="commande__exemple">
+        <h3>Paiement</h3>
+        <p>C’est une boutique d’exemple : aucun paiement n’est demandé, et aucune information n’est envoyée. Sur un vrai site, cette étape ouvrirait le paiement sécurisé (Bancontact, carte, virement).</p>
+      </div>
+      <button class="bouton bouton--large" type="button" data-valider>Valider la commande d’exemple</button>
+    </section>
+  </div>
+
+  <div class="merci" data-merci hidden>
+    <h2 class="titre" data-merci-titre tabindex="-1">Merci, c’était une commande d’exemple.</h2>
+    <p>Numéro d’exemple : <strong data-numero></strong></p>
+    <p data-recap></p>
+    <p>Sur un vrai site, vous recevriez maintenant un e-mail de confirmation, puis un message quand votre colis part de l’atelier.</p>
+    <a class="bouton" href="boutique.html">Retour à la boutique</a>
+  </div>
+</main>
+
+<footer class="pied">
+  <p class="pied__marque">Sève</p>
+  <p class="pied__ligne">Soins naturels faits à la main à Saint-Gilles, Bruxelles.</p>
+  <nav class="pied__nav" aria-label="Pied de page"><a href="boutique.html">Boutique</a><a href="produit.html?p=huile-visage">Huile visage</a><a href="commande.html">Votre commande</a></nav>
+  <p class="pied__exemple">Sève est une marque fictive, imaginée par M&amp;S Design pour montrer une boutique en ligne. Aucun produit n’est vendu, aucun paiement n’est demandé, et votre panier reste dans votre navigateur.</p>
+</footer>
+<script type="module" src="js/commande.js"></script>
+</body>
+</html>

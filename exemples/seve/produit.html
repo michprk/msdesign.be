@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr" data-ton="clair">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Sève (exemple de boutique M&amp;S Design)</title>
+<meta name="description" content="Un soin Sève : photos, format, ingrédients et utilisation. Boutique fictive, exemple de site M&amp;S Design.">
+<meta name="theme-color" content="#e8e7e1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inria-serif-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="seve.css">
+</head>
+<body class="page-produit">
+<a class="sauter" href="#fiche">Aller au produit</a>
+<p class="exemple">Boutique d’exemple, imaginée par M&amp;S Design : la marque est fictive, rien n’est vendu. <a href="../../#etudes">Retour au studio</a></p>
+
+<header class="entete est-solide">
+  <a class="entete__marque" href="index.html" aria-label="Sève, accueil">Sève</a>
+  <nav class="entete__nav" aria-label="Principale">
+    <a href="boutique.html">Boutique</a>
+    <a class="entete__secondaire" href="produit.html?p=huile-visage">Huile visage</a>
+    <a class="entete__secondaire" href="index.html#atelier">L’atelier</a>
+  </nav>
+  <a class="entete__panier" href="commande.html" data-panier>Panier <span data-nombre></span></a>
+</header>
+
+<main class="produit" id="fiche">
+  <nav class="fil" aria-label="Vous êtes ici"><a href="boutique.html">Boutique</a> <span aria-hidden="true">/</span> <a href="boutique.html" data-fil-categorie></a> <span aria-hidden="true">/</span> <span data-fil-nom aria-current="page"></span></nav>
+
+  <div class="fiche" data-fiche>
+    <div class="galerie">
+      <div class="galerie__grande" data-format="portrait"><img data-photo src="img/huile-visage-1100.webp" width="1100" height="1375" alt="" sizes="(max-width: 900px) 92vw, 50vw"></div>
+      <div class="galerie__vignettes" data-vignettes role="group" aria-label="Choisir une photo"></div>
+    </div>
+
+    <div class="fiche__infos">
+      <p class="fiche__note" data-note></p>
+      <h1 class="fiche__nom" data-nom></h1>
+      <p class="fiche__ligne" data-ligne></p>
+      <p class="fiche__prix" data-prix aria-live="polite"></p>
+      <p class="fiche__description" data-description></p>
+
+      <fieldset class="formats" data-formats><legend>Format</legend></fieldset>
+      <div class="fiche__achat">
+        <div class="quantite quantite--grande" role="group" aria-label="Quantité">
+          <button class="quantite__b" type="button" data-moins aria-label="Un de moins">−</button>
+          <span class="quantite__n" data-qte>1</span>
+          <button class="quantite__b" type="button" data-plus aria-label="Un de plus">+</button>
+        </div>
+        <button class="bouton bouton--large" type="button" data-ajouter>Ajouter au panier</button>
+      </div>
+      <p class="fiche__livraison">Retrait gratuit à l’atelier. Livraison en Belgique en deux jours, offerte dès 50 €.</p>
+
+      <div class="replis">
+        <details open><summary>Pour qui</summary><p data-peaux></p></details>
+        <details><summary>Utilisation</summary><p data-utilisation></p></details>
+        <details><summary>Ingrédients</summary><p class="replis__inci" data-ingredients></p></details>
+      </div>
+    </div>
+  </div>
+
+  <div class="introuvable" data-introuvable hidden>
+    <h1 class="titre">Ce produit n’existe pas.</h1>
+    <p>Il a peut-être changé de nom. Tous nos soins sont dans la boutique.</p>
+    <a class="bouton" href="boutique.html">Voir la boutique</a>
+  </div>
+
+  <section class="associer" aria-labelledby="associer-titre">
+    <h2 class="titre" id="associer-titre">À associer</h2>
+    <ul class="grille grille--trois" data-associer></ul>
+  </section>
+</main>
+
+<footer class="pied">
+  <p class="pied__marque">Sève</p>
+  <p class="pied__ligne">Soins naturels faits à la main à Saint-Gilles, Bruxelles.</p>
+  <nav class="pied__nav" aria-label="Pied de page"><a href="boutique.html">Boutique</a><a href="produit.html?p=huile-visage">Huile visage</a><a href="commande.html">Votre commande</a></nav>
+  <p class="pied__exemple">Sève est une marque fictive, imaginée par M&amp;S Design pour montrer une boutique en ligne. Aucun produit n’est vendu, aucun paiement n’est demandé, et votre panier reste dans votre navigateur.</p>
+</footer>
+<script type="module" src="js/produit.js"></script>
+</body>
+</html>

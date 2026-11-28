@@ -1329,7 +1329,7 @@ import { creerMainCurseur } from './main-curseur.js';   // la main holographique
     if (code) code.textContent = location.host + location.pathname;
     const guesses = [
       [/service|site|vitrine|identit|logo|seo|referencement|hebergement|entretien/, '/#promesse', 'Notre méthode'],
-      [/greentage|verdane|plante|fleur|vintage|fournil|pain|veritas|architect|bascule|graphis/, '/etudes/', 'Nos exemples de sites'],
+      [/greentage|seve|sève|cosm|boutique|plante|fleur|vintage|fournil|pain|veritas|architect|bascule|graphis|strate|jardin/, '/etudes/', 'Nos exemples de sites'],
       [/premium|mystere|secret|bientot/, '/etudes/#premium', 'Notre prochain site Premium'],
       [/etude|exemple|cas|realisation|portfolio|projet|reference|client|work/, '/etudes/', 'Nos exemples de sites'],
       [/delai|promesse|garantie/, '/#promesse', 'Notre promesse de délai'],

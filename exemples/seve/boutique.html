@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr" data-ton="clair">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>La boutique, Sève (exemple de boutique M&amp;S Design)</title>
+<meta name="description" content="Les soins Sève, à filtrer par catégorie et par type de peau. Boutique fictive, exemple de site M&amp;S Design.">
+<meta name="theme-color" content="#e8e7e1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inria-serif-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="seve.css">
+</head>
+<body class="page-boutique">
+<a class="sauter" href="#produits">Aller aux produits</a>
+<p class="exemple">Boutique d’exemple, imaginée par M&amp;S Design : la marque est fictive, rien n’est vendu. <a href="../../#etudes">Retour au studio</a></p>
+
+<header class="entete est-solide">
+  <a class="entete__marque" href="index.html" aria-label="Sève, accueil">Sève</a>
+  <nav class="entete__nav" aria-label="Principale">
+    <a href="boutique.html" aria-current="page">Boutique</a>
+    <a class="entete__secondaire" href="produit.html?p=huile-visage">Huile visage</a>
+    <a class="entete__secondaire" href="index.html#atelier">L’atelier</a>
+  </nav>
+  <a class="entete__panier" href="commande.html" data-panier>Panier <span data-nombre></span></a>
+</header>
+
+<main class="boutique">
+  <div class="boutique__tete">
+    <h1 class="titre titre--grand">La boutique</h1>
+    <p class="boutique__chapo">Sept soins pour le visage, le corps et les lèvres. Choisissez par catégorie, ou selon votre peau.</p>
+  </div>
+
+  <div class="filtres" role="group" aria-label="Filtrer les produits">
+    <div class="filtres__groupe" data-filtre="categorie" role="group" aria-label="Catégorie">
+      <button type="button" data-valeur="">Tout</button>
+      <button type="button" data-valeur="visage">Visage</button>
+      <button type="button" data-valeur="corps">Corps</button>
+      <button type="button" data-valeur="levres">Lèvres</button>
+    </div>
+    <div class="filtres__groupe" data-filtre="peau" role="group" aria-label="Type de peau">
+      <button type="button" data-valeur="">Toutes les peaux</button>
+      <button type="button" data-valeur="seche">Sèche</button>
+      <button type="button" data-valeur="sensible">Sensible</button>
+      <button type="button" data-valeur="mixte">Mixte</button>
+    </div>
+    <div class="filtres__fin">
+      <p class="filtres__compte" data-compte aria-live="polite"></p>
+      <label class="filtres__tri">Trier <select data-tri>
+        <option value="selection">notre sélection</option>
+        <option value="prix-croissant">prix croissant</option>
+        <option value="prix-decroissant">prix décroissant</option>
+      </select></label>
+    </div>
+  </div>
+
+  <ul class="grille grille--boutique" id="produits" data-grille></ul>
+  <div class="boutique__vide" data-vide hidden>
+    <p>Aucun soin ne correspond à ces deux choix.</p>
+    <button class="bouton bouton--clair" type="button" data-effacer>Voir tous les produits</button>
+  </div>
+</main>
+
+<footer class="pied">
+  <p class="pied__marque">Sève</p>
+  <p class="pied__ligne">Soins naturels faits à la main à Saint-Gilles, Bruxelles.</p>
+  <nav class="pied__nav" aria-label="Pied de page"><a href="boutique.html">Boutique</a><a href="produit.html?p=huile-visage">Huile visage</a><a href="commande.html">Votre commande</a></nav>
+  <p class="pied__exemple">Sève est une marque fictive, imaginée par M&amp;S Design pour montrer une boutique en ligne. Aucun produit n’est vendu, aucun paiement n’est demandé, et votre panier reste dans votre navigateur.</p>
+</footer>
+<script type="module" src="js/boutique.js"></script>
+</body>
+</html>

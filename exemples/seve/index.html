@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr" data-ton="sombre">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Sève, soins naturels faits à la main (exemple de boutique M&amp;S Design)</title>
+<meta name="description" content="Exemple de boutique en ligne fictive imaginée par M&amp;S Design : Sève, huiles et soins naturels faits à la main à Saint-Gilles, Bruxelles.">
+<meta name="theme-color" content="#0b110d">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inria-serif-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="seve.css">
+</head>
+<body class="page-accueil">
+<a class="sauter" href="#boutique">Aller à la boutique</a>
+<p class="exemple">Boutique d’exemple, imaginée par M&amp;S Design : la marque est fictive, rien n’est vendu. <a href="../../#etudes">Retour au studio</a></p>
+
+<header class="entete">
+  <a class="entete__marque" href="index.html" aria-label="Sève, accueil">Sève</a>
+  <nav class="entete__nav" aria-label="Principale">
+    <a href="boutique.html">Boutique</a>
+    <a class="entete__secondaire" href="produit.html?p=huile-visage">Huile visage</a>
+    <a class="entete__secondaire" href="#atelier">L’atelier</a>
+  </nav>
+  <a class="entete__panier" href="commande.html" data-panier>Panier <span data-nombre></span></a>
+</header>
+
+<main>
+  <!-- Les décors : le même flacon, quatre images ; un cran de molette = un décor -->
+  <section class="scenes" data-scenes aria-label="L’huile visage, en quatre images">
+    <div class="scenes__scene">
+      <div class="scene scene--serre" data-scene data-ton="sombre">
+        <picture class="scene__photo">
+          <img src="img/scene-serre-1400.webp" srcset="img/scene-serre-900.webp 900w, img/scene-serre-1400.webp 1400w, img/scene-serre-2200.webp 2200w" sizes="(max-aspect-ratio: 1/1) 178vh, 100vw" width="2200" height="1242" alt="Le flacon d’huile visage Sève posé sur une dalle de pierre claire, dans une serre, sous un rayon de soleil" fetchpriority="high">
+        </picture>
+        <div class="scene__texte">
+          <h1 class="scene__titre"><span>La sève des plantes,</span> <span>pressée à froid.</span></h1>
+          <p class="scene__chapo">Huiles et soins naturels, faits à la main dans notre atelier de Saint-Gilles.</p>
+          <p class="scene__actions">
+            <a class="bouton bouton--lumiere" href="produit.html?p=huile-visage">Découvrir l’huile visage</a>
+            <a class="lien lien--lumiere" href="boutique.html">Voir toute la boutique</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="scene scene--main" data-scene data-ton="clair">
+        <picture class="scene__photo">
+          <img src="img/scene-main-1400.webp" srcset="img/scene-main-900.webp 900w, img/scene-main-1400.webp 1400w, img/scene-main-2200.webp 2200w" sizes="(max-aspect-ratio: 1/1) 178vh, 100vw" width="2200" height="1242" alt="Le flacon posé dans une main ouverte, sur un fond ivoire" loading="lazy">
+        </picture>
+        <div class="scene__texte">
+          <h2 class="scene__titre">Une huile, trois effets.</h2>
+          <ul class="bienfaits">
+            <li>
+              <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 6c6 7.2 9 12.6 9 16.4a9 9 0 0 1-18 0C11 18.6 14 13.2 20 6z"/><path d="M15.5 23.5a4.6 4.6 0 0 0 4.5 4.3"/></svg>
+              <div><h3>Nourrit sans graisser</h3><p>Le jojoba et la cameline pénètrent vite : la peau reste souple, jamais brillante.</p></div>
+            </li>
+            <li>
+              <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 33V15"/><path d="M20 21c-6.5 0-10-3.6-10-10 6.5 0 10 3.6 10 10z"/><path d="M20 25c5.5 0 8.8-3 8.8-8.6-5.5 0-8.8 3-8.8 8.6z"/></svg>
+              <div><h3>Apaise les peaux sensibles</h3><p>Le calendula et la camomille calment les rougeurs du matin.</p></div>
+            </li>
+            <li>
+              <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="11"/><path d="M20 9v22M9 20h22"/><circle cx="20" cy="20" r="4.5"/></svg>
+              <div><h3>Pressée à froid, non raffinée</h3><p>Les huiles gardent leurs vitamines et l’odeur de la plante.</p></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scene scene--goutte" data-scene data-ton="clair">
+        <picture class="scene__photo">
+          <img src="img/scene-goutte-1400.webp" srcset="img/scene-goutte-900.webp 900w, img/scene-goutte-1400.webp 1400w, img/scene-goutte-2200.webp 2200w" sizes="(max-aspect-ratio: 1/1) 178vh, 100vw" width="2200" height="1242" alt="Une goutte d’huile dorée tombe de la pipette au-dessus du flacon ouvert, à contre-jour" loading="lazy">
+        </picture>
+        <div class="scene__texte">
+          <h2 class="scene__titre">Trois gouttes suffisent.</h2>
+          <ol class="gestes">
+            <li>Le soir, sur une peau propre et encore humide.</li>
+            <li>Réchauffez l’huile entre vos paumes.</li>
+            <li>Appuyez doucement sur le visage, sans frotter.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="scene scene--ruisseau" data-scene data-ton="clair">
+        <picture class="scene__photo">
+          <img src="img/scene-ruisseau-1400.webp" srcset="img/scene-ruisseau-900.webp 900w, img/scene-ruisseau-1400.webp 1400w, img/scene-ruisseau-2200.webp 2200w" sizes="(max-aspect-ratio: 1/1) 178vh, 100vw" width="2200" height="1242" alt="Le flacon sur une pierre moussue, au milieu d’un ruisseau calme, dans la brume du matin" loading="lazy">
+        </picture>
+        <p class="scene__geant" aria-hidden="true">Sève</p>
+        <div class="scene__texte">
+          <h2 class="scene__titre">Huile visage</h2>
+          <p class="scene__prix">30 ml, 38 €</p>
+          <p class="scene__actions">
+            <button class="bouton" type="button" data-ajouter="huile-visage" data-format="30 ml">Ajouter au panier</button>
+            <a class="lien" href="produit.html?p=huile-visage">Voir la fiche</a>
+          </p>
+        </div>
+      </div>
+
+      <ol class="scenes__reperes" aria-hidden="true"><li data-repere></li><li data-repere></li><li data-repere></li><li data-repere></li></ol>
+    </div>
+  </section>
+
+  <!-- La boutique -->
+  <section class="vitrine" id="boutique" aria-labelledby="vitrine-titre">
+    <div class="vitrine__tete">
+      <h2 class="titre" id="vitrine-titre">Sept soins, une même origine.</h2>
+      <p class="vitrine__chapo">Des huiles végétales pressées à froid, des eaux florales, des cires et des beurres : peu d’ingrédients, choisis un par un.</p>
+      <a class="lien" href="boutique.html">Filtrer par type de peau</a>
+    </div>
+    <ul class="grille" data-grille></ul>
+  </section>
+
+  <!-- L'atelier -->
+  <section class="atelier" id="atelier" aria-labelledby="atelier-titre">
+    <img class="atelier__photo" src="img/huile-visage-large-1600.webp" width="1600" height="904" alt="Le flacon d’huile visage dans la lumière de l’atelier" loading="lazy">
+    <div class="atelier__texte">
+      <h2 class="titre" id="atelier-titre">Un petit atelier, à Saint-Gilles.</h2>
+      <p>Chaque semaine, nous pressons, filtrons et mettons en flacon une petite série. Les huiles reposent quelques jours avant d’être étiquetées à la main.</p>
+      <p>Vous pouvez passer chercher votre commande à l’atelier, du mardi au samedi : on vous fera sentir les huiles du moment.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <p class="pied__marque">Sève</p>
+  <p class="pied__ligne">Soins naturels faits à la main à Saint-Gilles, Bruxelles.</p>
+  <nav class="pied__nav" aria-label="Pied de page"><a href="boutique.html">Boutique</a><a href="produit.html?p=huile-visage">Huile visage</a><a href="commande.html">Votre commande</a></nav>
+  <p class="pied__exemple">Sève est une marque fictive, imaginée par M&amp;S Design pour montrer une boutique en ligne. Aucun produit n’est vendu, aucun paiement n’est demandé, et votre panier reste dans votre navigateur.</p>
+</footer>
+<script type="module" src="js/accueil.js"></script>
+</body>
+</html>
